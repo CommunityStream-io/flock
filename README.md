@@ -14,7 +14,7 @@ A **flock** of Angular applications soaring through the social media migration s
 ```
 flock/
 ├── 📁 projects/
-│   ├── 🎭 flock-mirage/          # The dodo bird - creates illusions for testing
+│   ├── 🎭 flock-mirage/          # The dodo bird - our flightless bird for testing
 │   │   ├── src/app/              # Simulates real migration without leaving the nest
 │   │   ├── public/               # Feathers and static assets
 │   │   └── tsconfig files        # TypeScript configuration
