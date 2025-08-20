@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NavigationEnd, Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Route, Router, RouterModule } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatButtonModule } from '@angular/material/button';
@@ -27,60 +27,25 @@ interface MigrationStep {
 })
 export class StepNavigationComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
   private subscription: Subscription | null = null;
 
-  steps: MigrationStep[] = [
-    {
-      id: 'upload',
-      title: 'Upload Instagram Export',
-      description: 'Upload your Instagram export ZIP file to begin migration',
-      route: '/upload',
-      completed: false,
-      current: false,
-      disabled: false
-    },
-    {
-      id: 'auth',
-      title: 'Bluesky Authentication',
-      description: 'Connect your Bluesky account with credentials',
-      route: '/auth',
-      completed: false,
-      current: false,
-      disabled: true
-    },
-    {
-      id: 'config',
-      title: 'Migration Settings',
-      description: 'Configure migration options and preferences',
-      route: '/config',
-      completed: false,
-      current: false,
-      disabled: true
-    },
-    {
-      id: 'execute',
-      title: 'Execute Migration',
-      description: 'Run the migration process with your settings',
-      route: '/execute',
-      completed: false,
-      current: false,
-      disabled: true
-    },
-    {
-      id: 'complete',
-      title: 'Migration Complete',
-      description: 'Review results and download migration report',
-      route: '/complete',
-      completed: false,
-      current: false,
-      disabled: true
-    }
+  private readonly defaultSteps: MigrationStep[] = [
+    { id: 'upload', title: 'Upload Instagram Export', description: 'Upload your Instagram export ZIP file to begin migration', route: '/upload', completed: false, current: false, disabled: false },
+    { id: 'auth', title: 'Bluesky Authentication', description: 'Connect your Bluesky account with credentials', route: '/auth', completed: false, current: false, disabled: true },
+    { id: 'config', title: 'Migration Settings', description: 'Configure migration options and preferences', route: '/config', completed: false, current: false, disabled: true },
+    { id: 'execute', title: 'Execute Migration', description: 'Run the migration process with your settings', route: '/execute', completed: false, current: false, disabled: true },
+    { id: 'complete', title: 'Migration Complete', description: 'Review results and download migration report', route: '/complete', completed: false, current: false, disabled: true }
   ];
 
+  steps: MigrationStep[] = this.defaultSteps;
+
   ngOnInit(): void {
+    this.rebuildStepsFromRouteConfig();
     this.updateStepsForUrl(this.router.url);
     this.subscription = this.router.events.subscribe(evt => {
       if (evt instanceof NavigationEnd) {
+        this.rebuildStepsFromRouteConfig();
         this.updateStepsForUrl(evt.urlAfterRedirects);
       }
     });
@@ -98,5 +63,36 @@ export class StepNavigationComponent implements OnInit, OnDestroy {
       disabled: idx >= 0 ? i > idx : i > 0,
       completed: idx >= 0 ? i < idx : false
     }));
+  }
+
+  private rebuildStepsFromRouteConfig(): void {
+    const childRoutes = this.route.routeConfig?.children ?? [];
+    if (!childRoutes || childRoutes.length === 0) {
+      this.steps = this.defaultSteps;
+      return;
+    }
+
+    const mapped: MigrationStep[] = childRoutes
+      .filter((r: Route) => !!r.path)
+      .map((r: Route) => {
+        const id = r.path as string;
+        const title = (r.title as string) ?? id;
+        const description = (r.data && (r.data['description'] as string)) || '';
+        return {
+          id,
+          title,
+          description,
+          route: `/${id}`,
+          completed: false,
+          current: false,
+          disabled: id !== 'upload'
+        } as MigrationStep;
+      });
+
+    if (mapped.length > 0) {
+      this.steps = mapped;
+    } else {
+      this.steps = this.defaultSteps;
+    }
   }
 }

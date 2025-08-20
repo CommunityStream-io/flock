@@ -15,31 +15,31 @@ export const routes: Routes = [
         path: 'upload',
         loadComponent: () => import('shared').then(m => m.UploadStepComponent),
         title: 'Upload Instagram Export',
-        data: { prev: null, next: '/auth' }
+        data: { prev: null, next: '/auth', description: 'Upload your Instagram export ZIP file to begin migration' }
       },
       {
         path: 'auth',
         loadComponent: () => import('shared').then(m => m.AuthStepComponent),
         title: 'Bluesky Authentication',
-        data: { prev: '/upload', next: '/config' }
+        data: { prev: '/upload', next: '/config', description: 'Connect your Bluesky account with credentials' }
       },
       {
         path: 'config',
         loadComponent: () => import('shared').then(m => m.ConfigStepComponent),
         title: 'Migration Settings',
-        data: { prev: '/auth', next: '/execute' }
+        data: { prev: '/auth', next: '/execute', description: 'Configure migration options and preferences' }
       },
       {
         path: 'execute',
         loadComponent: () => import('shared').then(m => m.ExecuteStepComponent),
         title: 'Execute Migration',
-        data: { prev: '/config', next: '/complete' }
+        data: { prev: '/config', next: '/complete', description: 'Run the migration process with your settings' }
       },
       {
         path: 'complete',
         loadComponent: () => import('shared').then(m => m.CompleteStepComponent),
         title: 'Migration Complete',
-        data: { prev: '/execute', next: null }
+        data: { prev: '/execute', next: null, description: 'Review results and download migration report' }
       }
     ]
   },
