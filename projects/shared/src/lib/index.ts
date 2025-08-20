@@ -3,6 +3,7 @@ export * from './layout/layout';
 export * from './header/header';
 export * from './step-navigation/step-navigation';
 export * from './step-layout/step-layout';
+export * from './step-controls/step-controls';
 
 // Feature Components
 export * from './landing-page/landing-page';
