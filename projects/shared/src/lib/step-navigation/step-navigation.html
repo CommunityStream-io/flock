@@ -2,7 +2,7 @@
   <div class="step-list">
     <mat-card 
       *ngFor="let step of steps; let i = index" 
-      class="step-card"
+      class="step-card step-item"
       [class.completed]="step.completed"
       [class.current]="step.current"
       [class.disabled]="step.disabled">

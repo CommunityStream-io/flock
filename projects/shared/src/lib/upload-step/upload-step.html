@@ -1,0 +1,30 @@
+<shared-step-navigation></shared-step-navigation>
+
+<mat-card class="upload-step" appearance="outlined">
+  <mat-card-header>
+    <mat-card-title>Upload Instagram Export</mat-card-title>
+    <mat-card-subtitle>Select your Instagram export .zip file</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    <form [formGroup]="form" class="upload-form">
+      <mat-form-field appearance="outline" class="file-field">
+        <mat-label>Instagram export (.zip)</mat-label>
+        <input matInput [value]="fileName()" placeholder="Choose file..." readonly>
+      </mat-form-field>
+      <input type="file" accept=".zip" (change)="onFileSelected($event)" hidden #fileInput>
+      <button mat-raised-button color="primary" type="button" (click)="fileInput.click()">
+        <mat-icon>upload</mat-icon>
+        Choose File
+      </button>
+    </form>
+  </mat-card-content>
+
+  <mat-card-actions align="end">
+    <button mat-stroked-button color="primary" [disabled]="!isValid()" [routerLink]="'/auth'">
+      Continue
+      <mat-icon>arrow_forward</mat-icon>
+    </button>
+  </mat-card-actions>
+</mat-card>
+

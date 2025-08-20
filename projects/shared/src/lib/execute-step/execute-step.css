@@ -1,0 +1,18 @@
+.execute-step {
+  background: var(--md-sys-color-surface);
+  color: var(--md-sys-color-on-surface);
+}
+
+.status-line {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.log-list {
+  max-height: 240px;
+  overflow: auto;
+  border: 1px dashed var(--md-sys-color-outline-variant);
+  margin-top: 1rem;
+}
+

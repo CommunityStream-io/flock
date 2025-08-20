@@ -1,0 +1,26 @@
+<shared-step-navigation></shared-step-navigation>
+
+<mat-card class="execute-step" appearance="outlined">
+  <mat-card-header>
+    <mat-card-title>Execute Migration</mat-card-title>
+    <mat-card-subtitle>Progress overview</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    <div class="status-line">
+      <span class="status">Status: {{ status() }}</span>
+      <span class="percent">{{ percent() }}%</span>
+    </div>
+    <mat-progress-bar mode="determinate" [value]="percent()"></mat-progress-bar>
+
+    <mat-list role="list" class="log-list">
+      <mat-list-item role="listitem" *ngFor="let entry of log()">{{ entry }}</mat-list-item>
+    </mat-list>
+  </mat-card-content>
+
+  <mat-card-actions align="end">
+    <a mat-stroked-button color="primary" [routerLink]="'/config'">Back</a>
+    <a mat-raised-button color="primary" [routerLink]="'/complete'">Continue</a>
+  </mat-card-actions>
+</mat-card>
+

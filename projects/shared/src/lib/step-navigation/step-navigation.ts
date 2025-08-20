@@ -1,11 +1,13 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatBadgeModule } from '@angular/material/badge';
+import { NavigationService } from '../core/navigation.service';
+import { Subscription } from 'rxjs';
 
 interface MigrationStep {
   id: string;
@@ -24,8 +26,11 @@ interface MigrationStep {
   templateUrl: './step-navigation.html',
   styleUrl: './step-navigation.css'
 })
-export class StepNavigationComponent {
-  // Stubbed steps for now - will be populated by service when implemented
+export class StepNavigationComponent implements OnInit, OnDestroy {
+  private readonly router = inject(Router);
+  private readonly navigationService = inject(NavigationService);
+  private subscription: Subscription | null = null;
+
   steps: MigrationStep[] = [
     {
       id: 'upload',
@@ -33,7 +38,7 @@ export class StepNavigationComponent {
       description: 'Upload your Instagram export ZIP file to begin migration',
       route: '/upload',
       completed: false,
-      current: true,
+      current: false,
       disabled: false
     },
     {
@@ -74,7 +79,26 @@ export class StepNavigationComponent {
     }
   ];
 
-  // TODO: Inject StepValidationService when implemented
-  // TODO: Update step status based on service state
-  // TODO: Handle step navigation and validation
+  ngOnInit(): void {
+    this.updateStepsForUrl(this.router.url);
+    this.subscription = this.router.events.subscribe(evt => {
+      if (evt instanceof NavigationEnd) {
+        this.updateStepsForUrl(evt.urlAfterRedirects);
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.subscription?.unsubscribe();
+  }
+
+  private updateStepsForUrl(url: string): void {
+    const idx = this.navigationService.currentIndex(url);
+    this.steps = this.steps.map((step, i) => ({
+      ...step,
+      current: i === idx,
+      disabled: idx >= 0 ? i > idx : i > 0,
+      completed: idx >= 0 ? i < idx : false
+    }));
+  }
 }
