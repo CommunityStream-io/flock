@@ -18,7 +18,6 @@ export * from './theme-toggle/theme-toggle';
 // Services
 export * from './theme/theme-toggle';
 export * from './core/config.service';
-export * from './core/navigation.service';
 export * from './core/progress.service';
 
 // Theme System

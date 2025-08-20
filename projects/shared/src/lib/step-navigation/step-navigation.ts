@@ -6,7 +6,6 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatBadgeModule } from '@angular/material/badge';
-import { NavigationService } from '../core/navigation.service';
 import { Subscription } from 'rxjs';
 
 interface MigrationStep {
@@ -28,7 +27,6 @@ interface MigrationStep {
 })
 export class StepNavigationComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
-  private readonly navigationService = inject(NavigationService);
   private subscription: Subscription | null = null;
 
   steps: MigrationStep[] = [
@@ -93,7 +91,7 @@ export class StepNavigationComponent implements OnInit, OnDestroy {
   }
 
   private updateStepsForUrl(url: string): void {
-    const idx = this.navigationService.currentIndex(url);
+    const idx = this.steps.findIndex(s => url.startsWith(s.route));
     this.steps = this.steps.map((step, i) => ({
       ...step,
       current: i === idx,
