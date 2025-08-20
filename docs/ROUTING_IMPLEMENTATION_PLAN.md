@@ -13,7 +13,7 @@ This document provides a practical implementation plan for the routing architect
 ### **What We're Building**
 
 1. **Route Guards** - Prevent unauthorized access to steps
-2. **Navigation Service** - Manage step-to-step navigation
+2. **Step Layout** - Encapsulate stepper UI and prev/next actions driven by route data
 3. **Step Validation Service** - Validate step completion
 4. **Base Components** - Reusable step component patterns
 5. **Route Configuration** - Define all application routes
@@ -34,13 +34,15 @@ src/app/core/guards/
 └── index.ts
 ```
 
-#### **2. Navigation Services (`src/app/core/services/`)**
+#### **2. Step Layout & Route Data**
 ```
-src/app/core/services/
-├── navigation.service.ts
-├── step-validation.service.ts
-└── index.ts
+shared/lib/
+├── step-layout/
+│   ├── step-layout.ts
+│   ├── step-layout.html
+│   └── step-layout.css
 ```
+The Step Layout hosts a router-outlet for steps, renders the `shared-step-navigation`, and reads `data.prev`/`data.next` from the active child route to expose Previous/Next actions. No dedicated NavigationService is needed.
 
 #### **3. Route Configuration (`src/app/`)**
 ```
