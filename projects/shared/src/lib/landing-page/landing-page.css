@@ -1,0 +1,112 @@
+/* Landing Page Component - Minimal Layout Only */
+/* All visual styling is handled by the global theme utilities */
+
+.landing-page {
+  min-height: 100vh;
+}
+
+/* Only component-specific typography that can't be utility classes */
+.section-title {
+  font-family: var(--mat-sys-typescale-headline-large-font-family);
+  font-size: var(--mat-sys-typescale-headline-large-font-size);
+  font-weight: var(--mat-sys-typescale-headline-large-font-weight);
+  margin: 0 0 16px 0;
+  color: var(--mat-sys-on-surface);
+}
+
+.section-description {
+  font-family: var(--mat-sys-typescale-body-large-font-family);
+  font-size: var(--mat-sys-typescale-body-large-font-size);
+  margin: 0 0 60px 0;
+  color: var(--mat-sys-on-surface-variant);
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Action buttons layout */
+.intro-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.step-number {
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, var(--mat-sys-primary), var(--mat-sys-tertiary));
+  color: var(--mat-sys-on-primary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: bold;
+  box-shadow: var(--mat-sys-elevation-level3);
+  z-index: 2;
+  border: 3px solid var(--mat-sys-surface-container);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.step-number:hover {
+  transform: translateX(-50%) scale(1.1);
+  box-shadow: var(--mat-sys-elevation-level4);
+  background: linear-gradient(135deg, var(--mat-sys-tertiary), var(--mat-sys-primary));
+}
+
+.step-number::after {
+  content: '';
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  right: -3px;
+  bottom: -3px;
+  background: linear-gradient(135deg, var(--mat-sys-primary), var(--mat-sys-tertiary));
+  border-radius: 50%;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.step-number:hover::after {
+  opacity: 0.3;
+}
+
+@media (max-width: 480px) {  
+  .step-number {
+    width: 50px;
+    height: 50px;
+    font-size: 20px;
+  }
+}
+
+
+.info-card {
+  overflow: visible !important;
+  position: relative;
+}
+
+.info-card .mat-mdc-card-header {
+  overflow: visible !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  text-align: center !important;
+  padding: 40px 32px 16px 32px !important;
+}
+
+.info-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--mat-sys-primary), var(--mat-sys-tertiary));
+}

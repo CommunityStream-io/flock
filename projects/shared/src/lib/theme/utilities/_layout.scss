@@ -1,0 +1,51 @@
+// Layout Utilities
+.full-height {
+  height: 100vh;
+}
+
+.section-padding {
+  padding: 80px 24px;
+}
+
+.section-padding-mobile {
+  @media (max-width: 768px) {
+    padding: 60px 16px;
+  }
+}
+
+.container-center {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.container-narrow {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.container-medium {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.grid-auto-fit {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 32px;
+}
+
+.grid-info-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 32px;
+}

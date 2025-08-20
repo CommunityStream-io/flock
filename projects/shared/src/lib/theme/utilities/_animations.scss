@@ -1,0 +1,65 @@
+// Material 3 Animation Utilities
+.mat-transition {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mat-transition-fast {
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mat-transition-slow {
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mat-hover-lift {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mat-hover-lift:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--mat-sys-elevation-level4);
+}
+
+.mat-hover-scale {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mat-hover-scale:hover {
+  transform: scale(1.05);
+}
+
+.mat-fade-in {
+  animation: matFadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mat-slide-up {
+  animation: matSlideUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mat-slide-up-delay-1 {
+  animation: matSlideUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.2s both;
+}
+
+.mat-slide-up-delay-2 {
+  animation: matSlideUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.4s both;
+}
+
+@keyframes matFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes matSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

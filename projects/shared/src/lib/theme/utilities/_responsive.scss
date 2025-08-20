@@ -1,0 +1,40 @@
+// Responsive Utilities
+@media (max-width: 768px) {
+  .section-padding {
+    padding: 60px 16px;
+  }
+  
+  .grid-auto-fit {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  
+  .grid-info-cards {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  
+  .intro-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .cta-button {
+    width: 100%;
+    max-width: 300px;
+  }
+}
+
+@media (max-width: 480px) {
+  .icon-large {
+    font-size: 64px !important;
+    width: 64px;
+    height: 64px;
+  }
+  
+  .icon-medium {
+    font-size: 48px !important;
+    width: 48px !important;
+    height: 48px !important;
+  }
+}

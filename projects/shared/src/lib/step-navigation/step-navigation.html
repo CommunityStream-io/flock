@@ -1,0 +1,53 @@
+<nav class="step-navigation">
+  <div class="step-list">
+    <mat-card 
+      *ngFor="let step of steps; let i = index" 
+      class="step-card"
+      [class.completed]="step.completed"
+      [class.current]="step.current"
+      [class.disabled]="step.disabled">
+      
+      <div class="step-connector" *ngIf="i > 0"></div>
+      
+      <mat-card-header>
+        <div mat-card-avatar class="step-avatar">
+          <mat-icon *ngIf="step.completed" class="step-check">check_circle</mat-icon>
+          <mat-icon *ngIf="step.current && !step.completed" class="step-current">radio_button_checked</mat-icon>
+          <span *ngIf="!step.completed && !step.current" class="step-number">{{ i + 1 }}</span>
+        </div>
+        <mat-card-title>{{ step.title }}</mat-card-title>
+        <mat-card-subtitle>{{ step.description }}</mat-card-subtitle>
+      </mat-card-header>
+      
+      <mat-card-actions align="end" *ngIf="!step.disabled">
+        <button 
+          mat-raised-button 
+          [color]="step.current ? 'primary' : (step.completed ? 'accent' : 'basic')"
+          [routerLink]="step.route"
+          [disabled]="step.disabled">
+          <mat-icon>
+            {{ step.current ? 'play_arrow' : (step.completed ? 'visibility' : 'start') }}
+          </mat-icon>
+          {{ step.current ? 'Continue' : (step.completed ? 'Review' : 'Start') }}
+        </button>
+      </mat-card-actions>
+      
+      <div class="step-status">
+        <mat-chip-set>
+          <mat-chip *ngIf="step.completed" class="status-chip completed">
+            <mat-icon matChipAvatar>check</mat-icon>
+            Completed
+          </mat-chip>
+          <mat-chip *ngIf="step.current && !step.completed" class="status-chip current">
+            <mat-icon matChipAvatar>schedule</mat-icon>
+            In Progress
+          </mat-chip>
+          <mat-chip *ngIf="step.disabled" class="status-chip disabled">
+            <mat-icon matChipAvatar>lock</mat-icon>
+            Locked
+          </mat-chip>
+        </mat-chip-set>
+      </div>
+    </mat-card>
+  </div>
+</nav>

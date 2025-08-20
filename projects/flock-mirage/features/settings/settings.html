@@ -1,0 +1,52 @@
+<div class="settings-container">
+  <h1>Migration Settings</h1>
+  <p>Configure your migration preferences and options.</p>
+  
+  <div class="settings-form">
+    <div class="form-group">
+      <label for="migration-type">Migration Type</label>
+      <select id="migration-type">
+        <option value="posts">Posts Only</option>
+        <option value="stories">Stories Only</option>
+        <option value="both">Posts & Stories</option>
+      </select>
+    </div>
+    
+    <div class="form-group">
+      <label for="date-range">Date Range</label>
+      <div class="date-inputs">
+        <input type="date" id="start-date" />
+        <span>to</span>
+        <input type="date" id="end-date" />
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label>
+        <input type="checkbox" id="include-media" />
+        Include media files (photos, videos)
+      </label>
+    </div>
+    
+    <div class="form-group">
+      <label>
+        <input type="checkbox" id="preserve-timestamps" />
+        Preserve original post timestamps
+      </label>
+    </div>
+    
+    <div class="form-group">
+      <label for="post-frequency">Posting Frequency</label>
+      <select id="post-frequency">
+        <option value="immediate">Post immediately</option>
+        <option value="scheduled">Schedule posts over time</option>
+        <option value="manual">Manual approval for each post</option>
+      </select>
+    </div>
+    
+    <div class="settings-actions">
+      <button class="btn btn-primary" routerLink="/execute">Start Migration</button>
+      <button class="btn btn-secondary" routerLink="/auth">Back to Authentication</button>
+    </div>
+  </div>
+</div>

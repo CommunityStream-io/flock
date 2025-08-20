@@ -1,0 +1,106 @@
+@use '@angular/material' as mat;
+@use 'sass:map';
+@use './theme_theme-colors' as theme-colors;
+
+// Import Material Icons font
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons+Outlined');
+
+// Include the common styles for Angular Material
+@include mat.core();
+
+// Create the M3 light theme
+$light-theme: mat.define-theme((
+  color: (
+    theme-type: light,
+    primary: theme-colors.$primary-palette,
+    tertiary: theme-colors.$tertiary-palette
+  ),
+  typography: (
+    plain-family: Roboto,
+    brand-family: Roboto,
+    bold-weight: 700,
+    medium-weight: 500,
+    regular-weight: 400
+  ),
+  density: (
+    scale: 0
+  )
+));
+
+// Create the M3 dark theme
+$dark-theme: mat.define-theme((
+  color: (
+    theme-type: dark,
+    primary: theme-colors.$primary-palette,
+    tertiary: theme-colors.$tertiary-palette
+  ),
+  typography: (
+    plain-family: Roboto,
+    brand-family: Roboto,
+    bold-weight: 700,
+    medium-weight: 500,
+    regular-weight: 400
+  ),
+  density: (
+    scale: 0
+  )
+));
+
+// Apply the light theme by default
+html {
+  // Apply the theme to all components
+  @include mat.all-component-themes($light-theme);
+  
+  // Add backwards compatibility for color variants if needed
+  @include mat.color-variants-backwards-compatibility($light-theme);
+}
+
+// Apply the dark theme when the [data-theme="dark"] attribute is present
+html[data-theme="dark"] {
+  // Apply the theme to all components
+  @include mat.all-component-themes($dark-theme);
+  
+  // Add backwards compatibility for color variants if needed
+  @include mat.color-variants-backwards-compatibility($dark-theme);
+}
+
+// Global styles
+body {
+  margin: 0; 
+  font-family: var(--mat-sys-body-font-family);
+  background-color: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+html, body { 
+  height: 100%; 
+}
+
+// Card Component Overrides - Simple spacing and sizing only
+// Note: For more complex component overrides, consider creating separate files:
+// @include button.apply-button-overrides($theme);
+// @include chip.apply-chip-overrides($theme);
+// @include card.apply-card-overrides($theme);
+
+.mat-mdc-card {
+  border-radius: 16px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+// Card header spacing
+.mat-mdc-card-header {
+  padding: 24px 24px 16px 24px;
+}
+
+// Card content spacing
+.mat-mdc-card-content {
+  padding: 0 24px 24px 24px;
+}
+
+// Card actions spacing
+.mat-mdc-card-actions {
+  padding: 16px 24px 24px 24px;
+  gap: 12px;
+}

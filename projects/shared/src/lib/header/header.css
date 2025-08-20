@@ -1,0 +1,62 @@
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(8px);
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+}
+
+.app-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: inherit;
+}
+
+.app-icon {
+  font-size: 24px;
+  line-height: 1;
+}
+
+.app-name {
+  font-weight: 500;
+}
+
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-button {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.nav-button.active {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+  .app-name {
+    display: none;
+  }
+
+  .header-nav {
+    display: none;
+  }
+}

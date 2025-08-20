@@ -1,0 +1,127 @@
+// Process Flow Layout
+.process-flow {
+  position: relative;
+}
+
+.process-flow::before {
+  content: '';
+  position: absolute;
+  top: 30px;
+  left: 50%;
+  width: 2px;
+  height: calc(100% - 60px);
+  background: linear-gradient(to bottom, var(--mat-sys-primary), var(--mat-sys-tertiary));
+  opacity: 0.3;
+  z-index: 1;
+}
+
+@media (max-width: 768px) {
+  .process-flow::before {
+    display: none;
+  }
+}
+
+.process-step {
+  position: relative;
+  text-align: center;
+}
+
+.step-card {
+  padding-top: 50px;
+  border-radius: 20px;
+  height: 100%;
+  overflow: visible;
+  position: relative;
+}
+
+// Hero/Intro Section
+.intro-section {
+  background: linear-gradient(135deg, 
+    var(--mat-sys-primary-container) 0%, 
+    var(--mat-sys-secondary-container) 100%);
+  color: var(--mat-sys-on-primary-container);
+}
+
+.intro-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+// Icon Sizing
+.icon-large {
+  font-size: 80px !important;
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 24px auto;
+  display: block;
+  line-height: 1;
+}
+
+.icon-medium {
+  font-size: 56px !important;
+  width: 56px !important;
+  height: 56px !important;
+  margin: 0 auto 16px auto !important;
+  display: block !important;
+  line-height: 1 !important;
+}
+
+// Button Enhancements
+.cta-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 32px;
+  border-radius: 28px;
+  min-height: 56px;
+  min-width: 180px;
+  gap: 8px;
+}
+
+// Step Number Component
+.step-number {
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, var(--mat-sys-primary), var(--mat-sys-tertiary));
+  color: var(--mat-sys-on-primary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: bold;
+  box-shadow: var(--mat-sys-elevation-level3);
+  z-index: 2;
+  border: 3px solid var(--mat-sys-surface-container);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.step-number:hover {
+  transform: translateX(-50%) scale(1.1);
+  box-shadow: var(--mat-sys-elevation-level4);
+  background: linear-gradient(135deg, var(--mat-sys-tertiary), var(--mat-sys-primary));
+}
+
+.step-number::after {
+  content: '';
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  right: -3px;
+  bottom: -3px;
+  background: linear-gradient(135deg, var(--mat-sys-primary), var(--mat-sys-tertiary));
+  border-radius: 50%;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.step-number:hover::after {
+  opacity: 0.3;
+}
