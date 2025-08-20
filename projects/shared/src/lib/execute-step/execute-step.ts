@@ -5,13 +5,12 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatListModule } from '@angular/material/list';
-import { StepNavigationComponent } from '../step-navigation/step-navigation';
 import { ProgressService } from '../core/progress.service';
 
 @Component({
   selector: 'shared-execute-step',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatCardModule, MatButtonModule, MatProgressBarModule, MatListModule, StepNavigationComponent],
+  imports: [CommonModule, RouterModule, MatCardModule, MatButtonModule, MatProgressBarModule, MatListModule],
   templateUrl: './execute-step.html',
   styleUrl: './execute-step.css'
 })

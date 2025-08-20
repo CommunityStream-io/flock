@@ -7,13 +7,12 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
-import { StepNavigationComponent } from '../step-navigation/step-navigation';
 import { ConfigService } from '../core/config.service';
 
 @Component({
   selector: 'shared-config-step',
   standalone: true,
-  imports: [CommonModule, RouterModule, ReactiveFormsModule, MatCardModule, MatCheckboxModule, MatFormFieldModule, MatInputModule, MatButtonModule, StepNavigationComponent],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, MatCardModule, MatCheckboxModule, MatFormFieldModule, MatInputModule, MatButtonModule],
   templateUrl: './config-step.html',
   styleUrl: './config-step.css'
 })

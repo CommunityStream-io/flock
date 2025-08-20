@@ -5,11 +5,17 @@ import { LandingPageComponent } from 'shared';
 
 const testRoutes: Routes = [
   { path: '', component: LandingPageComponent },
-  { path: 'upload', loadComponent: () => import('shared').then(m => m.UploadStepComponent) },
-  { path: 'auth', loadComponent: () => import('shared').then(m => m.AuthStepComponent) },
-  { path: 'config', loadComponent: () => import('shared').then(m => m.ConfigStepComponent) },
-  { path: 'execute', loadComponent: () => import('shared').then(m => m.ExecuteStepComponent) },
-  { path: 'complete', loadComponent: () => import('shared').then(m => m.CompleteStepComponent) },
+  {
+    path: '',
+    loadComponent: () => import('shared').then(m => m.StepLayoutComponent),
+    children: [
+      { path: 'upload', loadComponent: () => import('shared').then(m => m.UploadStepComponent) },
+      { path: 'auth', loadComponent: () => import('shared').then(m => m.AuthStepComponent) },
+      { path: 'config', loadComponent: () => import('shared').then(m => m.ConfigStepComponent) },
+      { path: 'execute', loadComponent: () => import('shared').then(m => m.ExecuteStepComponent) },
+      { path: 'complete', loadComponent: () => import('shared').then(m => m.CompleteStepComponent) }
+    ]
+  }
 ];
 
 describe('Feature: Route workflow rendering', () => {
