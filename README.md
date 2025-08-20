@@ -49,9 +49,9 @@ flock/
 └── 📖 README.md                  # This field guide
 ```
 
-## 🎨 **Shared M2 Material Design**
+## 🎨 **Shared M3 Material Design**
 
-Our flock shares a beautiful, consistent Material Design 2 theme that ensures:
+Our flock shares a beautiful, consistent Material Design 3 theme that ensures:
 - **🎨 Unified Visual Language** - All birds look and feel the same
 - **🔄 Seamless Component Swapping** - Services and nested components adapt per environment
 - **📱 Responsive Nesting** - Components nest perfectly in each bird's habitat
@@ -73,7 +73,7 @@ cd flock
 npm install
 ```
 
-### **Development - Choose Your Bird**
+### **Development - Choose Your Migration Pattern**
 ```bash
 # Start with the mirage bird (default - great for testing)
 ng serve
@@ -84,7 +84,7 @@ ng serve flock-native     # 🦅 Desktop native
 ng serve flock-mirage     # 🎭 Demo mirage
 ```
 
-### **Building Your Flock**
+### **Herding Your Flock**
 ```bash
 # Build all birds at once
 ng build
@@ -95,7 +95,7 @@ ng build flock-native     # Desktop variant
 ng build flock-mirage     # Demo variant
 ```
 
-## 🧪 **Testing the Flock**
+## 🧪 **Testing the formation**
 
 ### **Unit Tests**
 ```bash
@@ -108,7 +108,7 @@ ng test flock-murmur      # Test the murmuration
 ng test flock-native      # Test the native
 ```
 
-### **End-to-End Tests**
+### **End-to-end Tests**
 ```bash
 # Full migration journey tests
 ng e2e
@@ -171,7 +171,7 @@ ng build --configuration=development
 ## 🤝 **Join the Flock**
 
 1. Follow our established flight patterns (architecture)
-2. Use Angular CLI for all code generation
+2. Use Angular CLI for all code generation to follow naming conventions
 3. Implement BDD-style testing for new features
 4. Keep the flock flying in formation (consistency)
 5. Update our migration maps (documentation)
