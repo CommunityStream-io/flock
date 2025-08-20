@@ -21,6 +21,6 @@ export class LayoutComponent {
   private router = inject(Router);
   showStepUi = computed(() => {
     const url = this.router.url || '';
-    return url.startsWith('/upload') || url.startsWith('/auth') || url.startsWith('/config') || url.startsWith('/execute') || url.startsWith('/complete');
+    return url.includes('(step:');
   });
 }

@@ -12,7 +12,7 @@ interface MigrationStep {
   id: string;
   title: string;
   description: string;
-  route: string;
+  route: string; // step id
   completed: boolean;
   current: boolean;
   disabled: boolean;
@@ -31,11 +31,11 @@ export class StepNavigationComponent implements OnInit, OnDestroy {
   private subscription: Subscription | null = null;
 
   private readonly defaultSteps: MigrationStep[] = [
-    { id: 'upload', title: 'Upload Instagram Export', description: 'Upload your Instagram export ZIP file to begin migration', route: '/upload', completed: false, current: false, disabled: false },
-    { id: 'auth', title: 'Bluesky Authentication', description: 'Connect your Bluesky account with credentials', route: '/auth', completed: false, current: false, disabled: true },
-    { id: 'config', title: 'Migration Settings', description: 'Configure migration options and preferences', route: '/config', completed: false, current: false, disabled: true },
-    { id: 'execute', title: 'Execute Migration', description: 'Run the migration process with your settings', route: '/execute', completed: false, current: false, disabled: true },
-    { id: 'complete', title: 'Migration Complete', description: 'Review results and download migration report', route: '/complete', completed: false, current: false, disabled: true }
+    { id: 'upload', title: 'Upload Instagram Export', description: 'Upload your Instagram export ZIP file to begin migration', route: 'upload', completed: false, current: false, disabled: false },
+    { id: 'auth', title: 'Bluesky Authentication', description: 'Connect your Bluesky account with credentials', route: 'auth', completed: false, current: false, disabled: true },
+    { id: 'config', title: 'Migration Settings', description: 'Configure migration options and preferences', route: 'config', completed: false, current: false, disabled: true },
+    { id: 'execute', title: 'Execute Migration', description: 'Run the migration process with your settings', route: 'execute', completed: false, current: false, disabled: true },
+    { id: 'complete', title: 'Migration Complete', description: 'Review results and download migration report', route: 'complete', completed: false, current: false, disabled: true }
   ];
 
   steps: MigrationStep[] = this.defaultSteps;
@@ -56,7 +56,7 @@ export class StepNavigationComponent implements OnInit, OnDestroy {
   }
 
   private updateStepsForUrl(url: string): void {
-    const idx = this.steps.findIndex(s => url.startsWith(s.route));
+    const idx = this.steps.findIndex(s => url.includes(`(step:${s.route}`));
     this.steps = this.steps.map((step, i) => ({
       ...step,
       current: i === idx,
@@ -66,13 +66,13 @@ export class StepNavigationComponent implements OnInit, OnDestroy {
   }
 
   private rebuildStepsFromRouteConfig(): void {
-    const childRoutes = this.route.routeConfig?.children ?? [];
-    if (!childRoutes || childRoutes.length === 0) {
+    const stepRoutes = this.router.config.filter(r => r.outlet === 'step');
+    if (!stepRoutes || stepRoutes.length === 0) {
       this.steps = this.defaultSteps;
       return;
     }
 
-    const mapped: MigrationStep[] = childRoutes
+    const mapped: MigrationStep[] = stepRoutes
       .filter((r: Route) => !!r.path)
       .map((r: Route) => {
         const id = r.path as string;
@@ -82,7 +82,7 @@ export class StepNavigationComponent implements OnInit, OnDestroy {
           id,
           title,
           description,
-          route: `/${id}`,
+          route: id,
           completed: false,
           current: false,
           disabled: id !== 'upload'

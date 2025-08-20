@@ -24,7 +24,7 @@
         <button 
           mat-raised-button 
           [color]="step.current ? 'primary' : (step.completed ? 'accent' : 'basic')"
-          [routerLink]="step.route"
+          [routerLink]="[{ outlets: { step: step.route } }]"
           [disabled]="step.disabled">
           <mat-icon>
             {{ step.current ? 'play_arrow' : (step.completed ? 'visibility' : 'start') }}
