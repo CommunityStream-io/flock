@@ -1,42 +1,44 @@
 <mat-toolbar color="primary" class="app-header">
-  <div class="header-left">
-    <a mat-button routerLink="/" class="app-title">
-      <span class="app-icon">🦋</span>
-      <span class="app-name">Bluesky Migrator</span>
-    </a>
-  </div>
-  
-  <span class="spacer"></span>
-  
-  <nav class="header-nav">
-    <a 
-      mat-button 
-      routerLink="/" 
-      routerLinkActive="active" 
-      [routerLinkActiveOptions]="{exact: true}"
-      class="nav-link">
-      <mat-icon>home</mat-icon>
-      Home
-    </a>
-    <a 
-      mat-button 
-      routerLink="/upload" 
-      routerLinkActive="active"
-      class="nav-link">
-      <mat-icon>upload</mat-icon>
-      Start Migration
-    </a>
-    <a 
-      mat-button 
-      routerLink="/help" 
-      routerLinkActive="active"
-      class="nav-link">
-      <mat-icon>help</mat-icon>
-      Help
-    </a>
-  </nav>
-  
-  <div class="header-right">
-    <shared-theme-toggle></shared-theme-toggle>
+  <div class="header-content">
+    <div class="header-left">
+      <a mat-button routerLink="/" class="app-title">
+        <span class="app-icon">🦋</span>
+        <span class="app-name">Bluesky Migrator</span>
+      </a>
+    </div>
+    
+    <span class="spacer"></span>
+    
+    <nav class="header-nav">
+      <a 
+        mat-button 
+        routerLink="/" 
+        routerLinkActive="active" 
+        [routerLinkActiveOptions]="{exact: true}"
+        class="nav-link">
+        <mat-icon>home</mat-icon>
+        Home
+      </a>
+      <a 
+        mat-button 
+        routerLink="/upload" 
+        routerLinkActive="active"
+        class="nav-link">
+        <mat-icon>upload</mat-icon>
+        Start Migration
+      </a>
+      <a 
+        mat-button 
+        routerLink="/help" 
+        routerLinkActive="active"
+        class="nav-link">
+        <mat-icon>help</mat-icon>
+        Help
+      </a>
+    </nav>
+    
+    <div class="header-right">
+      <shared-theme-toggle></shared-theme-toggle>
+    </div>
   </div>
 </mat-toolbar>

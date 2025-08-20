@@ -96,7 +96,7 @@ describe('Feature: Application Layout Structure', () => {
       
       // Then: Header should be properly positioned
       console.log('✅ BDD: Header is properly positioned');
-      const header = fixture.nativeElement.querySelector('.app-header');
+      const header = fixture.nativeElement.querySelector('header.app-header');
       expect(header).toBeTruthy();
       expect(header.parentElement).toHaveClass('app-layout');
     });
@@ -111,7 +111,7 @@ describe('Feature: Application Layout Structure', () => {
       
       // Then: Header should contain the shared-header component
       console.log('✅ BDD: Header contains shared-header component');
-      const header = fixture.nativeElement.querySelector('.app-header');
+      const header = fixture.nativeElement.querySelector('header.app-header');
       const sharedHeader = header.querySelector('shared-header');
       expect(sharedHeader).toBeTruthy();
     });
