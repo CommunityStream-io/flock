@@ -14,27 +14,32 @@ export const routes: Routes = [
       {
         path: 'upload',
         loadComponent: () => import('shared').then(m => m.UploadStepComponent),
-        title: 'Upload Instagram Export'
+        title: 'Upload Instagram Export',
+        data: { prev: null, next: '/auth' }
       },
       {
         path: 'auth',
         loadComponent: () => import('shared').then(m => m.AuthStepComponent),
-        title: 'Bluesky Authentication'
+        title: 'Bluesky Authentication',
+        data: { prev: '/upload', next: '/config' }
       },
       {
         path: 'config',
         loadComponent: () => import('shared').then(m => m.ConfigStepComponent),
-        title: 'Migration Settings'
+        title: 'Migration Settings',
+        data: { prev: '/auth', next: '/execute' }
       },
       {
         path: 'execute',
         loadComponent: () => import('shared').then(m => m.ExecuteStepComponent),
-        title: 'Execute Migration'
+        title: 'Execute Migration',
+        data: { prev: '/config', next: '/complete' }
       },
       {
         path: 'complete',
         loadComponent: () => import('shared').then(m => m.CompleteStepComponent),
-        title: 'Migration Complete'
+        title: 'Migration Complete',
+        data: { prev: '/execute', next: null }
       }
     ]
   },

@@ -3,6 +3,16 @@
   <div class="step-content">
     <router-outlet></router-outlet>
   </div>
+  <div class="step-nav-actions">
+    <button mat-stroked-button color="primary" (click)="navigatePrev()" [disabled]="!prevUrl()">
+      <mat-icon>arrow_back</mat-icon>
+      Previous
+    </button>
+    <button mat-raised-button color="primary" (click)="navigateNext()" [disabled]="!nextUrl()">
+      Next
+      <mat-icon>arrow_forward</mat-icon>
+    </button>
+  </div>
   
 </section>
 
