@@ -1,0 +1,128 @@
+# Routing & Navigation Architecture
+
+## Route Structure Pattern
+```typescript
+const routes: Routes = [
+  {
+    path: '',
+    component: LayoutComponent,
+    children: [
+      {
+        path: 'migration',
+        component: MigrationStepperComponent,
+        children: [
+          {
+            path: 'upload',
+            component: UploadStepComponent,
+            resolve: { archiveData: ArchiveResolver },
+            canActivate: [UploadGuard]
+          },
+          {
+            path: 'auth',
+            component: AuthStepComponent,
+            canActivate: [AuthGuard],
+            canDeactivate: [AuthDeactivateGuard]
+          }
+        ]
+      }
+    ]
+  }
+];
+```
+
+## Guard & Resolver Patterns
+- **CanActivate**: Validate step prerequisites before navigation
+- **CanDeactivate**: Confirm data loss before leaving step
+- **Resolvers**: Pre-load data required by step components
+- **CanActivateChild**: Validate child route access
+
+## Step Validation Flow
+1. **Route Guard** → Validates step prerequisites
+2. **Route Resolver** → Loads required data
+3. **Component OnInit** → Initializes with resolved data
+4. **Component CanDeactivate** → Confirms data preservation
+
+## Navigation Service Pattern
+```typescript
+@Injectable({ providedIn: 'root' })
+export class NavigationService {
+  canNavigateToStep(step: string): boolean {
+    return this.configService.isStepValid(step);
+  }
+  
+  navigateToNextStep(): Promise<boolean> {
+    const nextStep = this.getNextStep();
+    return this.router.navigate([nextStep]);
+  }
+}
+```
+
+## URL Structure
+- Use semantic URLs: `/migration/upload`, `/migration/auth`
+- Implement deep linking for bookmarkable steps
+- Use query parameters for step-specific data: `/migration/config?mode=test`
+- Maintain browser history for back/forward navigation
+
+## Route Guards Implementation
+```typescript
+export const uploadGuard: CanActivateFn = (route, state) => {
+  const configService = inject(ConfigService);
+  const router = inject(Router);
+  
+  if (configService.hasValidArchive()) {
+    return true;
+  }
+  
+  return router.createUrlTree(['/migration/upload']);
+};
+```
+
+## Route Resolvers Implementation
+```typescript
+export const archiveResolver: ResolveFn<ArchiveData> = (route, state) => {
+  const archiveService = inject(ArchiveService);
+  const archiveId = route.paramMap.get('id');
+  
+  return archiveService.getArchiveData(archiveId);
+};
+```
+
+## Step Navigation Logic
+```typescript
+export class StepNavigationService {
+  private readonly steps = ['upload', 'auth', 'config', 'execute', 'complete'];
+  
+  getNextStep(currentStep: string): string | null {
+    const currentIndex = this.steps.indexOf(currentStep);
+    return currentIndex < this.steps.length - 1 ? this.steps[currentIndex + 1] : null;
+  }
+  
+  getPreviousStep(currentStep: string): string | null {
+    const currentIndex = this.steps.indexOf(currentStep);
+    return currentIndex > 0 ? this.steps[currentIndex - 1] : null;
+  }
+  
+  canNavigateToStep(targetStep: string): boolean {
+    const targetIndex = this.steps.indexOf(targetStep);
+    return this.steps.slice(0, targetIndex).every(step => 
+      this.configService.isStepComplete(step)
+    );
+  }
+}
+```
+
+## Route Data Management
+- Use `ActivatedRoute.data` to access resolved data
+- Implement route data interfaces for type safety
+- Handle route parameter changes with `ActivatedRoute.params`
+- Use `Router.events` for navigation tracking
+
+## Error Handling in Routes
+- Implement catch-all routes for 404 errors
+- Use route guards to prevent invalid navigation
+- Handle resolver errors gracefully
+- Provide meaningful error messages for failed navigation
+description:
+globs:
+alwaysApply: false
+---

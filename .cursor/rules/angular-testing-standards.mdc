@@ -1,0 +1,101 @@
+---
+description: Angular Testing Standards - Unit Tests and BDD-Style Tests
+globs: ["**/*.spec.ts", "**/testing/**/*", "**/*test*"]
+alwaysApply: false
+---
+
+# Angular Testing Standards
+
+## Unit Testing with Jasmine/Karma
+
+### Test File Structure
+- Place test files next to the component/service they test
+- Use `.spec.ts` extension for all test files
+- Follow naming convention: `[component-name].component.spec.ts`
+
+### Test Setup Pattern
+```typescript
+describe('ComponentName', () => {
+  let component: ComponentName;
+  let fixture: ComponentFixture<ComponentName>;
+  let mockService: jasmine.SpyObj<ServiceName>;
+
+  beforeEach(async () => {
+    mockService = jasmine.createSpyObj('ServiceName', ['method1', 'method2']);
+    
+    await TestBed.configureTestingModule({
+      imports: [ComponentName, /* Material modules */],
+      providers: [
+        { provide: ServiceName, useValue: mockService }
+      ]
+    }).compileComponents();
+    
+    fixture = TestBed.createComponent(ComponentName);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+});
+```
+
+### Required Imports for Angular Tests
+- Always import `ComponentFixture`, `TestBed` from `@angular/core/testing`
+- Import `NoopAnimationsModule` for Material components
+- Use `provideRouter` for routing tests
+- Mock all external dependencies with `jasmine.createSpyObj`
+
+## BDD-Style Testing Pattern
+
+### File Naming Convention
+- Use `-bdd.component.spec.ts` suffix for BDD-style tests
+- Example: `migration-config-bdd.component.spec.ts`
+
+### BDD Structure Template
+```typescript
+/**
+ * BDD-Style Integration Tests for [ComponentName]
+ * 
+ * This demonstrates BDD methodology using Angular's native testing framework
+ * without requiring Cucumber. The BDD approach is maintained through structure
+ * and naming conventions.
+ */
+describe('Feature: [Feature Name] (BDD-Style)', () => {
+  // Standard Angular TestBed setup
+  
+  describe('Scenario: [Scenario Description]', () => {
+    it('Given [context], When [action], Then [outcome]', () => {
+      // Given: Setup context
+      console.log(`🔧 BDD: [Setup description]`);
+      
+      // When: Perform action
+      console.log(`⚙️ BDD: [Action description]`);
+      
+      // Then: Verify outcome
+      console.log(`✅ BDD: [Verification description]`);
+      expect(actualValue).toBe(expectedValue);
+    });
+  });
+});
+```
+
+### BDD Console Logging Convention
+- `🔧 BDD:` for setup/given statements
+- `⚙️ BDD:` for actions/when statements  
+- `✅ BDD:` for verifications/then statements
+- `❌ BDD:` for expected error conditions
+
+## Test Scripts Usage
+- `npm test` - Run all tests
+- `npm run test:bdd` - Run only BDD-style tests
+- `npm run test:bdd:watch` - Run BDD tests in watch mode
+- `npm run test:bdd:config` - Run specific component BDD tests
+
+## Testing Best Practices
+1. Test behavior, not implementation details
+2. Use descriptive test names that explain the scenario
+3. Mock all external dependencies
+4. Test edge cases and error conditions
+5. Keep tests focused and independent
+6. Use BDD-style for integration/behavioral tests
+7. Use standard Jasmine for unit tests
+
+@webui/src/app/components/steps/migration-config/migration-config-bdd.component.spec.ts

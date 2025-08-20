@@ -1,0 +1,76 @@
+---
+alwaysApply: true
+---
+# Angular CLI & Modern Conventions
+
+## CLI-First Development
+- Always use `ng generate` commands for new components, services, guards, resolvers
+- Use `ng add` for adding official Angular packages
+- Follow Angular CLI naming conventions: kebab-case for files, PascalCase for classes
+- Use `ng serve --configuration=development` for development builds
+
+## Modern Angular Patterns
+- Use standalone components by default (`standalone: true`)
+- Implement functional guards and resolvers
+- Use `inject()` function over constructor injection when possible
+- Prefer signals over RxJS for simple state management
+- Use `@angular/forms` reactive forms exclusively
+
+## Project Structure
+```
+src/
+├── app/
+│   ├── core/           # Singleton services, guards, interceptors
+│   ├── shared/         # Reusable components, pipes, directives
+│   ├── features/       # Feature modules (migration, auth, etc.)
+│   ├── layout/         # App shell, navigation, footer
+│   └── app.component.ts
+├── assets/
+└── environments/
+```
+
+## Package Management
+- Use `npm` for package management
+- Lock dependency versions in package-lock.json
+- Use Angular CLI for dependency updates: `ng update @angular/core`
+- Prefer official Angular packages over third-party alternatives
+
+## CLI Commands Reference
+```bash
+# Generate components
+ng generate component features/migration/upload-step
+ng generate service core/config
+ng generate guard core/auth
+ng generate resolver core/archive
+
+# Generate with specific options
+ng generate component shared/step-header --standalone
+ng generate service core/progress --skip-tests
+
+# Add packages
+ng add @angular/material
+ng add @angular/pwa
+
+# Build and serve
+ng build --configuration=production
+ng serve --configuration=development
+ng test --watch
+```
+
+## File Naming Conventions
+- **Components**: `upload-step.component.ts`, `step-header.component.html`
+- **Services**: `config.service.ts`, `progress.service.spec.ts`
+- **Guards**: `auth.guard.ts`, `step.guard.ts`
+- **Resolvers**: `archive.resolver.ts`, `config.resolver.ts`
+- **Interfaces**: `migration-config.interface.ts`
+- **Types**: `step.types.ts`
+
+## Angular.json Configuration
+- Use `"optimization": true` for production builds
+- Configure multiple build configurations (development, staging, production)
+- Set appropriate budgets for bundle sizes
+- Enable source maps for development builds
+description:
+globs:
+alwaysApply: false
+---

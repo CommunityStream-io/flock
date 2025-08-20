@@ -1,0 +1,94 @@
+---
+description: BDD Testing Methodology Guide
+globs: ["**/*-bdd.*.spec.ts", "**/bdd/**/*", "**/*bdd*"]
+alwaysApply: true
+---
+
+# BDD Testing Methodology
+
+## Core Philosophy
+**BDD is a methodology, not a tool.** We achieve all BDD benefits using Angular's native testing framework with Jasmine, maintaining behavioral specifications through structure and naming conventions.
+
+## Why Angular/Jasmine over Cucumber
+✅ **Native Angular Integration**: Direct TestBed support with real components
+✅ **Better Performance**: No translation layer overhead  
+✅ **Superior IDE Support**: Full TypeScript intellisense and debugging
+✅ **Easier Maintenance**: Standard Jasmine patterns
+✅ **Real Component Testing**: Actual Angular instances, not mocks
+
+## BDD Structure Pattern
+```typescript
+describe('Feature: [Business Feature Name]', () => {
+  // Standard Angular TestBed setup here
+  
+  describe('Scenario: [User Scenario]', () => {
+    it('Given [context], When [action], Then [outcome]', () => {
+      // Given: Set up the context/preconditions
+      console.log(`🔧 BDD: [Context description]`);
+      // Setup code here
+      
+      // When: Perform the action
+      console.log(`⚙️ BDD: [Action description]`);
+      // Action code here
+      
+      // Then: Verify the outcome
+      console.log(`✅ BDD: [Outcome description]`);
+      expect(result).toBe(expected);
+    });
+  });
+});
+```
+
+## BDD Test File Naming
+- Use `-bdd.component.spec.ts` suffix for component BDD tests
+- Use `-bdd.service.spec.ts` suffix for service BDD tests  
+- Use `-bdd.integration.spec.ts` suffix for integration tests
+
+## Console Logging Convention
+- `🔧 BDD:` Setup/Given statements (blue tools)
+- `⚙️ BDD:` Actions/When statements (yellow gear)
+- `✅ BDD:` Success/Then verifications (green check)
+- `❌ BDD:` Expected errors/failures (red X)
+- `📝 BDD:` Form submissions/data operations (memo)
+- `🧭 BDD:` Navigation operations (compass)
+
+## Feature Categories
+1. **Component Behavior**: Form validation, user interactions, state changes
+2. **Service Integration**: Data flow, configuration management, API calls
+3. **User Workflows**: End-to-end scenarios across multiple components
+4. **Error Handling**: Validation failures, network errors, edge cases
+
+## Test Organization
+```typescript
+// Group by business feature first
+describe('Feature: User Authentication', () => {
+  // Then by user scenario
+  describe('Scenario: Valid login attempt', () => {
+    // Then by specific test cases
+    it('Given valid credentials, When user submits, Then login succeeds', () => {
+      // BDD implementation
+    });
+  });
+  
+  describe('Scenario: Invalid credentials', () => {
+    it('Given invalid credentials, When user submits, Then error is shown', () => {
+      // BDD implementation  
+    });
+  });
+});
+```
+
+## Real Component Integration
+- Always use actual Angular components via TestBed
+- Mock only external dependencies (services, APIs)
+- Test real form behavior and validation
+- Verify actual navigation and state changes
+- Use `fixture.detectChanges()` to trigger Angular lifecycle
+
+## BDD vs Unit Testing
+- **BDD Tests**: Focus on user scenarios and business behavior
+- **Unit Tests**: Focus on individual methods and edge cases
+- **Both**: Complement each other for comprehensive coverage
+
+Use BDD-style tests for integration scenarios and user workflows.
+Use standard unit tests for isolated method testing and edge cases.

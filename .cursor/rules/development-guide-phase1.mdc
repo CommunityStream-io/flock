@@ -1,0 +1,226 @@
+# Development Guide - Phase 1: Visual Foundation & User Experience
+
+## 🎯 **Implementation Philosophy**
+
+### **Visual-First Development Approach**
+- **Start with UI/UX**: Build visual foundation before complex logic
+- **User Experience Priority**: Focus on what users see and interact with first
+- **Incremental Complexity**: Add services and business logic after visual foundation is solid
+- **Angular CLI-First**: Use `ng generate` for all boilerplate generation
+
+### **Architecture Principles Established**
+1. **Route-Based Guided Workflow** - No stepper component, pure routing with guards
+2. **Config-First Architecture** - Configuration drives everything, forms collect config
+3. **Material Design 3 Theming** - Comprehensive M3 system with CSS custom properties
+4. **Separate File Structure** - Always use separate HTML/CSS files, never inline templates
+5. **Clean Import Paths** - Proper index files and TypeScript path mapping
+
+---
+
+## 🏗️ **Phase 1 Implementation Status**
+
+### **✅ Completed: Visual Foundation**
+
+#### **Shared Library Structure**
+```
+projects/shared/src/lib/
+├── theme/
+│   └── scss/
+│       ├── _m3-color-system.scss      # Complete M3 color tokens
+│       ├── _m3-typography.scss        # M3 typography scale
+│       └── _m3-elevation.scss         # M3 elevation system
+├── layout/
+│   ├── layout.ts                      # Main layout component
+│   ├── layout.html
+│   └── layout.css
+├── header/
+│   ├── header.ts                      # App header with navigation
+│   ├── header.html
+│   └── header.css
+├── theme-toggle/
+│   ├── theme-toggle.ts                # Self-contained theme toggle
+│   ├── theme-toggle.html
+│   └── theme-toggle.css
+├── step-navigation/
+│   ├── step-navigation.ts             # Migration steps display
+│   ├── step-navigation.html
+│   └── step-navigation.css
+├── landing-page/
+│   ├── landing-page.ts                # Hero section and intro
+│   ├── landing-page.html
+│   └── landing-page.css
+└── index.ts                          # Clean exports
+```
+
+#### **Material Design 3 Theme System**
+- **Complete M3 Color System**: Light/dark themes with CSS custom properties
+- **M3 Typography Scale**: All text styles with proper token system
+- **M3 Elevation System**: Shadow system with mixins and utility classes
+- **Theme Toggle**: Self-contained component with localStorage persistence
+- **System Theme Detection**: Automatic light/dark based on user's OS preference
+
+#### **Component Architecture**
+- **Standalone Components**: All components use `standalone: true`
+- **Separate Files**: No inline templates or styles
+- **Modern Angular**: Using signals, computed, and inject() function
+- **Clean Imports**: Proper index files for clean import paths
+
+### **🔧 Key Implementation Decisions**
+
+#### **1. Theme Management - Service-Based (Proper Architecture)**
+```typescript
+// Theme toggle service handles complex theme logic
+@Injectable({ providedIn: 'root' })
+export class ThemeToggleService {
+  private readonly _currentTheme = signal<'light' | 'dark'>('light');
+  private readonly _themeMode = signal<ThemeMode>('auto');
+  
+  readonly currentTheme = this._currentTheme.asReadonly();
+  
+  // Handles system theme detection, localStorage, and theme persistence
+  toggleTheme(): void { /* ... */ }
+  private detectSystemTheme(): void { /* ... */ }
+  private loadSavedTheme(): Theme | null { /* ... */ }
+}
+
+// Component uses service for clean separation
+export class ThemeToggleComponent {
+  private readonly themeService = inject(ThemeToggleService);
+  readonly isDark = computed(() => this.themeService.currentTheme() === 'dark');
+}
+```
+
+**Why**: Service handles system theme detection, localStorage persistence, and complex theme logic. Component stays focused on UI.
+
+#### **2. Route-Based Workflow (Not Stepper Component)**
+```typescript
+// Step navigation shows progress, routing handles navigation
+interface MigrationStep {
+  route: string;      // '/upload', '/auth', '/config', etc.
+  completed: boolean;
+  disabled: boolean;
+}
+```
+
+**Why**: Follows architecture specification for route-based guided workflow.
+
+#### **3. Separate File Structure (Always)**
+```typescript
+@Component({
+  selector: 'shared-header',
+  standalone: true,
+  templateUrl: './header.html',     // ✅ Separate file
+  styleUrl: './header.css'          // ✅ Separate file
+})
+```
+
+**Why**: Better maintainability, proper separation of concerns, cleaner code.
+
+---
+
+## 📋 **Development Standards**
+
+### **Component Generation**
+```bash
+# Always use Angular CLI
+npx ng generate component component-name --project=shared --standalone
+
+# Update to use separate files (if inline generated)
+# Update selector to 'shared-' prefix
+# Add to index.ts exports
+```
+
+### **File Naming Conventions**
+- **Components**: `header.ts` (not `header.component.ts`)
+- **Selectors**: `shared-header` (consistent prefix)
+- **Exports**: Use proper index files for clean imports
+
+### **Material Design 3 Usage**
+```scss
+// Use M3 CSS custom properties
+.my-component {
+  background: var(--md-sys-color-surface);
+  color: var(--md-sys-color-on-surface);
+  
+  // Use M3 typography mixins
+  @include m3-title-large;
+  
+  // Use M3 elevation classes
+  box-shadow: var(--md-sys-elevation-level2);
+}
+```
+
+### **Theme Integration**
+```html
+<!-- Components automatically inherit theme via CSS custom properties -->
+<div class="card">
+  <h2>Title</h2>  <!-- Uses M3 typography and theme colors -->
+  <p>Content</p>
+</div>
+```
+
+---
+
+## 🚀 **Next Phase: Core Services & Business Logic**
+
+### **Phase 2 Preparation**
+Now that visual foundation is established, next phase will implement:
+
+1. **ConfigService** - Central configuration management
+2. **NavigationService** - Step-to-step navigation logic  
+3. **Route Guards** - Step validation and access control
+4. **File Processing Services** - Instagram export handling
+5. **Migration Orchestration** - CLI tool integration
+
+### **Service Generation Strategy**
+```bash
+# Generate services with Angular CLI
+npx ng generate service core/config --project=shared
+npx ng generate service core/navigation --project=shared
+npx ng generate guard core/upload-completion --project=shared
+```
+
+### **Integration Points**
+- **Components**: Will inject and use services for data/logic
+- **Routes**: Will use guards for step validation
+- **Forms**: Will feed data into ConfigService
+- **Theme**: Will remain component-based (no service needed)
+
+---
+
+## 🧪 **Testing Strategy**
+
+### **BDD Testing Established**
+- **Console Logging Convention**: `🔧 BDD:`, `⚙️ BDD:`, `✅ BDD:` for traceability
+- **Component Behavior Testing**: Focus on user interactions and theme switching
+- **Real Component Integration**: Test actual Angular components, not mocks
+
+### **Testing Implementation**
+```bash
+# Generate BDD tests
+npx ng generate component-name-bdd.component.spec.ts
+```
+
+---
+
+## 🔗 **Architecture Alignment**
+
+This Phase 1 implementation aligns with documented architecture:
+- ✅ **STYLING_ARCHITECTURE.md** - Complete M3 theme system implemented
+- ✅ **ROUTING_ARCHITECTURE.md** - Route-based workflow foundation established  
+- ✅ **CORE_ARCHITECTURE.md** - Config-first and component patterns followed
+- ✅ **Angular CLI Standards** - All generation using CLI, modern patterns
+
+---
+
+## 📝 **Key Learnings**
+
+1. **Visual-First Approach Works**: Building UI first creates clear foundation for services
+2. **Simple Solutions Win**: Theme toggle in component vs service complexity
+3. **Separate Files Essential**: Much cleaner and more maintainable
+4. **M3 System Complete**: Comprehensive theme system provides consistent foundation
+5. **Angular CLI Excellence**: Generates clean boilerplate, follow CLI patterns
+
+---
+
+*This development guide captures our established patterns and decisions for Phase 1. It will evolve as we implement Phase 2 (Core Services) and Phase 3 (Advanced Features).*

@@ -1,0 +1,36 @@
+name: Feathering the Nest
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  flock:
+    name: Flock Project
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24.5.0'
+          cache: 'npm'
+          cache-dependency-path: flock/package-lock.json
+
+      - name: Install flock dependencies
+        working-directory: flock
+        run: npm ci
+
+      - name: Build shared library
+        working-directory: flock
+        run: npx ng build --project=shared
+
+      - name: Build flock-mirage app
+        working-directory: flock
+        run: npx ng build --project=flock-mirage --configuration=development

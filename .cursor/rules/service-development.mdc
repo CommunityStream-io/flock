@@ -1,0 +1,83 @@
+---
+description: Angular Service Development and Testing Standards
+globs: ["**/services/**/*.ts", "**/*.service.ts"]
+alwaysApply: false
+---
+
+# Angular Service Development Standards
+
+## Service Structure
+- Use `@Injectable({ providedIn: 'root' })` for singleton services
+- Implement interfaces for better type safety and testing
+- Use dependency injection tokens for interface implementations
+
+## Interface-First Development
+```typescript
+// Define interface first
+export interface ConfigService {
+  config$: Observable<Partial<MigrationConfig>>;
+  setArchiveFolder(path: string): void;
+  setCredentials(username: string, password: string): void;
+  getCompleteConfig(): MigrationConfig;
+}
+
+// Implement interface
+@Injectable({
+  providedIn: 'root'
+})
+export class ConfigServiceImpl implements ConfigService {
+  // Implementation
+}
+```
+
+## RxJS Patterns
+- Use `BehaviorSubject` for state management
+- Expose observables with `asObservable()` to prevent external mutations
+- Implement proper error handling in observable streams
+- Use operators like `map`, `filter`, `catchError` appropriately
+
+## Service Testing Requirements
+- Every service must have a `.spec.ts` file
+- Test all public methods
+- Mock dependencies using `jasmine.createSpyObj`
+- Test error scenarios and edge cases
+- Use `TestBed.inject()` for service instantiation in tests
+
+## Service Testing Template
+```typescript
+describe('ServiceName', () => {
+  let service: ServiceName;
+  let mockDependency: jasmine.SpyObj<DependencyType>;
+
+  beforeEach(() => {
+    mockDependency = jasmine.createSpyObj('DependencyType', ['method1']);
+    
+    TestBed.configureTestingModule({
+      providers: [
+        ServiceName,
+        { provide: DependencyType, useValue: mockDependency }
+      ]
+    });
+    
+    service = TestBed.inject(ServiceName);
+  });
+
+  it('should be created', () => {
+    expect(service).toBeTruthy();
+  });
+});
+```
+
+## Error Handling
+- Always integrate with SentryService for error reporting
+- Provide meaningful error messages
+- Use proper error types and validation
+- Log important state changes for debugging
+
+## State Management Pattern
+- Use services for shared state management
+- Implement config-first architecture where applicable
+- Validate state before operations
+- Provide reset/cleanup methods
+
+@webui/src/app/services/progress/progress.service.ts

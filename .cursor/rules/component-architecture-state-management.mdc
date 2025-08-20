@@ -1,0 +1,137 @@
+# Component Architecture & State Management
+
+## Component Hierarchy Pattern
+```
+MigrationStepperComponent (Container)
+├── StepHeaderComponent (Navigation)
+├── StepContentComponent (Dynamic Content)
+│   ├── UploadStepComponent
+│   ├── AuthStepComponent
+│   └── ConfigStepComponent
+└── StepFooterComponent (Actions)
+```
+
+## State Management Strategy
+- **ConfigService**: Central configuration state (BehaviorSubject)
+- **ProgressService**: Step completion tracking
+- **ValidationService**: Cross-step validation rules
+- **Local Component State**: Form data, UI state
+
+## Component Communication
+- **Parent → Child**: Input properties, service injection
+- **Child → Parent**: Output events, service methods
+- **Sibling → Sibling**: Shared services, event bus
+- **Cross-Component**: Router state, localStorage
+
+## Form Management Pattern
+```typescript
+export class StepComponent implements OnInit, OnDestroy {
+  form: FormGroup;
+  private destroy$ = new Subject<void>();
+  
+  ngOnInit() {
+    this.form = this.fb.group({
+      // Form controls
+    });
+    
+    // Auto-save to ConfigService
+    this.form.valueChanges.pipe(
+      debounceTime(500),
+      takeUntil(this.destroy$)
+    ).subscribe(values => {
+      this.configService.updateStepData(this.stepName, values);
+    });
+  }
+  
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+}
+```
+
+## Lifecycle Management
+- Implement `OnDestroy` for all components with subscriptions
+- Use `takeUntil` pattern for RxJS subscriptions
+- Clean up form subscriptions and timers
+- Reset component state on route changes
+
+## Component State Interfaces
+```typescript
+export interface StepState {
+  isComplete: boolean;
+  isValid: boolean;
+  hasErrors: boolean;
+  errorMessages: string[];
+}
+
+export interface StepData {
+  stepName: string;
+  data: any;
+  timestamp: Date;
+  isValid: boolean;
+}
+```
+
+## Service Injection Pattern
+```typescript
+export class StepComponent {
+  private readonly configService = inject(ConfigService);
+  private readonly progressService = inject(ProgressService);
+  private readonly validationService = inject(ValidationService);
+  
+  constructor() {
+    // Component logic
+  }
+}
+```
+
+## Component Testing Strategy
+```typescript
+describe('StepComponent', () => {
+  let component: StepComponent;
+  let fixture: ComponentFixture<StepComponent>;
+  let mockConfigService: jasmine.SpyObj<ConfigService>;
+  
+  beforeEach(async () => {
+    mockConfigService = jasmine.createSpyObj('ConfigService', ['updateStepData']);
+    
+    await TestBed.configureTestingModule({
+      imports: [StepComponent],
+      providers: [
+        { provide: ConfigService, useValue: mockConfigService }
+      ]
+    }).compileComponents();
+    
+    fixture = TestBed.createComponent(StepComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+  
+  it('should auto-save form data to ConfigService', () => {
+    // Test form auto-save functionality
+  });
+});
+```
+
+## State Persistence
+- Use localStorage for user preferences
+- Implement session storage for temporary data
+- Use router state for navigation history
+- Implement data recovery mechanisms
+
+## Component Reusability
+- Create generic step components
+- Use content projection for dynamic content
+- Implement component composition patterns
+- Design for multiple use cases
+
+## Error Boundaries
+- Implement error handling at component level
+- Use try-catch blocks for critical operations
+- Provide fallback UI for error states
+- Log errors for debugging purposes
+description:
+globs:
+alwaysApply: false
+---

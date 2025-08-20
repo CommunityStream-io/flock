@@ -1,0 +1,54 @@
+---
+description: Angular Component Development Standards
+globs: ["**/components/**/*.ts", "**/*.component.ts"]
+alwaysApply: false
+---
+
+# Angular Component Development Standards
+
+## Component Structure
+- Use standalone components with `standalone: true`
+- Import only necessary modules in the component imports array
+- Follow Angular Material design patterns
+
+## Required Imports Template
+```typescript
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
+// Material imports
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+```
+
+## Form Handling
+- Always use Reactive Forms (`ReactiveFormsModule`)
+- Create form validation methods
+- Implement proper error handling with SentryService
+- Use type-safe form controls
+
+## Service Injection Pattern
+```typescript
+constructor(
+  @Inject(SERVICE_TOKEN) private service: ServiceInterface,
+  private formBuilder: FormBuilder,
+  private router: Router,
+  private sentryService: SentryService
+) {}
+```
+
+## Component Testing Requirements
+- Every component must have a `.spec.ts` file
+- Complex components should have a `-bdd.component.spec.ts` file
+- Mock all injected services
+- Test form validation and user interactions
+- Test navigation behavior
+
+## Lifecycle Hooks
+- Implement `OnInit` for initialization logic
+- Use `OnDestroy` for cleanup (subscriptions, etc.)
+- Call `super()` in constructors when extending base classes
+
+@webui/src/app/components/steps/migration-config/migration-config.component.ts

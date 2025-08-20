@@ -1,0 +1,383 @@
+# Error Handling & User Experience
+
+## Error Categories
+- **Validation Errors**: Form validation, business rules
+- **Network Errors**: API failures, connectivity issues
+- **System Errors**: Unexpected application errors
+- **User Errors**: Invalid input, permission denied
+
+## Error Handling Strategy
+```typescript
+export class ErrorHandlingService {
+  handleError(error: AppError): void {
+    switch (error.type) {
+      case 'VALIDATION':
+        this.showValidationError(error);
+        break;
+      case 'NETWORK':
+        this.showNetworkError(error);
+        break;
+      case 'SYSTEM':
+        this.logError(error);
+        this.showGenericError();
+        break;
+    }
+  }
+}
+```
+
+## User Feedback Patterns
+- **Loading States**: Skeleton loaders, progress indicators
+- **Success Messages**: Toast notifications, inline confirmations
+- **Error Messages**: Inline validation, error summaries
+- **Progress Tracking**: Step completion, overall progress
+
+## Accessibility Requirements
+- Use semantic HTML elements
+- Implement ARIA labels and roles
+- Provide keyboard navigation support
+- Ensure color contrast compliance
+- Support screen readers
+
+## Responsive Design
+- Mobile-first approach
+- Breakpoint system: xs, sm, md, lg, xl
+- Touch-friendly interactions
+- Adaptive layouts for different screen sizes
+
+## Error Message Standards
+```typescript
+export interface ErrorMessage {
+  type: 'error' | 'warning' | 'info';
+  title: string;
+  message: string;
+  actionable: boolean;
+  actions?: ErrorAction[];
+}
+
+export interface ErrorAction {
+  label: string;
+  action: () => void;
+  primary?: boolean;
+}
+```
+
+## Form Validation Patterns
+```typescript
+export class ValidationService {
+  validateStep(stepName: string, data: any): ValidationResult {
+    const validators = this.getStepValidators(stepName);
+    const errors: ValidationError[] = [];
+    
+    validators.forEach(validator => {
+      const result = validator.validate(data);
+      if (!result.isValid) {
+        errors.push(...result.errors);
+      }
+    });
+    
+    return {
+      isValid: errors.length === 0,
+      errors,
+      warnings: []
+    };
+  }
+}
+```
+
+## Routing Transitions & Splash Screens
+```typescript
+export class RouteTransitionService {
+  private isTransitioning = new BehaviorSubject<boolean>(false);
+  
+  startTransition(): void {
+    this.isTransitioning.next(true);
+  }
+  
+  endTransition(): void {
+    this.isTransitioning.next(false);
+  }
+  
+  getTransitionState(): Observable<boolean> {
+    return this.isTransitioning.asObservable();
+  }
+}
+```
+
+## Splash Screen Implementation
+```typescript
+@Component({
+  selector: 'app-splash-screen',
+  template: `
+    <div class="splash-screen" *ngIf="isVisible">
+      <div class="splash-content">
+        <div class="spinner"></div>
+        <h2>{{ title }}</h2>
+        <p>{{ message }}</p>
+        <div class="progress-container" *ngIf="showProgress">
+          <div class="progress-bar">
+            <div class="progress-fill" [style.width.%]="progress"></div>
+          </div>
+          <span class="progress-text">{{ progress }}%</span>
+        </div>
+        <div class="step-indicator" *ngIf="currentStep">
+          <span class="step-text">Step {{ currentStep }} of {{ totalSteps }}</span>
+        </div>
+      </div>
+    </div>
+  `,
+  styles: [`
+    .splash-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      color: white;
+    }
+    
+    .progress-container {
+      margin: 20px 0;
+      width: 300px;
+    }
+    
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #4CAF50, #45a049);
+      transition: width 0.3s ease;
+    }
+  `]
+})
+export class SplashScreenComponent {
+  @Input() title = 'Loading...';
+  @Input() message = 'Please wait while we prepare your migration...';
+  @Input() isVisible = false;
+  @Input() progress = 0;
+  @Input() showProgress = false;
+  @Input() currentStep = 0;
+  @Input() totalSteps = 0;
+}
+```
+
+## Global Error Handling (Angular v20)
+```typescript
+// app.config.ts
+import { ApplicationConfig } from '@angular/core';
+import { provideRouter } from '@angular/router';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { routes } from './app.routes';
+import { errorInterceptor } from './core/interceptors/error.interceptor';
+import { globalErrorHandler } from './core/handlers/global-error.handler';
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideRouter(routes),
+    provideHttpClient(withInterceptors([errorInterceptor])),
+    { provide: ErrorHandler, useClass: globalErrorHandler }
+  ]
+};
+
+// core/handlers/global-error.handler.ts
+@Injectable()
+export class GlobalErrorHandler implements ErrorHandler {
+  constructor(
+    private toastService: ToastService,
+    private router: Router,
+    private injector: Injector
+  ) {}
+
+  handleError(error: Error): void {
+    console.error('Global error:', error);
+    
+    // Handle different error types
+    if (error instanceof HttpErrorResponse) {
+      this.handleHttpError(error);
+    } else if (error instanceof ValidationError) {
+      this.handleValidationError(error);
+    } else {
+      this.handleGenericError(error);
+    }
+    
+    // Log to external service (Sentry, etc.)
+    this.logError(error);
+  }
+  
+  private handleHttpError(error: HttpErrorResponse): void {
+    let message = 'An error occurred while processing your request.';
+    
+    switch (error.status) {
+      case 401:
+        message = 'Please log in to continue.';
+        this.router.navigate(['/auth']);
+        break;
+      case 403:
+        message = 'You do not have permission to perform this action.';
+        break;
+      case 404:
+        message = 'The requested resource was not found.';
+        break;
+      case 500:
+        message = 'Server error. Please try again later.';
+        break;
+    }
+    
+    this.toastService.showError(message);
+  }
+  
+  private handleValidationError(error: ValidationError): void {
+    this.toastService.showError(error.message);
+  }
+  
+  private handleGenericError(error: Error): void {
+    this.toastService.showError('An unexpected error occurred. Please try again.');
+  }
+  
+  private logError(error: Error): void {
+    // Send to external logging service
+    // Sentry.captureException(error);
+  }
+}
+
+// core/interceptors/error.interceptor.ts
+export const errorInterceptor: HttpInterceptorFn = (req, next) => {
+  return next(req).pipe(
+    catchError((error: HttpErrorResponse) => {
+      // Handle specific HTTP errors
+      if (error.status === 0) {
+        // Network error
+        throw new Error('Network error. Please check your connection.');
+      }
+      
+      // Re-throw the error for the global handler
+      throw error;
+    })
+  );
+};
+```
+
+## Error Boundary Component
+```typescript
+@Component({
+  selector: 'app-error-boundary',
+  template: `
+    <ng-container *ngIf="!hasError; else errorTemplate">
+      <ng-content></ng-content>
+    </ng-container>
+    
+    <ng-template #errorTemplate>
+      <div class="error-boundary">
+        <h2>Something went wrong</h2>
+        <p>{{ errorMessage }}</p>
+        <button (click)="retry()">Try Again</button>
+        <button (click)="goHome()">Go Home</button>
+      </div>
+    </ng-template>
+  `
+})
+export class ErrorBoundaryComponent implements OnInit {
+  hasError = false;
+  errorMessage = '';
+  
+  constructor(
+    private errorService: ErrorHandlingService,
+    private router: Router
+  ) {}
+  
+  ngOnInit() {
+    this.errorService.error$.subscribe(error => {
+      this.hasError = true;
+      this.errorMessage = error.message;
+    });
+  }
+  
+  retry(): void {
+    this.hasError = false;
+    this.errorMessage = '';
+    // Trigger retry logic
+  }
+  
+  goHome(): void {
+    this.router.navigate(['/']);
+  }
+}
+```
+
+## Toast Notification System
+```typescript
+export class ToastService {
+  private toasts = new BehaviorSubject<Toast[]>([]);
+  
+  showSuccess(message: string, duration = 3000): void {
+    this.addToast({ type: 'success', message, duration });
+  }
+  
+  showError(message: string, duration = 5000): void {
+    this.addToast({ type: 'error', message, duration });
+  }
+  
+  private addToast(toast: Toast): void {
+    const current = this.toasts.value;
+    this.toasts.next([...current, { ...toast, id: Date.now() }]);
+  }
+}
+```
+
+## Progress Tracking
+```typescript
+export class ProgressService {
+  private stepProgress = new BehaviorSubject<StepProgress[]>([]);
+  
+  updateStepProgress(stepName: string, progress: number): void {
+    const current = this.stepProgress.value;
+    const existingIndex = current.findIndex(s => s.stepName === stepName);
+    
+    if (existingIndex >= 0) {
+      current[existingIndex].progress = progress;
+    } else {
+      current.push({ stepName, progress, completed: progress === 100 });
+    }
+    
+    this.stepProgress.next([...current]);
+  }
+  
+  getOverallProgress(): Observable<number> {
+    return this.stepProgress.pipe(
+      map(steps => {
+        if (steps.length === 0) return 0;
+        const total = steps.reduce((sum, step) => sum + step.progress, 0);
+        return Math.round(total / steps.length);
+      })
+    );
+  }
+}
+```
+
+## Error Recovery Strategies
+- Provide retry mechanisms for network errors
+- Implement data recovery for form submissions
+- Offer alternative paths when steps fail
+- Maintain user progress across errors
+
+## User Experience Guidelines
+- Provide immediate feedback for user actions
+- Use consistent visual language across components
+- Implement progressive disclosure for complex forms
+- Ensure smooth transitions between steps
+- Maintain context during navigation
+description:
+globs:
+alwaysApply: false
+---

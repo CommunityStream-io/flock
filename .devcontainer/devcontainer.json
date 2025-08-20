@@ -1,0 +1,19 @@
+{
+	"image": "cimg/node:20.19.4-browsers",
+	"features": {
+		"ghcr.io/devcontainers-extra/features/angular-cli:2": {},
+		"ghcr.io/kreemer/features/chrometesting:1": {}
+	},
+	"postStartCommand": "git submodule update --init --recursive && cd webui/ && npm install",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"angular.ng-template",
+				"esbenp.prettier-vscode",
+				"manishgowardipe.test-runner",
+				"GitHub.copilot-chat",
+				"GitHub.vscode-github-actions"
+			]
+		}
+	}
+}

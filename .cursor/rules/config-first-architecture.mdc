@@ -1,0 +1,103 @@
+---
+description: Config-First Architecture Pattern for Migration Integration
+globs: ["**/config/**/*", "**/migration-config/**/*", "**/services/**/*"]
+alwaysApply: false
+---
+
+# Config-First Architecture Pattern
+
+## Core Concept
+All Angular steps feed configuration data into a central `ConfigService`, which then provides complete, validated configuration to the migration execution engine.
+
+## ConfigService Interface Pattern
+```typescript
+export interface MigrationConfig {
+  archiveFolder: string;
+  blueskyUsername: string;
+  blueskyPassword: string;
+  minDate?: Date;
+  maxDate?: Date;
+  testVideoMode?: boolean;
+  simulate?: boolean;
+}
+
+export interface ConfigService {
+  config$: Observable<Partial<MigrationConfig>>;
+  setArchiveFolder(path: string): void;
+  setCredentials(username: string, password: string): void;
+  setMigrationSettings(settings: Partial<MigrationConfig>): void;
+  getCompleteConfig(): MigrationConfig;
+  getCurrentConfig(): Partial<MigrationConfig>;
+  reset(): void;
+}
+```
+
+## Step Integration Pattern
+Each Angular step component should:
+1. Inject the `ConfigService`
+2. Feed its data into the service using appropriate setter methods
+3. Navigate to the next step only after successful data submission
+
+```typescript
+export class StepComponent {
+  constructor(
+    private configService: ConfigService,
+    private router: Router
+  ) {}
+
+  async onSubmit(): Promise<void> {
+    try {
+      // Feed data into ConfigService
+      this.configService.setMigrationSettings({
+        testVideoMode: this.form.value.testVideoMode,
+        simulate: this.form.value.simulate
+      });
+      
+      // Navigate to next step
+      await this.router.navigate(['/next-step']);
+    } catch (error) {
+      // Handle validation errors
+    }
+  }
+}
+```
+
+## Migration Flow Steps
+1. **Upload Step** (`/upload`) → `setArchiveFolder()`
+2. **Auth Step** (`/auth`) → `setCredentials()`  
+3. **Config Step** (`/config`) → `setMigrationSettings()`
+4. **Execute Step** (`/execute`) → `getCompleteConfig()`
+5. **Complete Step** (`/complete`) → Display results
+
+## Validation Strategy
+- Each setter method should validate its input
+- `getCompleteConfig()` should validate the complete configuration
+- Throw descriptive errors for missing or invalid data
+- Use SentryService for error reporting
+
+## Testing the Config-First Pattern
+```typescript
+describe('Feature: Config-First Integration', () => {
+  describe('Scenario: Step data flows to ConfigService', () => {
+    it('Given upload completed, When auth submitted, Then config accumulates', () => {
+      // Given: Upload step completed
+      configService.setArchiveFolder('/test/path');
+      
+      // When: Auth step submitted  
+      configService.setCredentials('user', 'pass');
+      
+      // Then: Config should accumulate both values
+      const config = configService.getCurrentConfig();
+      expect(config.archiveFolder).toBe('/test/path');
+      expect(config.blueskyUsername).toBe('user');
+    });
+  });
+});
+```
+
+## Extension Integration
+The ConfigService provides the bridge between Angular UI and migration tools:
+- Angular steps → ConfigService → Extension files → CLI tools
+- This maintains separation while enabling progress tracking and error handling
+
+@webui/src/app/services/config/config.service.ts
