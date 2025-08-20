@@ -21,16 +21,13 @@ jobs:
         with:
           node-version: '24.5.0'
           cache: 'npm'
-          cache-dependency-path: flock/package-lock.json
+          cache-dependency-path: package-lock.json
 
       - name: Install flock dependencies
-        working-directory: flock
         run: npm ci
 
       - name: Build shared library
-        working-directory: flock
         run: npx ng build --project=shared
 
       - name: Build flock-mirage app
-        working-directory: flock
         run: npx ng build --project=flock-mirage --configuration=development
