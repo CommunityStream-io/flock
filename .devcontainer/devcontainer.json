@@ -8,11 +8,11 @@
 	"customizations": {
 		"vscode": {
 			"extensions": [
-				"angular.ng-template",
 				"esbenp.prettier-vscode",
 				"manishgowardipe.test-runner",
 				"GitHub.copilot-chat",
-				"GitHub.vscode-github-actions"
+				"GitHub.vscode-github-actions",
+				"Angular.ng-template"
 			]
 		}
 	}
