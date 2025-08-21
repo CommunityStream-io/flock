@@ -6,7 +6,7 @@
       [class.completed]="step.completed"
       [class.current]="step.current"
       [class.disabled]="step.disabled"
-      [routerLink]="[{ outlets: { step: step.route } }]"
+      [routerLink]="getRouterLink(step)"
       [attr.tabindex]="step.disabled ? -1 : 0"
       role="link"
       [attr.aria-disabled]="step.disabled"

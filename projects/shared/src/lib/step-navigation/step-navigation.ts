@@ -29,6 +29,7 @@ export class StepNavigationComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private subscription: Subscription | null = null;
+  private useNamedOutlet = false;
 
   private readonly defaultSteps: MigrationStep[] = [
     { id: 'upload', title: 'Upload Instagram Export', description: 'Upload your Instagram export ZIP file to begin migration', route: 'upload', completed: false, current: false, disabled: false },
@@ -56,7 +57,9 @@ export class StepNavigationComponent implements OnInit, OnDestroy {
   }
 
   private updateStepsForUrl(url: string): void {
-    const idx = this.steps.findIndex(s => url.includes(`(step:${s.route}`));
+    const idx = this.steps.findIndex(s =>
+      url.includes(`(step:${s.route}`) || url.includes(`/${s.route}`)
+    );
     this.steps = this.steps.map((step, i) => ({
       ...step,
       current: i === idx,
@@ -66,33 +69,49 @@ export class StepNavigationComponent implements OnInit, OnDestroy {
   }
 
   private rebuildStepsFromRouteConfig(): void {
-    const stepRoutes = this.router.config.filter(r => r.outlet === 'step');
-    if (!stepRoutes || stepRoutes.length === 0) {
-      this.steps = this.defaultSteps;
-      return;
-    }
+    // Flatten the router config to find step routes either as named outlet or primary child routes
+    const flattenRoutes = (routes: Route[], acc: Route[] = []): Route[] => {
+      for (const r of routes) {
+        acc.push(r);
+        if (r.children && r.children.length) {
+          flattenRoutes(r.children, acc);
+        }
+      }
+      return acc;
+    };
 
-    const mapped: MigrationStep[] = stepRoutes
-      .filter((r: Route) => !!r.path)
-      .map((r: Route) => {
-        const id = r.path as string;
-        const title = (r.title as string) ?? id;
-        const description = (r.data && (r.data['description'] as string)) || '';
-        return {
-          id,
-          title,
-          description,
-          route: id,
-          completed: false,
-          current: false,
-          disabled: id !== 'upload'
-        } as MigrationStep;
-      });
+    const allRoutes = flattenRoutes(this.router.config);
+    const candidateIds = this.defaultSteps.map(s => s.id);
 
-    if (mapped.length > 0) {
-      this.steps = mapped;
-    } else {
-      this.steps = this.defaultSteps;
-    }
+    const namedOutletRoutes = allRoutes.filter(r => r.outlet === 'step' && !!r.path);
+    const primaryStepRoutes = allRoutes.filter(r => !r.outlet && !!r.path && candidateIds.includes(r.path as string));
+
+    const useNamed = namedOutletRoutes.length > 0;
+    this.useNamedOutlet = useNamed;
+
+    const source = useNamed ? namedOutletRoutes : primaryStepRoutes;
+
+    const mapped: MigrationStep[] = source.map((r: Route) => {
+      const id = r.path as string;
+      const title = (r.title as string) ?? id;
+      const description = (r.data && (r.data['description'] as string)) || '';
+      return {
+        id,
+        title,
+        description,
+        route: id,
+        completed: false,
+        current: false,
+        disabled: id !== 'upload'
+      } as MigrationStep;
+    });
+
+    this.steps = mapped.length > 0 ? mapped : this.defaultSteps;
+  }
+
+  getRouterLink(step: MigrationStep): string | any[] {
+    return this.useNamedOutlet
+      ? [{ outlets: { step: step.route } }]
+      : ['/', step.route];
   }
 }
