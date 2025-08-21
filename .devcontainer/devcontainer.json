@@ -12,7 +12,8 @@
 				"manishgowardipe.test-runner",
 				"GitHub.copilot-chat",
 				"GitHub.vscode-github-actions",
-				"Angular.ng-template"
+				"Angular.ng-template",
+				"bierner.markdown-mermaid"
 			]
 		}
 	}
