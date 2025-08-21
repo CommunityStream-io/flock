@@ -22,6 +22,7 @@ describe('Feature: Complete Step', () => {
       console.log('🔧 BDD: Complete step component created');
       fixture.detectChanges();
       console.log('⚙️ BDD: Component initializes');
+      expect(component).toBeTruthy();
       expect(fixture.nativeElement.querySelector('.complete-step')).toBeTruthy();
       console.log('✅ BDD: Summary card is visible');
     });
