@@ -26,6 +26,9 @@ jobs:
       - name: Install flock dependencies
         run: npm ci
 
+      - name: Lint (warnings allowed)
+        run: npx ng lint --quiet
+
       - name: Build shared library
         run: npx ng build --project=shared
 
