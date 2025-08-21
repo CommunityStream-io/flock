@@ -4,11 +4,12 @@ import { RouterModule } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { StartButton } from "../start-button/start-button";
 
 @Component({
   selector: 'shared-landing-page',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatCardModule, MatButtonModule, MatIconModule],
+  imports: [CommonModule, RouterModule, MatCardModule, MatButtonModule, MatIconModule, StartButton],
   templateUrl: './landing-page.html',
   styleUrl: './landing-page.css'
 })

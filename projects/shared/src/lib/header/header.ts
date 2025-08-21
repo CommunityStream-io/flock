@@ -5,11 +5,12 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { ThemeToggleComponent } from '../theme-toggle/theme-toggle';
+import { StartButton } from '../start-button/start-button';
 
 @Component({
   selector: 'shared-header',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatToolbarModule, MatButtonModule, MatIconModule, ThemeToggleComponent],
+  imports: [CommonModule, RouterModule, MatToolbarModule, MatButtonModule, MatIconModule, ThemeToggleComponent, StartButton],
   templateUrl: './header.html',
   styleUrl: './header.css'
 })
