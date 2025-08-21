@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -8,7 +8,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { HeaderComponent } from '../header/header';
 import { StepNavigationComponent } from '../step-navigation/step-navigation';
 import { StepControlsComponent } from '../step-controls/step-controls';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'shared-layout',
@@ -17,10 +16,4 @@ import { Router } from '@angular/router';
   templateUrl: './layout.html',
   styleUrl: './layout.css'
 })
-export class LayoutComponent {
-  private router = inject(Router);
-  showStepUi = computed(() => {
-    const url = this.router.url || '';
-    return url.includes('(step:');
-  });
-}
+export class LayoutComponent {}
