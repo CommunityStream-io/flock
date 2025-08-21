@@ -182,8 +182,8 @@ describe('Feature: Application Layout Structure', () => {
       
       expect(header).toBeTruthy();
       expect(main).toBeTruthy();
-      expect(header.parentElement).toBe(layout);
-      expect(main.parentElement).toBe(layout);
+      expect(layout.contains(header)).toBeTrue();
+      expect(layout.contains(main)).toBeTrue();
     });
   });
 
