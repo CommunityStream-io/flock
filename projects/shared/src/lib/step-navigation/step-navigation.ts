@@ -56,7 +56,7 @@ export class StepNavigationComponent implements OnInit, OnDestroy {
   }
 
   private updateStepsForUrl(url: string): void {
-    const idx = this.steps.findIndex(s => url.includes(`(step:${s.route}`));
+    const idx = this.steps.findIndex(s => url.includes(s.route));
     this.steps = this.steps.map((step, i) => ({
       ...step,
       current: i === idx,

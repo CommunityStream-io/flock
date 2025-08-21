@@ -35,12 +35,12 @@ export class StepControlsComponent implements OnInit, OnDestroy {
 
   navigatePrev(): void {
     const step = this.prevUrl();
-    if (step) this.router.navigate([{ outlets: { step } }]);
+    if (step) this.router.navigate([step]);
   }
 
   navigateNext(): void {
     const step = this.nextUrl();
-    if (step) this.router.navigate([{ outlets: { step } }]);
+    if (step) this.router.navigate([step]);
   }
 
   private updateNavFromChild(): void {

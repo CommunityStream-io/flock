@@ -12,7 +12,7 @@ import { StepControlsComponent } from '../step-controls/step-controls';
 @Component({
   selector: 'shared-layout',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatSidenavModule, MatToolbarModule, MatIconModule, MatButtonModule, HeaderComponent, StepNavigationComponent, StepControlsComponent],
+  imports: [CommonModule, RouterModule, MatSidenavModule, MatToolbarModule, MatIconModule, MatButtonModule, HeaderComponent, StepControlsComponent],
   templateUrl: './layout.html',
   styleUrl: './layout.css'
 })

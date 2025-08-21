@@ -63,6 +63,10 @@ Example:
 
 The `shared-step-navigation` reads the configured child routes to build the step list and determines current/completed/disabled states from the active URL. The Step Layout renders global Previous/Next actions based on the active child route's `data.prev`/`data.next`. A separate NavigationService is no longer required.
 
+### **Route Layout**
+
+We have a layout component with ng content that allows each application to inject router outlets.
+
 ### **Route Flow Structure**
 
 ```mermaid
