@@ -1,16 +1,17 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { StepNavigationComponent } from '../';
+import { RouterModule } from '@angular/router';
+import { StepNavigationComponent } from '../step-navigation/step-navigation';
 
 /**
  * StepLayout component serves as a container for the step-based navigation
  */
 @Component({
   selector: 'shared-step-layout',
-  imports: [RouterOutlet, StepNavigationComponent],
+  imports: [RouterModule, StepNavigationComponent],
   templateUrl: './step-layout.html',
-  styleUrl: './step-layout.css'
+  styleUrl: './step-layout.css',
+  host: {
+    class: 'app-layout'
+  },
 })
-export class StepLayout {
-
-}
+export class StepLayout {}

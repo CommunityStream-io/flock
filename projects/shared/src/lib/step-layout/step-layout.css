@@ -1,0 +1,19 @@
+.next-step {
+    display: flex;
+    flex-direction: row-reverse;
+    gap: 0.5rem;
+}
+
+.previous-step {
+    display: flex;
+    gap: 0.5rem;
+}
+
+footer {
+    height: 4rem;
+    bottom: 0;
+    width: 100%;
+    position: sticky;
+    padding: 1rem 0;
+    border-top: 1px solid var(--border-color, #e0e0e0);
+}

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -12,7 +12,8 @@ import { HeaderComponent } from '../header/header';
   standalone: true,
   imports: [CommonModule, RouterModule, MatSidenavModule, MatToolbarModule, MatIconModule, MatButtonModule, HeaderComponent],
   templateUrl: './layout.html',
-  styleUrl: './layout.css'
+  styleUrl: './layout.css',
+  encapsulation: ViewEncapsulation.None,
 })
 export class LayoutComponent {
   // Component logic will be added when services are implemented
