@@ -9,7 +9,9 @@
   <mat-sidenav-container class="sidenav-container">
     <mat-sidenav-content class="main-content">
       <main class="app-main">
+        <shared-step-navigation *ngIf="showStepUi()"></shared-step-navigation>
         <ng-content></ng-content>
+        <shared-step-controls *ngIf="showStepUi()"></shared-step-controls>
       </main>
     </mat-sidenav-content>
   </mat-sidenav-container>

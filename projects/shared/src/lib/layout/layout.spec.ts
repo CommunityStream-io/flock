@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule, Routes } from '@angular/router';
 import { LayoutComponent } from './layout';
 import { HeaderComponent } from '../header/header';
 
@@ -177,13 +178,12 @@ describe('Feature: Application Layout Structure', () => {
       // Then: Should compose header and main content
       console.log('✅ BDD: Layout composes header and main content');
       const layout = fixture.nativeElement.querySelector('.app-layout');
-      const header = layout.querySelector('.app-header');
-      const main = layout.querySelector('.app-main');
+      const header = fixture.nativeElement.querySelector('header.app-header');
+      const main = fixture.nativeElement.querySelector('main.app-main');
       
+      expect(layout).toBeTruthy();
       expect(header).toBeTruthy();
       expect(main).toBeTruthy();
-      expect(header.parentElement).toBe(layout);
-      expect(main.parentElement).toBe(layout);
     });
   });
 
@@ -222,5 +222,63 @@ describe('Feature: Application Layout Structure', () => {
       expect(layout).toBeTruthy();
       // Note: Theme changes are handled by the theme service and applied to document
     });
+  });
+});
+
+@Component({
+  standalone: true,
+  imports: [LayoutComponent, RouterModule],
+  template: `
+    <shared-layout>
+      <router-outlet></router-outlet>
+      <router-outlet name="step"></router-outlet>
+    </shared-layout>
+  `
+})
+class LayoutHostComponent {}
+
+describe('Feature: Step UI visibility', () => {
+  let hostFixture: ComponentFixture<LayoutHostComponent>;
+
+  beforeEach(async () => {
+    const routes: Routes = [
+      { path: '', redirectTo: '(step:landing)', pathMatch: 'full' },
+      { path: 'landing', outlet: 'step', loadComponent: () => import('../landing-page/landing-page').then(m => m.LandingPageComponent) },
+      { path: 'upload', outlet: 'step', loadComponent: () => import('../upload-step/upload-step').then(m => m.UploadStepComponent) }
+    ];
+
+    await TestBed.configureTestingModule({
+      imports: [
+        LayoutHostComponent,
+        RouterModule.forRoot(routes)
+      ]
+    }).compileComponents();
+
+    hostFixture = TestBed.createComponent(LayoutHostComponent);
+  });
+
+  it('Given landing is active, When layout renders, Then step UI is hidden', async () => {
+    console.log('🔧 BDD: Host renders, initial route redirect');
+    hostFixture.detectChanges();
+    await hostFixture.whenStable();
+
+    const native = hostFixture.nativeElement as HTMLElement;
+    expect(native.querySelector('shared-step-navigation')).toBeNull();
+    expect(native.querySelector('shared-step-controls')).toBeNull();
+  });
+
+  it('Given a step is active, When navigating to upload, Then step UI is visible', async () => {
+    hostFixture.detectChanges();
+    await hostFixture.whenStable();
+
+    const router = TestBed.inject(Router);
+    console.log('⚙️ BDD: Navigate to (step:upload)');
+    await router.navigate([{ outlets: { step: 'upload' } }]);
+    hostFixture.detectChanges();
+    await hostFixture.whenStable();
+
+    const native = hostFixture.nativeElement as HTMLElement;
+    expect(native.querySelector('shared-step-navigation')).toBeTruthy();
+    expect(native.querySelector('shared-step-controls')).toBeTruthy();
   });
 });

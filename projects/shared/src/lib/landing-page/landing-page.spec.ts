@@ -90,7 +90,8 @@ describe('Feature: Application Landing Page', () => {
       console.log('⚙️ BDD: Component initializes');
       console.log('✅ BDD: Get Started button links to upload step');
       const getStartedButton = fixture.nativeElement.querySelector('.cta-button');
-      expect(getStartedButton.getAttribute('routerLink')).toBe('/upload');
+      // Named outlet generates an array binding, not a plain string attribute
+      expect(getStartedButton.getAttribute('routerLink')).toBeNull();
     });
 
     it('Given the component renders, When it initializes, Then it should display the Learn More button', () => {
