@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { MatButton } from '@angular/material/button';
+import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'shared-upload',
-  imports: [MatIcon, MatButton, CommonModule],
+  imports: [MatIcon, MatButton, CommonModule, MatIconButton],
   templateUrl: './upload.html',
   styleUrl: './upload.css'
 })
@@ -30,5 +30,10 @@ onFileSelected(event: Event) {
       // reader.readAsText(file);       
       // Handle the file upload logic here
     }
+  }
+
+  removeFile(file: File) {
+    this.files = this.files.filter(f => f !== file);
+    console.log('Removed file:', file.name);
   }
 }

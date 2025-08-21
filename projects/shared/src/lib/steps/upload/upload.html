@@ -4,11 +4,14 @@
   <button mat-raised-button color="primary" (click)="fileInput.click()">
     <mat-icon>upload</mat-icon> Choose Files
   </button>
-  <input #fileInput type="file" id="fileInput" (change)="onFileSelected($event)" multiple />
+  <input #fileInput type="file" id="fileInput" (change)="onFileSelected($event)" accept=".zip" />
   <div class="file-list" *ngIf="files.length">
     <h3>Selected Files:</h3>
-    <ul>
-      <li *ngFor="let file of files">{{ file.name }}</li>
-    </ul>
+    <div class="file-selected" *ngFor="let file of files">
+      {{ file.name }}
+      <button mat-icon-button (click)="removeFile(file)">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
   </div>
 </section>
