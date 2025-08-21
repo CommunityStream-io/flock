@@ -55,7 +55,7 @@ describe('Feature: Migration Step Navigation', () => {
       fixture.detectChanges();
       console.log('⚙️ BDD: Component initializes');
       console.log('✅ BDD: Component displays steps in correct order');
-      const texts = Array.from(fixture.nativeElement.querySelectorAll('.step-item')).map((e: Element) => e.textContent || '');
+      const texts = Array.from(fixture.nativeElement.querySelectorAll('.step-item') as NodeListOf<Element>).map((e) => e.textContent || '');
       expect(texts[0]).toContain('Upload Instagram Export');
       expect(texts[1]).toContain('Bluesky Authentication');
       expect(texts[2]).toContain('Migration Settings');
