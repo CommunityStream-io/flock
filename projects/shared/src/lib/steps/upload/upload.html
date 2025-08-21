@@ -1,1 +1,14 @@
-<p>upload works!</p>
+<section class="upload-section">
+  <h2>Upload Your Files</h2>
+  <p>Select files to upload for migration.</p>
+  <button mat-raised-button color="primary" (click)="fileInput.click()">
+    <mat-icon>upload</mat-icon> Choose Files
+  </button>
+  <input #fileInput type="file" id="fileInput" (change)="onFileSelected($event)" multiple />
+  <div class="file-list" *ngIf="files.length">
+    <h3>Selected Files:</h3>
+    <ul>
+      <li *ngFor="let file of files">{{ file.name }}</li>
+    </ul>
+  </div>
+</section>
