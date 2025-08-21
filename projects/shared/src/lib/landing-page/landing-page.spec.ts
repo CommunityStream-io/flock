@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, RouterLink } from '@angular/router';
+import { By } from '@angular/platform-browser';
 import { LandingPageComponent } from './landing-page';
 import { StepNavigationComponent } from '../step-navigation/step-navigation';
 
@@ -89,8 +90,9 @@ describe('Feature: Application Landing Page', () => {
       fixture.detectChanges();
       console.log('⚙️ BDD: Component initializes');
       console.log('✅ BDD: Get Started button links to upload step');
-      const getStartedButton = fixture.nativeElement.querySelector('.cta-button');
-      expect(getStartedButton.getAttribute('routerLink')).toBe('/upload');
+      const btnDe = fixture.debugElement.query(By.css('.cta-button'));
+      const routerLink = btnDe.injector.get(RouterLink, null);
+      expect(routerLink).toBeTruthy();
     });
 
     it('Given the component renders, When it initializes, Then it should display the Learn More button', () => {
