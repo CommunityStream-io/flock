@@ -242,7 +242,7 @@ describe('Feature: Step UI visibility', () => {
 
   beforeEach(async () => {
     const routes: Routes = [
-      { path: '', redirectTo: '(step:landing)', pathMatch: 'full' },
+      { path: '', redirectTo: '/(step:landing)', pathMatch: 'full' },
       { path: 'landing', outlet: 'step', loadComponent: () => import('../landing-page/landing-page').then(m => m.LandingPageComponent) },
       { path: 'upload', outlet: 'step', loadComponent: () => import('../upload-step/upload-step').then(m => m.UploadStepComponent) }
     ];

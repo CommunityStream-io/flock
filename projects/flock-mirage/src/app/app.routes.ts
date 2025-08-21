@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 import { LandingPageComponent } from 'shared';
 
 export const routes: Routes = [
-  { path: '', redirectTo: '(step:landing)', pathMatch: 'full' },
+  { path: '', redirectTo: '/(step:landing)', pathMatch: 'full' },
   // Named outlet routes for step workflow
   { path: 'upload',  outlet: 'step', loadComponent: () => import('shared').then(m => m.UploadStepComponent),  title: 'Upload Instagram Export', data: { description: 'Upload your Instagram export ZIP file to begin migration', prev: null,     next: 'auth'     } },
   { path: 'auth',    outlet: 'step', loadComponent: () => import('shared').then(m => m.AuthStepComponent),    title: 'Bluesky Authentication', data: { description: 'Connect your Bluesky account with credentials',        prev: 'upload',  next: 'config'   } },
