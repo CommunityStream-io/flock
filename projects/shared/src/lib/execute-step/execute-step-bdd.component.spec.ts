@@ -24,6 +24,7 @@ describe('Feature: Execute Step', () => {
       console.log('🔧 BDD: Execute step component created');
       fixture.detectChanges();
       console.log('⚙️ BDD: Component renders');
+      expect(component).toBeTruthy();
       const el: HTMLElement = fixture.nativeElement;
       expect(el.querySelector('.execute-step')).toBeTruthy();
       console.log('✅ BDD: Execute step rendered');
