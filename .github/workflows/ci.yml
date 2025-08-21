@@ -29,6 +29,13 @@ jobs:
       - name: Lint (warnings allowed)
         run: npx ng lint --quiet
 
+      - name: Run unit tests (headless)
+        run: |
+          npx ng test --project=shared --watch=false --browsers=ChromeHeadless
+          npx ng test --project=flock-mirage --watch=false --browsers=ChromeHeadless
+          npx ng test --project=flock-native --watch=false --browsers=ChromeHeadless
+          npx ng test --project=flock-murmur --watch=false --browsers=ChromeHeadless
+
       - name: Build shared library
         run: npx ng build --project=shared
 
