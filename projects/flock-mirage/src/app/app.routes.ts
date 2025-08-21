@@ -1,5 +1,12 @@
 import { Routes } from '@angular/router';
-import { LandingPageComponent, Upload } from 'shared';
+import {
+  Auth,
+  Complete,
+  Config,
+  LandingPageComponent,
+  Migrate,
+  Upload,
+} from 'shared';
 
 export const routes: Routes = [
   {
@@ -12,6 +19,45 @@ export const routes: Routes = [
     component: Upload,
     title: 'Upload Data',
     data: { description: 'Upload instagram archive', next: 'auth' },
+  },
+  {
+    path: 'auth',
+    component: Auth,
+    title: 'Authenticate with Bluesky',
+    data: {
+      description: 'Authenticate with Bluesky to migrate',
+      next: 'config',
+      previous: 'upload',
+    },
+  },
+  {
+    path: 'config',
+    component: Config,
+    title: 'Configuration',
+    data: {
+      description: 'Configure migration settings',
+      next: 'migrate',
+      previous: 'auth',
+    },
+  },
+  {
+    path: 'migrate',
+    component: Migrate,
+    title: 'Migrate Data',
+    data: {
+      description: 'Start the migration process',
+      next: 'complete',
+      previous: 'config',
+    },
+  },
+  {
+    path: 'complete',
+    component: Complete,
+    title: 'Migration Complete',
+    data: {
+      description: 'Migration completed successfully',
+      previous: 'migrate',
+    },
   },
   {
     path: '**',
