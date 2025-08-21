@@ -6,6 +6,7 @@ import {
   LandingPage,
   Migrate,
   Upload,
+  StepLayout
 } from 'shared';
 
 export const routes: Routes = [
@@ -16,7 +17,7 @@ export const routes: Routes = [
   },
   {
     path: 'step',
-    // component: StepLayout,
+    component: StepLayout,
     children: [
       {
         path: 'upload',
