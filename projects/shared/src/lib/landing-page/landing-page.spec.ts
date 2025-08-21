@@ -2,7 +2,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { LandingPage } from './landing-page';
-import { StepNavigationComponent } from '../step-navigation/step-navigation';
 
 describe('Feature: Application Landing Page', () => {
   let component: LandingPage;
@@ -13,8 +12,7 @@ describe('Feature: Application Landing Page', () => {
       imports: [
         LandingPage,
         CommonModule,
-        RouterModule.forRoot([]),
-        StepNavigationComponent
+        RouterModule.forRoot([])
       ]
     }).compileComponents();
 

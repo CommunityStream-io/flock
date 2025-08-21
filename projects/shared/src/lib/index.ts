@@ -4,6 +4,9 @@ export * from './step-layout/step-layout';
 export * from './header/header';
 export * from './step-navigation/step-navigation';
 
+// ===== Routes =====
+export * from './route/step-route';
+
 // Feature Components
 export * from './landing-page/landing-page';
 // TODO: Add upload step and auth step when implemented

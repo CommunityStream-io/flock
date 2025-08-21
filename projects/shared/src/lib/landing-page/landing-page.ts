@@ -4,12 +4,11 @@ import { RouterModule } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { StepNavigationComponent } from '../step-navigation/step-navigation';
 
 @Component({
   selector: 'shared-landing-page',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatCardModule, MatButtonModule, MatIconModule, StepNavigationComponent],
+  imports: [CommonModule, RouterModule, MatCardModule, MatButtonModule, MatIconModule],
   templateUrl: './landing-page.html',
   styleUrl: './landing-page.css'
 })

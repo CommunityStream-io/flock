@@ -1,4 +1,4 @@
-import { Routes } from '@angular/router';
+import { Route, Routes } from '@angular/router';
 import {
   Auth,
   Complete,
@@ -6,8 +6,12 @@ import {
   LandingPage,
   Migrate,
   Upload,
-  StepLayout
+  StepLayout,
+  StepRoute
 } from 'shared';
+
+
+
 
 export const routes: Routes = [
   {
@@ -64,7 +68,7 @@ export const routes: Routes = [
           previous: 'migrate',
         },
       },
-    ],
+    ] as (StepRoute & Route)[],
   },
   {
     path: '**',
