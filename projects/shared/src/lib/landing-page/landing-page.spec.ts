@@ -1,24 +1,24 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { LandingPageComponent } from './landing-page';
+import { LandingPage } from './landing-page';
 import { StepNavigationComponent } from '../step-navigation/step-navigation';
 
 describe('Feature: Application Landing Page', () => {
-  let component: LandingPageComponent;
-  let fixture: ComponentFixture<LandingPageComponent>;
+  let component: LandingPage;
+  let fixture: ComponentFixture<LandingPage>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
-        LandingPageComponent,
+        LandingPage,
         CommonModule,
         RouterModule.forRoot([]),
         StepNavigationComponent
       ]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(LandingPageComponent);
+    fixture = TestBed.createComponent(LandingPage);
     component = fixture.componentInstance;
   });
 

@@ -3,7 +3,7 @@ import {
   Auth,
   Complete,
   Config,
-  LandingPageComponent,
+  LandingPage,
   Migrate,
   Upload,
 } from 'shared';
@@ -11,53 +11,59 @@ import {
 export const routes: Routes = [
   {
     path: '',
-    component: LandingPageComponent,
+    component: LandingPage,
     title: 'Bluesky Social Migrator',
   },
   {
-    path: 'upload',
-    component: Upload,
-    title: 'Upload Data',
-    data: { description: 'Upload instagram archive', next: 'auth' },
-  },
-  {
-    path: 'auth',
-    component: Auth,
-    title: 'Authenticate with Bluesky',
-    data: {
-      description: 'Authenticate with Bluesky to migrate',
-      next: 'config',
-      previous: 'upload',
-    },
-  },
-  {
-    path: 'config',
-    component: Config,
-    title: 'Configuration',
-    data: {
-      description: 'Configure migration settings',
-      next: 'migrate',
-      previous: 'auth',
-    },
-  },
-  {
-    path: 'migrate',
-    component: Migrate,
-    title: 'Migrate Data',
-    data: {
-      description: 'Start the migration process',
-      next: 'complete',
-      previous: 'config',
-    },
-  },
-  {
-    path: 'complete',
-    component: Complete,
-    title: 'Migration Complete',
-    data: {
-      description: 'Migration completed successfully',
-      previous: 'migrate',
-    },
+    path: 'step',
+    // component: StepLayout,
+    children: [
+      {
+        path: 'upload',
+        component: Upload,
+        title: 'Upload Data',
+        data: { description: 'Upload instagram archive', next: 'auth' },
+      },
+      {
+        path: 'auth',
+        component: Auth,
+        title: 'Authenticate with Bluesky',
+        data: {
+          description: 'Authenticate with Bluesky to migrate',
+          next: 'config',
+          previous: 'upload',
+        },
+      },
+      {
+        path: 'config',
+        component: Config,
+        title: 'Configuration',
+        data: {
+          description: 'Configure migration settings',
+          next: 'migrate',
+          previous: 'auth',
+        },
+      },
+      {
+        path: 'migrate',
+        component: Migrate,
+        title: 'Migrate Data',
+        data: {
+          description: 'Start the migration process',
+          next: 'complete',
+          previous: 'config',
+        },
+      },
+      {
+        path: 'complete',
+        component: Complete,
+        title: 'Migration Complete',
+        data: {
+          description: 'Migration completed successfully',
+          previous: 'migrate',
+        },
+      },
+    ],
   },
   {
     path: '**',

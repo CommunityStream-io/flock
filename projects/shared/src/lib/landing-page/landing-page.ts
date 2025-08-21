@@ -13,6 +13,6 @@ import { StepNavigationComponent } from '../step-navigation/step-navigation';
   templateUrl: './landing-page.html',
   styleUrl: './landing-page.css'
 })
-export class LandingPageComponent {
+export class LandingPage {
   // Component logic will be added when services are implemented
 }
