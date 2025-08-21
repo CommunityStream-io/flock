@@ -1,5 +1,4 @@
 <nav class="step-navigation">
-  <div class="step-title">{{ steps[0]?.title }}</div>
   <div class="step-list">
     <mat-card
       *ngFor="let step of steps; let i = index"
@@ -20,7 +19,6 @@
         <span *ngIf="!step.completed && !step.current" class="step-number">{{ i + 1 }}</span>
       </span>
       <span class="step-label">{{ step.title }}</span>
-      <span class="step-subtitle">{{ step.description }}</span>
     </mat-card>
   </div>
 </nav>

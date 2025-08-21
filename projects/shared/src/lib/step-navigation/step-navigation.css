@@ -1,9 +1,4 @@
 .step-navigation { display: block; }
-.step-title {
-  font-size: 0.9rem;
-  font-weight: 600;
-  margin: 0.25rem 0.5rem;
-}
 
 .step-list {
   display: flex;
@@ -55,13 +50,6 @@
   font-size: 0.8rem;
 }
 
-.step-subtitle {
-  position: absolute;
-  left: -9999px;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-}
 
 .step-connector {
   position: absolute;
