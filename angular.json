@@ -30,6 +30,16 @@
             ],
             "tsConfig": "projects/shared/tsconfig.spec.json"
           }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "projects/shared/**/*.ts",
+              "projects/shared/**/*.html"
+            ],
+            "eslintConfig": "projects/shared/eslint.config.js"
+          }
         }
       }
     },
@@ -120,6 +130,16 @@
             "styles": [
               "projects/flock-native/src/styles.scss"
             ]
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "projects/flock-native/**/*.ts",
+              "projects/flock-native/**/*.html"
+            ],
+            "eslintConfig": "projects/flock-native/eslint.config.js"
           }
         }
       }
@@ -212,6 +232,16 @@
               "projects/flock-mirage/src/styles.scss"
             ]
           }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "projects/flock-mirage/**/*.ts",
+              "projects/flock-mirage/**/*.html"
+            ],
+            "eslintConfig": "projects/flock-mirage/eslint.config.js"
+          }
         }
       }
     },
@@ -302,6 +332,16 @@
             "styles": [
               "projects/flock-murmur/src/styles.scss"
             ]
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "projects/flock-murmur/**/*.ts",
+              "projects/flock-murmur/**/*.html"
+            ],
+            "eslintConfig": "projects/flock-murmur/eslint.config.js"
           }
         }
       }
