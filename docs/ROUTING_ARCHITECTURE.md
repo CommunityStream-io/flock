@@ -11,6 +11,58 @@
 
 The Bluesky Migration Application implements a **Route-Based Guided Workflow** with strict prerequisites and guards to ensure users complete each step in the correct order. This prevents skipping critical steps and ensures data integrity throughout the migration process.
 
+### Step Layout and Route-Driven Navigation
+
+We use a dedicated Step Layout component (`shared-step-layout`) that nests all step routes under a single layout outlet. The Step Layout renders the visual stepper (`shared-step-navigation`) and consumes route `data` to drive navigation controls:
+
+- `data.prev`: Previous route path or `null`
+- `data.next`: Next route path or `null`
+- `data.description`: Human-readable description for step navigation tiles
+
+Example:
+
+```ts
+{
+  path: '',
+  loadComponent: () => import('shared').then(m => m.StepLayoutComponent),
+  children: [
+    { path: 'upload',  loadComponent: () => import('shared').then(m => m.UploadStepComponent),  title: 'Upload Instagram Export',  data: { prev: null,        next: '/auth',    description: 'Upload your Instagram export ZIP file to begin migration' } },
+    { path: 'auth',    loadComponent: () => import('shared').then(m => m.AuthStepComponent),    title: 'Bluesky Authentication', data: { prev: '/upload',   next: '/config',  description: 'Connect your Bluesky account with credentials' } },
+    { path: 'config',  loadComponent: () => import('shared').then(m => m.ConfigStepComponent),  title: 'Migration Settings',      data: { prev: '/auth',    next: '/execute', description: 'Configure migration options and preferences' } },
+    { path: 'execute', loadComponent: () => import('shared').then(m => m.ExecuteStepComponent), title: 'Execute Migration',       data: { prev: '/config',  next: '/complete',description: 'Run the migration process with your settings' } },
+    { path: 'complete',loadComponent: () => import('shared').then(m => m.CompleteStepComponent),title: 'Migration Complete',      data: { prev: '/execute', next: null,       description: 'Review results and download migration report' } }
+  ]
+}
+```
+
+The `shared-step-navigation` reads the configured child routes to build the step list and determines current/completed/disabled states from the active URL. The Step Layout renders global Previous/Next actions based on the active child route's `data.prev`/`data.next`. A separate NavigationService is no longer required.
+
+### Step Layout and Route-Driven Navigation
+
+We use a dedicated Step Layout component (`shared-step-layout`) that nests all step routes under a single layout outlet. The Step Layout renders the visual stepper (`shared-step-navigation`) and consumes route `data` to drive navigation controls:
+
+- `data.prev`: Previous route path or `null`
+- `data.next`: Next route path or `null`
+- `data.description`: Human-readable description for step navigation tiles
+
+Example:
+
+```ts
+{
+  path: '',
+  loadComponent: () => import('shared').then(m => m.StepLayoutComponent),
+  children: [
+    { path: 'upload',  loadComponent: () => import('shared').then(m => m.UploadStepComponent),  title: 'Upload Instagram Export',  data: { prev: null,        next: '/auth',    description: 'Upload your Instagram export ZIP file to begin migration' } },
+    { path: 'auth',    loadComponent: () => import('shared').then(m => m.AuthStepComponent),    title: 'Bluesky Authentication', data: { prev: '/upload',   next: '/config',  description: 'Connect your Bluesky account with credentials' } },
+    { path: 'config',  loadComponent: () => import('shared').then(m => m.ConfigStepComponent),  title: 'Migration Settings',      data: { prev: '/auth',    next: '/execute', description: 'Configure migration options and preferences' } },
+    { path: 'execute', loadComponent: () => import('shared').then(m => m.ExecuteStepComponent), title: 'Execute Migration',       data: { prev: '/config',  next: '/complete',description: 'Run the migration process with your settings' } },
+    { path: 'complete',loadComponent: () => import('shared').then(m => m.CompleteStepComponent),title: 'Migration Complete',      data: { prev: '/execute', next: null,       description: 'Review results and download migration report' } }
+  ]
+}
+```
+
+The `shared-step-navigation` reads the configured child routes to build the step list and determines current/completed/disabled states from the active URL. The Step Layout renders global Previous/Next actions based on the active child route's `data.prev`/`data.next`. A separate NavigationService is no longer required.
+
 ### **Route Flow Structure**
 
 ```mermaid

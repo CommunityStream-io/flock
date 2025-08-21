@@ -1,9 +1,9 @@
 <div class="landing-page full-height">
-  <section class="intro-section section-padding text-center">
+  <section class="intro-section hero-section section-padding text-center">
     <mat-card class="intro-card container-narrow">
       <mat-card-header>
-        <mat-card-title>Flock: Birds of a Feather Migrate Together</mat-card-title>
-        <mat-card-subtitle>Spread your wings and soar to Bluesky's decentralized skies</mat-card-subtitle>
+        <mat-card-title class="hero-title">Flock: Birds of a Feather Migrate Together</mat-card-title>
+        <mat-card-subtitle class="hero-description">Spread your wings and soar to Bluesky's decentralized skies</mat-card-subtitle>
       </mat-card-header>
       
       <mat-card-content>
@@ -17,7 +17,7 @@
         <button 
           mat-raised-button 
           color="primary" 
-          routerLink="/upload"
+          [routerLink]="[{ outlets: { step: 'upload' } }]"
           class="cta-button mat-transition">
           <mat-icon>flight_takeoff</mat-icon>
           Begin Your Journey
@@ -81,7 +81,7 @@
     </div>
   </section>
 
-  <section class="section-padding surface-container-lowest">
+  <section class="section-padding surface-container-lowest features-section">
     <div class="container-center text-center">
       <h2 class="section-title">Why Choose Flock?</h2>
       <div class="grid-info-cards">

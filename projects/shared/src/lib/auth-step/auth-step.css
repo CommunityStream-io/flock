@@ -1,0 +1,17 @@
+.auth-step {
+  background: var(--md-sys-color-surface);
+  color: var(--md-sys-color-on-surface);
+}
+
+.auth-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+@media (max-width: 768px) {
+  .auth-form {
+    grid-template-columns: 1fr;
+  }
+}
+

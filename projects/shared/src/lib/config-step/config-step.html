@@ -1,0 +1,25 @@
+<mat-card class="config-step" appearance="outlined">
+  <mat-card-header>
+    <mat-card-title>Migration Settings</mat-card-title>
+    <mat-card-subtitle>Choose which content to migrate and set limits</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    <form [formGroup]="form" class="config-form">
+      <section class="toggles">
+        <mat-checkbox formControlName="migratePosts">Posts</mat-checkbox>
+        <mat-checkbox formControlName="migratePhotos">Photos</mat-checkbox>
+        <mat-checkbox formControlName="migrateVideos">Videos</mat-checkbox>
+        <mat-checkbox formControlName="migrateComments">Comments</mat-checkbox>
+      </section>
+
+      <mat-form-field appearance="outline" class="max-items">
+        <mat-label>Max items (0 = unlimited)</mat-label>
+        <input matInput type="number" min="0" formControlName="maxItems">
+      </mat-form-field>
+    </form>
+  </mat-card-content>
+
+  <mat-card-actions align="end"></mat-card-actions>
+</mat-card>
+

@@ -1,0 +1,26 @@
+<mat-card class="auth-step" appearance="outlined">
+  <mat-card-header>
+    <mat-card-title>Bluesky Authentication</mat-card-title>
+    <mat-card-subtitle>Enter your Bluesky handle and app password</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    <form [formGroup]="form" class="auth-form">
+      <mat-form-field appearance="outline">
+        <mat-label>Handle</mat-label>
+        <input matInput placeholder="you.bsky.social" formControlName="handle" required>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>App password</mat-label>
+        <input matInput [type]="hidePassword() ? 'password' : 'text'" formControlName="appPassword" required>
+        <button mat-icon-button matSuffix type="button" (click)="togglePassword()" [attr.aria-label]="hidePassword() ? 'Show password' : 'Hide password'">
+          <mat-icon>{{ hidePassword() ? 'visibility' : 'visibility_off' }}</mat-icon>
+        </button>
+      </mat-form-field>
+    </form>
+  </mat-card-content>
+
+  <mat-card-actions align="end"></mat-card-actions>
+</mat-card>
+

@@ -1,0 +1,27 @@
+<mat-card class="complete-step" appearance="outlined">
+  <mat-card-header>
+    <mat-card-title>Migration Complete</mat-card-title>
+    <mat-card-subtitle>Summary and next steps</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    <section class="summary">
+      <h3>Configuration</h3>
+      <mat-list>
+        <mat-list-item>Posts: {{ config().migratePosts ? 'Yes' : 'No' }}</mat-list-item>
+        <mat-list-item>Photos: {{ config().migratePhotos ? 'Yes' : 'No' }}</mat-list-item>
+        <mat-list-item>Videos: {{ config().migrateVideos ? 'Yes' : 'No' }}</mat-list-item>
+        <mat-list-item>Comments: {{ config().migrateComments ? 'Yes' : 'No' }}</mat-list-item>
+        <mat-list-item>Max Items: {{ config().maxItems ?? 'Unlimited' }}</mat-list-item>
+      </mat-list>
+    </section>
+
+    <section class="links">
+      <a mat-stroked-button color="primary" href="#" target="_blank">View results</a>
+      <a mat-stroked-button color="primary" href="#" target="_blank">Download report</a>
+    </section>
+  </mat-card-content>
+
+  <mat-card-actions align="end"></mat-card-actions>
+</mat-card>
+

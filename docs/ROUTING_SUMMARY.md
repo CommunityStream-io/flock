@@ -33,9 +33,9 @@ Landing (/) → Upload (/upload) → Auth (/auth) → Config (/config) → Execu
 - **`configCompletionGuard`** - Checks if migration configuration is complete
 - **`migrationCompletionGuard`** - Checks if migration execution is complete
 
-### **2. Navigation Services (2 services)**
-- **`NavigationService`** - Manages step-to-step navigation with validation
-- **`StepValidationService`** - Validates step completion requirements
+### **2. Step Layout & Validation**
+- **`shared-step-layout`** - Central layout providing stepper UI and Prev/Next via route data
+- **`StepValidationService`** - Validates step completion requirements (future)
 
 ### **3. Base Components (2 components)**
 - **`BaseStepComponent`** - Abstract base class for all step components

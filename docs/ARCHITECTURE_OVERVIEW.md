@@ -81,7 +81,7 @@ graph LR
 
 - **Shared Components**: Layout, validation, progress tracking
 - **Swappable Parts**: File selection components for each variant
-- **Route-Based**: Each step is an independent component
+- **Route-Based**: Each step is an independent component nested under a dedicated Step Layout that provides the stepper UI and prev/next actions from route data
 - **Service Integration**: Components work with any service implementation
 
 ---

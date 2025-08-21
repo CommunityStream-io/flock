@@ -1,6 +1,11 @@
 <div class="app-layout">
-  <shared-header></shared-header>
-  
+  <header class="app-header">
+    <shared-header></shared-header>
+    <div class="layout-header-slot">
+      <shared-step-navigation *ngIf="showStepUi()"></shared-step-navigation>
+    </div>
+  </header>
+
   <mat-sidenav-container class="sidenav-container">
     <mat-sidenav-content class="main-content">
       <main class="app-main">
@@ -8,4 +13,10 @@
       </main>
     </mat-sidenav-content>
   </mat-sidenav-container>
+
+  <footer class="app-footer">
+    <div class="layout-footer-slot">
+      <shared-step-controls *ngIf="showStepUi()"></shared-step-controls>
+    </div>
+  </footer>
 </div>

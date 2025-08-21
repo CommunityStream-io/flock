@@ -1,0 +1,30 @@
+.step-navigation {
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.step-list {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.step-card {
+  background: var(--md-sys-color-surface);
+  color: var(--md-sys-color-on-surface);
+  border: 1px solid var(--md-sys-color-outline-variant);
+}
+
+.step-card.current {
+  outline: 2px solid var(--md-sys-color-primary);
+}
+
+.step-card.completed {
+  opacity: 0.9;
+}
+
+.step-card.disabled {
+  opacity: 0.6;
+}
+
+.step-connector { display: none; }
