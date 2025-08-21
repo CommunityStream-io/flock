@@ -37,5 +37,53 @@ describe('Feature: Upload Step', () => {
       console.log('✅ BDD: Form is invalid as expected');
     });
   });
+
+  describe('Scenario: Drag and drop interactions', () => {
+    it('Given the drop zone, When dragging over, Then it should set drag-over state', () => {
+      fixture.detectChanges();
+      const dropZone: HTMLElement = fixture.nativeElement.querySelector('.drop-zone');
+      const dragOverEvent = new DragEvent('dragover', { bubbles: true, cancelable: true });
+      console.log('🔧 BDD: Prepare dragover event');
+      dropZone.dispatchEvent(dragOverEvent);
+      console.log('⚙️ BDD: Dispatch dragover');
+      expect(component.isDragOver()).toBeTrue();
+      console.log('✅ BDD: Drag over state true');
+    });
+
+    it('Given a non-zip file, When dropped, Then it should show an error and not set the control', () => {
+      fixture.detectChanges();
+      const dropZone: HTMLElement = fixture.nativeElement.querySelector('.drop-zone');
+      const dataTransfer = new DataTransfer();
+      const file = new File(['text content'], 'notes.txt', { type: 'text/plain' });
+      dataTransfer.items.add(file);
+
+      const dropEvent = new DragEvent('drop', { bubbles: true, cancelable: true, dataTransfer });
+      console.log('🔧 BDD: Prepare drop event with non-zip');
+      dropZone.dispatchEvent(dropEvent);
+      fixture.detectChanges();
+      console.log('⚙️ BDD: Dispatch drop with non-zip');
+      expect(component.fileControl.value).toBeNull();
+      expect(component.errorMessage()).toContain('.zip');
+      console.log('✅ BDD: Error shown and control not set');
+    });
+
+    it('Given a zip file, When dropped, Then it should set the control and clear errors', () => {
+      fixture.detectChanges();
+      const dropZone: HTMLElement = fixture.nativeElement.querySelector('.drop-zone');
+      const dataTransfer = new DataTransfer();
+      const file = new File(['zip content'], 'export.zip', { type: 'application/zip' });
+      dataTransfer.items.add(file);
+
+      const dropEvent = new DragEvent('drop', { bubbles: true, cancelable: true, dataTransfer });
+      console.log('🔧 BDD: Prepare drop event with zip');
+      dropZone.dispatchEvent(dropEvent);
+      fixture.detectChanges();
+      console.log('⚙️ BDD: Dispatch drop with zip');
+      expect(component.fileControl.value).toBeTruthy();
+      expect(component.fileName()).toBe('export.zip');
+      expect(component.errorMessage()).toBe('');
+      console.log('✅ BDD: File set and no errors');
+    });
+  });
 });
 

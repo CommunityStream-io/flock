@@ -5,12 +5,54 @@
 
 .upload-form {
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: 1fr;
   gap: 1rem;
-  align-items: end;
+  align-items: stretch;
 }
 
 .file-field {
   width: 100%;
+}
+
+.drop-zone {
+  display: grid;
+  place-items: center;
+  padding: 2.5rem;
+  border: 2px dashed var(--md-sys-color-outline);
+  border-radius: 16px;
+  background: color-mix(in oklab, var(--md-sys-color-surface), var(--md-sys-color-primary) 4%);
+  transition: border-color 120ms ease, background 120ms ease, box-shadow 120ms ease;
+}
+
+.drop-zone.drag-over {
+  border-color: var(--md-sys-color-primary);
+  background: color-mix(in oklab, var(--md-sys-color-surface), var(--md-sys-color-primary) 8%);
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--md-sys-color-primary), transparent 80%);
+}
+
+.drop-zone-content {
+  display: grid;
+  justify-items: center;
+  gap: .5rem;
+  text-align: center;
+}
+
+.drop-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  color: var(--md-sys-color-primary);
+}
+
+.drop-text .headline {
+  font-weight: 600;
+}
+
+.drop-text .subhead {
+  opacity: .8;
+}
+
+.error {
+  color: var(--md-sys-color-error);
 }
 

@@ -6,15 +6,30 @@
 
   <mat-card-content>
     <form [formGroup]="form" class="upload-form">
+      <div class="drop-zone" [class.drag-over]="isDragOver()"
+           (dragover)="onDragOver($event)"
+           (dragleave)="onDragLeave($event)"
+           (drop)="onDrop($event)">
+        <div class="drop-zone-content">
+          <mat-icon class="drop-icon">cloud_upload</mat-icon>
+          <div class="drop-text">
+            <div class="headline">Drag and drop your .zip here</div>
+            <div class="subhead">or</div>
+          </div>
+          <button mat-stroked-button color="primary" type="button" (click)="fileInput.click()">
+            <mat-icon>folder_open</mat-icon>
+            Browse Files
+          </button>
+          <input type="file" accept=".zip" (change)="onFileSelected($event)" hidden #fileInput>
+        </div>
+      </div>
+
       <mat-form-field appearance="outline" class="file-field">
-        <mat-label>Instagram export (.zip)</mat-label>
+        <mat-label>Selected file</mat-label>
         <input matInput [value]="fileName()" placeholder="Choose file..." readonly>
       </mat-form-field>
-      <input type="file" accept=".zip" (change)="onFileSelected($event)" hidden #fileInput>
-      <button mat-raised-button color="primary" type="button" (click)="fileInput.click()">
-        <mat-icon>upload</mat-icon>
-        Choose File
-      </button>
+
+      <div class="error" *ngIf="errorMessage()">{{ errorMessage() }}</div>
     </form>
   </mat-card-content>
 

@@ -179,11 +179,12 @@ describe('Feature: Application Layout Structure', () => {
       const layout = fixture.nativeElement.querySelector('.app-layout');
       const header = layout.querySelector('.app-header');
       const main = layout.querySelector('.app-main');
-      
+
       expect(header).toBeTruthy();
       expect(main).toBeTruthy();
       expect(header.parentElement).toBe(layout);
-      expect(main.parentElement).toBe(layout);
+      // main may be wrapped by Material sidenav content; ensure it is within layout subtree
+      expect(layout.contains(main)).toBeTrue();
     });
   });
 
