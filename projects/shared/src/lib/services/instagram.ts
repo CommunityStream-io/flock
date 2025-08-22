@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { MediaProcessResult } from '@straiforos/instagramtobluesky';
-import { InstagramService, ValidationResult } from 'shared';
+import { InstagramService, ValidationResult } from '../services';
 
 @Injectable({
   providedIn: 'root'

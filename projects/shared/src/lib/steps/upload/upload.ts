@@ -29,7 +29,7 @@ export class Upload {
     this.logger.workflow(`File selected: ${file?.name}`);
     if (file) {
       this.fileProcessorService
-        .validateArchive(file.name)
+        .validateArchive(file)
         .then((result) => {
           if (result.isValid) {
             this.logger.log(`File ${file.name} is valid.`);

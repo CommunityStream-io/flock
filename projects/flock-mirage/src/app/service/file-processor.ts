@@ -5,10 +5,10 @@ import { FileService, ValidationResult } from 'shared';
   providedIn: 'root'
 })
 export class FileProcessor implements FileService {
-  validated = false;
+  archivedFile: File | null = null;
 
-  validateArchive(path: string): Promise<ValidationResult> {
-    this.validated = true;
+  validateArchive(archivedFile: File): Promise<ValidationResult> {
+    this.archivedFile = archivedFile;
     return Promise.resolve({
       isValid: true,
       errors: [],
@@ -26,7 +26,6 @@ export class FileProcessor implements FileService {
         if (isSuccess) {
           resolve(true);
         } else {
-          this.validated = false;
           reject(new Error('Extraction failed'));
         }
       }, 1000);

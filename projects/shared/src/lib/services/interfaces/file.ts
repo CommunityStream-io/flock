@@ -13,15 +13,15 @@ export interface ValidationResult {
  */
 export interface FileService {
   /**
-   * Whether the archive has been validated to move onto the next step
+   * The archived file
    */
-  validated: boolean;
+  archivedFile: File | null;
 
   /**
    * Validates an archive that it is a instagram archive
-   * @param path - The path to the archive to validate
+   * @param archivedFile - The archived file to validate
    */
-    validateArchive(path: string): Promise<ValidationResult>
+    validateArchive(archivedFile: File): Promise<ValidationResult>
 
     /**
      * Extracts an archive using nodejs for desktop, or js for web version
