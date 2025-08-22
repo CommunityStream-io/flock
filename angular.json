@@ -30,6 +30,12 @@
             ],
             "tsConfig": "projects/shared/tsconfig.spec.json"
           }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": ["projects/shared/**/*.ts"]
+          }
         }
       }
     },

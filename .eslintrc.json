@@ -1,0 +1,71 @@
+{
+  "root": true,
+  "ignorePatterns": [
+    "dist/**/*",
+    "node_modules/**/*",
+    "*.js",
+    "*.mjs",
+    "*.cjs"
+  ],
+  "overrides": [
+    {
+      "files": [
+        "*.ts"
+      ],
+      "parser": "@typescript-eslint/parser",
+      "parserOptions": {
+        "ecmaVersion": 2020,
+        "sourceType": "module"
+      },
+      "plugins": [
+        "@typescript-eslint"
+      ],
+      "extends": [
+        "eslint:recommended"
+      ],
+      "rules": {
+        "@typescript-eslint/no-unused-vars": "warn",
+        "@typescript-eslint/no-explicit-any": "warn",
+        "@typescript-eslint/explicit-function-return-type": "off",
+        "@typescript-eslint/explicit-module-boundary-types": "off",
+        "no-console": "off",
+        "no-debugger": "warn",
+        "no-unused-vars": "off",
+        "prefer-const": "warn",
+        "no-var": "warn",
+        "no-undef": "off"
+      }
+    },
+    {
+      "files": [
+        "**/*.spec.ts",
+        "**/*.test.ts"
+      ],
+      "env": {
+        "jasmine": true,
+        "jest": true
+      },
+      "globals": {
+        "describe": "readonly",
+        "it": "readonly",
+        "expect": "readonly",
+        "beforeEach": "readonly",
+        "afterEach": "readonly",
+        "beforeAll": "readonly",
+        "afterAll": "readonly",
+        "fdescribe": "readonly",
+        "fit": "readonly",
+        "xdescribe": "readonly",
+        "xit": "readonly"
+      },
+      "rules": {
+        "no-console": "off",
+        "no-debugger": "off",
+        "no-undef": "off",
+        "@typescript-eslint/no-unused-vars": "off",
+        "@typescript-eslint/no-explicit-any": "off",
+        "prefer-const": "off"
+      }
+    }
+  ]
+}
