@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { LayoutComponent } from 'shared';
+import { LayoutComponent, Logger, LOGGER } from 'shared';
 
 @Component({
   selector: 'app-root',
@@ -11,4 +11,8 @@ import { LayoutComponent } from 'shared';
 })
 export class AppComponent {
   title = 'flock-mirage';
+  constructor() {
+    const logger = inject<Logger>(LOGGER);
+    logger.instrument('Dodo bird ready to flap!');
+  }
 }

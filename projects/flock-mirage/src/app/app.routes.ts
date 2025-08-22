@@ -7,15 +7,13 @@ import {
   Migrate,
   Upload,
   StepLayout,
-  StepRoute
+  StepRoute,
+  loggerInstrumentationResolver,
 } from 'shared';
-
-
-
 
 export const routes: Routes = [
   {
-    path: '',
+    path: 'home',
     component: LandingPage,
     title: 'Bluesky Social Migrator',
   },
@@ -72,6 +70,6 @@ export const routes: Routes = [
   },
   {
     path: '**',
-    redirectTo: '',
+    redirectTo: '/home'
   },
 ];

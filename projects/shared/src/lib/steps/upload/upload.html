@@ -4,14 +4,27 @@
   <button mat-raised-button color="primary" (click)="fileInput.click()">
     <mat-icon>upload</mat-icon> Choose Files
   </button>
-  <input #fileInput type="file" id="fileInput" (change)="onFileSelected($event)" accept=".zip" />
-  <div class="file-list" *ngIf="files.length">
+  <form [formGroup]="fileUploadForm">
+    <input
+      #fileInput
+      formControlName="instagramArchive"
+      type="file"
+      id="fileInput"
+      name="instagramArchive"
+      accept=".zip"
+    />
+  </form>
+  @if (fileInput.files && fileInput.files.length > 0) {
+  <div class="file-list">
     <h3>Selected Files:</h3>
-    <div class="file-selected" *ngFor="let file of files">
+    @for (file of fileInput.files; track $index) {
+    <div class="file-selected" *ngFor="let file of fileInput.files">
       {{ file.name }}
       <button mat-icon-button (click)="removeFile(file)">
         <mat-icon>delete</mat-icon>
       </button>
     </div>
+    }
   </div>
+  }
 </section>
