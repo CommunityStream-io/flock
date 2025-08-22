@@ -45,6 +45,7 @@ export class Upload {
 
   removeFile(file: File) {
     this.fileUploadForm.reset();
+    this.fileProcessorService.archivedFile = null;
   }
 
   ngOnInit() {
