@@ -1,24 +1,37 @@
 import Page from './page';
 
 class LandingPage extends Page {
-    // Main content elements
-    public get mainContent() {
-        return $('shared-landing-page, .landing-page, mat-card');
+    // Main landing page container
+    public get landingPageContainer() {
+        return $('.landing-page');
+    }
+
+    // Hero section elements
+    public get introSection() {
+        return $('.intro-section');
+    }
+
+    public get introCard() {
+        return $('.intro-card');
     }
 
     public get mainTitle() {
-        return $('mat-card-title h1, h1');
+        return $('mat-card-title');
     }
 
     public get subtitle() {
-        return $('mat-card-subtitle, .subtitle');
+        return $('mat-card-subtitle');
     }
 
     public get migrationDescription() {
-        return $('mat-card-content p, .description, p');
+        return $('.intro-card mat-card-content p');
     }
 
-    // Process steps
+    // Process steps section
+    public get migrationJourneySection() {
+        return $('.section-title');
+    }
+
     public get processSteps() {
         return $$('.process-step');
     }
@@ -47,51 +60,54 @@ class LandingPage extends Page {
         return $('.process-step:nth-child(3) .step-number');
     }
 
-    // Section titles
-    public get sectionTitles() {
-        return $$('h2.section-title');
-    }
-
-    // Benefit cards
+    // Benefits section
     public get benefitCards() {
         return $$('.info-card');
     }
 
     // Buttons
     public get beginJourneyButton() {
-        return $('button[mat-raised-button], button');
+        return $('shared-start-button button');
     }
 
     public get exploreSkiesButton() {
-        return $$('button[mat-raised-button], button')[1];
+        return $('button[mat-stroked-button]');
     }
 
     // Methods for dynamic element selection
     public async getStepTitle(stepNumber: number) {
-        return $(`.process-step:nth-child(${stepNumber}) h3`);
+        // Wait for the process flow container to be visible first
+        await $('.process-flow').waitForDisplayed({ timeout: 5000 });
+        const step = $(`.process-flow .process-step:nth-child(${stepNumber})`);
+        await step.waitForDisplayed({ timeout: 3000 });
+        return step.$('mat-card-title');
     }
 
     public async getStepDescription(stepNumber: number) {
-        return $(`.process-step:nth-child(${stepNumber}) p`);
+        // Wait for the process flow container to be visible first
+        await $('.process-flow').waitForDisplayed({ timeout: 5000 });
+        const step = $(`.process-flow .process-step:nth-child(${stepNumber})`);
+        await step.waitForDisplayed({ timeout: 3000 });
+        return step.$('mat-card-content p');
     }
 
     public async getSectionByTitle(sectionTitle: string) {
-        // Use a more compatible selector
-        const allH2s = await $$('h2');
-        for (const h2 of allH2s) {
-            const text = await h2.getText();
+        // Use the specific section-title class
+        const allSectionTitles = await $$('.section-title');
+        for (const section of allSectionTitles) {
+            const text = await section.getText();
             if (text.includes(sectionTitle)) {
-                return h2;
+                return section;
             }
         }
         throw new Error(`Section with title "${sectionTitle}" not found`);
     }
 
     public async getBenefitCard(cardTitle: string) {
-        // Use a more compatible selector
+        // Use the info-card class and mat-card-title
         const allCards = await $$('.info-card');
         for (const card of allCards) {
-            const title = await card.$('h3').getText();
+            const title = await card.$('mat-card-title').getText();
             if (title.includes(cardTitle)) {
                 return card;
             }
@@ -100,8 +116,8 @@ class LandingPage extends Page {
     }
 
     public async getButtonByText(buttonText: string) {
-        // Use a more compatible selector for Angular Material buttons
-        const allButtons = await $$('button[mat-raised-button], button[mat-flat-button], button');
+        // Check specific button types in your component
+        const allButtons = await $$('shared-start-button button, button[mat-stroked-button]');
         for (const button of allButtons) {
             const text = await button.getText();
             if (text.includes(buttonText)) {
@@ -114,8 +130,9 @@ class LandingPage extends Page {
     // Navigation
     public async open() {
         await super.open('');
-        // For demo purposes, we'll just wait a bit instead of checking for elements
-        await browser.pause(1000);
+        // Wait for the landing page component to load
+        await this.landingPageContainer.waitForDisplayed({ timeout: 10000 });
+        await this.mainTitle.waitForDisplayed({ timeout: 5000 });
     }
 }
 
