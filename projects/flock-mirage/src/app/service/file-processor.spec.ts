@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { File } from './file';
+import { FileProcessor } from './file-processor';
 
-describe('File', () => {
-  let service: File;
+describe('FileProcessor', () => {
+  let service: FileProcessor;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(File);
+    service = TestBed.inject(FileProcessor);
   });
 
   it('should be created', () => {

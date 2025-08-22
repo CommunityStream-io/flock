@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
+import { FILE_PROCESSOR, FileService } from '../../services';
 
 @Component({
   selector: 'shared-upload',
@@ -12,11 +13,12 @@ import { MatIcon } from '@angular/material/icon';
 export class Upload {
   files: File[] = [];
   // TODO wire up file processor service when available
+  private fileProcessorService: FileService = inject(FILE_PROCESSOR) as FileService;
 onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       this.files = Array.from(input.files);
-      const file = input.files[0];
+      const file: File = input.files[0];
       console.log('Selected file:', file.name);
       console.log('File size:', file.size);
       console.log('File type:', file.type);
@@ -29,6 +31,17 @@ onFileSelected(event: Event) {
       // };
       // reader.readAsText(file);       
       // Handle the file upload logic here
+      this.fileProcessorService.validateArchive(file.name)
+        .then(result => {
+          if (result.isValid) {
+            console.log('File is valid');
+          } else {
+            console.error('File is invalid:', result.errors);
+          }
+        })
+        .catch(error => {
+          console.error('Error validating file:', error);
+        });
     }
   }
 

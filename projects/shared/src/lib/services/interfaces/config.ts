@@ -1,7 +1,7 @@
 import { Credentials } from "./bluesky";
 
 
-export interface Config {
+export interface ConfigService {
     archivePath: string;
     blueskyCredentials: Credentials;
     simulate: boolean;

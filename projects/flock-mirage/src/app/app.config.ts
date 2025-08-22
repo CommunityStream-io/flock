@@ -4,6 +4,8 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideHttpClient } from '@angular/common/http';
 
 import { routes } from './app.routes';
+import { FILE_PROCESSOR } from 'shared';
+import { FileProcessor } from './service/file-processor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -11,6 +13,10 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideAnimations(),
-    provideHttpClient()
+    provideHttpClient(),
+    {
+      provide: FILE_PROCESSOR,
+      useClass: FileProcessor
+    }
   ]
 };
