@@ -6,6 +6,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { StartButton } from "../start-button/start-button";
 
+/**
+ * Landing page for information about how they can be a bird of a feather and flock together!
+ *
+ * This is the first page that the user sees when they visit the app.
+ */
 @Component({
   selector: 'shared-landing-page',
   standalone: true,
@@ -13,6 +18,4 @@ import { StartButton } from "../start-button/start-button";
   templateUrl: './landing-page.html',
   styleUrl: './landing-page.css'
 })
-export class LandingPage {
-  // Component logic will be added when services are implemented
-}
+export class LandingPage {}
