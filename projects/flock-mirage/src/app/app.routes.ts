@@ -37,6 +37,9 @@ export const routes: Routes = [
           description: 'Authenticate with Bluesky to migrate',
           next: 'config',
           previous: 'upload',
+        },
+        resolve: {
+          extractedArchive: extractArchiveResolver
         }
       },
       {
@@ -57,9 +60,6 @@ export const routes: Routes = [
           description: 'Start the migration process',
           next: 'complete',
           previous: 'config',
-        },
-        resolve: {
-          extractedArchive: extractArchiveResolver
         }
       },
       {

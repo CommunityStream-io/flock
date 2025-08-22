@@ -1,11 +1,11 @@
 import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { LayoutComponent, Logger, LOGGER } from 'shared';
+import { LayoutComponent, Logger, LOGGER, SplashScreen } from 'shared';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, LayoutComponent],
+  imports: [RouterOutlet, LayoutComponent, SplashScreen],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
