@@ -2,7 +2,8 @@
   position: sticky;
   top: 0;
   z-index: 100;
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(0.5rem);
+  height: var(--header-height, 4rem);
 }
 
 .spacer {
@@ -17,12 +18,12 @@
 .app-title {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 0.5rem;
   color: inherit;
 }
 
 .app-icon {
-  font-size: 24px;
+  font-size: 1.5rem;
   line-height: 1;
 }
 
@@ -33,13 +34,13 @@
 .header-nav {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 0.5rem;
 }
 
 .nav-button {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 0.25rem;
 }
 
 .nav-button.active {
