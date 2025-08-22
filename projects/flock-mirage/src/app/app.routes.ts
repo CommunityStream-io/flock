@@ -8,7 +8,7 @@ import {
   Upload,
   StepLayout,
   StepRoute,
-  loggerInstrumentationResolver,
+  uploadValidGuard
 } from 'shared';
 
 export const routes: Routes = [
@@ -26,6 +26,7 @@ export const routes: Routes = [
         component: Upload,
         title: 'Upload Data',
         data: { description: 'Upload instagram archive', next: 'auth' },
+        canDeactivate: [uploadValidGuard],
       },
       {
         path: 'auth',
