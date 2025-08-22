@@ -11,7 +11,7 @@ import { StepNavigationComponent } from '../step-navigation/step-navigation';
   templateUrl: './step-layout.html',
   styleUrl: './step-layout.css',
   host: {
-    class: 'app-layout'
+    class: 'step-layout'
   },
 })
 export class StepLayout {}

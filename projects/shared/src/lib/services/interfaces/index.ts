@@ -4,3 +4,4 @@
  export * from './instagram';
  export * from './migration';
  export * from './logger';
+ export * from './loading';

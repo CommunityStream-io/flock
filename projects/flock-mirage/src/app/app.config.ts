@@ -15,7 +15,7 @@ import { routes } from './app.routes';
 import {
   FILE_PROCESSOR,
   LOGGER,
-  SentryLogger,
+  SplashScreenLoading,
   StepReuseStrategy,
 } from 'shared';
 import { FileProcessor } from './service/file-processor';
@@ -40,5 +40,6 @@ export const appConfig: ApplicationConfig = {
       provide: LOGGER,
       useClass: ConsoleLogger,
     },
+    SplashScreenLoading,
   ],
 };

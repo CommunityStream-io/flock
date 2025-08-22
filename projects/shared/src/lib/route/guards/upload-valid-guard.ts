@@ -1,5 +1,5 @@
 import { inject } from '@angular/core';
-import { CanDeactivateFn } from '@angular/router';
+import { CanDeactivateFn, Router } from '@angular/router';
 import { FileService, FILE_PROCESSOR } from '../../services';
 import { MatSnackBar } from '@angular/material/snack-bar';
 

@@ -8,7 +8,8 @@ import {
   Upload,
   StepLayout,
   StepRoute,
-  uploadValidGuard
+  uploadValidGuard,
+  extractArchiveResolver
 } from 'shared';
 
 export const routes: Routes = [
@@ -37,6 +38,9 @@ export const routes: Routes = [
           next: 'config',
           previous: 'upload',
         },
+        resolve: {
+          extractedArchive: extractArchiveResolver
+        },
       },
       {
         path: 'config',
@@ -56,7 +60,7 @@ export const routes: Routes = [
           description: 'Start the migration process',
           next: 'complete',
           previous: 'config',
-        },
+        }
       },
       {
         path: 'complete',

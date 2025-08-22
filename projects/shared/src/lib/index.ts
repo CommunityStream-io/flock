@@ -18,6 +18,7 @@ export * from './steps';
 
 // Theme System
 export * from './theme/theme-toggle';
+export * from './splash-screen/splash-screen';
 
 // ===== Shared Service Interfaces ======
 export * from './services';
