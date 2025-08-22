@@ -9,6 +9,7 @@ import { InjectionToken } from '@angular/core';
  export * from './instagram';
  export * from './migration';
  export * from './sentry-logger';
+ export * from './splash-screen-loading';
 
  // ==== Injection Tokens ====
  export const BLUESKY = new InjectionToken('Bluesky');

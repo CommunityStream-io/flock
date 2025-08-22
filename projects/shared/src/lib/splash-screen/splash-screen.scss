@@ -4,11 +4,16 @@ $color-background: #d6c18b;
 $color-twitter: #4099ff;
 
 .splash-screen {
+  top: 0;
+  left: 0;
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  
+  flex-direction: column;
+  row-gap: 4rem;
+  z-index: 1000;
+
   html {
     box-sizing: border-box;
   }

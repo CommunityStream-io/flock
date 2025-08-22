@@ -12,7 +12,7 @@ import { HeaderComponent } from '../header/header';
   standalone: true,
   imports: [CommonModule, RouterModule, MatSidenavModule, MatToolbarModule, MatIconModule, MatButtonModule, HeaderComponent],
   templateUrl: './layout.html',
-  styleUrl: './layout.css',
+  styleUrl: './layout.scss',
   encapsulation: ViewEncapsulation.None,
 })
 export class LayoutComponent {

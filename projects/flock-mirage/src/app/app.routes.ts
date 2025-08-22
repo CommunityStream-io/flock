@@ -27,7 +27,7 @@ export const routes: Routes = [
         component: Upload,
         title: 'Upload Data',
         data: { description: 'Upload instagram archive', next: 'auth' },
-        canDeactivate: [uploadValidGuard]
+        canDeactivate: [uploadValidGuard],
       },
       {
         path: 'auth',
@@ -40,7 +40,7 @@ export const routes: Routes = [
         },
         resolve: {
           extractedArchive: extractArchiveResolver
-        }
+        },
       },
       {
         path: 'config',

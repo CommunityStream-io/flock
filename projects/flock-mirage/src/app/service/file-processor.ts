@@ -24,7 +24,7 @@ export class FileProcessor implements FileService {
     const deferredPromise = new Promise<boolean>((resolve, reject) => {
       // Simulate extraction logic
       setTimeout(() => {
-        const isSuccess = Math.random() > 0.5; // Random success/failure
+        const isSuccess = Math.random() > 0.1; // Random success/failure
         if (isSuccess) {
           resolve(true);
         } else {
