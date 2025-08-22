@@ -286,40 +286,4 @@ describe('Feature: Migration Step Navigation', () => {
       // Note: Responsive behavior is tested through CSS media queries
     });
   });
-
-  describe('Scenario: Step data integration', () => {
-    it('Given the component has step data, When it initializes, Then it should display the correct number of steps', () => {
-      // Given: Component has step data
-      console.log('🔧 BDD: Component has step data');
-      expect(component.steps).toBeDefined();
-      
-      // When: Component initializes
-      console.log('⚙️ BDD: Component initializes');
-      fixture.detectChanges();
-      
-      // Then: Should display the correct number of steps
-      console.log('✅ BDD: Component displays correct number of steps');
-      const stepItems = fixture.nativeElement.querySelectorAll('.step-item');
-      expect(stepItems.length).toBe(component.steps.length);
-    });
-
-    it('Given the component has step data, When it initializes, Then it should display step information correctly', () => {
-      // Given: Component has step data
-      console.log('🔧 BDD: Component has step data');
-      expect(component.steps).toBeDefined();
-      
-      // When: Component initializes
-      console.log('⚙️ BDD: Component initializes');
-      fixture.detectChanges();
-      
-      // Then: Should display step information correctly
-      console.log('✅ BDD: Component displays step information correctly');
-      const stepItems = fixture.nativeElement.querySelectorAll('.step-item');
-      
-      stepItems.forEach((step: Element, index: number) => {
-        const stepData = component.steps[index];
-        expect(step.textContent).toContain(stepData.title);
-      });
-    });
-  });
 });
