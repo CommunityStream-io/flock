@@ -12,6 +12,7 @@ export * from './landing-page/landing-page';
 
 // =========== UI Components ==============
 export * from './theme-toggle/theme-toggle';
+export * from './router-splash/router-splash';
 
 // ====== Steps ======
 export * from './steps';
