@@ -8,7 +8,8 @@ import {
   Upload,
   StepLayout,
   StepRoute,
-  uploadValidGuard
+  uploadValidGuard,
+  extractArchiveResolver
 } from 'shared';
 
 export const routes: Routes = [
@@ -26,7 +27,7 @@ export const routes: Routes = [
         component: Upload,
         title: 'Upload Data',
         data: { description: 'Upload instagram archive', next: 'auth' },
-        canDeactivate: [uploadValidGuard],
+        canDeactivate: [uploadValidGuard]
       },
       {
         path: 'auth',
@@ -36,7 +37,7 @@ export const routes: Routes = [
           description: 'Authenticate with Bluesky to migrate',
           next: 'config',
           previous: 'upload',
-        },
+        }
       },
       {
         path: 'config',
@@ -57,6 +58,9 @@ export const routes: Routes = [
           next: 'complete',
           previous: 'config',
         },
+        resolve: {
+          extractedArchive: extractArchiveResolver
+        }
       },
       {
         path: 'complete',
