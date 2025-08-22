@@ -18,7 +18,9 @@ export class FileProcessor implements FileService {
       value: undefined
     });
   }
-  extractArchive(archivePath: string): Promise<boolean> {
+
+
+  extractArchive(): Promise<boolean> {
     const deferredPromise = new Promise<boolean>((resolve, reject) => {
       // Simulate extraction logic
       setTimeout(() => {

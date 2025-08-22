@@ -25,8 +25,6 @@ export interface FileService {
 
     /**
      * Extracts an archive using nodejs for desktop, or js for web version
-     * @param archivePath - The path to the archive to extract
-     * @see FileProcessor for a mock implementation in the mirage app
      */
-    extractArchive(archivePath: string): Promise<boolean>
+    extractArchive(): Promise<boolean>
 }

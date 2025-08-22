@@ -1,10 +1,23 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZoneChangeDetection } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import {
+  ApplicationConfig,
+  provideBrowserGlobalErrorListeners,
+  provideZoneChangeDetection,
+} from '@angular/core';
+import {
+  provideRouter,
+  RouteReuseStrategy,
+  withRouterConfig,
+} from '@angular/router';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideHttpClient } from '@angular/common/http';
 
 import { routes } from './app.routes';
-import { FILE_PROCESSOR, LOGGER, SentryLogger } from 'shared';
+import {
+  FILE_PROCESSOR,
+  LOGGER,
+  SentryLogger,
+  StepReuseStrategy,
+} from 'shared';
 import { FileProcessor } from './service/file-processor';
 import { ConsoleLogger } from './service/console-logger';
 
@@ -13,15 +26,19 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
+    {
+      provide: RouteReuseStrategy,
+      useClass: StepReuseStrategy,
+    },
     provideAnimations(),
     provideHttpClient(),
     {
       provide: FILE_PROCESSOR,
-      useClass: FileProcessor
+      useClass: FileProcessor,
     },
     {
       provide: LOGGER,
-      useClass: ConsoleLogger
-    }
-  ]
+      useClass: ConsoleLogger,
+    },
+  ],
 };
