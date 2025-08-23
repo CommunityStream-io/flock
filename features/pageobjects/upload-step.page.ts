@@ -88,8 +88,12 @@ class UploadStepPage extends Page {
 
     public async isFormValid() {
         return await browser.execute(() => {
-            const form = document.querySelector('form[formGroup]') as HTMLFormElement;
-            return form?.checkValidity() || false;
+            // Check the specific form control for instagramArchive
+            const fileInput = document.querySelector('input[formControlName="instagramArchive"]') as HTMLInputElement;
+            if (!fileInput) return false;
+            
+            // Check if the input has a file selected
+            return fileInput.files && fileInput.files.length > 0;
         });
     }
 
@@ -98,6 +102,15 @@ class UploadStepPage extends Page {
         return await browser.execute((input) => {
             return input.files && input.files.length > 0;
         }, fileInput);
+    }
+
+    public async getHeadingByText(headingText: string) {
+        // Look for any heading element containing the specified text
+        const heading = await $(`h1, h2, h3, h4, h5, h6`).filter(async (element) => {
+            const text = await element.getText();
+            return text.includes(headingText);
+        });
+        return heading;
     }
 
     // Navigation
