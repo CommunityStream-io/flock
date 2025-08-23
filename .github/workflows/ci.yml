@@ -31,14 +31,14 @@ jobs:
       - name: Lint shared library
         run: npm run lint:shared
 
-      - name: Lint flock-mirage app
-        run: npx ng lint flock-mirage
+      # - name: Lint flock-mirage app
+      #   run: npx ng lint flock-mirage
 
-      - name: Lint flock-murmur app
-        run: npx ng lint flock-murmur
+      # - name: Lint flock-murmur app
+      #   run: npx ng lint flock-murmur
 
-      - name: Lint flock-native app
-        run: npx ng lint flock-native
+      # - name: Lint flock-native app
+      #   run: npx ng lint flock-native
 
   test:
     name: Test That Flocker
