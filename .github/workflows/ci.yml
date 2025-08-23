@@ -10,6 +10,8 @@ jobs:
   flock:
     name: Flock Project
     runs-on: ubuntu-latest
+    env:
+      PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
