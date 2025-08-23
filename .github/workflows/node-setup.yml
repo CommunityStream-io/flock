@@ -1,6 +1,19 @@
 name: Node Setup
 
+on:
+  workflow_call:
+    inputs:
+      node-version:
+        required: false
+        type: string
+        default: '24.5.0'
+      cache-dependency-path:
+        required: false
+        type: string
+        default: 'package-lock.json'
 
+jobs:
+  setup:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
