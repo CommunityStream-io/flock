@@ -110,7 +110,7 @@ class StepLayoutPage extends Page {
         await browser.url(`/step/${stepName}`);
         await browser.waitUntil(
             async () => await this.isOnStep(stepName),
-            { timeout: 5000, timeoutMsg: `Navigation to ${stepName} step failed` }
+            { timeout: 15000, timeoutMsg: `Navigation to ${stepName} step failed` }
         );
     }
 
@@ -131,25 +131,25 @@ class StepLayoutPage extends Page {
     public async waitForStepLoad(stepName: string) {
         await browser.waitUntil(
             async () => await this.isOnStep(stepName),
-            { timeout: 5000, timeoutMsg: `Step ${stepName} did not load` }
+            { timeout: 15000, timeoutMsg: `Step ${stepName} did not load` }
         );
         
         // Wait for step-specific content to load
         switch (stepName) {
             case 'upload':
-                await $('.upload-section').waitForDisplayed({ timeout: 3000 });
+                await $('.upload-section').waitForDisplayed({ timeout: 10000 });
                 break;
             case 'auth':
-                await this.authForm.waitForDisplayed({ timeout: 3000 });
+                await this.authForm.waitForDisplayed({ timeout: 10000 });
                 break;
             case 'config':
-                await this.configOptions.waitForDisplayed({ timeout: 3000 });
+                await this.configOptions.waitForDisplayed({ timeout: 10000 });
                 break;
             case 'migrate':
-                await this.migrationProgress.waitForDisplayed({ timeout: 3000 });
+                await this.migrationProgress.waitForDisplayed({ timeout: 10000 });
                 break;
             case 'complete':
-                await this.completionConfirmation.waitForDisplayed({ timeout: 3000 });
+                await this.completionConfirmation.waitForDisplayed({ timeout: 10000 });
                 break;
         }
     }

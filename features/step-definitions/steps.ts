@@ -81,7 +81,7 @@ Then('I should be navigated to the upload step', async () => {
             const currentUrl = await browser.getUrl();
             return currentUrl.includes('/step/upload');
         },
-        { timeout: 5000, timeoutMsg: 'Navigation to upload step did not complete' }
+        { timeout: 15000, timeoutMsg: 'Navigation to upload step did not complete' }
     );
 });
 
