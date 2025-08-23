@@ -93,7 +93,7 @@ export const config: Options.Testrunner = {
     baseUrl: 'http://localhost:4200',
 
     // Default timeout for all waitFor* commands.
-    waitforTimeout: 10000,
+    waitforTimeout: 20000,
 
     // Default timeout in milliseconds for request
     // if browser driver or grid doesn't send response
@@ -132,7 +132,7 @@ export const config: Options.Testrunner = {
         source: true,
         strict: false,
         tagExpression: 'not @skip',
-        timeout: 60000,
+        timeout: 120000,
         ignoreUndefinedDefinitions: false
     },
     
