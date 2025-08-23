@@ -4,26 +4,22 @@
 
 // Declare global WebdriverIO variables and expect function
 declare global {
+    // WebdriverIO globals
     const browser: WebdriverIO.Browser;
     const $: typeof browser.$;
     const $$: typeof browser.$$;
     
-    // Declare expect function from expect-webdriverio
+    // Expect function from expect-webdriverio
     const expect: any;
-    
-    // Extend WebdriverIO Element to include DOM properties
-    namespace WebdriverIO {
-        interface Element {
-            files?: FileList;
-            dispatchEvent?: (event: Event) => boolean;
-            checkValidity?: () => boolean;
-            validationMessage?: string;
-        }
-        
-        // Extend ChainablePromiseElement to include filter method
-        interface ChainablePromiseElement<T> {
-            filter(fn: (element: T, index: number) => boolean | Promise<boolean>): ChainablePromiseElement<T>;
-        }
+}
+
+// Extend WebdriverIO types to include DOM properties
+declare module 'webdriverio' {
+    interface Element {
+        files?: FileList;
+        dispatchEvent?: (event: Event) => boolean;
+        checkValidity?: () => boolean;
+        validationMessage?: string;
     }
 }
 

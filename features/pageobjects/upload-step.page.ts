@@ -66,7 +66,7 @@ class UploadStepPage extends Page {
             const dt = new DataTransfer();
             const file = new File([mockFile.content], mockFile.name, { type: mockFile.type });
             dt.items.add(file);
-            input.files = dt.files;
+            (input as HTMLInputElement).files = dt.files;
             
             // Trigger change event
             const event = new Event('change', { bubbles: true });
@@ -100,7 +100,7 @@ class UploadStepPage extends Page {
     public async hasFiles() {
         const fileInput = await this.fileInput;
         return await browser.execute((input) => {
-            return input.files && input.files.length > 0;
+            return (input as HTMLInputElement).files && (input as HTMLInputElement).files!.length > 0;
         }, fileInput);
     }
 

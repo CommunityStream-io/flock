@@ -103,7 +103,8 @@ export const config: Options.Testrunner = {
     connectionRetryCount: 3,
 
     // Test runner services
-    services: ['chromedriver'],
+    // Note: chromedriver service is built-in for WebdriverIO v9
+    services: [],
     
     // Framework you want to run your specs with.
     framework: 'cucumber',
