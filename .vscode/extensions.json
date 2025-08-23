@@ -1,4 +1,37 @@
 {
-  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=827846
-  "recommendations": ["angular.ng-template"]
+    "recommendations": [
+        // Cucumber Support
+        "alexkrechik.cucumberautocomplete",
+        "cucumber.cucumber",
+
+        // WebdriverIO Support
+        "webdriverio.webdriverio",
+
+        // TypeScript Support
+        "ms-vscode.vscode-typescript-next",
+
+        // Testing Support
+        "ms-vscode.test-adapter-converter",
+        "hbenl.vscode-test-explorer",
+
+        // Angular Support
+        "angular.ng-template",
+        "ms-vscode.vscode-json",
+
+        // Debugging Support
+        "ms-vscode.node-debug2",
+
+        // Git Support
+        "eamodio.gitlens",
+
+        // Code Quality
+        "esbenp.prettier-vscode",
+        "ms-vscode.vscode-eslint",
+
+        // Terminal Support
+        "ms-vscode.vscode-js-debug",
+
+        // File Icons
+        "pkief.material-icon-theme"
+    ]
 }

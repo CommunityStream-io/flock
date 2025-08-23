@@ -9,7 +9,7 @@ export const config: Options.Testrunner = {
     // WebdriverIO allows it to run your tests in arbitrary locations (e.g. locally or
     // on a remote machine).
     runner: 'local',
-    
+
     //
     // =====================
     // ts-node Configurations
@@ -33,7 +33,7 @@ export const config: Options.Testrunner = {
     specs: [
         './features/**/*.feature'
     ],
-    
+
     // Patterns to exclude.
     exclude: [
         // 'path/to/excluded/files'
@@ -48,7 +48,7 @@ export const config: Options.Testrunner = {
     // sessions. Within your capabilities you can overwrite the spec and exclude options in
     // order to group specific specs to a specific capability.
     maxInstances: 10,
-    
+
     capabilities: [{
         maxInstances: 5,
         browserName: 'chrome',
@@ -75,7 +75,7 @@ export const config: Options.Testrunner = {
     //
     // Level of logging verbosity: trace | debug | info | warn | error | silent
     logLevel: 'warn',
-    
+
     // Set specific log levels per logger to reduce noise
     logLevels: {
         webdriver: 'warn',
@@ -93,11 +93,11 @@ export const config: Options.Testrunner = {
     baseUrl: 'http://localhost:4200',
 
     // Default timeout for all waitFor* commands.
-    waitforTimeout: 10000,
+    waitforTimeout: 2000,
 
     // Default timeout in milliseconds for request
     // if browser driver or grid doesn't send response
-    connectionRetryTimeout: 120000,
+    connectionRetryTimeout: 5000,
 
     // Default request retries count
     connectionRetryCount: 3,
@@ -105,7 +105,7 @@ export const config: Options.Testrunner = {
     // Test runner services
     // Note: chromedriver service is built-in for WebdriverIO v9
     services: [],
-    
+
     // Framework you want to run your specs with.
     framework: 'cucumber',
 
@@ -135,7 +135,7 @@ export const config: Options.Testrunner = {
         timeout: 60000,
         ignoreUndefinedDefinitions: false
     },
-    
+
     //
     // =====
     // Hooks
@@ -144,7 +144,7 @@ export const config: Options.Testrunner = {
     // it and to build services around it. You can either apply a single function or an array of
     // methods to it. If one of them returns with a promise, WebdriverIO will wait until that promise got
     // resolved to continue.
-    
+
     // Add screenshot on failure
     afterTest: function (test, context, { error, result, duration, passed, retries }) {
         if (!passed) {

@@ -1,0 +1,61 @@
+{
+    // E2E Testing Configuration
+    "typescript.preferences.includePackageJsonAutoImports": "on",
+    "typescript.suggest.autoImports": true,
+    "typescript.updateImportsOnFileMove.enabled": "always",
+    
+    // File Associations for Cucumber
+    "files.associations": {
+        "*.feature": "cucumber"
+    },
+    
+    // Cucumber Extension Settings
+    "cucumber.features": [
+        "features/**/*.feature"
+    ],
+    "cucumber.glue": [
+        "features/step-definitions/**/*.ts",
+        "features/support/**/*.ts"
+    ],
+    "cucumber.snippets": [
+        "features/step-definitions/**/*.ts"
+    ],
+    
+    // WebdriverIO Support
+    "files.exclude": {
+        "**/node_modules/@wdio": false
+    },
+    
+    // Debugging Settings
+    "debug.allowBreakpointsEverywhere": true,
+    "debug.console.fontSize": 12,
+    "debug.console.lineHeight": 1.2,
+    
+    // Terminal Settings for E2E
+    "terminal.integrated.defaultProfile.osx": "zsh",
+    "terminal.integrated.env.osx": {
+        "NODE_ENV": "development"
+    },
+    
+    // File Watching for E2E
+    "files.watcherExclude": {
+        "**/allure-results/**": true,
+        "**/node_modules/**": true
+    },
+    
+    // Search Settings
+    "search.exclude": {
+        "**/allure-results": true,
+        "**/node_modules": true,
+        "**/dist": true
+    },
+    
+    // TypeScript Settings for E2E
+    "typescript.preferences.importModuleSpecifier": "relative",
+    "typescript.suggest.paths": true,
+    
+    // Cucumber Syntax Highlighting
+    "files.associations": {
+        "*.feature": "cucumber"
+    }
+}

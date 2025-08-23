@@ -340,6 +340,91 @@ graph TB
     style H fill:#2196f3
 ```
 
+## 🧪 **E2E Debugging (VS Code/Cursor)**
+
+### **Quick Setup**
+1. **Install Extensions**: Cucumber, WebdriverIO, TypeScript support
+2. **Set Breakpoints**: In step definitions, page objects, or support files
+3. **Press F5**: Select debug configuration - WebdriverIO runs directly
+
+### **Debug Configurations**
+- **Single Feature** - Debug current `.feature` file
+- **All Features** - Debug entire test suite  
+- **By Tag** - Debug tests with `@debug` tag
+- **Watch Mode** - Continuous debugging with auto-reload
+- **Angular App** - Debug the Angular application in Chrome
+- **E2E Tests Only** - Debug only the test runner
+
+### **Compound Debugging (Recommended)**
+- **Debug E2E + Angular App** - Debug both simultaneously
+- **Debug E2E + Angular App (Single Feature)** - Debug single feature + app
+- **Debug E2E + Angular App (Watch Mode)** - Debug with continuous reload
+
+### **Setting Breakpoints**
+```typescript
+// In step definitions
+Given('I upload a file', async function() {
+    await browser.url('/upload'); // 🔴 Set breakpoint here
+    // Your implementation
+});
+
+// In page objects  
+export class UploadPage {
+    public async uploadFile() {
+        // 🔴 Set breakpoint here
+        await this.fileInput.setValue(filePath);
+    }
+}
+```
+
+### **Debugging Tips**
+- **Browser DevTools**: Set `HEADLESS: false` to see browser
+- **Console Logging**: Use `console.log()` for state inspection
+- **Async Debugging**: Use `await` and proper error handling
+- **Element Inspection**: Check URLs, titles, and element states
+- **Direct WebdriverIO**: Launches WebdriverIO directly without custom scripts
+- **Compound Debugging**: Use compound configurations to debug both app and tests
+- **Chrome DevTools**: Set breakpoints in Angular components and services
+- **Test Runner Debugging**: Set breakpoints in step definitions and page objects
+
+### **Compound Debugging Workflow**
+
+#### **Step 1: Set Breakpoints in Both Places**
+```typescript
+// 🔴 Angular App Breakpoints (Chrome DevTools)
+// projects/flock-mirage/src/app/app.component.ts
+export class AppComponent {
+    ngOnInit() {
+        console.log('App initialized'); // 🔴 Set breakpoint here
+    }
+}
+
+// 🔴 E2E Test Breakpoints (VS Code)
+// features/step-definitions/steps.ts
+Given('I upload a file', async function() {
+    await browser.url('/upload'); // 🔴 Set breakpoint here
+    // Your implementation
+});
+```
+
+#### **Step 2: Launch Compound Debugger**
+1. **Press F5** and select "Debug E2E + Angular App"
+2. **VS Code launches two debuggers**:
+   - Chrome debugger for Angular app
+   - Node.js debugger for E2E tests
+3. **Both debuggers run simultaneously** and stop at their respective breakpoints
+
+#### **Step 3: Debug Both Sides**
+- **Chrome DevTools**: Debug Angular components, services, and state
+- **VS Code Debugger**: Debug test logic, step definitions, and page objects
+- **Cross-reference**: See how test actions affect the Angular application
+
+### **Common Issues**
+- **Breakpoints not working**: Check source maps and TypeScript compilation
+- **Browser not opening**: Verify `HEADLESS: false` and Chrome installation
+- **Tests not found**: Check `tsconfig.e2e.json` paths and file extensions
+- **Compound debugger not starting**: Ensure both configurations exist and Angular server is running
+
 ## 🧪 **Test Implementation Details**
 
 ### **File Mocking Strategy**

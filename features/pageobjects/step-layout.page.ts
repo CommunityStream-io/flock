@@ -100,7 +100,7 @@ class StepLayoutPage extends Page {
     public async getCurrentStepHighlight() {
         const activeIndicator = await this.currentStepIndicator;
         if (await activeIndicator.isExisting()) {
-            return await activeIndicator.getAttribute('data-step') || 
+            return await activeIndicator.getAttribute('data-step') ||
                    await activeIndicator.getText();
         }
         return null;
@@ -133,14 +133,14 @@ class StepLayoutPage extends Page {
             async () => await this.isOnStep(stepName),
             { timeout: 5000, timeoutMsg: `Step ${stepName} did not load` }
         );
-        
+
         // Wait for step-specific content to load
         switch (stepName) {
             case 'upload':
                 await $('.upload-section').waitForDisplayed({ timeout: 3000 });
                 break;
             case 'auth':
-                await this.authForm.waitForDisplayed({ timeout: 3000 });
+                await this.authForm.waitForDisplayed({ timeout: 5000 });
                 break;
             case 'config':
                 await this.configOptions.waitForDisplayed({ timeout: 3000 });

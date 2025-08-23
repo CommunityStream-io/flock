@@ -1,20 +1,222 @@
 {
-  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-  "version": "0.2.0",
-  "configurations": [
-    {
-      "name": "ng serve",
-      "type": "chrome",
-      "request": "launch",
-      "preLaunchTask": "npm: start",
-      "url": "http://localhost:4200/"
-    },
-    {
-      "name": "ng test",
-      "type": "chrome",
-      "request": "launch",
-      "preLaunchTask": "npm: test",
-      "url": "http://localhost:9876/debug.html"
-    }
-  ]
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug E2E Tests - Single Feature",
+            "type": "node",
+            "request": "launch",
+            "program": "${workspaceFolder}/node_modules/.bin/wdio",
+            "args": [
+                "run",
+                "${workspaceFolder}/wdio.conf.ts",
+                "--spec",
+                "${file}"
+            ],
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "NODE_ENV": "development",
+                "HEADLESS": "false"
+            },
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "skipFiles": [
+                "<node_internals>/**",
+                "node_modules/**"
+            ],
+            "sourceMaps": true,
+            "outFiles": [
+                "${workspaceFolder}/dist/**/*.js"
+            ],
+            "preLaunchTask": "Start Angular Dev Server"
+        },
+        {
+            "name": "Debug E2E Tests - All Features",
+            "type": "node",
+            "request": "launch",
+            "program": "${workspaceFolder}/node_modules/.bin/wdio",
+            "args": [
+                "run",
+                "${workspaceFolder}/wdio.conf.ts"
+            ],
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "NODE_ENV": "development",
+                "HEADLESS": "false"
+            },
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "skipFiles": [
+                "<node_internals>/**",
+                "node_modules/**"
+            ],
+            "sourceMaps": true,
+            "outFiles": [
+                "${workspaceFolder}/dist/**/*.js"
+            ],
+            "preLaunchTask": "Start Angular Dev Server"
+        },
+        {
+            "name": "Debug E2E Tests - Specific Tag",
+            "type": "node",
+            "request": "launch",
+            "program": "${workspaceFolder}/node_modules/.bin/wdio",
+            "args": [
+                "run",
+                "${workspaceFolder}/wdio.conf.ts",
+                "--cucumberOpts.tagExpression",
+                "@debug"
+            ],
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "NODE_ENV": "development",
+                "HEADLESS": "false"
+            },
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "skipFiles": [
+                "<node_internals>/**",
+                "node_modules/**"
+            ],
+            "sourceMaps": true,
+            "outFiles": [
+                "${workspaceFolder}/dist/**/*.js"
+            ],
+            "preLaunchTask": "Start Angular Dev Server"
+        },
+        {
+            "name": "Debug E2E Tests - Watch Mode",
+            "type": "node",
+            "request": "launch",
+            "program": "${workspaceFolder}/node_modules/.bin/wdio",
+            "args": [
+                "run",
+                "${workspaceFolder}/wdio.conf.ts",
+                "--watch"
+            ],
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "NODE_ENV": "development",
+                "HEADLESS": "false"
+            },
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "skipFiles": [
+                "<node_internals>/**",
+                "node_modules/**"
+            ],
+            "sourceMaps": true,
+            "outFiles": [
+                "${workspaceFolder}/dist/**/*.js"
+            ],
+            "preLaunchTask": "Start Angular Dev Server"
+        },
+        {
+            "name": "Debug E2E Tests - NPM Script",
+            "type": "node",
+            "request": "launch",
+            "program": "${workspaceFolder}/node_modules/.bin/npm",
+            "args": ["run", "test:e2e"],
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "NODE_ENV": "development",
+                "HEADLESS": "false"
+            },
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "skipFiles": [
+                "<node_internals>/**",
+                "node_modules/**"
+            ],
+            "sourceMaps": true,
+            "outFiles": [
+                "${workspaceFolder}/dist/**/*.js"
+            ],
+            "preLaunchTask": "Start Angular Dev Server"
+        },
+        {
+            "name": "Debug Angular App",
+            "type": "chrome",
+            "request": "launch",
+            "url": "http://localhost:4200",
+            "webRoot": "${workspaceFolder}",
+            "sourceMaps": true,
+            "sourceMapPathOverrides": {
+                "webpack:/*": "${webRoot}/*",
+                "/./*": "${webRoot}/*",
+                "/src/*": "${webRoot}/projects/flock-mirage/src/*",
+                "/*": "*",
+                "/./~/*": "${webRoot}/node_modules/*"
+            },
+            "preLaunchTask": "Start Angular Dev Server",
+            "env": {
+                "NODE_ENV": "development"
+            }
+        },
+        {
+            "name": "Debug E2E Tests Only",
+            "type": "node",
+            "request": "launch",
+            "program": "${workspaceFolder}/node_modules/.bin/wdio",
+            "args": [
+                "run",
+                "${workspaceFolder}/wdio.conf.ts"
+            ],
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "NODE_ENV": "development",
+                "HEADLESS": "false"
+            },
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "skipFiles": [
+                "<node_internals>/**",
+                "node_modules/**"
+            ],
+            "sourceMaps": true,
+            "outFiles": [
+                "${workspaceFolder}/dist/**/*.js"
+            ]
+        }
+    ],
+    "compounds": [
+        {
+            "name": "Debug E2E + Angular App",
+            "configurations": [
+                "Debug Angular App",
+                "Debug E2E Tests Only"
+            ],
+            "stopAll": true,
+            "presentation": {
+                "hidden": false,
+                "group": "E2E Debugging",
+                "order": 1
+            }
+        },
+        {
+            "name": "Debug E2E + Angular App (Single Feature)",
+            "configurations": [
+                "Debug Angular App",
+                "Debug E2E Tests - Single Feature"
+            ],
+            "stopAll": true,
+            "presentation": {
+                "hidden": false,
+                "group": "E2E Debugging",
+                "order": 2
+            }
+        },
+        {
+            "name": "Debug E2E + Angular App (Watch Mode)",
+            "configurations": [
+                "Debug Angular App",
+                "Debug E2E Tests - Watch Mode"
+            ],
+            "stopAll": true,
+            "presentation": {
+                "hidden": false,
+                "group": "E2E Debugging",
+                "order": 3
+            }
+        }
+    ]
 }
