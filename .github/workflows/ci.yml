@@ -65,7 +65,7 @@ jobs:
         run: npx ng build --project=shared
 
       - name: Run tests
-        run: npm test -- --browsers=ChromeHeadless
+        run: npm test -- --browsers=ChromeHeadless --watch=false
 
   e2e:
     name: End-to-End Test That Flocker

@@ -8,7 +8,7 @@ import { LayoutComponent, Logger, LOGGER, RouterSplash, SplashScreenLoading } fr
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
-export class AppComponent {
+export class App {
   title = 'flock-mirage';
   constructor() {
     const logger = inject<Logger>(LOGGER);
