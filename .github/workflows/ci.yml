@@ -90,6 +90,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Install Angular CLI globally
+        run: npm install -g @angular/cli
+
       - name: Install Allure command line
         run: npm install -g allure-commandline
 
@@ -99,8 +102,11 @@ jobs:
       - name: Build flock-mirage app
         run: npx ng build --project=flock-mirage --configuration=development
 
-      - name: Run e2e tests
-        run: npm run test:e2e:headless
+      - name: Run e2e tests with Angular app
+        run: npm run test:e2e:ci
+        env:
+          CI: true
+          NODE_ENV: production
 
       - name: Ensure allure-results directory exists
         run: mkdir -p allure-results
