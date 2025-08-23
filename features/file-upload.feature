@@ -12,7 +12,7 @@ Feature: File Upload and Validation - Instagram Archive Processing
   Scenario: Upload interface displays correctly
     Then I should see the upload section
     And I should see the heading "Upload Your Files"
-    And I should see the description "Select files to upload for migration."
+    And I should see the description "Upload instagram archive"
     And I should see a "Choose Files" button with upload icon
     And the file input should accept ".zip" files
 
