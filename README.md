@@ -1,4 +1,4 @@
-# 🦅 Flock - Bluesky Social Migrator
+# 🦅 Flock - Bluesky Social Migrator [![Feathering the Nest](https://github.com/CommunityStream-io/flock/actions/workflows/ci.yml/badge.svg)](https://github.com/CommunityStream-io/flock/actions/workflows/ci.yml)
 
 A **flock** of Angular applications soaring through the social media migration skies! Each variant has its own personality while sharing the same nest of components and services. Built with a unified M2 Material design that keeps our flock flying in perfect formation.
 
