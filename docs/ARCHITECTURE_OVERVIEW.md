@@ -20,6 +20,7 @@ This architecture documentation has been organized into focused, digestible docu
 - **[CLI_INTEGRATION.md](CLI_INTEGRATION.md)** - CLI tool integration and bridge services
 - **[TESTING_ARCHITECTURE.md](TESTING_ARCHITECTURE.md)** - Testing strategy and BDD methodology
 - **[ALLURE_REPORTING_SETUP.md](ALLURE_REPORTING_SETUP.md)** - Allure reporting configuration and CI integration
+- **[WEBDRIVERIO_HEADLESS_SETUP.md](WEBDRIVERIO_HEADLESS_SETUP.md)** - WebdriverIO headless mode configuration and CI integration
 
 ### **📋 Technical Guides**
 - **[BUILD_DEPLOYMENT.md](BUILD_DEPLOYMENT.md)** - Build configurations and deployment strategies
@@ -39,6 +40,7 @@ The Bluesky Migration Application implements a **Route-Based Guided Form** archi
 3. **Service-Oriented Architecture** - Services wrap migration tool extensions with progress hooks
 4. **Multi-App Architecture** - Three variants: MVP (simulation), Web (browser), Desktop (Electron)
 5. **Environment-Aware Service Selection** - Automatic selection of appropriate implementations
+6. **Comprehensive Testing & Reporting** - BDD methodology with Allure reporting and CI integration
 
 ### **App Variants**
 
@@ -106,3 +108,5 @@ graph LR
 1. Focus on **[BUILD_DEPLOYMENT.md](BUILD_DEPLOYMENT.md)** for build configurations
 2. Review **[PERFORMANCE_OPTIMIZATION.md](PERFORMANCE_OPTIMIZATION.md)** for optimization strategies
 3. Check **[TESTING_ARCHITECTURE.md](TESTING_ARCHITECTURE.md)** for CI/CD integration
+4. Review **[ALLURE_REPORTING_SETUP.md](ALLURE_REPORTING_SETUP.md)** for test reporting and CI artifacts
+5. Check **[WEBDRIVERIO_HEADLESS_SETUP.md](WEBDRIVERIO_HEADLESS_SETUP.md)** for CI test execution configuration
