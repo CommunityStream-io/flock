@@ -54,8 +54,7 @@ export const config: Options.Testrunner = {
         browserName: 'chrome',
         acceptInsecureCerts: true,
         'goog:chromeOptions': {
-            // Use Playwright's Chromium binary if available
-            binary: process.env.PW_CHROMIUM_BINARY || '/home/ubuntu/.cache/ms-playwright/chromium-1187/chrome-linux/chrome',
+            ...(process.env.PW_CHROMIUM_BINARY ? { binary: process.env.PW_CHROMIUM_BINARY } : {}),
             args: [
                 ...(process.env.HEADLESS === 'true' ? ['--headless=new'] : []),
                 '--no-sandbox',
