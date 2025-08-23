@@ -69,7 +69,7 @@ Each step validates its data before allowing the next step, ensuring our migrati
 
 ## 🎯 **Key Principles**
 
-1. **Configuration Drives Everything** - Like a dodo bird's nest plan
+1. **Configuration Drives Everything** - The migratory flight plan
 2. **Environment-Aware Services** - Each bird gets the tools it needs
 3. **Shared Components** - Common nest elements for consistency
 4. **Progressive Validation** - Each step builds on the previous
