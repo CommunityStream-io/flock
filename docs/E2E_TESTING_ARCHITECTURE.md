@@ -88,7 +88,7 @@ export const config: Options.Testrunner = {
     reporters: ['spec'],
     maxInstances: 10,
     bail: 0,
-    baseUrl: 'http://localhost',
+    baseUrl: 'http://localhost:4200',
     waitforTimeout: 10000,
     connectionRetryTimeout: 120000,
     connectionRetryCount: 3

@@ -95,7 +95,7 @@ jobs:
         run: npx ng build --project=flock-mirage --configuration=development
 
       - name: Run e2e tests
-        run: npm run test:e2e
+        run: npm run test:e2e:headless
 
   build:
     name: Build That Flocker
