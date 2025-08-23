@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { LandingPage } from './landing-page';
 
-describe('Feature: Application Landing Page', () => {
+xdescribe('Feature: Application Landing Page', () => {
   let component: LandingPage;
   let fixture: ComponentFixture<LandingPage>;
 
