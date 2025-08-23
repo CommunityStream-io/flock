@@ -16,7 +16,7 @@ Feature: File Upload and Validation - Instagram Archive Processing
     And I should see a "Choose Files" button with upload icon
     And the file input should accept ".zip" files
 
-  @file-upload @file-selection @skip
+  @file-upload @file-selection 
   Scenario: Valid file selection displays correctly
     When I select a valid Instagram archive file "instagram-export.zip"
     Then the file should be selected in the file input
@@ -25,7 +25,7 @@ Feature: File Upload and Validation - Instagram Archive Processing
     And I should see "instagram-export.zip" in the file list
     And I should see a delete button for the selected file
 
-  @file-upload @file-validation @skip
+  @file-upload @file-validation 
   Scenario: File validation provides feedback
     When I select a valid Instagram archive file "valid-archive.zip"
     Then the file validation should succeed
@@ -34,7 +34,7 @@ Feature: File Upload and Validation - Instagram Archive Processing
     Then the file validation should fail
     And I should see validation error messages
 
-  @file-upload @file-removal @skip
+  @file-upload @file-removal 
   Scenario: File removal works correctly
     Given I have selected a valid Instagram archive file "test-archive.zip"
     When I click the delete button for "test-archive.zip"
@@ -42,7 +42,7 @@ Feature: File Upload and Validation - Instagram Archive Processing
     And the file input should be reset
     And I should not see the selected files section
 
-  @file-upload @form-state @skip
+  @file-upload @form-state 
   Scenario: Form state updates correctly with file operations
     Then the Instagram archive form control should be invalid initially
     When I select a valid Instagram archive file "archive.zip"
