@@ -1,0 +1,23 @@
+{
+  "build": {
+    "dockerfile": "./Dockerfile",
+    "context": "."
+  },
+  "terminals": [
+    {
+      "name": "Angular Dev Server",
+      "command": "ng serve --configuration=development",
+      "cwd": "."
+    },
+    {
+      "name": "Angular Tests",
+      "command": "ng test --watch",
+      "cwd": "."
+    },
+    {
+      "name": "E2E Tests",
+      "command": "npm run test:e2e:watch:headless",
+      "cwd": "."
+    }
+  ]
+}
