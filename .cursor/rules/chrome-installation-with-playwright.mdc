@@ -1,0 +1,34 @@
+## Chrome Installation via Playwright (Cursor Environment)
+
+### Purpose
+Use Playwright solely to download a stable Chromium build and required codecs. We do not run tests with Playwright; WebdriverIO remains our e2e runner.
+
+### One-time Setup
+- Install Chromium binary only (no system deps):
+```bash
+npx playwright install chromium
+```
+- Chromium path (default cache location):
+```bash
+/home/ubuntu/.cache/ms-playwright/chromium-1187/chrome-linux/chrome
+```
+  - Use `echo $(npx -c 'node -e "console.log(require("os").homedir()+"/.cache/ms-playwright/chromium-1187/chrome-linux/chrome")"')` to print the path.
+
+### Runtime Usage (WDIO)
+- Prefer system Chrome if present.
+- Optionally point WDIO to Playwright Chromium via env var:
+```bash
+PW_CHROMIUM_BINARY=/path/to/chrome npm run test:e2e:ci
+```
+- WDIO reads `process.env.PW_CHROMIUM_BINARY` and sets `goog:chromeOptions.binary`.
+
+### CI Script
+- Start dev server and run WDIO headless using Playwright Chromium if provided:
+```bash
+HEADLESS=true PW_CHROMIUM_BINARY=$(npx -c 'node -e "console.log(require("os").homedir()+"/.cache/ms-playwright/chromium-1187/chrome-linux/chrome")"') \
+  npm run test:e2e:ci:full
+```
+
+### Notes
+- Do not commit Playwright config or tests; we only keep package.json entries to download Chromium.
+- If system libs are required, use `npx playwright install --with-deps` (not recommended in constrained environments).
