@@ -29,7 +29,7 @@
               "zone.js/testing"
             ],
             "tsConfig": "projects/shared/tsconfig.spec.json",
-            "karmaConfig": "projects/shared/karma.conf.js"
+            "karmaConfig": "karma.conf.js"
           }
         },
         "lint": {

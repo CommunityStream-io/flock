@@ -8,7 +8,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test shared",
     "test:watch": "ng test shared --watch",
-    "test:ci": "cross-env CI=true ng test shared --karma-config=projects/shared/karma.conf.js --watch=false",
+    "test:ci": "cross-env CI=true ng test shared --watch=false",
     "test:shared": "ng test shared",
     "test:shared:watch": "ng test shared --watch",
     "test:shared:ci": "cross-env CI=true ng test shared",
