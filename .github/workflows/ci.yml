@@ -7,9 +7,99 @@ on:
     branches: [ "*" ]
 
 jobs:
-  flock:
-    name: Flock Project
+  lint:
+    name: Lint That Flocker
     runs-on: cimg/node:20.19.4-browsers
+    env:
+      PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24.5.0'
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint shared library
+        run: npm run lint:shared
+
+      - name: Lint flock-mirage app
+        run: npx ng lint flock-mirage
+
+      - name: Lint flock-murmur app
+        run: npx ng lint flock-murmur
+
+      - name: Lint flock-native app
+        run: npx ng lint flock-native
+
+  test:
+    name: Test That Flocker
+    runs-on: cimg/node:20.19.4-browsers
+    env:
+      PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24.5.0'
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build shared library
+        run: npx ng build --project=shared
+
+      - name: Run tests
+        run: npm test
+
+  e2e:
+    name: End-to-End Test That Flocker
+    runs-on: cimg/node:20.19.4-browsers
+    env:
+      PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24.5.0'
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build shared library
+        run: npx ng build --project=shared
+
+      - name: Build flock-mirage app
+        run: npx ng build --project=flock-mirage --configuration=development
+
+      - name: Run e2e tests
+        run: npm run test:e2e
+
+  build:
+    name: Build That Flocker
+    runs-on: ubuntu-latest
     env:
       PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
     steps:
