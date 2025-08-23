@@ -47,24 +47,23 @@ export const config: Options.Testrunner = {
     // time. Depending on the number of capabilities, WebdriverIO launches several test
     // sessions. Within your capabilities you can overwrite the spec and exclude options in
     // order to group specific specs to a specific capability.
-    maxInstances: 10,
+    maxInstances: 1,
     
     capabilities: [{
-        maxInstances: 5,
+        maxInstances: 1,
         browserName: 'chrome',
         acceptInsecureCerts: true,
-        // Conditionally add headless mode based on environment variable
-        ...(process.env.HEADLESS === 'true' && {
-            'goog:chromeOptions': {
-                args: [
-                    '--headless',                    // Run Chrome without visible UI
-                    '--no-sandbox',                  // Disable sandbox for CI environments
-                    '--disable-dev-shm-usage',       // Prevent shared memory issues
-                    '--disable-gpu',                 // Disable GPU acceleration
-                    '--window-size=1920,1080'       // Set consistent window size
-                ]
-            }
-        })
+        'goog:chromeOptions': {
+            // Use Playwright's Chromium binary if available
+            binary: process.env.PW_CHROMIUM_BINARY || '/home/ubuntu/.cache/ms-playwright/chromium-1187/chrome-linux/chrome',
+            args: [
+                ...(process.env.HEADLESS === 'true' ? ['--headless=new'] : []),
+                '--no-sandbox',
+                '--disable-dev-shm-usage',
+                '--disable-gpu',
+                '--window-size=1920,1080'
+            ]
+        }
     }],
 
     //
@@ -102,9 +101,11 @@ export const config: Options.Testrunner = {
     // Default request retries count
     connectionRetryCount: 3,
 
+    // Automation protocol
+    automationProtocol: 'devtools',
+
     // Test runner services
-    // Note: chromedriver service is built-in for WebdriverIO v9
-    services: [],
+    services: ['devtools'],
     
     // Framework you want to run your specs with.
     framework: 'cucumber',
