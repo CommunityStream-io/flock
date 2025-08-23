@@ -1,5 +1,7 @@
+@use "sass:color";
+
 $color-wing: dodgerblue;
-$color-sub-wing: lighten(dodgerblue, 10%);
+$color-sub-wing: color.adjust(dodgerblue, $lightness: 10%);
 $color-background: #d6c18b;
 $color-twitter: #4099ff;
 
@@ -48,7 +50,7 @@ $color-twitter: #4099ff;
     width: 30px;
 
     &::before {
-      background: darken($color-background, 55%);
+      background: color.adjust($color-background, $lightness: -55%);
       border-radius: 50%;
       content: "";
       display: block;
