@@ -172,9 +172,15 @@ export const config: Options.Testrunner = {
     // specFileRetriesDeferred: false,
     //
     // Test reporter for stdout.
-    // The only one supported by default is 'dot'
     // see also: https://webdriver.io/docs/dot-reporter
-    reporters: ['spec'],
+    reporters: [
+        'spec',
+        ['allure', {
+            outputDir: 'allure-results',
+            disableWebdriverStepsReporting: true,
+            disableWebdriverScreenshotsReporting: false,
+        }]
+    ],
 
 
     //
@@ -334,6 +340,13 @@ export const config: Options.Testrunner = {
      */
     // afterCommand: function (commandName, args, result, error) {
     // },
+    
+    // Add screenshot on failure
+    afterTest: function (test, context, { error, result, duration, passed, retries }) {
+        if (!passed) {
+            browser.takeScreenshot();
+        }
+    },
     /**
      * Gets executed after all tests are done. You still have access to all global variables from
      * the test.

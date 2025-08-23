@@ -72,6 +72,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
+      HEADLESS: true
+      CI: true
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -88,6 +90,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Install Allure command line
+        run: npm install -g allure-commandline
+
       - name: Build shared library
         run: npx ng build --project=shared
 
@@ -96,6 +101,26 @@ jobs:
 
       - name: Run e2e tests
         run: npm run test:e2e:headless
+
+      - name: Ensure allure-results directory exists
+        run: mkdir -p allure-results
+
+      - name: Generate Allure report
+        run: npm run allure:generate
+
+      - name: Upload Allure report as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report
+          path: allure-report/
+          retention-days: 30
+
+      - name: Upload Allure results as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results
+          path: allure-results/
+          retention-days: 30
 
   build:
     name: Build That Flocker

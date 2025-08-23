@@ -15,6 +15,7 @@ This architecture documentation has been reorganized into focused, digestible do
 - **[ELECTRON_INTEGRATION.md](ELECTRON_INTEGRATION.md)** - Electron-specific architecture and IPC
 - **[CLI_INTEGRATION.md](CLI_INTEGRATION.md)** - CLI tool integration and bridge services
 - **[TESTING_ARCHITECTURE.md](TESTING_ARCHITECTURE.md)** - Testing strategy and BDD methodology
+- **[ALLURE_REPORTING_SETUP.md](ALLURE_REPORTING_SETUP.md)** - Allure reporting configuration and CI integration
 
 ### **📋 Technical Guides**
 - **[BUILD_DEPLOYMENT.md](BUILD_DEPLOYMENT.md)** - Build configurations and deployment strategies
