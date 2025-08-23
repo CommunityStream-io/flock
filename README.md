@@ -4,10 +4,10 @@ A **flock** of Angular applications soaring through the social media migration s
 
 ## 🏗️ **Architecture & Documentation**
 
-- **[📚 Architecture Overview](docs/ARCHITECTURE_OVERVIEW.md)** - Navigate the migration skies
-- **[🏗️ Core Architecture](docs/ARCHITECTURE.md)** - The blueprint for our flock's nest
-- **[🔧 Component Architecture](docs/COMPONENT_ARCHITECTURE.md)** - How our components flock together
-- **[📱 Multi-App Architecture](docs/MULTI_APP_ARCHITECTURE.md)** - Each bird's unique flight pattern
+- **[🦅 Architecture](docs/ARCHITECTURE.md)** - The bird's eye view of our flock's nest
+- **[🚀 Development](docs/DEVELOPMENT.md)** - Getting your wings and taking flight
+- **[🧪 Testing](docs/TESTING.md)** - How our flock stays healthy and strong
+- **[🎨 Styling](docs/STYLING.md)** - The flock's beautiful plumage
 
 ## 🦜 **Meet the Flock**
 
