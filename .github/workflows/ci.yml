@@ -9,7 +9,7 @@ on:
 jobs:
   lint:
     name: Lint That Flocker
-    runs-on: cimg/node:20.19.4-browsers
+    runs-on: ubuntu-latest
     env:
       PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
     steps:
@@ -42,7 +42,7 @@ jobs:
 
   test:
     name: Test That Flocker
-    runs-on: cimg/node:20.19.4-browsers
+    runs-on: ubuntu-latest
     env:
       PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
     steps:
@@ -69,7 +69,7 @@ jobs:
 
   e2e:
     name: End-to-End Test That Flocker
-    runs-on: cimg/node:20.19.4-browsers
+    runs-on: ubuntu-latest
     env:
       PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
     steps:
