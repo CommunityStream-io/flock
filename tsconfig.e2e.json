@@ -1,0 +1,39 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "target": "es2019",
+        "lib": ["es2019", "dom"],
+        "moduleResolution": "node",
+        "types": [
+            "node",
+            "@wdio/types",
+            "@wdio/cucumber-framework",
+            "expect-webdriverio"
+        ],
+        "strict": false,
+        "noImplicitAny": false,
+        "noImplicitOverride": false,
+        "skipLibCheck": true,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "forceConsistentCasingInFileNames": true,
+        "baseUrl": ".",
+        "paths": {
+            "@/*": ["src/*"],
+            "@features/*": ["features/*"],
+            "@support/*": ["features/support/*"],
+            "@pageobjects/*": ["features/pageobjects/*"]
+        }
+    },
+    "include": [
+        "features/**/*.ts",
+        "features/**/*.js",
+        "test/types.d.ts"
+    ],
+    "exclude": [
+        "node_modules",
+        "projects/**/*",
+        "dist/**/*",
+        "**/*.spec.ts"
+    ]
+}

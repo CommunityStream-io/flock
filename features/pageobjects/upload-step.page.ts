@@ -106,11 +106,14 @@ class UploadStepPage extends Page {
 
     public async getHeadingByText(headingText: string) {
         // Look for any heading element containing the specified text
-        const heading = await $(`h1, h2, h3, h4, h5, h6`).filter(async (element) => {
-            const text = await element.getText();
-            return text.includes(headingText);
-        });
-        return heading;
+        const headings = await $$(`h1, h2, h3, h4, h5, h6`);
+        for (const heading of headings) {
+            const text = await heading.getText();
+            if (text.includes(headingText)) {
+                return heading;
+            }
+        }
+        return null;
     }
 
     // Navigation

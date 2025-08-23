@@ -231,6 +231,15 @@ The shared library is designed to grow with our flock:
 - **New Themes** - Flexible theming system for new visual styles
 - **New Apps** - Any new bird can easily join the flock
 
+## 📚 **Developer Resources**
+
+### **For Developers**
+- **[Developer Guide](DEVELOPER_GUIDE.md)** - Comprehensive guide to working with the shared library
+- **Component Patterns** - Interface-first design and testing strategies
+- **Service Architecture** - Strategy pattern implementation and testing
+- **Theming System** - Material Design integration and custom themes
+- **Routing & Navigation** - Step-based navigation and route guards
+
 ---
 
 *"The shared library is like the foundation of our nest - strong, reliable, and built to support many birds. Each bird adds its own personality, but we all share the same solid foundation."*
