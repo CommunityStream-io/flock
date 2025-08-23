@@ -9,7 +9,7 @@ on:
 jobs:
   flock:
     name: Flock Project
-    runs-on: ubuntu-latest
+    runs-on: cimg/node:20.19.4-browsers
     env:
       PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
     steps:
