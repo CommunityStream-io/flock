@@ -53,18 +53,19 @@ export const config: Options.Testrunner = {
         maxInstances: 5,
         browserName: 'chrome',
         acceptInsecureCerts: true,
-        // Conditionally add headless mode based on environment variable
-        ...(process.env.HEADLESS === 'true' && {
-            'goog:chromeOptions': {
+        // Always allow optional binary override; args extended in headless
+        'goog:chromeOptions': {
+            ...(process.env.CHROME_BIN ? { binary: process.env.CHROME_BIN } : {}),
+            ...(process.env.HEADLESS === 'true' ? {
                 args: [
-                    '--headless',                    // Run Chrome without visible UI
-                    '--no-sandbox',                  // Disable sandbox for CI environments
-                    '--disable-dev-shm-usage',       // Prevent shared memory issues
-                    '--disable-gpu',                 // Disable GPU acceleration
-                    '--window-size=1920,1080'       // Set consistent window size
+                    '--headless=new',
+                    '--no-sandbox',
+                    '--disable-dev-shm-usage',
+                    '--disable-gpu',
+                    '--window-size=1920,1080'
                 ]
-            }
-        })
+            } : {})
+        }
     }],
 
     //
@@ -103,8 +104,8 @@ export const config: Options.Testrunner = {
     connectionRetryCount: 3,
 
     // Test runner services
-    // Note: chromedriver service is built-in for WebdriverIO v9
-    services: [],
+    // Note: enable chromedriver to ensure local Chrome sessions
+    services: ['chromedriver'],
     
     // Framework you want to run your specs with.
     framework: 'cucumber',
