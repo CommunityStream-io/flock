@@ -103,7 +103,7 @@ jobs:
         run: npx ng build --project=flock-mirage --configuration=development
 
       - name: Run e2e tests with Angular app
-        run: npm run test:e2e:ci
+        run: npm run test:e2e:ci:full
         env:
           CI: true
           NODE_ENV: production
