@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { StepLayout } from './step-layout';
+import { RouterSplash } from './router-splash';
 
-xdescribe('StepLayout', () => {
-  let component: StepLayout;
-  let fixture: ComponentFixture<StepLayout>;
+xdescribe('RouterSplash', () => {
+  let component: RouterSplash;
+  let fixture: ComponentFixture<RouterSplash>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [StepLayout]
+      imports: [RouterSplash]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(StepLayout);
+    fixture = TestBed.createComponent(RouterSplash);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -1,6 +1,6 @@
 <section class="upload-section">
   <h2>Upload Your Files</h2>
-  <p>Select files to upload for migration.</p>
+  <p>Upload instagram archive</p>
   <button mat-raised-button color="primary" (click)="fileInput.click()">
     <mat-icon>upload</mat-icon> Choose Files
   </button>
@@ -12,19 +12,18 @@
       id="fileInput"
       name="instagramArchive"
       accept=".zip"
+      (change)="onFileInputChange($event)"
     />
   </form>
-  @if (fileInput.files && fileInput.files.length > 0) {
+  @if (selectedFile) {
   <div class="file-list">
     <h3>Selected Files:</h3>
-    @for (file of fileInput.files; track $index) {
-    <div class="file-selected" *ngFor="let file of fileInput.files">
-      {{ file.name }}
-      <button mat-icon-button (click)="removeFile(file)">
+    <div class="file-selected">
+      {{ selectedFile.name }}
+      <button mat-icon-button (click)="removeFile(selectedFile)">
         <mat-icon>delete</mat-icon>
       </button>
     </div>
-    }
   </div>
   }
 </section>

@@ -4,10 +4,10 @@ import { Component, inject } from '@angular/core';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { FILE_PROCESSOR, FileService, LOGGER, Logger } from '../../services';
-import { tap } from 'rxjs';
 
 @Component({
   selector: 'shared-upload',
+  standalone: true,
   imports: [MatIcon, MatButton, CommonModule, MatIconButton, ReactiveFormsModule],
   templateUrl: './upload.html',
   styleUrl: './upload.css',
@@ -24,6 +24,13 @@ export class Upload {
   public fileUploadForm = new FormGroup({
     instagramArchive: new FormControl<File | null>(null, [Validators.required])
   });
+
+  /**
+   * Getter for the selected file
+   */
+  get selectedFile(): File | null {
+    return this.fileUploadForm.get('instagramArchive')?.value || null;
+  }
 
   onFileSelected(file: File | null) {
     this.logger.workflow(`File selected: ${file?.name}`);
@@ -43,14 +50,16 @@ export class Upload {
     }
   }
 
+  onFileInputChange(event: Event) {
+    const target = event.target as HTMLInputElement;
+    const file = target.files?.[0] || null;
+    this.onFileSelected(file);
+  }
+
   removeFile(file: File) {
     this.fileUploadForm.reset();
     this.fileProcessorService.archivedFile = null;
   }
 
-  ngOnInit() {
-    this.fileUploadForm.get('instagramArchive')?.valueChanges.pipe(tap((file: File | null) => {
-      this.onFileSelected(file);
-    })).subscribe();
-  }
+
 }

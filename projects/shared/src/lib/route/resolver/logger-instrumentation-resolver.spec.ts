@@ -4,7 +4,7 @@ import { ResolveFn } from '@angular/router';
 import { loggerInstrumentationResolver } from './logger-instrumentation-resolver';
 
 describe('loggerInstrumentationResolver', () => {
-  const executeResolver: ResolveFn<boolean> = (...resolverParameters) => 
+  const executeResolver: ResolveFn<Promise<void>> = (...resolverParameters) => 
       TestBed.runInInjectionContext(() => loggerInstrumentationResolver(...resolverParameters));
 
   beforeEach(() => {

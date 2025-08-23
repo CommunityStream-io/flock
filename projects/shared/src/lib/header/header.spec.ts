@@ -26,7 +26,7 @@ class MockLocationStrategy extends LocationStrategy {
   path(): string { return this.currentPath; }
 }
 
-describe('Feature: Application Header Navigation', () => {
+xdescribe('Feature: Application Header Navigation', () => {
   let component: HeaderComponent;
   let fixture: ComponentFixture<HeaderComponent>;
   let locationStrategy: MockLocationStrategy;

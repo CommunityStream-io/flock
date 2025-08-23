@@ -86,7 +86,20 @@ export const config: Options.Testrunner = {
         maxInstances: 5,
         //
         browserName: 'chrome',
-        acceptInsecureCerts: true
+        acceptInsecureCerts: true,
+        // Conditionally add headless mode based on environment variable
+        // Set HEADLESS=true to enable headless mode (e.g., for CI/CD)
+        ...(process.env.HEADLESS === 'true' && {
+            'goog:chromeOptions': {
+                args: [
+                    '--headless',                    // Run Chrome without visible UI
+                    '--no-sandbox',                  // Disable sandbox for CI environments
+                    '--disable-dev-shm-usage',       // Prevent shared memory issues
+                    '--disable-gpu',                 // Disable GPU acceleration
+                    '--window-size=1920,1080'       // Set consistent window size
+                ]
+            }
+        })
         // If outputDir is provided WebdriverIO can capture driver session logs
         // it is possible to configure which logTypes to include/exclude.
         // excludeDriverLogs: ['*'], // pass '*' to exclude all driver session logs
@@ -123,7 +136,7 @@ export const config: Options.Testrunner = {
     // with `/`, the base url gets prepended, not including the path portion of your baseUrl.
     // If your `url` parameter starts without a scheme or `/` (like `some/path`), the base url
     // gets prepended directly.
-    baseUrl: 'http://localhost',
+    baseUrl: 'http://localhost:4200',
     //
     // Default timeout for all waitFor* commands.
     waitforTimeout: 10000,
@@ -159,9 +172,15 @@ export const config: Options.Testrunner = {
     // specFileRetriesDeferred: false,
     //
     // Test reporter for stdout.
-    // The only one supported by default is 'dot'
     // see also: https://webdriver.io/docs/dot-reporter
-    reporters: ['spec'],
+    reporters: [
+        'spec',
+        ['allure', {
+            outputDir: 'allure-results',
+            disableWebdriverStepsReporting: true,
+            disableWebdriverScreenshotsReporting: false,
+        }]
+    ],
 
 
     //
@@ -184,7 +203,7 @@ export const config: Options.Testrunner = {
         // <boolean> fail if there are any undefined or pending steps
         strict: false,
         // <string> (expression) only execute the features or scenarios with tags matching the expression
-        tagExpression: '',
+        tagExpression: 'not @skip',
         // <number> timeout for step definitions
         timeout: 60000,
         // <boolean> Enable this config to treat undefined definitions as warnings.
