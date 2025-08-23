@@ -1,5 +1,4 @@
 import { Component, inject } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
 import { LayoutComponent, Logger, LOGGER, RouterSplash, SplashScreenLoading } from 'shared';
 
 @Component({
