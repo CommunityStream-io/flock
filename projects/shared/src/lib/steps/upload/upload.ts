@@ -1,18 +1,20 @@
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { FILE_PROCESSOR, FileService, LOGGER, Logger } from '../../services';
+import { FileUploadControlComponent } from '../../controls/file-upload-control/file-upload-control';
+import { filter, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'shared-upload',
   standalone: true,
-  imports: [MatIcon, MatButton, CommonModule, MatIconButton, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FileUploadControlComponent],
   templateUrl: './upload.html',
   styleUrl: './upload.css',
 })
-export class Upload {
+export class Upload implements OnInit {
   private fileProcessorService: FileService = inject(
     FILE_PROCESSOR
   ) as FileService;
@@ -32,34 +34,38 @@ export class Upload {
     return this.fileUploadForm.get('instagramArchive')?.value || null;
   }
 
-  onFileSelected(file: File | null) {
-    this.logger.workflow(`File selected: ${file?.name}`);
-    if (file) {
-      this.fileProcessorService
-        .validateArchive(file)
-        .then((result) => {
-          if (result.isValid) {
-            this.logger.log(`File ${file.name} is valid.`);
-          } else {
-            this.logger.error(`File ${file.name} is invalid: ${result.errors.join(', ')}`);
-          }
-        })
-        .catch((error) => {
-          this.logger.error(`Error validating file: ${error.message}`);
-        });
-    }
+  onFileSelected(file: File) {
+    this.logger.workflow(`File selected: ${file.name}`);
+    
+    // Validate the archive
+    this.fileProcessorService
+      .validateArchive(file)
+      .then((result) => {
+        if (result.isValid) {
+          this.logger.log(`File ${file.name} is valid.`);
+        } else {
+          this.logger.error(`File ${file.name} is invalid: ${result.errors.join(', ')}`);
+        }
+      })
+      .catch((error) => {
+        this.logger.error(`Error validating file: ${error.message}`);
+      });
   }
 
-  onFileInputChange(event: Event) {
-    const target = event.target as HTMLInputElement;
-    const file = target.files?.[0] || null;
-    this.onFileSelected(file);
-  }
-
-  removeFile(file: File) {
-    this.fileUploadForm.reset();
+  onFileRemoved() {
+    this.logger.workflow('File removed');
     this.fileProcessorService.archivedFile = null;
   }
 
-
+  ngOnInit() {
+    this.fileUploadForm.get('instagramArchive')?.valueChanges.pipe(
+      tap((value) => {
+        if (value) {
+          this.onFileSelected(value);
+        } else {
+          this.onFileRemoved();
+        }
+      })
+    ).subscribe();
+  }
 }

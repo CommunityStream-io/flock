@@ -15,16 +15,16 @@ class UploadStepPage extends Page {
     }
 
     public get chooseFilesButton() {
-        return $('button[mat-raised-button]');
+        return $('shared-file-upload-control button[mat-raised-button]');
     }
 
     public get uploadIcon() {
         return $('button[mat-raised-button] mat-icon');
     }
 
-    // File input and form elements
+    // File input (now hidden within the custom control)
     public get fileInput() {
-        return $('input[type="file"]#fileInput');
+        return $('shared-file-upload-control input[type="file"]');
     }
 
     public get fileUploadForm() {
@@ -35,21 +35,19 @@ class UploadStepPage extends Page {
         return $('input[formControlName="instagramArchive"]');
     }
 
-    // Selected files section
+    // Selected files section (now handled by the custom control)
     public get fileListSection() {
-        return $('.file-list');
+        return $('shared-file-upload-control .file-list');
     }
 
-    public get selectedFilesHeading() {
-        return $('.file-list h3');
-    }
+
 
     public get selectedFiles() {
-        return $$('.file-selected');
+        return $$('shared-file-upload-control .file-selected');
     }
 
     public get deleteButtons() {
-        return $$('.file-selected button[mat-icon-button]');
+        return $$('shared-file-upload-control .file-selected button[mat-icon-button]');
     }
 
     public get deleteIcons() {
@@ -88,12 +86,20 @@ class UploadStepPage extends Page {
 
     public async isFormValid() {
         return await browser.execute(() => {
-            // Check the specific form control for instagramArchive
-            const fileInput = document.querySelector('input[formControlName="instagramArchive"]') as HTMLInputElement;
-            if (!fileInput) return false;
+            // Get the form element
+            const form = document.querySelector('form[formGroup]') as any;
+            if (!form) return false;
             
-            // Check if the input has a file selected
-            return fileInput.files && fileInput.files.length > 0;
+            // Get the Angular component instance to access the form
+            const uploadComponent = document.querySelector('shared-upload') as any;
+            if (!uploadComponent) return false;
+            
+            // Check if the form control has a value
+            const formControl = uploadComponent.fileUploadForm?.get('instagramArchive');
+            if (!formControl) return false;
+            
+            // Check if the form control is valid and has a value
+            return formControl.valid && formControl.value !== null;
         });
     }
 

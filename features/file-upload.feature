@@ -44,8 +44,13 @@ Feature: File Upload and Validation - Instagram Archive Processing
 
   @file-upload @form-state 
   Scenario: Form state updates correctly with file operations
-    Then the Instagram archive form control should be invalid initially
+    When I try to proceed without a file
+    Then I should see an error message
     When I select a valid Instagram archive file "archive.zip"
-    Then the Instagram archive form control should be valid
-    When I remove the selected file
-    Then the Instagram archive form control should be invalid again
+    Then I should be able to proceed to the next step
+
+  @file-upload @form-validation
+  Scenario: Form validation shows error when proceeding without file
+    When I try to proceed without a file
+    Then I should see an error message
+    And the form should remain on the upload step

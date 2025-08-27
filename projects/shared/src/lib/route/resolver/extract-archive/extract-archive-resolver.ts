@@ -1,7 +1,7 @@
 import { inject } from '@angular/core';
 import { ResolveFn } from '@angular/router';
 import { FILE_PROCESSOR, FileService, LOGGER, Logger, SplashScreenLoading } from '../../../services';
-import { catchError, delay, finalize, from, Observable, of, tap } from 'rxjs';
+import { catchError, finalize, from, Observable, of, tap } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 export const extractArchiveResolver: ResolveFn<Observable<boolean>> = () => {
@@ -10,7 +10,6 @@ export const extractArchiveResolver: ResolveFn<Observable<boolean>> = () => {
   const splashScreenLoading = inject(SplashScreenLoading);
   splashScreenLoading.show('Extracting Instagram Archive');
   return from(inject<FileService>(FILE_PROCESSOR).extractArchive()).pipe(
-    delay(10000), // Ensure the loading indicator is visible for at least 500ms
     catchError(() => {
       snackbar.open('Error extracting archive', 'Close', {
         duration: 3000,

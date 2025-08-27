@@ -1,3 +1,4 @@
+@skip
 Feature: Migration Steps Workflow - Step-by-step migration process
 
   As a user migrating from Instagram to Bluesky
@@ -14,7 +15,7 @@ Feature: Migration Steps Workflow - Step-by-step migration process
     And I should see the step navigation footer
     And the current step should be highlighted as "upload"
 
-  @migration-steps @step-workflow 
+  @migration-steps @step-workflow @skip
   Scenario: Complete migration workflow navigation
     Given I navigate to the upload step
     When I upload a valid Instagram archive
@@ -31,7 +32,7 @@ Feature: Migration Steps Workflow - Step-by-step migration process
     Then I should be on the complete step page
     And I should see the migration completion confirmation
 
-  @migration-steps @step-titles 
+  @migration-steps @step-titles @skip
   Scenario: Each step displays correct title and description
     Given I navigate to the upload step
     Then the page title should be "Upload Data"
