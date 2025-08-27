@@ -1,4 +1,4 @@
-import { Component, forwardRef, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
+import { Component, forwardRef, Input, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatButton, MatIconButton } from '@angular/material/button';
@@ -13,12 +13,12 @@ import { MatIcon } from '@angular/material/icon';
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => FileUploadControlComponent),
+      useExisting: forwardRef(() => FileUploadControl),
       multi: true
     }
   ]
 })
-export class FileUploadControlComponent implements ControlValueAccessor {
+export class FileUploadControl implements ControlValueAccessor {
   @ViewChild('fileInput', { static: true }) fileInput!: ElementRef<HTMLInputElement>;
   
   @Input() accept: string = '.zip';

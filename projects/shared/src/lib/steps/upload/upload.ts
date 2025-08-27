@@ -4,13 +4,13 @@ import { Component, inject, OnInit } from '@angular/core';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { FILE_PROCESSOR, FileService, LOGGER, Logger } from '../../services';
-import { FileUploadControlComponent } from '../../controls/file-upload-control/file-upload-control';
+import { FileUploadControl } from '../../controls/file-upload-control/file-upload-control';
 import { filter, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'shared-upload',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FileUploadControlComponent],
+  imports: [CommonModule, ReactiveFormsModule, FileUploadControl],
   templateUrl: './upload.html',
   styleUrl: './upload.css',
 })
