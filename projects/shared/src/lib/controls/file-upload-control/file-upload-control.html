@@ -6,35 +6,36 @@
     [accept]="accept"
     [disabled]="disabled"
     (change)="onFileInputChange($event)"
-    style="display: none;"
+    style="display: none"
   />
-  
-  <!-- Upload button - matches original design -->
-  <button 
-    mat-raised-button 
-    color="primary" 
+
+  <!-- Upload button -->
+  @if (!value) {
+  <button
+    mat-raised-button
+    color="primary"
     [disabled]="disabled"
     (click)="openFileDialog()"
     type="button"
   >
     <mat-icon>upload</mat-icon> Choose Files
   </button>
-  
-  <!-- Selected file display - matches original design -->
+  }
+  <!-- Selected file display -->
   @if (value) {
-    <div class="file-list">
-      <h3>Selected Files:</h3>
-      <div class="file-selected">
-        {{ value.name }}
-        <button 
-          mat-icon-button 
-          [disabled]="disabled"
-          (click)="removeFile()"
-          type="button"
-        >
-          <mat-icon>delete</mat-icon>
-        </button>
-      </div>
+  <div class="file-list">
+    <h3>Selected Files:</h3>
+    <div class="file-selected">
+      {{ value.name }}
+      <button
+        mat-icon-button
+        [disabled]="disabled"
+        (click)="removeFile()"
+        type="button"
+      >
+        <mat-icon>delete</mat-icon>
+      </button>
     </div>
+  </div>
   }
 </div>

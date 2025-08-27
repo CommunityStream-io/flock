@@ -466,3 +466,28 @@ Then('the navigation should be blocked', async () => {
     expect(isStillOnUpload).toBe(true);
 });
 
+// ===== BUTTON VISIBILITY SCENARIO STEPS =====
+
+Given('I am on the upload step', async () => {
+    await pages.uploadStep.open();
+});
+
+When('I remove the selected file', async () => {
+    await pages.uploadStep.clickDeleteButton(0);
+});
+
+Then('I should see the "Choose Files" button', async () => {
+    const chooseFilesButton = await pages.uploadStep.chooseFilesButton;
+    await expect(chooseFilesButton).toBeDisplayed();
+});
+
+Then('the "Choose Files" button should be hidden', async () => {
+    const chooseFilesButton = await pages.uploadStep.chooseFilesButton;
+    await expect(chooseFilesButton).not.toBeDisplayed();
+});
+
+Then('the "Choose Files" button should be visible again', async () => {
+    const chooseFilesButton = await pages.uploadStep.chooseFilesButton;
+    await expect(chooseFilesButton).toBeDisplayed();
+});
+

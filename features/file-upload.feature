@@ -24,6 +24,16 @@ Feature: File Upload and Validation - Instagram Archive Processing
     And I should see "Selected Files:" heading
     And I should see "instagram-export.zip" in the file list
     And I should see a delete button for the selected file
+    And the "Choose Files" button should be hidden
+
+  @file-upload @button-visibility
+  Scenario: Upload button visibility changes with file selection
+    Given I am on the upload step
+    Then I should see the "Choose Files" button
+    When I select a valid Instagram archive file "test-archive.zip"
+    Then the "Choose Files" button should be hidden
+    When I remove the selected file
+    Then the "Choose Files" button should be visible again
 
   @file-upload @file-validation 
   Scenario: File validation provides feedback
@@ -41,6 +51,7 @@ Feature: File Upload and Validation - Instagram Archive Processing
     Then the file should be removed from the selection
     And the file input should be reset
     And I should not see the selected files section
+    And the "Choose Files" button should be visible again
 
   @file-upload @form-state 
   Scenario: Form state updates correctly with file operations
