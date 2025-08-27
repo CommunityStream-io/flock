@@ -1,3 +1,87 @@
-<div class="auth-form bluesky-auth">
-  <p>auth works!</p>
-</div>
+<section class="auth-section">
+  <div class="auth-container">
+    <h2 class="step-title">Authenticate with Bluesky</h2>
+    <p class="step-description">Enter your Bluesky credentials to continue with the migration</p>
+
+    <form [formGroup]="authForm" (ngSubmit)="onSubmit()" class="auth-form bluesky-auth">
+      <div class="form-fields">
+        <!-- Username Field -->
+        <mat-form-field appearance="outline" class="username-field">
+          <mat-label>Username</mat-label>
+          <input
+            matInput
+            formControlName="username"
+            placeholder="@username.bksy.social"
+            type="text"
+            autocomplete="username"
+            [class.error]="authForm.get('username')?.invalid && authForm.get('username')?.touched"
+          >
+          <mat-icon matSuffix>account_circle</mat-icon>
+          <mat-error *ngIf="authForm.get('username')?.invalid && authForm.get('username')?.touched">
+            {{ getUsernameErrorMessage() }}
+          </mat-error>
+          <mat-hint>Must start with @ and contain at least two dots (e.g., @username.bksy.social)</mat-hint>
+        </mat-form-field>
+
+        <!-- Password Field -->
+        <mat-form-field appearance="outline" class="password-field">
+          <mat-label>Password</mat-label>
+          <input
+            matInput
+            formControlName="password"
+            placeholder="Enter your password"
+            type="password"
+            autocomplete="current-password"
+            [class.error]="authForm.get('password')?.invalid && authForm.get('password')?.touched"
+          >
+          <mat-icon matSuffix>lock</mat-icon>
+          <mat-error *ngIf="authForm.get('password')?.invalid && authForm.get('password')?.touched">
+            {{ getPasswordErrorMessage() }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Authentication Error Display -->
+      <div *ngIf="authError" class="auth-error">
+        <mat-icon class="error-icon">error</mat-icon>
+        <span class="error-message">{{ authError }}</span>
+      </div>
+
+      <!-- Form Actions -->
+      <div class="form-actions">
+        <button
+          type="submit"
+          mat-raised-button
+          color="primary"
+          class="submit-button"
+          [disabled]="!isFormValid"
+          [class.loading]="isAuthenticating"
+        >
+          <mat-icon *ngIf="!isAuthenticating">arrow_forward</mat-icon>
+          <mat-spinner *ngIf="isAuthenticating" diameter="20"></mat-spinner>
+          <span>{{ isAuthenticating ? 'Authenticating...' : 'Next' }}</span>
+        </button>
+      </div>
+    </form>
+
+    <!-- Help Information -->
+    <div class="help-section">
+      <mat-card class="help-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>help</mat-icon>
+            Need Help?
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p>Your Bluesky username should look like:</p>
+          <ul>
+            <li><code>@username.bksy.social</code> - for Bluesky's default domain</li>
+            <li><code>@user.custom.domain</code> - for custom Personal Data Servers (PDS)</li>
+          </ul>
+          <p>Make sure to include the @ symbol and that your username contains at least two dots.</p>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</section>
