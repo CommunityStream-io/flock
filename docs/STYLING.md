@@ -4,9 +4,9 @@
 
 ## 🎨 **Styling Philosophy**
 
-Our flock shares a beautiful, consistent **Material Design 2** theme that ensures all birds look and feel the same. Like a flock of birds with identical plumage, our components maintain visual consistency while adapting to each bird's environment.
+Our flock shares a beautiful, consistent **Material Design 3** theme that ensures all birds look and feel the same. Like a flock of birds with identical plumage, our components maintain visual consistency while adapting to each bird's environment.
 
-### **Why Material Design 2?**
+### **Why Material Design 3?**
 - **🎨 Unified Visual Language** - All birds look and feel the same
 - **🔄 Seamless Component Swapping** - Services and nested components adapt per environment
 - **📱 Responsive Nesting** - Components nest perfectly in each bird's habitat
@@ -88,7 +88,7 @@ graph LR
 ## 🎨 **Material Design Foundation**
 
 ### **Color System Architecture**
-Our theme system is built on Material Design 2 principles with a comprehensive color palette:
+Our theme system is built on Material Design 3 principles with a comprehensive color palette:
 
 ```mermaid
 graph TB

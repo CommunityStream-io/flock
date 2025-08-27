@@ -135,7 +135,7 @@ Perfect environment for behavior-driven development:
 ## 🎨 **User Experience**
 
 ### **Visual Design**
-- **Material Design 2** - Consistent with the entire flock
+- **Material Design 3** - Consistent with the entire flock
 - **Light/Dark Themes** - Full theme support for testing
 - **Responsive Layout** - Test on different screen sizes
 - **Accessibility** - Test with screen readers and keyboard navigation

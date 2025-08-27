@@ -1,6 +1,6 @@
 # 🦅 Flock - Bluesky Social Migrator [![Feathering the Nest](https://github.com/CommunityStream-io/flock/actions/workflows/ci.yml/badge.svg)](https://github.com/CommunityStream-io/flock/actions/workflows/ci.yml)
 
-A **flock** of Angular applications soaring through the social media migration skies! Each variant has its own personality while sharing the same nest of components and services. Built with a unified M2 Material design that keeps our flock flying in perfect formation.
+A **flock** of Angular applications soaring through the social media migration skies! Each variant has its own personality while sharing the same nest of components and services. Built with a unified M3 Material design that keeps our flock flying in perfect formation.
 
 ## 🏗️ **Architecture & Documentation**
 
@@ -49,9 +49,9 @@ flock/
 └── 📖 README.md                  # This field guide
 ```
 
-## 🎨 **Shared M2 Material Design**
+## 🎨 **Shared M3 Material Design**
 
-Our flock shares a beautiful, consistent Material Design 2 theme that ensures:
+Our flock shares a beautiful, consistent Material Design 3 theme that ensures:
 - **🎨 Unified Visual Language** - All birds look and feel the same
 - **🔄 Seamless Component Swapping** - Services and nested components adapt per environment
 - **📱 Responsive Nesting** - Components nest perfectly in each bird's habitat
@@ -153,7 +153,7 @@ ng build --configuration=development
 - **🔧 Shared Wisdom**: Environment-aware services that adapt to each bird's needs
 - **🧩 Common Nest**: Reusable components that work perfectly in any environment
 - **📊 Flight Tracking**: Real-time migration progress monitoring
-- **🎨 Unified Plumage**: Consistent M2 Material design across all variants
+- **🎨 Unified Plumage**: Consistent M3 Material design across all variants
 - **📱 Adaptive Nesting**: Responsive layouts that work everywhere
 
 ## 🔗 **Related Migration Flocks**
@@ -166,7 +166,7 @@ ng build --configuration=development
 - **[Angular CLI Documentation](https://angular.dev/tools/cli)** - Flight instructor's manual
 - **[Angular Architecture](https://angular.dev/guide/architecture)** - How to build better nests
 - **[Electron Documentation](https://www.electronjs.org/docs)** - Native bird's flight manual
-- **[Material Design 2](https://m2.material.io/)** - Our flock's visual language
+- **[Material Design 3](https://m3.material.io/)** - Our flock's visual language
 
 ## 🤝 **Join the Flock**
 
@@ -178,4 +178,4 @@ ng build --configuration=development
 
 ---
 
-**🦅 Built with Angular 20.1.5** | **🏗️ Architecture-first design** | **🦜 Multi-bird support** | **🎨 Shared M2 Material nest**
+**🦅 Built with Angular 20.1.5** | **🏗️ Architecture-first design** | **🦜 Multi-bird support** | **🎨 Shared M3 Material nest**
