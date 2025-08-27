@@ -32,7 +32,11 @@
     "lint": "ng lint",
     "lint:fix": "ng lint --fix",
     "lint:shared": "ng lint shared",
-    "lint:shared:fix": "ng lint shared --fix"
+    "lint:shared:fix": "ng lint shared --fix",
+    "lint:flock-native": "ng lint flock-native",
+    "lint:flock-mirage": "ng lint flock-mirage",
+    "lint:flock-murmur": "ng lint flock-murmur",
+    "lint:all": "npm run lint:shared && npm run lint:flock-native && npm run lint:flock-mirage && npm run lint:flock-murmur"
   },
   "prettier": {
     "overrides": [
