@@ -4,12 +4,14 @@ import LandingPage from '../pageobjects/landing.page';
 import UploadStepPage from '../pageobjects/upload-step.page';
 import StepLayoutPage from '../pageobjects/step-layout.page';
 import NavigationGuardPage from '../pageobjects/navigation-guard.page';
+import AuthPage from '../pageobjects/auth.page';
 
 const pages = {
     landing: LandingPage,
     uploadStep: UploadStepPage,
     stepLayout: StepLayoutPage,
-    navigationGuard: NavigationGuardPage
+    navigationGuard: NavigationGuardPage,
+    auth: AuthPage
 }
 
 Given('I am on the landing page', async () => {
@@ -104,7 +106,7 @@ Given('I navigate to the upload step', async () => {
 });
 
 Given('I navigate to the auth step', async () => {
-    await pages.stepLayout.openAuthStep();
+    await pages.auth.open();
 });
 
 Given('I navigate to the config step', async () => {
@@ -140,13 +142,17 @@ Then('the current step should be highlighted as {string}', async (stepName: stri
 });
 
 Then('I should be on the {word} step page', async (stepName: string) => {
-    await pages.stepLayout.waitForStepLoad(stepName);
-    const isOnStep = await pages.stepLayout.isOnStep(stepName);
-    expect(isOnStep).toBe(true);
+    if (stepName === 'auth') {
+        await pages.auth.waitForPageLoad();
+    } else {
+        await pages.stepLayout.waitForStepLoad(stepName);
+        const isOnStep = await pages.stepLayout.isOnStep(stepName);
+        expect(isOnStep).toBe(true);
+    }
 });
 
 Then('I should see the Bluesky authentication form', async () => {
-    await expect(pages.stepLayout.authForm).toBeDisplayed();
+    await expect(pages.auth.authForm).toBeDisplayed();
 });
 
 Then('I should see migration configuration options', async () => {
@@ -499,166 +505,123 @@ Given('I have uploaded a valid Instagram archive', async () => {
 });
 
 Given('I am on the auth step page', async () => {
-    await pages.stepLayout.openAuthStep();
-    await pages.stepLayout.waitForStepLoad('auth');
+    await pages.auth.open();
 });
 
 Then('I should see a username input field with @ prefix', async () => {
-    const usernameField = await $('input[name="username"], input[formControlName="username"]');
-    await expect(usernameField).toBeDisplayed();
+    await expect(pages.auth.usernameField).toBeDisplayed();
 
-    // Check if the field has a placeholder or label with @ prefix
-    const placeholder = await usernameField.getAttribute('placeholder');
-    const label = await $('label[for="username"], .username-label');
-
-    if (placeholder) {
-        await expect(placeholder).toContain('@');
-    } else if (await label.isExisting()) {
-        const labelText = await label.getText();
-        await expect(labelText).toContain('@');
-    }
+    // Check if the field has a placeholder with @ prefix
+    const placeholder = await pages.auth.usernameField.getAttribute('placeholder');
+    expect(placeholder).toContain('@');
 });
 
 Then('I should see a password input field', async () => {
-    const passwordField = await $('input[name="password"], input[formControlName="password"], input[type="password"]');
-    await expect(passwordField).toBeDisplayed();
+    await expect(pages.auth.passwordField).toBeDisplayed();
 });
 
 When('I enter a username without @ prefix', async () => {
-    const usernameField = await $('input[name="username"], input[formControlName="username"]');
-    await usernameField.setValue('username.bksy.social');
+    await pages.auth.enterUsername('username.bksy.social');
 });
 
 When('I enter a username with @ prefix but no dots', async () => {
-    const usernameField = await $('input[name="username"], input[formControlName="username"]');
-    await usernameField.setValue('@username');
+    await pages.auth.enterUsername('@username');
 });
 
 When('I enter a username with @ prefix and one dot', async () => {
-    const usernameField = await $('input[name="username"], input[formControlName="username"]');
-    await usernameField.setValue('@username.bksy');
+    await pages.auth.enterUsername('@username.bksy');
 });
 
 When('I enter a valid username "@username.bksy.social"', async () => {
-    const usernameField = await $('input[name="username"], input[formControlName="username"]');
-    await usernameField.setValue('@username.bksy.social');
+    await pages.auth.enterUsername('@username.bksy.social');
 });
 
 When('I enter a valid custom domain username "@user.custom.domain"', async () => {
-    const usernameField = await $('input[name="username"], input[formControlName="username"]');
-    await usernameField.setValue('@user.custom.domain');
+    await pages.auth.enterUsername('@user.custom.domain');
 });
 
 Then('the username field should show an error', async () => {
-    const errorElement = await $('.username-error, .mat-error, [data-error="username"]');
-    await expect(errorElement).toBeDisplayed();
+    const errorText = await pages.auth.getUsernameErrorText();
+    expect(errorText).toBeTruthy();
 });
 
 Then('the error should indicate "@ prefix is required"', async () => {
-    const errorElement = await $('.username-error, .mat-error, [data-error="username"]');
-    const errorText = await errorElement.getText();
-    await expect(errorText).toContain('@ prefix is required');
+    const errorText = await pages.auth.getUsernameErrorText();
+    expect(errorText).toContain('@ prefix is required');
 });
 
 Then('the error should indicate "Username must contain at least two dots"', async () => {
-    const errorElement = await $('.username-error, .mat-error, [data-error="username"]');
-    const errorText = await errorElement.getText();
-    await expect(errorText).toContain('Username must contain at least two dots');
+    const errorText = await pages.auth.getUsernameErrorText();
+    expect(errorText).toContain('Username must contain at least two dots');
 });
 
 Then('the username field should not show any errors', async () => {
-    const errorElement = await $('.username-error, .mat-error, [data-error="username"]');
-    const isDisplayed = await errorElement.isDisplayed().catch(() => false);
-    expect(isDisplayed).toBe(false);
+    const errorText = await pages.auth.getUsernameErrorText();
+    expect(errorText).toBe('');
 });
 
 Then('the username validation should pass', async () => {
-    // Check that no username errors are displayed
-    const errorElement = await $('.username-error, .mat-error, [data-error="username"]');
-    const isDisplayed = await errorElement.isDisplayed().catch(() => false);
-    expect(isDisplayed).toBe(false);
+    const errorText = await pages.auth.getUsernameErrorText();
+    expect(errorText).toBe('');
 });
 
 When('I leave the password field empty', async () => {
-    const passwordField = await $('input[name="password"], input[formControlName="password"], input[type="password"]');
-    await passwordField.setValue('');
+    await pages.auth.enterPassword('');
     // Trigger blur to validate
-    await passwordField.click();
+    await pages.auth.passwordField.click();
     await $('body').click();
 });
 
 When('I enter a password', async () => {
-    const passwordField = await $('input[name="password"], input[formControlName="password"], input[type="password"]');
-    await passwordField.setValue('testpassword123');
+    await pages.auth.enterPassword('testpassword123');
 });
 
 Then('the password field should show an error', async () => {
-    const errorElement = await $('.password-error, .mat-error, [data-error="password"]');
-    await expect(errorElement).toBeDisplayed();
+    const errorText = await pages.auth.getPasswordErrorText();
+    expect(errorText).toBeTruthy();
 });
 
 Then('the error should indicate "Password is required"', async () => {
-    const errorElement = await $('.password-error, .mat-error, [data-error="password"]');
-    const errorText = await errorElement.getText();
+    const errorText = await pages.auth.getPasswordErrorText();
     expect(errorText).toContain('Password is required');
 });
 
 Then('the password field should not show any errors', async () => {
-    const errorElement = await $('.password-error, .mat-error, [data-error="password"]');
-    const isDisplayed = await errorElement.isDisplayed().catch(() => false);
-    expect(isDisplayed).toBe(false);
+    const errorText = await pages.auth.getPasswordErrorText();
+    expect(errorText).toBe('');
 });
 
 Then('the password validation should pass', async () => {
-    // Check that no password errors are displayed
-    const errorElement = await $('.password-error, .mat-error, [data-error="password"]');
-    const isDisplayed = await errorElement.isDisplayed().catch(() => false);
-    expect(isDisplayed).toBe(false);
+    const errorText = await pages.auth.getPasswordErrorText();
+    expect(errorText).toBe('');
 });
 
 Given('I have entered a valid username', async () => {
-    const usernameField = await $('input[name="username"], input[formControlName="username"]');
-    await usernameField.setValue('@username.bksy.social');
+    await pages.auth.enterUsername('@user.bsky.social');
 });
 
 Given('I have entered a valid password', async () => {
-    const passwordField = await $('input[name="password"], input[formControlName="password"], input[type="password"]');
-    await passwordField.setValue('testpassword123');
+    await pages.auth.enterPassword('testpassword123');
 });
 
 Then('the form should be initially invalid', async () => {
-    const nextButton = await pages.stepLayout.nextButton;
-    const isEnabled = await nextButton.isEnabled();
+    const isEnabled = await pages.auth.isNextButtonEnabled();
     expect(isEnabled).toBe(false);
 });
 
 Then('the form should be valid', async () => {
-    // Check that no validation errors are displayed
-    const usernameError = await $('.username-error, .mat-error, [data-error="username"]');
-    const passwordError = await $('.password-error, .mat-error, [data-error="password"]');
-
-    const usernameErrorDisplayed = await usernameError.isDisplayed().catch(() => false);
-    const passwordErrorDisplayed = await passwordError.isDisplayed().catch(() => false);
-
-    expect(usernameErrorDisplayed).toBe(false);
-    expect(passwordErrorDisplayed).toBe(false);
+    const isValid = await pages.auth.isFormValid();
+    expect(isValid).toBe(true);
 });
 
 Then('the "Next" button should be enabled', async () => {
-    const nextButton = await pages.stepLayout.nextButton;
-    const isEnabled = await nextButton.isEnabled();
+    const isEnabled = await pages.auth.isNextButtonEnabled();
     expect(isEnabled).toBe(true);
 });
 
 Given('I have entered valid credentials', async () => {
-    await pages.stepLayout.openAuthStep();
-    await pages.stepLayout.waitForStepLoad('auth');
-
-    const usernameField = await $('input[name="username"], input[formControlName="username"]');
-    const passwordField = await $('input[name="password"], input[formControlName="password"], input[type="password"]');
-
-    await usernameField.setValue('@username.bksy.social');
-    await passwordField.setValue('testpassword123');
+    await pages.auth.open();
+    await pages.auth.enterCredentials('@username.bksy.social', 'testpassword123');
 });
 
 When('I click the "Next" button', async () => {
@@ -682,14 +645,8 @@ Then('I should be navigated to the config step', async () => {
 });
 
 Given('I have entered invalid credentials', async () => {
-    await pages.stepLayout.openAuthStep();
-    await pages.stepLayout.waitForStepLoad('auth');
-
-    const usernameField = await $('input[name="username"], input[formControlName="username"]');
-    const passwordField = await $('input[name="password"], input[formControlName="password"], input[type="password"]');
-
-    await usernameField.setValue('@invalid.user');
-    await passwordField.setValue('wrongpassword');
+    await pages.auth.open();
+    await pages.auth.enterCredentials('@invalid.user', 'wrongpassword');
 });
 
 Then('the authentication should fail', async () => {
@@ -713,20 +670,12 @@ Then('I should remain on the auth step', async () => {
 });
 
 Then('the form should remain invalid', async () => {
-    // Check that validation errors are still displayed
-    const usernameError = await $('.username-error, .mat-error, [data-error="username"]');
-    const passwordError = await $('.password-error, .mat-error, [data-error="password"]');
-
-    const usernameErrorDisplayed = await usernameError.isDisplayed().catch(() => false);
-    const passwordErrorDisplayed = await passwordError.isDisplayed().catch(() => false);
-
-    // At least one error should be displayed
-    expect(usernameErrorDisplayed || passwordErrorDisplayed).toBe(true);
+    const isValid = await pages.auth.isFormValid();
+    expect(isValid).toBe(false);
 });
 
 Given('I am on the auth step without valid credentials', async () => {
-    await pages.stepLayout.openAuthStep();
-    await pages.stepLayout.waitForStepLoad('auth');
+    await pages.auth.open();
     // Don't enter any credentials
 });
 
