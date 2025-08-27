@@ -15,16 +15,16 @@ class UploadStepPage extends Page {
     }
 
     public get chooseFilesButton() {
-        return $('button[mat-raised-button]');
+        return $('shared-file-upload-control button[mat-raised-button]');
     }
 
     public get uploadIcon() {
         return $('button[mat-raised-button] mat-icon');
     }
 
-    // File input and form elements
+    // File input (now hidden within the custom control)
     public get fileInput() {
-        return $('input[type="file"]#fileInput');
+        return $('shared-file-upload-control input[type="file"]');
     }
 
     public get fileUploadForm() {
@@ -35,21 +35,19 @@ class UploadStepPage extends Page {
         return $('input[formControlName="instagramArchive"]');
     }
 
-    // Selected files section
+    // Selected files section (now handled by the custom control)
     public get fileListSection() {
-        return $('.file-list');
+        return $('shared-file-upload-control .file-list');
     }
 
-    public get selectedFilesHeading() {
-        return $('.file-list h3');
-    }
+
 
     public get selectedFiles() {
-        return $$('.file-selected');
+        return $$('shared-file-upload-control .file-selected');
     }
 
     public get deleteButtons() {
-        return $$('.file-selected button[mat-icon-button]');
+        return $$('shared-file-upload-control .file-selected button[mat-icon-button]');
     }
 
     public get deleteIcons() {
@@ -66,7 +64,7 @@ class UploadStepPage extends Page {
             const dt = new DataTransfer();
             const file = new File([mockFile.content], mockFile.name, { type: mockFile.type });
             dt.items.add(file);
-            input.files = dt.files;
+            (input as HTMLInputElement).files = dt.files;
             
             // Trigger change event
             const event = new Event('change', { bubbles: true });
@@ -88,29 +86,40 @@ class UploadStepPage extends Page {
 
     public async isFormValid() {
         return await browser.execute(() => {
-            // Check the specific form control for instagramArchive
-            const fileInput = document.querySelector('input[formControlName="instagramArchive"]') as HTMLInputElement;
-            if (!fileInput) return false;
+            // Get the form element
+            const form = document.querySelector('form[formGroup]') as any;
+            if (!form) return false;
             
-            // Check if the input has a file selected
-            return fileInput.files && fileInput.files.length > 0;
+            // Get the Angular component instance to access the form
+            const uploadComponent = document.querySelector('shared-upload') as any;
+            if (!uploadComponent) return false;
+            
+            // Check if the form control has a value
+            const formControl = uploadComponent.fileUploadForm?.get('instagramArchive');
+            if (!formControl) return false;
+            
+            // Check if the form control is valid and has a value
+            return formControl.valid && formControl.value !== null;
         });
     }
 
     public async hasFiles() {
         const fileInput = await this.fileInput;
         return await browser.execute((input) => {
-            return input.files && input.files.length > 0;
+            return (input as HTMLInputElement).files && (input as HTMLInputElement).files!.length > 0;
         }, fileInput);
     }
 
     public async getHeadingByText(headingText: string) {
         // Look for any heading element containing the specified text
-        const heading = await $(`h1, h2, h3, h4, h5, h6`).filter(async (element) => {
-            const text = await element.getText();
-            return text.includes(headingText);
-        });
-        return heading;
+        const headings = await $$(`h1, h2, h3, h4, h5, h6`);
+        for (const heading of headings) {
+            const text = await heading.getText();
+            if (text.includes(headingText)) {
+                return heading;
+            }
+        }
+        return null;
     }
 
     // Navigation

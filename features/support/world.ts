@@ -50,7 +50,7 @@ export class CustomWorld extends World implements ICustomWorld {
         this.lastSnackbarMessage = await this.navigationHelper.captureSnackbarMessage(1000);
         
         // Log for debugging if needed
-        if (process.env.DEBUG_TESTS === 'true') {
+        if (process.env['DEBUG_TESTS'] === 'true') {
             await this.debugHelper.logPageState();
         }
     }

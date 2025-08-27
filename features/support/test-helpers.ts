@@ -38,17 +38,18 @@ export class TestFileHelper {
     /**
      * Simulates file selection in a file input using browser execution
      */
-    static async simulateFileSelection(fileInput: WebdriverIO.Element, file: File): Promise<void> {
-        await browser.execute((input, mockFile) => {
+    static async simulateFileSelection(fileInput: any, file: File): Promise<void> {
+        await browser.execute((input: HTMLElement, mockFile: { content: any; name: string; type: string }) => {
             const dt = new DataTransfer();
-            const testFile = new File([mockFile.content], mockFile.name, { type: mockFile.type });
+            // Convert ReadableStream to ArrayBuffer for File constructor
+            const testFile = new File([mockFile.content as any], mockFile.name, { type: mockFile.type });
             dt.items.add(testFile);
-            input.files = dt.files;
+            (input as HTMLInputElement).files = dt.files;
             
             // Trigger change event to notify Angular of the file selection
             const changeEvent = new Event('change', { bubbles: true });
             input.dispatchEvent(changeEvent);
-        }, fileInput, {
+        }, await fileInput, {
             content: file.stream(),
             name: file.name,
             type: file.type
@@ -127,7 +128,7 @@ export class NavigationTestHelper {
                 const snackbars = document.querySelectorAll('mat-snack-bar-container, .mat-mdc-snack-bar-container');
                 const errors = document.querySelectorAll('.error-message, .mat-error');
                 
-                const allMessages = [];
+                const allMessages: string[] = [];
                 snackbars.forEach(snackbar => {
                     const message = snackbar.textContent?.trim();
                     if (message) allMessages.push(message);
@@ -205,9 +206,10 @@ export class ValidationTestHelper {
             // Collect validation errors from form controls
             const controls = form.querySelectorAll('input, select, textarea');
             controls.forEach(control => {
-                if (!control.checkValidity()) {
+                const htmlControl = control as HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
+                if (!htmlControl.checkValidity()) {
                     const name = control.getAttribute('name') || control.getAttribute('formControlName') || 'unnamed field';
-                    errors.push(`${name}: ${control.validationMessage}`);
+                    errors.push(`${name}: ${htmlControl.validationMessage}`);
                 }
             });
             

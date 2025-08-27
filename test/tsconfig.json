@@ -1,12 +1,27 @@
 {
     "compilerOptions": {
         "moduleResolution": "node",
+        "target": "es2019",
+        "lib": ["es2019", "dom"],
         "types": [
             "node",
-            "webdriverio/async",
+            "@wdio/types",
             "@wdio/cucumber-framework",
             "expect-webdriverio"
         ],
-        "target": "es2019"
-    }
+        "strict": false,
+        "noImplicitAny": false,
+        "skipLibCheck": true,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "forceConsistentCasingInFileNames": true
+    },
+    "include": [
+        "../features/**/*.ts",
+        "../features/**/*.js",
+        "types.d.ts"
+    ],
+    "exclude": [
+        "node_modules"
+    ]
 }

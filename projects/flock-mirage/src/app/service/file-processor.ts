@@ -1,10 +1,13 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FileService, ValidationResult } from 'shared';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FileProcessor implements FileService {
+  route: ActivatedRoute = inject(ActivatedRoute);
   archivedFile: File | null = null;
 
   validateArchive(archivedFile: File): Promise<ValidationResult> {
@@ -24,13 +27,15 @@ export class FileProcessor implements FileService {
     const deferredPromise = new Promise<boolean>((resolve, reject) => {
       // Simulate extraction logic
       setTimeout(() => {
-        const isSuccess = Math.random() > 0.1; // Random success/failure
+        // use demo query parameter to determine if the extraction is successful
+        const isDemo = this.route.snapshot.queryParams['extractionFailed'] === 'true';
+        const isSuccess = !isDemo;
         if (isSuccess) {
           resolve(true);
         } else {
           reject(new Error('Extraction failed'));
         }
-      }, 1000);
+      }, environment.archiveExtractDelay);
     });
     return deferredPromise;
   }

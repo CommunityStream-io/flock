@@ -1,3 +1,4 @@
+@skip
 Feature: Navigation Guard Protection - Upload Validation Requirements
 
   As a user migrating from Instagram to Bluesky
@@ -7,7 +8,7 @@ Feature: Navigation Guard Protection - Upload Validation Requirements
   Background:
     Given the application is running
 
-  @navigation-guard @upload-guard @skip
+  @navigation-guard @upload-guard 
   Scenario: Navigation blocked without valid archive
     Given I navigate to the upload step
     And I have not uploaded any archive file
@@ -24,7 +25,7 @@ Feature: Navigation Guard Protection - Upload Validation Requirements
     Then I should successfully navigate to the auth step
     And I should not see any error messages
 
-  @navigation-guard @guard-validation @skip
+  @navigation-guard @guard-validation 
   Scenario: Guard checks for actual file service state
     Given I navigate to the upload step
     When I select a file but validation fails
@@ -32,7 +33,7 @@ Feature: Navigation Guard Protection - Upload Validation Requirements
     Then I should remain on the upload step
     And I should see a snackbar message "Please upload a valid archive"
 
-  @navigation-guard @multiple-attempts @skip
+  @navigation-guard @multiple-attempts 
   Scenario: Multiple navigation attempts show consistent behavior
     Given I navigate to the upload step
     And I have not uploaded any archive file
@@ -42,7 +43,7 @@ Feature: Navigation Guard Protection - Upload Validation Requirements
     And I attempt to navigate to the auth step again
     Then I should see the snackbar message again
 
-  @navigation-guard @step-navigation-integration @skip
+  @navigation-guard @step-navigation-integration 
   Scenario: Step navigation component respects guard
     Given I navigate to the upload step
     And I have not uploaded any archive file

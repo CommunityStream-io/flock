@@ -69,7 +69,7 @@ Each step validates its data before allowing the next step, ensuring our migrati
 
 ## 🎯 **Key Principles**
 
-1. **Configuration Drives Everything** - Like a dodo bird's nest plan
+1. **Configuration Drives Everything** - The migratory flight plan
 2. **Environment-Aware Services** - Each bird gets the tools it needs
 3. **Shared Components** - Common nest elements for consistency
 4. **Progressive Validation** - Each step builds on the previous
@@ -86,17 +86,18 @@ For deep dives into specific areas, explore our detailed architecture docs:
 
 ### **🦅 Flock Native (The Eagle's Vision)**
 - **[Overview](architecture/flock-native/OVERVIEW.md)** - Desktop architecture and Electron integration
-- **[Components](architecture/flock-native/COMPONENTS.md)** - Native component patterns
+<!-- - **[Components](architecture/flock-native/COMPONENTS.md)** - Native component patterns
 - **[Services](architecture/flock-native/SERVICES.md)** - Native service implementations
-- **[Electron](architecture/flock-native/ELECTRON.md)** - Electron IPC and integration details
+- **[Electron](architecture/flock-native/ELECTRON.md)** - Electron IPC and integration details -->
 
 ### **🌊 Flock Murmur (The Murmuration Bird's Dance)**
 - **[Overview](architecture/flock-murmur/OVERVIEW.md)** - Web architecture and browser integration
-- **[Components](architecture/flock-murmur/COMPONENTS.md)** - Web component patterns
-- **[Services](architecture/flock-murmur/SERVICES.md)** - Web service implementations
+<!-- - **[Components](architecture/flock-murmur/COMPONENTS.md)** - Web component patterns
+- **[Services](architecture/flock-murmur/SERVICES.md)** - Web service implementations -->
 
 ### **🧩 Shared Library (The Flock's Common Nest)**
 - **[Overview](architecture/shared/OVERVIEW.md)** - Shared library architecture and purpose
+- **[Developer Guide](architecture/shared/DEVELOPER_GUIDE.md)** - Comprehensive guide for developers
 - **[Components](architecture/shared/COMPONENTS.md)** - Shared component patterns and interfaces
 - **[Services](architecture/shared/SERVICES.md)** - Service interfaces and shared implementations
 - **[Theming](architecture/shared/THEMING.md)** - Material Design system and theme architecture

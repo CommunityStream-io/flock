@@ -157,12 +157,12 @@ class NavigationGuardPage extends Page {
 
     public async hasValidationErrors() {
         const errors = await this.errorMessages;
-        return errors.length > 0;
+        return await errors.length > 0;
     }
 
     public async hasValidationSuccess() {
         const successes = await this.successMessages;
-        return successes.length > 0;
+        return await successes.length > 0;
     }
 
     // Wait for guard execution

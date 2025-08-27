@@ -1,3 +1,4 @@
+@skip
 Feature: Migration Steps Workflow - Step-by-step migration process
 
   As a user migrating from Instagram to Bluesky

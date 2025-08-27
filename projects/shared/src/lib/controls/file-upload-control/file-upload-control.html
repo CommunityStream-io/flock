@@ -1,0 +1,40 @@
+<div class="file-upload-control">
+  <!-- Hidden file input -->
+  <input
+    #fileInput
+    type="file"
+    [accept]="accept"
+    [disabled]="disabled"
+    (change)="onFileInputChange($event)"
+    style="display: none;"
+  />
+  
+  <!-- Upload button - matches original design -->
+  <button 
+    mat-raised-button 
+    color="primary" 
+    [disabled]="disabled"
+    (click)="openFileDialog()"
+    type="button"
+  >
+    <mat-icon>upload</mat-icon> Choose Files
+  </button>
+  
+  <!-- Selected file display - matches original design -->
+  @if (value) {
+    <div class="file-list">
+      <h3>Selected Files:</h3>
+      <div class="file-selected">
+        {{ value.name }}
+        <button 
+          mat-icon-button 
+          [disabled]="disabled"
+          (click)="removeFile()"
+          type="button"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </div>
+  }
+</div>
