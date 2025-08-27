@@ -87,7 +87,9 @@
         "Before": "readonly",
         "After": "readonly",
         "BeforeAll": "readonly",
-        "AfterAll": "readonly"
+        "AfterAll": "readonly",
+        "$": "readonly",
+        "$$": "readonly"
       },
       "rules": {
         "no-console": "off",
