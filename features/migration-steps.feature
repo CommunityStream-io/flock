@@ -43,3 +43,109 @@ Feature: Migration Steps Workflow - Step-by-step migration process
     When I navigate to the config step
     Then the page title should be "Configuration"
     And I should see the description "Configure migration settings"
+
+  @migration-steps @bluesky-auth @validation
+  Feature: Bluesky Authentication Step - Secure credential validation
+
+    As a user migrating from Instagram to Bluesky
+    I want to securely authenticate with my Bluesky account
+    So that I can proceed with the migration process
+
+    Background:
+      Given I have uploaded a valid Instagram archive
+      And I am on the auth step page
+
+    @auth-form-display
+    Scenario: Authentication form displays correctly
+      Then I should see the Bluesky authentication form
+      And I should see a username input field with @ prefix
+      And I should see a password input field
+      And the form should be initially invalid
+
+    @username-validation
+    Scenario: Username validation enforces proper format
+      When I enter a username without @ prefix
+      Then the username field should show an error
+      And the error should indicate "@ prefix is required"
+      And the form should remain invalid
+
+      When I enter a username with @ prefix but no dots
+      Then the username field should show an error
+      And the error should indicate "Username must contain at least two dots"
+      And the form should remain invalid
+
+      When I enter a username with @ prefix and one dot
+      Then the username field should show an error
+      And the error should indicate "Username must contain at least two dots"
+      And the form should remain invalid
+
+      When I enter a valid username "@username.bksy.social"
+      Then the username field should not show any errors
+      And the username validation should pass
+
+      When I enter a valid custom domain username "@user.custom.domain"
+      Then the username field should not show any errors
+      And the username validation should pass
+
+    @password-validation
+    Scenario: Password validation requires non-empty value
+      When I leave the password field empty
+      Then the password field should show an error
+      And the error should indicate "Password is required"
+      And the form should remain invalid
+
+      When I enter a password
+      Then the password field should not show any errors
+      And the password validation should pass
+
+    @form-validation
+    Scenario: Form validation requires both fields to be valid
+      Given I have entered a valid username
+      When I enter a valid password
+      Then the form should be valid
+      And the "Next" button should be enabled
+
+      Given I have entered a valid password
+      When I enter a valid username
+      Then the form should be valid
+      And the "Next" button should be enabled
+
+    @authentication-success
+    Scenario: Successful authentication allows progression
+      Given I have entered valid credentials
+      When I click the "Next" button
+      Then the authentication script should run in the background
+      And I should be navigated to the config step
+
+    @authentication-failure
+    Scenario: Failed authentication shows appropriate error
+      Given I have entered invalid credentials
+      When I click the "Next" button
+      Then the authentication should fail
+      And I should see a snackbar error message
+      And the error should indicate "Invalid Bluesky credentials"
+      And I should remain on the auth step
+      And the form should remain invalid
+
+    @navigation-guard
+    Scenario: Navigation guard prevents progression without valid credentials
+      Given I am on the auth step without valid credentials
+      When I attempt to navigate to the config step
+      Then the navigation should be blocked
+      And I should see a snackbar error message
+      And the error should indicate "Please provide valid Bluesky credentials"
+      And I should remain on the auth step
+
+      Given I have successfully authenticated
+      When I attempt to navigate to the config step
+      Then the navigation should succeed
+      And I should be on the config step page
+
+    @deactivate-validation
+    Scenario: Deactivate validation ensures credentials are saved
+      Given I have entered valid credentials
+      When I attempt to navigate away from the auth step
+      Then the system should validate my credentials
+      And if valid, I should proceed to the next step
+      And if invalid, I should see a snackbar error message
+      And the error should indicate "Please complete authentication before proceeding"

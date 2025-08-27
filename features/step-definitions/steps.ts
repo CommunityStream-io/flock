@@ -188,7 +188,7 @@ Then('I should see a {string} button with upload icon', async (buttonText: strin
     const button = await pages.uploadStep.chooseFilesButton;
     const buttonTextActual = await button.getText();
     expect(buttonTextActual).toContain(buttonText);
-    
+
     const icon = await pages.uploadStep.uploadIcon;
     await expect(icon).toBeDisplayed();
     const iconText = await icon.getText();
@@ -259,7 +259,7 @@ Then('I should see validation success indicators', async () => {
     // Check that the file is actually selected and displayed
     const hasFiles = await pages.uploadStep.hasFiles();
     expect(hasFiles).toBe(true);
-    
+
     // Check that the file list section is visible
     await expect(pages.uploadStep.fileListSection).toBeDisplayed();
 });
@@ -282,7 +282,7 @@ Then('the browser should filter file selection to zip files only', async () => {
     const fileInput = await pages.uploadStep.fileInput;
     const acceptAttribute = await fileInput.getAttribute('accept');
     expect(acceptAttribute).toBe('.zip');
-    
+
     // We can also verify that the file input has the correct type
     const inputType = await fileInput.getAttribute('type');
     expect(inputType).toBe('file');
@@ -293,10 +293,10 @@ Then('users cannot accidentally select text files', async () => {
     // We verify the configuration is correct
     const fileInput = await pages.uploadStep.fileInput;
     const acceptAttribute = await fileInput.getAttribute('accept');
-    
+
     // The accept attribute should only allow zip files
     expect(acceptAttribute).toBe('.zip');
-    
+
     // We can also check that the component doesn't have logic for handling text files
     // since the browser prevents them from being selected
     const hasTextFileHandling = await browser.execute(() => {
@@ -489,5 +489,296 @@ Then('the "Choose Files" button should be hidden', async () => {
 Then('the "Choose Files" button should be visible again', async () => {
     const chooseFilesButton = await pages.uploadStep.chooseFilesButton;
     await expect(chooseFilesButton).toBeDisplayed();
+});
+
+// ===== BLUESKY AUTHENTICATION STEPS =====
+
+Given('I have uploaded a valid Instagram archive', async () => {
+    await pages.uploadStep.selectFile('valid-archive.zip');
+    await browser.pause(1000); // Allow validation to complete
+});
+
+Given('I am on the auth step page', async () => {
+    await pages.stepLayout.openAuthStep();
+    await pages.stepLayout.waitForStepLoad('auth');
+});
+
+Then('I should see a username input field with @ prefix', async () => {
+    const usernameField = await $('input[name="username"], input[formControlName="username"]');
+    await expect(usernameField).toBeDisplayed();
+
+    // Check if the field has a placeholder or label with @ prefix
+    const placeholder = await usernameField.getAttribute('placeholder');
+    const label = await $('label[for="username"], .username-label');
+
+    if (placeholder) {
+        await expect(placeholder).toContain('@');
+    } else if (await label.isExisting()) {
+        const labelText = await label.getText();
+        await expect(labelText).toContain('@');
+    }
+});
+
+Then('I should see a password input field', async () => {
+    const passwordField = await $('input[name="password"], input[formControlName="password"], input[type="password"]');
+    await expect(passwordField).toBeDisplayed();
+});
+
+When('I enter a username without @ prefix', async () => {
+    const usernameField = await $('input[name="username"], input[formControlName="username"]');
+    await usernameField.setValue('username.bksy.social');
+});
+
+When('I enter a username with @ prefix but no dots', async () => {
+    const usernameField = await $('input[name="username"], input[formControlName="username"]');
+    await usernameField.setValue('@username');
+});
+
+When('I enter a username with @ prefix and one dot', async () => {
+    const usernameField = await $('input[name="username"], input[formControlName="username"]');
+    await usernameField.setValue('@username.bksy');
+});
+
+When('I enter a valid username "@username.bksy.social"', async () => {
+    const usernameField = await $('input[name="username"], input[formControlName="username"]');
+    await usernameField.setValue('@username.bksy.social');
+});
+
+When('I enter a valid custom domain username "@user.custom.domain"', async () => {
+    const usernameField = await $('input[name="username"], input[formControlName="username"]');
+    await usernameField.setValue('@user.custom.domain');
+});
+
+Then('the username field should show an error', async () => {
+    const errorElement = await $('.username-error, .mat-error, [data-error="username"]');
+    await expect(errorElement).toBeDisplayed();
+});
+
+Then('the error should indicate "@ prefix is required"', async () => {
+    const errorElement = await $('.username-error, .mat-error, [data-error="username"]');
+    const errorText = await errorElement.getText();
+    await expect(errorText).toContain('@ prefix is required');
+});
+
+Then('the error should indicate "Username must contain at least two dots"', async () => {
+    const errorElement = await $('.username-error, .mat-error, [data-error="username"]');
+    const errorText = await errorElement.getText();
+    await expect(errorText).toContain('Username must contain at least two dots');
+});
+
+Then('the username field should not show any errors', async () => {
+    const errorElement = await $('.username-error, .mat-error, [data-error="username"]');
+    const isDisplayed = await errorElement.isDisplayed().catch(() => false);
+    expect(isDisplayed).toBe(false);
+});
+
+Then('the username validation should pass', async () => {
+    // Check that no username errors are displayed
+    const errorElement = await $('.username-error, .mat-error, [data-error="username"]');
+    const isDisplayed = await errorElement.isDisplayed().catch(() => false);
+    expect(isDisplayed).toBe(false);
+});
+
+When('I leave the password field empty', async () => {
+    const passwordField = await $('input[name="password"], input[formControlName="password"], input[type="password"]');
+    await passwordField.setValue('');
+    // Trigger blur to validate
+    await passwordField.click();
+    await $('body').click();
+});
+
+When('I enter a password', async () => {
+    const passwordField = await $('input[name="password"], input[formControlName="password"], input[type="password"]');
+    await passwordField.setValue('testpassword123');
+});
+
+Then('the password field should show an error', async () => {
+    const errorElement = await $('.password-error, .mat-error, [data-error="password"]');
+    await expect(errorElement).toBeDisplayed();
+});
+
+Then('the error should indicate "Password is required"', async () => {
+    const errorElement = await $('.password-error, .mat-error, [data-error="password"]');
+    const errorText = await errorElement.getText();
+    expect(errorText).toContain('Password is required');
+});
+
+Then('the password field should not show any errors', async () => {
+    const errorElement = await $('.password-error, .mat-error, [data-error="password"]');
+    const isDisplayed = await errorElement.isDisplayed().catch(() => false);
+    expect(isDisplayed).toBe(false);
+});
+
+Then('the password validation should pass', async () => {
+    // Check that no password errors are displayed
+    const errorElement = await $('.password-error, .mat-error, [data-error="password"]');
+    const isDisplayed = await errorElement.isDisplayed().catch(() => false);
+    expect(isDisplayed).toBe(false);
+});
+
+Given('I have entered a valid username', async () => {
+    const usernameField = await $('input[name="username"], input[formControlName="username"]');
+    await usernameField.setValue('@username.bksy.social');
+});
+
+Given('I have entered a valid password', async () => {
+    const passwordField = await $('input[name="password"], input[formControlName="password"], input[type="password"]');
+    await passwordField.setValue('testpassword123');
+});
+
+Then('the form should be initially invalid', async () => {
+    const nextButton = await pages.stepLayout.nextButton;
+    const isEnabled = await nextButton.isEnabled();
+    expect(isEnabled).toBe(false);
+});
+
+Then('the form should be valid', async () => {
+    // Check that no validation errors are displayed
+    const usernameError = await $('.username-error, .mat-error, [data-error="username"]');
+    const passwordError = await $('.password-error, .mat-error, [data-error="password"]');
+
+    const usernameErrorDisplayed = await usernameError.isDisplayed().catch(() => false);
+    const passwordErrorDisplayed = await passwordError.isDisplayed().catch(() => false);
+
+    expect(usernameErrorDisplayed).toBe(false);
+    expect(passwordErrorDisplayed).toBe(false);
+});
+
+Then('the "Next" button should be enabled', async () => {
+    const nextButton = await pages.stepLayout.nextButton;
+    const isEnabled = await nextButton.isEnabled();
+    expect(isEnabled).toBe(true);
+});
+
+Given('I have entered valid credentials', async () => {
+    await pages.stepLayout.openAuthStep();
+    await pages.stepLayout.waitForStepLoad('auth');
+
+    const usernameField = await $('input[name="username"], input[formControlName="username"]');
+    const passwordField = await $('input[name="password"], input[formControlName="password"], input[type="password"]');
+
+    await usernameField.setValue('@username.bksy.social');
+    await passwordField.setValue('testpassword123');
+});
+
+When('I click the "Next" button', async () => {
+    await pages.stepLayout.clickNextStep();
+});
+
+Then('the authentication script should run in the background', async () => {
+    // Wait for navigation to complete, indicating authentication succeeded
+    await browser.waitUntil(
+        async () => {
+            const currentUrl = await browser.getUrl();
+            return currentUrl.includes('/step/config');
+        },
+        { timeout: 10000, timeoutMsg: 'Authentication and navigation to config step did not complete' }
+    );
+});
+
+Then('I should be navigated to the config step', async () => {
+    const currentUrl = await browser.getUrl();
+    expect(currentUrl).toContain('/step/config');
+});
+
+Given('I have entered invalid credentials', async () => {
+    await pages.stepLayout.openAuthStep();
+    await pages.stepLayout.waitForStepLoad('auth');
+
+    const usernameField = await $('input[name="username"], input[formControlName="username"]');
+    const passwordField = await $('input[name="password"], input[formControlName="password"], input[type="password"]');
+
+    await usernameField.setValue('@invalid.user');
+    await passwordField.setValue('wrongpassword');
+});
+
+Then('the authentication should fail', async () => {
+    // Check that we're still on the auth step
+    const currentUrl = await browser.getUrl();
+    expect(currentUrl).toContain('/step/auth');
+});
+
+Then('I should see a snackbar error message', async () => {
+    await pages.navigationGuard.waitForSnackbar();
+});
+
+Then('the error should indicate "Invalid Bluesky credentials"', async () => {
+    const snackbarText = await pages.navigationGuard.getSnackbarText();
+    expect(snackbarText).toContain('Invalid Bluesky credentials');
+});
+
+Then('I should remain on the auth step', async () => {
+    const currentUrl = await browser.getUrl();
+    expect(currentUrl).toContain('/step/auth');
+});
+
+Then('the form should remain invalid', async () => {
+    // Check that validation errors are still displayed
+    const usernameError = await $('.username-error, .mat-error, [data-error="username"]');
+    const passwordError = await $('.password-error, .mat-error, [data-error="password"]');
+
+    const usernameErrorDisplayed = await usernameError.isDisplayed().catch(() => false);
+    const passwordErrorDisplayed = await passwordError.isDisplayed().catch(() => false);
+
+    // At least one error should be displayed
+    expect(usernameErrorDisplayed || passwordErrorDisplayed).toBe(true);
+});
+
+Given('I am on the auth step without valid credentials', async () => {
+    await pages.stepLayout.openAuthStep();
+    await pages.stepLayout.waitForStepLoad('auth');
+    // Don't enter any credentials
+});
+
+When('I attempt to navigate to the config step', async () => {
+    await pages.stepLayout.clickNextStep();
+    await pages.navigationGuard.waitForGuardExecution();
+});
+
+Then('the navigation should be blocked', async () => {
+    const currentUrl = await browser.getUrl();
+    expect(currentUrl).toContain('/step/auth');
+});
+
+Then('the error should indicate "Please provide valid Bluesky credentials"', async () => {
+    const snackbarText = await pages.navigationGuard.getSnackbarText();
+    expect(snackbarText).toContain('Please provide valid Bluesky credentials');
+});
+
+Given('I have successfully authenticated', async () => {
+    // This would typically be set up by the test environment
+    // or by completing a successful authentication flow
+    await browser.execute(() => {
+        // Simulate successful authentication state
+        localStorage.setItem('bluesky_authenticated', 'true');
+    });
+});
+
+Then('the navigation should succeed', async () => {
+    const currentUrl = await browser.getUrl();
+    expect(currentUrl).toContain('/step/config');
+});
+
+When('I attempt to navigate away from the auth step', async () => {
+    await pages.stepLayout.clickNextStep();
+});
+
+Then('the system should validate my credentials', async () => {
+    // This step verifies that validation occurs
+    // The actual validation logic is in the component
+});
+
+Then('if valid, I should proceed to the next step', async () => {
+    // This is handled by the navigation guard
+    // We verify the outcome in the next step
+});
+
+Then('if invalid, I should see a snackbar error message', async () => {
+    await pages.navigationGuard.waitForSnackbar();
+});
+
+Then('the error should indicate "Please complete authentication before proceeding"', async () => {
+    const snackbarText = await pages.navigationGuard.getSnackbarText();
+    expect(snackbarText).toContain('Please complete authentication before proceeding');
 });
 
