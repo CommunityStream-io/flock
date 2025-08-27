@@ -131,7 +131,7 @@ export const config: Options.Testrunner = {
         snippets: true,
         source: true,
         strict: false,
-        tagExpression: 'not @skip',
+        tags: 'not @skip',
         timeout: 60000,
         ignoreUndefinedDefinitions: false
     },
