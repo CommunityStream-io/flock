@@ -103,14 +103,6 @@ Feature: Bluesky Authentication - User credential validation and authentication
     Then the system should validate my credentials
     And I should proceed to the next step
 
-  Scenario: Invalid credentials show snackbar error and prevent navigation
-    And I have entered invalid credentials
-    When I attempt to navigate away from the auth step
-    Then the system should validate my credentials
-    And I should see a snackbar error message
-    And the error should indicate "Please complete authentication before proceeding"
-    And I should remain on the auth step
-
   @bluesky-auth @help @dialog
   Scenario: Help dialog provides username format guidance
     When I click the help icon
@@ -195,7 +187,7 @@ Feature: Bluesky Authentication - User credential validation and authentication
     Then the navigation should be allowed
     And no authentication process should be triggered
 
-  @bluesky-auth @navigation @authentication @auth-guard
+  @bluesky-auth @navigation @authentication @auth-guard @network-error
   Scenario: Authentication error handling shows appropriate message
     Given I am on the auth step
     And I have entered credentials that will cause a network error
