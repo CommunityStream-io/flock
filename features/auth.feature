@@ -137,5 +137,73 @@ Feature: Bluesky Authentication - User credential validation and authentication
     And the splash screen should display "Authenticating with bsky.social"
     And the authentication should process in the background
     And I should be navigated to the config step
-    
+
+  @bluesky-auth @navigation @auth-guard
+  Scenario: Navigation to previous step is always allowed
+    Given I am on the auth step
+    When I attempt to navigate to the upload step
+    Then the navigation should be allowed
+    And I should be on the upload step
+    And no authentication should be triggered
+
+  @bluesky-auth @navigation @authentication @auth-guard
+  Scenario: Navigation to next step triggers authentication with valid credentials
+    Given I am on the auth step
+    And I have entered valid credentials
+    When I attempt to navigate to the config step
+    Then the authentication process should start
+    And I should see the splash screen with "Authenticating with bsky.social"
+    And the authentication should succeed
+    And I should be navigated to the config step
+
+  @bluesky-auth @navigation @authentication @auth-guard
+  Scenario: Navigation to next step fails with invalid credentials
+    Given I am on the auth step
+    And I have entered invalid credentials
+    When I attempt to navigate to the config step
+    Then the authentication process should start
+    And I should see the splash screen with "Authenticating with bsky.social"
+    And the authentication should fail
+    And I should see a snackbar error message
+    And the error should indicate "Authentication failed"
+    And I should remain on the auth step
+
+  @bluesky-auth @navigation @authentication @auth-guard
+  Scenario: Navigation to next step fails when no credentials are provided
+    Given I am on the auth step
+    And I have not entered any credentials
+    When I attempt to navigate to the config step
+    Then the navigation should be blocked
+    And I should see a snackbar error message
+    And the error should indicate "Please provide valid Bluesky credentials"
+    And I should remain on the auth step
+    And no authentication process should be triggered
+
+  @bluesky-auth @navigation @authentication @auth-guard
+  Scenario: Already authenticated user can navigate to next step without re-authentication
+    Given I am on the auth step
+    And I have already been authenticated
+    When I attempt to navigate to the config step
+    Then the navigation should be allowed immediately
+    And I should be on the config step
+    And no authentication process should be triggered
+
+  @bluesky-auth @navigation @auth-guard
+  Scenario: Direct URL navigation is allowed by default
+    Given I am on the auth step
+    When I attempt to navigate to a different URL directly
+    Then the navigation should be allowed
+    And no authentication process should be triggered
+
+  @bluesky-auth @navigation @authentication @auth-guard
+  Scenario: Authentication error handling shows appropriate message
+    Given I am on the auth step
+    And I have entered credentials that will cause a network error
+    When I attempt to navigate to the config step
+    Then the authentication process should start
+    And I should see the splash screen with "Authenticating with bsky.social"
+    And the authentication should fail with an error
+    And I should see a snackbar error message
+    And the error should indicate "Authentication failed. Please check your credentials."
+    And I should remain on the auth step
 

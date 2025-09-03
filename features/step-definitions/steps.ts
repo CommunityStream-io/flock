@@ -805,16 +805,12 @@ When('I attempt to navigate away from the auth step', async () => {
 
 Then('the system should validate my credentials', async () => {
     // This step verifies that validation occurs
-    // The actual validation logic is in the component
+    // The actual validation logic is in the component and in the auth resolver
 });
 
 Then('I should proceed to the next step', async () => {
     // This is handled by the navigation guard
     // We verify the outcome in the next step
-});
-
-Then('I should see a snackbar error message', async () => {
-    await pages.navigationGuard.waitForSnackbar();
 });
 
 Then('the error should indicate "Please complete authentication before proceeding"', async () => {

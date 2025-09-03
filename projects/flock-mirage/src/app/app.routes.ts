@@ -11,7 +11,7 @@ import {
   uploadValidGuard,
   authValidGuard,
   extractArchiveResolver,
-  authResolver
+  authDeactivateGuard
 } from 'shared';
 
 export const routes: Routes = [
@@ -40,7 +40,7 @@ export const routes: Routes = [
           next: 'config',
           previous: 'upload',
         },
-        canDeactivate: [authValidGuard],
+        canDeactivate: [authDeactivateGuard],
         resolve: {
           extractedArchive: extractArchiveResolver
         },
@@ -53,9 +53,6 @@ export const routes: Routes = [
           description: 'Configure migration settings',
           next: 'migrate',
           previous: 'auth',
-        },
-        resolve: {
-          auth: authResolver
         },
       },
       {
