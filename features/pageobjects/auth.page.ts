@@ -1,5 +1,6 @@
 import Page from './page';
 import StepLayoutPage from './step-layout.page';
+import { browser, $ } from '@wdio/globals';
 
 class AuthPage extends Page {
     // Form elements
