@@ -36,6 +36,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
+      CODECOV_TOKEN: ${{ vars.CODECOV_TOKEN }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -71,6 +72,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
+      CODECOV_TOKEN: ${{ vars.CODECOV_TOKEN }}
       HEADLESS: true
       CI: true
     steps:
