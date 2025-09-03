@@ -589,11 +589,11 @@ When('I enter a username with @ prefix and one dot', async () => {
 });
 
 When('I enter a valid username "@username.bksy.social"', async () => {
-    await pages.auth.enterUsername('username.bksy.social');
+    await pages.auth.enterUsername('test.bksy.social');
 });
 
 When('I enter a valid username', async () => {
-    await pages.auth.enterUsername('username.bksy.social');
+    await pages.auth.enterUsername('test.bksy.social');
 });
 
 When('I enter a valid custom domain username "@user.custom.domain"', async () => {
@@ -661,7 +661,7 @@ Then('the password validation should pass', async () => {
 });
 
 Given('I have entered a valid username', async () => {
-    await pages.auth.enterUsername('@user.bsky.social');
+    await pages.auth.enterUsername('test.bksy.social');
 });
 
 Given('I have entered a valid password', async () => {
@@ -685,7 +685,7 @@ Then('the "Next" button should be enabled', async () => {
 
 Given('I have entered valid credentials', async () => {
     await pages.auth.open();
-    await pages.auth.enterCredentials('@username.bksy.social', 'testpassword123');
+    await pages.auth.enterCredentials('test.bksy.social', 'testpassword123');
 });
 
 When('I click the "Next" button', async () => {
@@ -817,6 +817,10 @@ Then('the dialog should explain that the @ symbol is automatically added', async
 
 When('I close the help dialog', async () => {
     await pages.auth.closeHelpDialog();
+});
+
+When('I close the help dialog with Escape key', async () => {
+    await pages.auth.closeHelpDialogWithEscape();
 });
 
 Then('the help dialog should be hidden', async () => {

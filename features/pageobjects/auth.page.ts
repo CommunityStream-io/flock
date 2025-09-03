@@ -153,42 +153,15 @@ class AuthPage extends Page {
 
     public async isHelpDialogVisible() {
         try {
-            // Wait a bit for dialog to appear
-            await browser.pause(1000);
-            
-            // Try multiple selectors to find the dialog
-            const selectors = [
-                '.help-dialog',
-                '.mat-mdc-dialog-container .help-dialog',
-                '.cdk-overlay-container .help-dialog',
-                '[role="dialog"]'
-            ];
-            
-            for (const selector of selectors) {
-                try {
-                    const dialog = await $(selector);
-                    if (await dialog.isDisplayed()) {
-                        console.log(`✅ Found dialog with selector: ${selector}`);
-                        return true;
-                    }
-                } catch (e) {
-                    console.log(`❌ Selector failed: ${selector}`);
-                }
-            }
-            
-            console.log('❌ No dialog found with any selector');
-            return false;
+            const dialog = await $('.help-dialog');
+            return await dialog.isDisplayed();
         } catch (error) {
-            console.log('❌ Error checking dialog visibility:', error);
             return false;
         }
     }
 
     public async getHelpDialogText() {
         try {
-            // Wait a bit for dialog to appear
-            await browser.pause(500);
-            
             const dialog = await $('.help-dialog');
             return await dialog.getText();
         } catch (error) {
@@ -197,19 +170,12 @@ class AuthPage extends Page {
     }
 
     public async closeHelpDialog() {
-        try {
-            // Try to find and click the close button
-            const closeButton = await $('.close-button');
-            if (await closeButton.isDisplayed()) {
-                await closeButton.click();
-            } else {
-                // Fallback: press Escape key
-                await browser.keys('Escape');
-            }
-        } catch (error) {
-            // Fallback: press Escape key
-            await browser.keys('Escape');
-        }
+        const closeButton = await $('.help-dialog .close-button');
+        await closeButton.click();
+    }
+
+    public async closeHelpDialogWithEscape() {
+        await browser.keys('Escape');
     }
 }
 

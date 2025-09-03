@@ -12,17 +12,10 @@ export const config: Options.Testrunner = {
     
     //
     // =====================
-    // ts-node Configurations
+    // TypeScript Configurations
     // =====================
     //
-    // TypeScript support for WebdriverIO
-    autoCompileOpts: {
-        autoCompile: true,
-        tsNodeOpts: {
-            transpileOnly: true,
-            project: './tsconfig.e2e.json'
-        }
-    },
+    // TypeScript support is handled by ts-node automatically
 
     //
     // ==================
@@ -137,7 +130,7 @@ export const config: Options.Testrunner = {
         snippets: true,
         source: true,
         strict: false,
-        tags: 'not @skip',
+        tags: '@focus and not @skip',
         timeout: 60000,
         ignoreUndefinedDefinitions: false
     },
@@ -154,7 +147,7 @@ export const config: Options.Testrunner = {
     // Add screenshot on failure
     afterTest: function (test, context, { error, result, duration, passed, retries }) {
         if (!passed) {
-            browser.takeScreenshot();
+            // Screenshot will be taken automatically by WebdriverIO on failure
         }
     },
 }

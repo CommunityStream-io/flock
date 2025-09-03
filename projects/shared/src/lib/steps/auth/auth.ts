@@ -12,6 +12,7 @@ import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { LOGGER, Logger } from '../../services';
 import { Bluesky } from '../../services/bluesky';
+import { ConfigServiceImpl } from '../../services/config';
 import { HelpDialog } from './help-dialog/help-dialog';
 
 @Component({
@@ -35,6 +36,7 @@ import { HelpDialog } from './help-dialog/help-dialog';
 export class Auth implements OnInit, OnDestroy {
   private logger = inject(LOGGER) as Logger;
   private blueskyService = inject(Bluesky);
+  private configService = inject(ConfigServiceImpl);
   private router = inject(Router);
   private cdr = inject(ChangeDetectorRef);
   private dialog = inject(MatDialog);
@@ -211,6 +213,11 @@ export class Auth implements OnInit, OnDestroy {
         this.logger.log('Bluesky authentication successful');
         this.isAuthenticated.set(true);
         this.clearAuthError();
+        
+        // Store credentials and authentication state in config service
+        this.configService.setBlueskyCredentials(credentials);
+        this.configService.setAuthenticated(true);
+        
         // Authentication successful - guards will handle navigation validation
       } else {
         this.logger.error(`Bluesky authentication failed: ${result.message}`);
