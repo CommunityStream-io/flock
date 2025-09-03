@@ -576,27 +576,27 @@ Then('the "Next" button should be enabled', async () => {
     expect(isEnabled).toBe(true);
 });
 
-When('I enter a username without @ prefix', async () => {
+When('I enter a username with @ symbol', async () => {
     await pages.auth.enterUsername('@username.bksy.social');
 });
 
-When('I enter a username with @ prefix but no dots', async () => {
+When('I enter a username without dots', async () => {
     await pages.auth.enterUsername('username');
 });
 
-When('I enter a username with @ prefix and one dot', async () => {
+When('I enter a username with one dot', async () => {
     await pages.auth.enterUsername('username.bksy');
 });
 
-When('I enter a valid username "@username.bksy.social"', async () => {
-    await pages.auth.enterUsername('test.bksy.social');
+When('I enter a valid username "username.bksy.social"', async () => {
+    await pages.auth.enterUsername('username.bksy.social');
 });
 
 When('I enter a valid username', async () => {
     await pages.auth.enterUsername('test.bksy.social');
 });
 
-When('I enter a valid custom domain username "@user.custom.domain"', async () => {
+When('I enter a valid custom domain username "user.custom.domain"', async () => {
     await pages.auth.enterUsername('user.custom.domain');
 });
 
@@ -605,12 +605,12 @@ Then('the username field should show an error', async () => {
     expect(errorText).toBeTruthy();
 });
 
-Then('the error should indicate "@ prefix is required"', async () => {
+Then('the error should indicate "Do not include the @ symbol - it is automatically added"', async () => {
     const errorText = await pages.auth.getUsernameErrorText();
     expect(errorText).toContain('Do not include the @ symbol - it is automatically added');
 });
 
-Then('the error should indicate "Username must contain at least two dots"', async () => {
+Then('the error should indicate "Username must contain at least two dots (e.g., username.bksy.social)"', async () => {
     const errorText = await pages.auth.getUsernameErrorText();
     expect(errorText).toContain('Username must contain at least two dots');
 });
@@ -817,10 +817,32 @@ Then('the dialog should explain that the @ symbol is automatically added', async
 
 When('I close the help dialog', async () => {
     await pages.auth.closeHelpDialog();
+    // Wait for dialog to actually close
+    await browser.waitUntil(
+        async () => {
+            const isVisible = await pages.auth.isHelpDialogVisible();
+            return !isVisible;
+        },
+        {
+            timeout: 5000,
+            timeoutMsg: 'Help dialog did not close within 5 seconds'
+        }
+    );
 });
 
 When('I close the help dialog with Escape key', async () => {
     await pages.auth.closeHelpDialogWithEscape();
+    // Wait for dialog to actually close
+    await browser.waitUntil(
+        async () => {
+            const isVisible = await pages.auth.isHelpDialogVisible();
+            return !isVisible;
+        },
+        {
+            timeout: 5000,
+            timeoutMsg: 'Help dialog did not close with Escape key within 5 seconds'
+        }
+    );
 });
 
 Then('the help dialog should be hidden', async () => {

@@ -80,7 +80,7 @@ export const config: Options.Testrunner = {
 
     // If you only want to run your tests until a specific amount of tests have failed use
     // bail (default is 0 - don't bail, run all tests).
-    bail: 0,
+    bail: 0,  // Don't bail on failures, run all tests
 
     // Set a base URL in order to shorten url command calls. If your `url` parameter starts
     // with `/`, the base url gets prepended, not including the path portion of your baseUrl.
@@ -110,12 +110,12 @@ export const config: Options.Testrunner = {
     framework: 'cucumber',
 
     // Test reporter for stdout.
-    // The 'dot' reporter provides clean, minimal output perfect for CLI
+    // Using spec reporter to show scenario names on failure
     reporters: [
-        ['dot', {
-            // Minimal output configuration
-            showProgress: true,
-            showTestNames: true
+        ['spec', {
+            // Show scenario names and steps
+            showTestNames: true,
+            showTestStatus: true
         }]
     ],
 
@@ -123,16 +123,18 @@ export const config: Options.Testrunner = {
     // If you are using Cucumber you need to specify the location of your step definitions.
     cucumberOpts: {
         require: ['./features/step-definitions/steps.ts'],
-        backtrace: false,
+        backtrace: true,  // Show full stack trace on failures
         requireModule: [],
         dryRun: false,
         failFast: false,
         snippets: true,
         source: true,
-        strict: false,
+        strict: false,  // Allow skipped steps without failing the entire scenario
         tags: '@focus and not @skip',
         timeout: 60000,
-        ignoreUndefinedDefinitions: false
+        ignoreUndefinedDefinitions: false,
+        format: ['pretty'],  // Add pretty format for better readability
+        publishQuiet: true   // Reduce noise from cucumber reporting
     },
     
     //

@@ -1,4 +1,3 @@
-@focus
 Feature: Bluesky Authentication - User credential validation and authentication
 
   As a user migrating from Instagram to Bluesky
@@ -20,26 +19,26 @@ Feature: Bluesky Authentication - User credential validation and authentication
 
   @bluesky-auth @validation
   Scenario: Username validation enforces proper format
-    When I enter a username without @ prefix
+    When I enter a username with @ symbol
     Then the username field should show an error
-    And the error should indicate "@ prefix is required"
+    And the error should indicate "Do not include the @ symbol - it is automatically added"
     And the form should remain invalid
 
-    When I enter a username with @ prefix but no dots
+    When I enter a username without dots
     Then the username field should show an error
-    And the error should indicate "Username must contain at least two dots"
+    And the error should indicate "Username must contain at least two dots (e.g., username.bksy.social)"
     And the form should remain invalid
 
-    When I enter a username with @ prefix and one dot
+    When I enter a username with one dot
     Then the username field should show an error
-    And the error should indicate "Username must contain at least two dots"
+    And the error should indicate "Username must contain at least two dots (e.g., username.bksy.social)"
     And the form should remain invalid
 
-    When I enter a valid username "@username.bksy.social"
+    When I enter a valid username "username.bksy.social"
     Then the username field should not show any errors
     And the username validation should pass
 
-    When I enter a valid custom domain username "@user.custom.domain"
+    When I enter a valid custom domain username "user.custom.domain"
     Then the username field should not show any errors
     And the username validation should pass
 
