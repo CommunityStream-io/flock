@@ -1,4 +1,4 @@
-@skip
+@skip()
 Feature: Navigation Guard Protection - Upload Validation Requirements
 
   As a user migrating from Instagram to Bluesky

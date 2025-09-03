@@ -135,7 +135,7 @@ export const config: Options.Testrunner = {
         snippets: true,
         source: true,
         strict: false,  // Allow skipped steps without failing the entire scenario
-        tags: process.env.TEST_TAGS || 'not @skip',
+        tags: process.env.TEST_TAGS || "",
         timeout: 60000,
         ignoreUndefinedDefinitions: false,
         format: ['pretty'],  // Add pretty format for better readability
