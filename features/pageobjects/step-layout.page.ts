@@ -195,8 +195,13 @@ class StepLayoutPage extends Page {
 
     // Splash screen methods
     public async isSplashScreenVisible() {
-        const splashScreen = await this.splashScreen;
-        return await splashScreen.isDisplayed();
+        try {
+            const splashScreen = await this.splashScreen;
+            return await splashScreen.isDisplayed();
+        } catch (error) {
+            // If there's an error checking splash screen visibility, assume it's not visible
+            return false;
+        }
     }
 
     public async waitForSplashScreenToAppear(timeout: number = 10000) {

@@ -15,10 +15,14 @@ Given('I am on the auth step page without valid credentials', async () => {
 
 Given('I have navigated to the auth step', async () => {
     await pages.stepLayout.openAuthStep();
+    // Wait for navigation to complete
+    await browser.pause(500);
 });
 
 When('I navigate back to the upload step', async () => {
     await pages.stepLayout.openUploadStep();
+    // Wait for navigation to complete
+    await browser.pause(500);
 });
 
 Then('I should see a username input field with @ prefix', async () => {
