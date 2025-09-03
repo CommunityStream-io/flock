@@ -8,7 +8,7 @@ on:
 
 jobs:
   lint:
-    name: Lint That Flocker
+    name: Waterproof feathers (Lint)
     runs-on: ubuntu-latest
     env:
       PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
@@ -32,7 +32,7 @@ jobs:
         run: npm run lint:all
 
   test:
-    name: Test That Flocker
+    name: Count the flock (Unit Test)
     runs-on: ubuntu-latest
     env:
       PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
@@ -59,7 +59,7 @@ jobs:
         run: npm run test:ci
 
   e2e:
-    name: End-to-End Test That Flocker
+    name: Practice the murmuration (E2E Test)
     runs-on: ubuntu-latest
     env:
       PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
@@ -120,7 +120,7 @@ jobs:
           retention-days: 30
 
   build:
-    name: Build That Flocker
+    name: Add to the flock (Build)
     runs-on: ubuntu-latest
     env:
       PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
