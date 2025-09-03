@@ -56,17 +56,41 @@ class UploadStepPage extends Page {
 
     // Methods for file operations
     public async selectFile(filename: string) {
-        // For testing purposes, we'll simulate file selection by clicking the button
-        // In a real test environment, you would use actual file upload
         const chooseButton = await this.chooseFilesButton;
         await chooseButton.click();
         
-        // Wait a moment for the file dialog to potentially open
-        await browser.pause(100);
+        // Simulate file selection by triggering the file input change event
+        await browser.execute((inputSelector, fileName) => {
+            const fileInput = document.querySelector(inputSelector);
+            if (fileInput) {
+                // Create a mock file object
+                const mockFile = new File(['mock content'], fileName, { type: 'application/zip' });
+                
+                // Create a mock FileList
+                const mockFileList = {
+                    0: mockFile,
+                    length: 1,
+                    item: (index: number) => index === 0 ? mockFile : null,
+                    [Symbol.iterator]: function* () {
+                        yield mockFile;
+                    }
+                };
+                
+                // Trigger the change event with our mock file
+                Object.defineProperty(fileInput, 'files', {
+                    value: mockFileList,
+                    writable: false
+                });
+                
+                // Dispatch the change event
+                const changeEvent = new Event('change', { bubbles: true });
+                fileInput.dispatchEvent(changeEvent);
+            }
+        }, 'input[type="file"]', filename);
         
-        // For now, we'll just simulate that a file was selected
-        // In a real test, you would handle the file dialog or use a different approach
-        console.log(`Simulating file selection: ${filename}`);
+        // Wait for the UI to update
+        await browser.pause(200);
+        console.log(`Simulated file selection: ${filename}`);
     }
 
     public async getSelectedFileName(index: number = 0) {
@@ -99,9 +123,10 @@ class UploadStepPage extends Page {
 
     public async hasFiles() {
         try {
-            // For testing purposes, we'll simulate that files are always "selected"
-            // after clicking the choose button. In a real test, you would check actual file selection.
-            return true;
+            // Check if the file list section is visible, indicating files were selected
+            const fileListSection = await this.fileListSection;
+            const isDisplayed = await fileListSection.isDisplayed();
+            return isDisplayed;
         } catch (error) {
             return false;
         }
