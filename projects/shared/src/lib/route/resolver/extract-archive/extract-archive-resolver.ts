@@ -7,6 +7,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export const extractArchiveResolver: ResolveFn<Observable<boolean>> = () => {
   const logger = inject<Logger>(LOGGER);
   const splashScreenLoading = inject(SplashScreenLoading);
+  const snackBar = inject(MatSnackBar);
   
   // Check if there's an archive to extract first
   const fileService = inject<FileService>(FILE_PROCESSOR);
@@ -14,16 +15,15 @@ export const extractArchiveResolver: ResolveFn<Observable<boolean>> = () => {
   splashScreenLoading.show('Extracting Instagram Archive');
   
   return from(fileService.extractArchive()).pipe(
-    catchError((error) => {
-      logger.warn('Archive extraction failed or no archive available:', error);
-      // Don't show error to user, just log it and continue
-      // The auth step can still work without extracted archive
-      return of(true); // Return true to allow navigation to continue
-    }),
     tap((result) => {
       if (result) {
-        logger.log('Archive extraction completed');
+        logger.log('Archive extracted successfully');
       }
+    }),
+    catchError((error) => {
+      logger.error('Error extracting archive');
+      snackBar.open('Error extracting archive', 'Close', { duration: 3000 });
+      return of(false); // Return false to indicate failure
     }),
     finalize(() => {
       splashScreenLoading.hide();
