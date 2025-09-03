@@ -88,6 +88,24 @@ class AuthPage extends Page {
         await this.enterPassword(password);
     }
 
+    public async clearUsernameField() {
+        await this.usernameField.clearValue();
+        // Trigger blur to mark field as touched and trigger validation
+        await this.usernameField.click();
+        await browser.keys('Tab');
+        // Wait for validation to complete
+        await browser.pause(300);
+    }
+
+    public async clearPasswordField() {
+        await this.passwordField.clearValue();
+        // Trigger blur to mark field as touched and trigger validation
+        await this.passwordField.click();
+        await browser.keys('Tab');
+        // Wait for validation to complete
+        await browser.pause(300);
+    }
+
     public async submitForm() {
         await this.nextButton.click();
     }

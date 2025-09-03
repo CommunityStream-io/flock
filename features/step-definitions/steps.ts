@@ -529,6 +529,13 @@ Given('I am on the auth step page', async () => {
     await pages.auth.open();
 });
 
+Given('I am on the auth step page without valid credentials', async () => {
+    await pages.auth.open();
+    // Ensure no credentials are entered by clearing the fields
+    await pages.auth.clearUsernameField();
+    await pages.auth.clearPasswordField();
+});
+
 Given('I have navigated to the auth step', async () => {
     await pages.stepLayout.openAuthStep();
 });
