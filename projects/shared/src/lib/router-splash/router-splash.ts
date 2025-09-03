@@ -7,7 +7,7 @@ import {
   RouterModule,
   RouterOutlet,
 } from '@angular/router';
-import { delay, filter, map, tap, combineLatest } from 'rxjs';
+import { delay, filter, map, tap, combineLatest, switchMap, timer, of, startWith, distinctUntilChanged } from 'rxjs';
 import { SplashScreen } from '../splash-screen/splash-screen';
 import { CommonModule } from '@angular/common';
 import { LOGGER, Logger, SplashScreenLoading } from '../services';
@@ -23,6 +23,9 @@ export class RouterSplash {
   router = inject(Router);
   splashScreenLoading = inject(SplashScreenLoading);
   
+  // Minimum splash screen display time for better UX (500ms)
+  private readonly MIN_SPLASH_DURATION = 500;
+  
   isNavigating = this.router.events.pipe(
     delay(100),
     tap((e) => this.logger.log('Router event', e)),
@@ -33,14 +36,29 @@ export class RouterSplash {
         e instanceof NavigationCancel
     ),
     tap((e) => this.logger.log('Router navigation', e)),
-    map((e) => e instanceof NavigationStart)
+    map((e) => e instanceof NavigationStart),
+    startWith(false), // Start with navigation not active
+    distinctUntilChanged() // Only emit when the value changes
   );
   
-  // Show splash screen during navigation OR when SplashScreenLoading service is active
+  // Enhanced splash screen logic with minimum display duration
   shouldShowSplash = combineLatest([
     this.isNavigating,
-    this.splashScreenLoading.isLoading.asObservable()
+    this.splashScreenLoading.isLoading
   ]).pipe(
-    map(([isNavigating, isLoading]) => isNavigating || isLoading)
+    switchMap(([isNavigating, isLoading]) => {
+      if (isNavigating || isLoading) {
+        // Show splash screen immediately when navigation starts or loading is active
+        this.logger.log('Splash screen shown - navigation or loading active');
+        return of(true);
+      } else {
+        // When navigation ends, ensure minimum display time
+        this.logger.log('Navigation ended, ensuring minimum splash duration');
+        return timer(this.MIN_SPLASH_DURATION).pipe(
+          map(() => false),
+          startWith(true) // Keep showing splash during the delay
+        );
+      }
+    })
   );
 }
