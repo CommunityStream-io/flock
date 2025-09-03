@@ -808,18 +808,24 @@ Then('the system should validate my credentials', async () => {
     // The actual validation logic is in the component
 });
 
-Then('if valid, I should proceed to the next step', async () => {
+Then('I should proceed to the next step', async () => {
     // This is handled by the navigation guard
     // We verify the outcome in the next step
 });
 
-Then('if invalid, I should see a snackbar error message', async () => {
+Then('I should see a snackbar error message', async () => {
     await pages.navigationGuard.waitForSnackbar();
 });
 
 Then('the error should indicate "Please complete authentication before proceeding"', async () => {
     const snackbarText = await pages.navigationGuard.getSnackbarText();
     expect(snackbarText).toContain('Please complete authentication before proceeding');
+});
+
+Then('I should remain on the auth step', async () => {
+    // Verify we're still on the auth step
+    const currentUrl = await browser.getUrl();
+    expect(currentUrl).toContain('/step/auth');
 });
 
 // Help dialog steps

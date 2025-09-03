@@ -97,13 +97,19 @@ Feature: Bluesky Authentication - User credential validation and authentication
     And I should be on the config step page
 
   @bluesky-auth @validation
-  Scenario: Deactivate validation ensures credentials are saved
+  Scenario: Valid credentials allow navigation to next step
     And I have entered valid credentials
     When I attempt to navigate away from the auth step
     Then the system should validate my credentials
-    And if valid, I should proceed to the next step
-    And if invalid, I should see a snackbar error message
+    And I should proceed to the next step
+
+  Scenario: Invalid credentials show snackbar error and prevent navigation
+    And I have entered invalid credentials
+    When I attempt to navigate away from the auth step
+    Then the system should validate my credentials
+    And I should see a snackbar error message
     And the error should indicate "Please complete authentication before proceeding"
+    And I should remain on the auth step
 
   @bluesky-auth @help @dialog
   Scenario: Help dialog provides username format guidance
