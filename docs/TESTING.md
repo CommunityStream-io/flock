@@ -357,6 +357,112 @@ graph TB
 - **Reactive Forms** - Test real Angular reactive forms validation
 - **Material Components** - Integrate with Angular Material components
 
+## 🧪 **Test Debugging & Targeted Execution**
+
+### **Running Specific Test Suites**
+Instead of waiting for all tests to complete, you can target specific test files or scenarios:
+
+#### **E2E Test Targeting**
+```bash
+# Run only auth flow tests
+export TEST_SPEC="./features/auth.feature" && npm run test:e2e:headless
+
+# Run only file upload tests  
+export TEST_SPEC="./features/file-upload.feature" && npm run test:e2e:headless
+
+# Run only landing page tests
+export TEST_SPEC="./features/landing.feature" && npm run test:e2e:headless
+
+# Run specific migration steps
+export TEST_SPEC="./features/migration-steps.feature" && npm run test:e2e:headless
+```
+
+#### **Using Test Tags for Filtering**
+```bash
+# Run tests with specific tags
+npm run e2e:validation  # Runs @bluesky-auth and @validation tagged tests
+
+# Run tests excluding certain tags
+npm run test:e2e:skip-failing  # Excludes @skip tagged tests
+
+# Run only passing tests
+npm run test:e2e:only-passing  # Excludes @skip tagged tests
+```
+
+#### **Debug Mode for E2E Tests**
+```bash
+# Run with debug output and headless mode
+npm run e2e:debug
+
+# Run specific validation tests in debug mode
+npm run e2e:debug-validation
+```
+
+### **Unit Test Targeting**
+```bash
+# Test specific project
+ng test flock-mirage
+ng test flock-murmur  
+ng test flock-native
+
+# Test with watch mode for faster iteration
+ng test --watch
+
+# Test specific file pattern
+ng test --include="**/*auth*.spec.ts"
+```
+
+### **Common Debugging Scenarios**
+
+#### **When Tests Fail with Missing Step Definitions**
+```bash
+# Check which steps are missing
+export TEST_SPEC="./features/auth.feature" && npm run test:e2e:headless
+
+# Look for "Step is not defined" errors in output
+# Add missing step definitions to features/step-definitions/steps.ts
+```
+
+#### **When Snackbar Tests Fail**
+```bash
+# Test snackbar functionality in isolation
+export TEST_SPEC="./features/auth.feature" && npm run e2e:headless
+
+# Look for "element still not displayed after 5000ms" errors
+# Check snackbar selectors in page objects
+```
+
+#### **When Navigation Tests Fail**
+```bash
+# Test navigation guards specifically
+export TEST_SPEC="./features/navigation-guard.feature" && npm run test:e2e:headless
+
+# Verify guard implementation and URL routing
+```
+
+### **Quick Test Iteration Workflow**
+```bash
+# 1. Run specific failing test suite
+export TEST_SPEC="./features/auth.feature" && npm run test:e2e:headless
+
+# 2. Fix issues in code
+
+# 3. Re-run just that suite to verify fix
+export TEST_SPEC="./features/auth.feature" && npm run test:e2e:headless
+
+# 4. Once fixed, run full test suite
+npm run test:e2e:headless
+```
+
+### **Environment Variables for Test Control**
+```bash
+# Control test execution
+export TEST_SPEC="./features/auth.feature"    # Target specific feature file
+export HEADLESS=true                          # Run in headless mode
+export DEBUG_TESTS=true                       # Enable debug output
+export TEST_TAGS="@auth and @validation"      # Filter by tags
+```
+
 ## 🧪 **Test Maintenance**
 
 ### **Maintenance Tasks**
