@@ -6,6 +6,7 @@ import {
   ConnectionResult,
 } from './interfaces/bluesky';
 import { PostRecordImpl } from '@straiforos/instagramtobluesky';
+import { validateBlueskyUsername, validateBlueskyUsernameWithAt } from './validators/username.validator';
 
 @Injectable({
   providedIn: 'root',
@@ -21,18 +22,13 @@ export class Bluesky implements BlueSkyService {
       // TODO: Implement actual Bluesky authentication logic
       // For now, simulate authentication for testing purposes
 
-      // Validate credentials format
-      if (!credentials.username.startsWith('@')) {
+      // Validate credentials format using shared validator
+      // Note: Username should already have @ symbol added by the form component
+      const usernameValidation = validateBlueskyUsernameWithAt(credentials.username);
+      if (!usernameValidation.isValid) {
         return {
           success: false,
-          message: 'Username must start with @ symbol',
-        };
-      }
-
-      if ((credentials.username.match(/\./g) || []).length < 2) {
-        return {
-          success: false,
-          message: 'Username must contain at least two dots',
+          message: usernameValidation.error || 'Invalid username format',
         };
       }
 
@@ -46,7 +42,7 @@ export class Bluesky implements BlueSkyService {
       // Simulate successful authentication for valid credentials
       // In production, this would make an actual API call to Bluesky
       if (
-        credentials.username === '@test.bksy.social' &&
+        credentials.username === '@test.bksy.social' || credentials.username === '@username.bksy.social' &&
         credentials.password === 'testpassword123'
       ) {
         return {

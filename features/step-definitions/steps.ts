@@ -529,7 +529,7 @@ Then('I should see the Bluesky authentication form', async () => {
 });
 
 Then('the form should be initially invalid', async () => {
-    const isFormValid = await pages.auth.isFormValid();
+    const isFormValid = await pages.stepLayout.nextButton.isEnabled();
     expect(isFormValid).toBe(false);
 });
 
@@ -562,17 +562,17 @@ Then('the error should indicate {string}', async (expectedError: string) => {
 });
 
 Then('the form should be valid', async () => {
-    const isFormValid = await pages.auth.isFormValid();
+    const isFormValid = await pages.stepLayout.nextButton.isEnabled();
     expect(isFormValid).toBe(true);
 });
 
 Then('the form should remain invalid', async () => {
-    const isFormValid = await pages.auth.isFormValid();
+    const isFormValid = await pages.stepLayout.nextButton.isEnabled();
     expect(isFormValid).toBe(false);
 });
 
 Then('the "Next" button should be enabled', async () => {
-    const isEnabled = await pages.auth.isNextButtonEnabled();
+    const isEnabled = await pages.stepLayout.nextButton.isEnabled();
     expect(isEnabled).toBe(true);
 });
 
@@ -671,17 +671,17 @@ Given('I have entered a valid password', async () => {
 });
 
 Then('the form should be initially invalid', async () => {
-    const isFormValid = await pages.auth.isFormValid();
+    const isFormValid = await pages.stepLayout.nextButton.isEnabled();
     expect(isFormValid).toBe(false);
 });
 
 Then('the form should be valid', async () => {
-    const isValid = await pages.auth.isFormValid();
+    const isValid = await pages.stepLayout.nextButton.isEnabled();
     expect(isValid).toBe(true);
 });
 
 Then('the "Next" button should be enabled', async () => {
-    const isEnabled = await pages.auth.isNextButtonEnabled();
+    const isEnabled = await pages.stepLayout.nextButton.isEnabled();
     expect(isEnabled).toBe(true);
 });
 
@@ -692,7 +692,7 @@ Given('I have entered valid credentials', async () => {
 
 When('I click the "Next" button', async () => {
     console.log('🔍 BDD: Step definition matched - clicking Next button');
-    await pages.auth.clickNext();
+    await pages.stepLayout.clickNextStep();
     console.log('🔍 BDD: Next button clicked successfully');
 });
 
@@ -708,8 +708,31 @@ Then('the authentication script should run in the background', async () => {
 });
 
 Then('I should be navigated to the config step', async () => {
-    const currentUrl = await browser.getUrl();
-    expect(currentUrl).toContain('/step/config');
+    await browser.waitUntil(
+        async () => {
+            const currentUrl = await browser.getUrl();
+            return currentUrl.includes('/step/config');
+        },
+        { timeout: 10000, timeoutMsg: 'Navigation to config step did not occur' }
+    );
+});
+
+Then('I should see the splash screen', async () => {
+    await pages.stepLayout.waitForSplashScreenToAppear();
+    const isVisible = await pages.stepLayout.isSplashScreenVisible();
+    expect(isVisible).toBe(true);
+});
+
+Then('the splash screen should display {string}', async (expectedMessage: string) => {
+    await pages.stepLayout.waitForSplashScreenToAppear();
+    const actualMessage = await pages.stepLayout.getSplashScreenMessage();
+    expect(actualMessage).toContain(expectedMessage);
+});
+
+Then('the authentication should process in the background', async () => {
+    // Wait for splash screen to appear and then disappear, indicating processing
+    await pages.stepLayout.waitForSplashScreenToAppear();
+    await pages.stepLayout.waitForSplashScreenToDisappear();
 });
 
 Given('I have entered invalid credentials', async () => {
@@ -738,7 +761,7 @@ Then('I should remain on the auth step', async () => {
 });
 
 Then('the form should remain invalid', async () => {
-    const isValid = await pages.auth.isFormValid();
+    const isValid = await pages.stepLayout.nextButton.isEnabled();
     expect(isValid).toBe(false);
 });
 

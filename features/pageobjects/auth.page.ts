@@ -1,21 +1,22 @@
 import Page from './page';
+import StepLayoutPage from './step-layout.page';
 
 class AuthPage extends Page {
     // Form elements
     public get authForm() {
-        return $('.auth-form, form');
+        return $('.auth-form, .bluesky-auth, form');
     }
 
     public get usernameField() {
-        return $('input[formControlName="username"], input[name="username"]');
+        return $('input[formControlName="username"], input[name="username"], .username-field input');
     }
 
     public get passwordField() {
-        return $('input[formControlName="password"], input[name="password"], input[type="password"]');
+        return $('input[formControlName="password"], input[name="password"], input[type="password"], .password-field input');
     }
 
     public get nextButton() {
-        return $('.next-step');
+        return StepLayoutPage.nextButton;
     }
 
     // Error elements
@@ -92,7 +93,7 @@ class AuthPage extends Page {
     }
 
     public async clickNext() {
-        await this.nextButton.click();
+        await StepLayoutPage.clickNextStep();
     }
 
     public async isFormValid() {

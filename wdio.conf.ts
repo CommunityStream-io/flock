@@ -24,7 +24,7 @@ export const config: Options.Testrunner = {
     // Define which test specs should run. The pattern is relative to the directory
     // from which `wdio` was called.
     specs: [
-        './features/**/*.feature'
+        process.env.TEST_SPEC || './features/**/auth.feature'
     ],
     
     // Patterns to exclude.
@@ -58,7 +58,7 @@ export const config: Options.Testrunner = {
                 ]
             }
         })
-    }],
+    }] as any,
 
     //
     // ===================
@@ -67,15 +67,15 @@ export const config: Options.Testrunner = {
     // Define all options that are relevant for the WebdriverIO instance here
     //
     // Level of logging verbosity: trace | debug | info | warn | error | silent
-    logLevel: 'error',
+    logLevel: process.env.DEBUG_TESTS === 'true' ? 'info' : 'error',
     
     // Set specific log levels per logger to reduce noise
     logLevels: {
-        webdriver: 'error',
-        webdriverio: 'error',
-        '@wdio/local-runner': 'error',
-        '@wdio/cli': 'error',
-        '@wdio/cucumber-framework': 'error'
+        webdriver: process.env.DEBUG_TESTS === 'true' ? 'info' : 'error',
+        webdriverio: process.env.DEBUG_TESTS === 'true' ? 'info' : 'error',
+        '@wdio/local-runner': process.env.DEBUG_TESTS === 'true' ? 'info' : 'error',
+        '@wdio/cli': process.env.DEBUG_TESTS === 'true' ? 'info' : 'error',
+        '@wdio/cucumber-framework': process.env.DEBUG_TESTS === 'true' ? 'info' : 'error'
     },
 
     // If you only want to run your tests until a specific amount of tests have failed use
@@ -130,11 +130,11 @@ export const config: Options.Testrunner = {
         snippets: true,
         source: true,
         strict: false,  // Allow skipped steps without failing the entire scenario
-        tags: 'not @skip',
+        tags: process.env.TEST_TAGS || 'not @skip',
         timeout: 60000,
         ignoreUndefinedDefinitions: false,
         format: ['pretty'],  // Add pretty format for better readability
-        publishQuiet: true   // Reduce noise from cucumber reporting
+        publishQuiet: process.env.DEBUG_TESTS !== 'true'   // Reduce noise from cucumber reporting unless debugging
     },
     
     //

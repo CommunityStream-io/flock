@@ -15,6 +15,7 @@ import { Bluesky } from '../../services/bluesky';
 import { ConfigServiceImpl } from '../../services/config';
 import { HelpDialog } from './help-dialog/help-dialog';
 import { SplashScreenLoading } from '../../services';
+import { validateBlueskyUsername } from '../../services/validators/username.validator';
 
 @Component({
   selector: 'shared-auth',
@@ -129,15 +130,15 @@ export class Auth implements OnInit, OnDestroy {
       return null; // Let required validator handle empty values
     }
 
-    // Check if user entered @ symbol (which is discouraged)
-    if (value.includes('@')) {
-      return { atSymbolNotAllowed: true };
-    }
-
-    // Check for at least two dots
-    const dotCount = (value.match(/\./g) || []).length;
-    if (dotCount < 2) {
-      return { dotsRequired: true };
+    const validation = validateBlueskyUsername(value);
+    
+    if (!validation.isValid) {
+      if (validation.error?.includes('@ symbol')) {
+        return { atSymbolNotAllowed: true };
+      }
+      if (validation.error?.includes('dots')) {
+        return { dotsRequired: true };
+      }
     }
 
     return null;
@@ -148,20 +149,18 @@ export class Auth implements OnInit, OnDestroy {
    */
   getUsernameErrorMessage(): string {
     const usernameControl = this.authForm.get('username');
+    const value = usernameControl?.value;
 
     if (usernameControl?.hasError('required')) {
       return 'Username is required';
     }
 
-    if (usernameControl?.hasError('atSymbolNotAllowed')) {
-      return 'Do not include the @ symbol - it is automatically added';
+    if (!value) {
+      return '';
     }
 
-    if (usernameControl?.hasError('dotsRequired')) {
-      return 'Username must contain at least two dots (e.g., username.bksy.social)';
-    }
-
-    return '';
+    const validation = validateBlueskyUsername(value);
+    return validation.error || '';
   }
 
   /**

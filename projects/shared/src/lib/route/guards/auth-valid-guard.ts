@@ -4,13 +4,16 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ConfigServiceImpl } from '../../services/config';
 
 /**
- * Guard to prevent the user from leaving the auth step if authentication is not valid
+ * Guard to prevent the user from leaving the auth step if form is not valid
  * Shows a snackbar message to complete authentication before proceeding
  */
-export const authValidGuard: CanDeactivateFn<unknown> = () => {
+export const authValidGuard: CanDeactivateFn<unknown> = (component) => {
   const configService = inject(ConfigServiceImpl);
   
-  if (!configService.isAuthenticated()) {
+  // Check if we have valid credentials stored (form was valid)
+  const credentials = configService.getBlueskyCredentials();
+  
+  if (!credentials || !credentials.username || !credentials.password) {
     inject(MatSnackBar).open('Please provide valid Bluesky credentials', 'Close', {
       duration: 3000,
     });
