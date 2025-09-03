@@ -24,7 +24,7 @@ export const config: Options.Testrunner = {
     // Define which test specs should run. The pattern is relative to the directory
     // from which `wdio` was called.
     specs: [
-        process.env.TEST_SPEC || './features/**/auth.feature'
+        process.env.TEST_SPEC || './features/**/**.feature'
     ],
     
     // Patterns to exclude.
