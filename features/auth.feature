@@ -104,3 +104,13 @@ Feature: Bluesky Authentication - User credential validation and authentication
     And if valid, I should proceed to the next step
     And if invalid, I should see a snackbar error message
     And the error should indicate "Please complete authentication before proceeding"
+
+  @bluesky-auth @help @overlay
+  Scenario: Help overlay provides username format guidance
+    When I hover over the help icon
+    Then I should see a help overlay with username format suggestions
+    And the overlay should contain "username.bksy.social"
+    And the overlay should contain "user.custom.domain"
+    And the overlay should explain that the @ symbol is automatically added
+    When I move my mouse away from the help icon
+    Then the help overlay should be hidden
