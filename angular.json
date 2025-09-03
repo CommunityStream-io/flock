@@ -221,6 +221,13 @@
                   "maximumWarning": "2MB",
                   "maximumError": "5MB"
                 }
+              ],
+              "codeCoverage": true,
+              "codeCoverageExclude": [
+                "projects/flock-mirage/src/environments/**",
+                "projects/flock-mirage/src/main.ts",
+                "projects/flock-mirage/src/polyfills.ts",
+                "projects/flock-mirage/src/**/*.spec.ts"
               ]
             }
           },

@@ -21,12 +21,14 @@ Our testing documentation is organized into focused modules for better navigatio
 - **[Unit Testing](testing/UNIT_TESTING.md)** - Component and service testing with Angular/Jasmine
 - **[E2E Testing](testing/E2E_TESTING.md)** - Full user journey testing with WebdriverIO
 - **[Coverage](testing/COVERAGE.md)** - Test coverage collection, reporting, and Codecov integration
+- **[Allure Reporting](testing/ALLURE_REPORTING.md)** - Beautiful test reports and analysis
 - **[CI Integration](testing/CI_INTEGRATION.md)** - Automated testing pipeline and deployment
 
 ### **🎯 Quick Navigation**
 - **Getting Started**: Start with [BDD Methodology](testing/BDD_METHODOLOGY.md) to understand our approach
 - **Writing Tests**: Use [Unit Testing](testing/UNIT_TESTING.md) for component tests, [E2E Testing](testing/E2E_TESTING.md) for user workflows
 - **Coverage**: Check [Coverage](testing/COVERAGE.md) for coverage collection and reporting
+- **Reports**: See [Allure Reporting](testing/ALLURE_REPORTING.md) for beautiful test reports and analysis
 - **CI/CD**: See [CI Integration](testing/CI_INTEGRATION.md) for automated testing pipeline
 
 ## 🧪 **Testing Strategy Overview**
@@ -710,7 +712,8 @@ Our testing approach combines the best of both worlds:
 2. **Write Unit Tests**: Use [Unit Testing](testing/UNIT_TESTING.md) for component and service tests
 3. **Add E2E Tests**: Use [E2E Testing](testing/E2E_TESTING.md) for user workflow tests
 4. **Check Coverage**: Use [Coverage](testing/COVERAGE.md) to ensure comprehensive test coverage
-5. **CI Integration**: See [CI Integration](testing/CI_INTEGRATION.md) for automated testing pipeline
+5. **Generate Reports**: Use [Allure Reporting](testing/ALLURE_REPORTING.md) for beautiful test reports
+6. **CI Integration**: See [CI Integration](testing/CI_INTEGRATION.md) for automated testing pipeline
 
 ---
 

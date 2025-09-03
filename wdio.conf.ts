@@ -159,9 +159,54 @@ export const config: Options.Testrunner = {
         }
     },
     
-    afterTest: function (test, context, { error, result, duration, passed, retries }) {
+    beforeTest: async function (test, context) {
+        // Initialize coverage collection for each test
+        if (process.env.COLLECT_COVERAGE === 'true') {
+            console.log('🔍 BDD: Starting coverage collection for test:', test.title);
+            // Clear any existing coverage data
+            await browser.execute(() => {
+                if (window.__coverage__) {
+                    window.__coverage__ = {};
+                }
+            });
+        }
+    },
+    
+    afterTest: async function (test, context, { error, result, duration, passed, retries }) {
         if (!passed) {
             // Screenshot will be taken automatically by WebdriverIO on failure
+        }
+        
+        // Collect coverage data after each test
+        if (process.env.COLLECT_COVERAGE === 'true') {
+            console.log('📊 BDD: Collecting coverage data for test:', test.title);
+            try {
+                // Get coverage data from browser
+                const coverageData = await browser.execute(() => {
+                    return window.__coverage__ || {};
+                });
+                
+                // Store coverage data for later processing
+                if (Object.keys(coverageData).length > 0) {
+                    const fs = require('fs');
+                    const path = require('path');
+                    
+                    // Ensure coverage directory exists
+                    const coverageDir = path.join(process.cwd(), 'coverage', 'e2e');
+                    if (!fs.existsSync(coverageDir)) {
+                        fs.mkdirSync(coverageDir, { recursive: true });
+                    }
+                    
+                    // Save coverage data for this test
+                    const testName = test.title.replace(/[^a-zA-Z0-9]/g, '_');
+                    const coverageFile = path.join(coverageDir, `${testName}_${Date.now()}.json`);
+                    fs.writeFileSync(coverageFile, JSON.stringify(coverageData, null, 2));
+                    
+                    console.log('✅ BDD: Coverage data saved for test:', test.title);
+                }
+            } catch (error) {
+                console.log('❌ BDD: Failed to collect coverage data:', error.message);
+            }
         }
     },
     
@@ -172,10 +217,64 @@ export const config: Options.Testrunner = {
         }
     },
     
-    onComplete: function (exitCode, config, capabilities, results) {
+    onComplete: async function (exitCode, config, capabilities, results) {
         // Final coverage collection and report generation
         if (process.env.COLLECT_COVERAGE === 'true') {
-            console.log('📈 BDD: E2E tests completed, coverage data collected');
+            console.log('📈 BDD: E2E tests completed, processing coverage data');
+            
+            try {
+                // Process all collected coverage data
+                const fs = require('fs');
+                const path = require('path');
+                const nyc = require('nyc');
+                
+                const coverageDir = path.join(process.cwd(), 'coverage', 'e2e');
+                const outputDir = path.join(process.cwd(), 'coverage');
+                
+                if (fs.existsSync(coverageDir)) {
+                    // Create NYC instance for processing
+                    const nycInstance = new nyc({
+                        cwd: process.cwd(),
+                        tempDir: path.join(process.cwd(), '.nyc_output', 'e2e'),
+                        reportDir: outputDir,
+                        reporter: ['lcov', 'text-summary'],
+                        include: [
+                            'projects/flock-mirage/src/**/*.ts',
+                            'projects/shared/src/**/*.ts'
+                        ],
+                        exclude: [
+                            'projects/**/*.spec.ts',
+                            'projects/**/*.test.ts',
+                            'projects/**/test/**',
+                            'projects/**/spec/**',
+                            'projects/**/environments/**',
+                            'projects/**/main.ts',
+                            'projects/**/polyfills.ts'
+                        ]
+                    });
+                    
+                    // Process coverage files
+                    const coverageFiles = fs.readdirSync(coverageDir)
+                        .filter(file => file.endsWith('.json'))
+                        .map(file => path.join(coverageDir, file));
+                    
+                    if (coverageFiles.length > 0) {
+                        console.log('📊 BDD: Processing', coverageFiles.length, 'coverage files');
+                        
+                        // Merge and generate reports
+                        await nycInstance.merge(coverageFiles);
+                        await nycInstance.report();
+                        
+                        console.log('✅ BDD: E2E coverage report generated');
+                    } else {
+                        console.log('⚠️ BDD: No coverage files found to process');
+                    }
+                } else {
+                    console.log('⚠️ BDD: No E2E coverage directory found');
+                }
+            } catch (error) {
+                console.log('❌ BDD: Failed to process E2E coverage data:', error.message);
+            }
         }
     },
 }

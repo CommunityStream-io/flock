@@ -24,6 +24,7 @@
     "build:e2e-coverage": "ng build flock-mirage --configuration=test-coverage",
     "serve:e2e-coverage": "ng serve flock-mirage --configuration=test-coverage --port=4200",
     "test:e2e:coverage": "concurrently --kill-others --success first \"npm run serve:e2e-coverage\" \"wait-on http://localhost:4200 && cross-env HEADLESS=true COLLECT_COVERAGE=true wdio run wdio.conf.ts\"",
+    "test:e2e:coverage:ci": "concurrently --kill-others --success first \"ng serve flock-mirage --configuration=test-coverage --port=4200 --host=0.0.0.0\" \"wait-on http://localhost:4200 && cross-env HEADLESS=true COLLECT_COVERAGE=true CI=true wdio run wdio.conf.ts\"",
     "coverage:merge": "nyc merge ./coverage ./coverage/merged-coverage.json && nyc report --reporter=lcov --report-dir=./coverage",
     "coverage:all": "npm run test:coverage && npm run test:e2e:coverage && npm run coverage:merge",
     "test:shared": "ng test shared",
