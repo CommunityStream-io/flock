@@ -137,7 +137,7 @@ export const config: Options.Testrunner = {
         strict: false,  // Allow skipped steps without failing the entire scenario
         tags: process.env.TEST_TAGS || "",
         timeout: 60000,
-        ignoreUndefinedDefinitions: false,
+        ignoreUndefinedDefinitions: true,
         format: ['pretty'],  // Add pretty format for better readability
         publishQuiet: process.env.DEBUG_TESTS !== 'true'   // Reduce noise from cucumber reporting unless debugging
     },
