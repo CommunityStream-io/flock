@@ -130,7 +130,7 @@ export const config: Options.Testrunner = {
         snippets: true,
         source: true,
         strict: false,  // Allow skipped steps without failing the entire scenario
-        tags: '@focus and not @skip',
+        tags: 'not @skip',
         timeout: 60000,
         ignoreUndefinedDefinitions: false,
         format: ['pretty'],  // Add pretty format for better readability
