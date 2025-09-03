@@ -524,6 +524,58 @@ Then('I should see a password input field', async () => {
     await expect(pages.auth.passwordField).toBeDisplayed();
 });
 
+Then('I should see the Bluesky authentication form', async () => {
+    await expect(pages.auth.authForm).toBeDisplayed();
+});
+
+Then('the form should be initially invalid', async () => {
+    const isFormValid = await pages.auth.isFormValid();
+    expect(isFormValid).toBe(false);
+});
+
+Then('the password field should show an error', async () => {
+    const errorText = await pages.auth.getPasswordErrorText();
+    expect(errorText).toBeTruthy();
+});
+
+Then('the password field should not show any errors', async () => {
+    const errorText = await pages.auth.getPasswordErrorText();
+    expect(errorText).toBe('');
+});
+
+Then('the password validation should pass', async () => {
+    const errorText = await pages.auth.getPasswordErrorText();
+    expect(errorText).toBe('');
+});
+
+Then('the error should indicate {string}', async (expectedError: string) => {
+    // Check both username and password errors
+    const usernameError = await pages.auth.getUsernameErrorText();
+    const passwordError = await pages.auth.getPasswordErrorText();
+    const formError = await pages.auth.formError.getText().catch(() => '');
+    
+    const hasExpectedError = usernameError.includes(expectedError) || 
+                           passwordError.includes(expectedError) || 
+                           formError.includes(expectedError);
+    
+    expect(hasExpectedError).toBe(true);
+});
+
+Then('the form should be valid', async () => {
+    const isFormValid = await pages.auth.isFormValid();
+    expect(isFormValid).toBe(true);
+});
+
+Then('the form should remain invalid', async () => {
+    const isFormValid = await pages.auth.isFormValid();
+    expect(isFormValid).toBe(false);
+});
+
+Then('the "Next" button should be enabled', async () => {
+    const isEnabled = await pages.auth.isNextButtonEnabled();
+    expect(isEnabled).toBe(true);
+});
+
 When('I enter a username without @ prefix', async () => {
     await pages.auth.enterUsername('username.bksy.social');
 });
