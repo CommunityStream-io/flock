@@ -12,6 +12,23 @@ We follow **BDD (Behavior-Driven Development)** methodology using Angular's nati
 - **🧪 Real Components** - Test actual Angular components, not mocked behavior
 - **📚 Living Documentation** - Tests serve as executable specifications
 
+## 📚 **Testing Documentation Structure**
+
+Our testing documentation is organized into focused modules for better navigation and maintenance:
+
+### **🧪 Core Testing Guides**
+- **[BDD Methodology](testing/BDD_METHODOLOGY.md)** - Behavior-Driven Development approach and patterns
+- **[Unit Testing](testing/UNIT_TESTING.md)** - Component and service testing with Angular/Jasmine
+- **[E2E Testing](testing/E2E_TESTING.md)** - Full user journey testing with WebdriverIO
+- **[Coverage](testing/COVERAGE.md)** - Test coverage collection, reporting, and Codecov integration
+- **[CI Integration](testing/CI_INTEGRATION.md)** - Automated testing pipeline and deployment
+
+### **🎯 Quick Navigation**
+- **Getting Started**: Start with [BDD Methodology](testing/BDD_METHODOLOGY.md) to understand our approach
+- **Writing Tests**: Use [Unit Testing](testing/UNIT_TESTING.md) for component tests, [E2E Testing](testing/E2E_TESTING.md) for user workflows
+- **Coverage**: Check [Coverage](testing/COVERAGE.md) for coverage collection and reporting
+- **CI/CD**: See [CI Integration](testing/CI_INTEGRATION.md) for automated testing pipeline
+
 ## 🧪 **Testing Strategy Overview**
 
 ### **Testing Pyramid**
@@ -664,6 +681,36 @@ graph LR
 - **Test Data Management** - Centralized test data and environment management
 - **Reporting Dashboard** - Real-time test results and trend analysis
 - **Test Analytics** - Insights into test coverage and quality metrics
+
+## 🎯 **Testing Summary**
+
+Our testing approach combines the best of both worlds:
+
+### **Comprehensive Coverage**
+- **Unit Tests** - Fast, isolated component and service testing
+- **E2E Tests** - Full user journey and integration testing
+- **Coverage Tracking** - Complete coverage reporting with Codecov
+- **CI Integration** - Automated testing pipeline with quality gates
+
+### **BDD Methodology**
+- **User-Focused** - Tests describe real user behavior and scenarios
+- **Business Value** - Tests validate business requirements, not just code
+- **Real Components** - Test actual Angular components, not mocked behavior
+- **Living Documentation** - Tests serve as executable specifications
+
+### **Quality Assurance**
+- **Automated Testing** - All tests run automatically on every commit
+- **Quality Gates** - Tests must pass before code can be merged
+- **Coverage Tracking** - Coverage reports are generated and tracked
+- **Multi-Environment** - Tests run in consistent, isolated environments
+
+## 📚 **Next Steps**
+
+1. **Start with BDD**: Read [BDD Methodology](testing/BDD_METHODOLOGY.md) to understand our approach
+2. **Write Unit Tests**: Use [Unit Testing](testing/UNIT_TESTING.md) for component and service tests
+3. **Add E2E Tests**: Use [E2E Testing](testing/E2E_TESTING.md) for user workflow tests
+4. **Check Coverage**: Use [Coverage](testing/COVERAGE.md) to ensure comprehensive test coverage
+5. **CI Integration**: See [CI Integration](testing/CI_INTEGRATION.md) for automated testing pipeline
 
 ---
 
