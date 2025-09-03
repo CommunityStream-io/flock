@@ -124,7 +124,17 @@ Given('I navigate to the complete step', async () => {
 When('I navigate to the auth step with valid archive', async () => {
     // First upload a valid file, then navigate
     await pages.uploadStep.selectFile('valid-archive.zip');
-    await browser.pause(1000); // Allow validation to complete
+    // Wait for file validation to complete
+    await browser.waitUntil(
+        async () => {
+            const isValid = await pages.uploadStep.isFormValid();
+            return isValid;
+        },
+        { 
+            timeout: 5000, 
+            timeoutMsg: 'File validation did not complete within 5 seconds' 
+        }
+    );
     await pages.stepLayout.navigateToStep('auth');
 });
 
@@ -209,7 +219,17 @@ Then('the file input should accept {string} files', async (fileType: string) => 
 
 When('I select a valid Instagram archive file {string}', async (filename: string) => {
     await pages.uploadStep.selectFile(filename);
-    await browser.pause(500); // Allow for file processing
+    // Wait for file to be processed and displayed
+    await browser.waitUntil(
+        async () => {
+            const hasFiles = await pages.uploadStep.hasFiles();
+            return hasFiles;
+        },
+        { 
+            timeout: 3000, 
+            timeoutMsg: 'File was not processed within 3 seconds' 
+        }
+    );
 });
 
 When('I select an invalid file {string}', async (filename: string) => {
@@ -376,11 +396,17 @@ Then('I should see an error message again', async () => {
 Then('I should be able to proceed to the next step', async () => {
     // Click next and verify we can navigate (no error message)
     await pages.stepLayout.clickNextStep();
-    // Wait a bit to see if any error appears
-    await browser.pause(1000);
-    // Check that we're not still on upload step (navigation succeeded)
-    const isStillOnUpload = await pages.navigationGuard.isStillOnStep('upload');
-    expect(isStillOnUpload).toBe(false);
+    // Wait for navigation to complete
+    await browser.waitUntil(
+        async () => {
+            const isStillOnUpload = await pages.navigationGuard.isStillOnStep('upload');
+            return !isStillOnUpload;
+        },
+        { 
+            timeout: 10000, 
+            timeoutMsg: 'Navigation to next step did not complete within 10 seconds' 
+        }
+    );
 });
 
 When('I try to proceed without a file again', async () => {
@@ -501,7 +527,17 @@ Then('the "Choose Files" button should be visible again', async () => {
 
 Given('I have uploaded a valid Instagram archive', async () => {
     await pages.uploadStep.selectFile('valid-archive.zip');
-    await browser.pause(1000); // Allow validation to complete
+    // Wait for file validation to complete
+    await browser.waitUntil(
+        async () => {
+            const isValid = await pages.uploadStep.isFormValid();
+            return isValid;
+        },
+        { 
+            timeout: 5000, 
+            timeoutMsg: 'File validation did not complete within 5 seconds' 
+        }
+    );
 });
 
 Given('I am on the auth step page', async () => {
