@@ -141,7 +141,7 @@ Feature: Migration Steps Workflow - Step-by-step migration process
     Given I navigate to the upload step
     When I select a valid Instagram archive file "valid-archive.zip"
     And I navigate to the auth step
-    And I am on the auth step without valid credentials
+    And I am on the auth step
     When I attempt to navigate to the config step
     Then the navigation should be blocked
     And I should see a snackbar error message

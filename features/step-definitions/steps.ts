@@ -1,4 +1,4 @@
-import { Given, When, Then } from '@wdio/cucumber-framework';
+import { Given, When, Then, After } from '@wdio/cucumber-framework';
 
 import LandingPage from '../pageobjects/landing.page';
 import UploadStepPage from '../pageobjects/upload-step.page';
@@ -688,6 +688,8 @@ Then('the "Next" button should be enabled', async () => {
 Given('I have entered valid credentials', async () => {
     await pages.auth.open();
     await pages.auth.enterCredentials('test.bksy.social', 'testpassword123');
+    // Wait for form validation to complete
+    await browser.pause(500);
 });
 
 When('I click the "Next" button', async () => {
@@ -737,7 +739,51 @@ Then('the authentication should process in the background', async () => {
 
 Given('I have entered invalid credentials', async () => {
     await pages.auth.open();
-    await pages.auth.enterCredentials('invalid.user.name', 'wrongpassword');
+    await pages.auth.enterCredentials('invalid.user.name.invalid', 'wrongpassword');
+    // Wait for form validation to complete
+    await browser.pause(500);
+});
+
+Given('I have entered credentials that will cause a network error', async () => {
+    console.log('🔧 BDD: Setting up network error simulation');
+    
+    try {
+        // Use WebDriverIO v9 Puppeteer integration
+        const puppeteer = await browser.getPuppeteer();
+        const puppeteerPages = await puppeteer.pages();
+        
+        if (puppeteerPages && puppeteerPages.length > 0) {
+            const page = puppeteerPages[0];
+            
+            // Enable request interception
+            await page.setRequestInterception(true);
+            
+            // Intercept and block authentication requests
+            page.on('request', (request) => {
+                const url = request.url();
+                if (url.includes('xrpc/com.atproto.server.createSession') || 
+                    url.includes('api/authenticate') || 
+                    url.includes('authenticate')) {
+                    console.log(`🚫 BDD: Blocking authentication request to ${url}`);
+                    request.abort('failed');
+                } else {
+                    request.continue();
+                }
+            });
+            
+            console.log('✅ BDD: Network error simulation configured successfully');
+        } else {
+            console.log('⚠️ BDD: No pages found for network simulation - skipping');
+        }
+        
+        await pages.auth.open();
+        await pages.auth.enterCredentials('test.user.name', 'password');
+        console.log('🔧 BDD: Credentials entered for network error test');
+    } catch (error) {
+        console.log('⚠️ BDD: Network error simulation failed:', error.message);
+        // Fail fast - don't use fallbacks
+        throw error;
+    }
 });
 
 Then('the authentication should fail', async () => {
@@ -746,8 +792,29 @@ Then('the authentication should fail', async () => {
     expect(currentUrl).toContain('/step/auth');
 });
 
+Then('the authentication process should start', async () => {
+    console.log('⚙️ BDD: Verifying authentication process has started');
+    
+    // Wait for splash screen to appear, indicating authentication process started
+    await pages.stepLayout.waitForSplashScreenToAppear();
+    console.log('✅ BDD: Authentication process started - splash screen appeared');
+});
+
 Then('I should see a snackbar error message', async () => {
     await pages.navigationGuard.waitForSnackbar();
+});
+
+Then('I should see the splash screen with {string}', async (expectedMessage: string) => {
+    console.log(`⚙️ BDD: Verifying splash screen shows "${expectedMessage}"`);
+    
+    // Wait for splash screen to appear
+    await pages.stepLayout.waitForSplashScreenToAppear();
+    
+    // Verify the splash screen message
+    const actualMessage = await pages.stepLayout.getSplashScreenMessage();
+    
+    expect(actualMessage).toContain(expectedMessage);
+    console.log(`✅ BDD: Splash screen shows correct message: "${actualMessage}"`);
 });
 
 Then('the error should indicate "Invalid Bluesky credentials"', async () => {
@@ -755,19 +822,51 @@ Then('the error should indicate "Invalid Bluesky credentials"', async () => {
     expect(snackbarText).toContain('Invalid Bluesky credentials');
 });
 
+Then('the authentication should fail with an error', async () => {
+    console.log('⚙️ BDD: Verifying authentication failed with error');
+    
+    // Wait for splash screen to disappear (authentication process completed)
+    await pages.stepLayout.waitForSplashScreenToDisappear();
+    
+    // Verify we're still on the auth step (navigation was blocked)
+    const currentUrl = await browser.getUrl();
+    expect(currentUrl).toContain('/step/auth');
+    
+    console.log('✅ BDD: Authentication failed - user remains on auth step');
+});
+
 Then('I should remain on the auth step', async () => {
     const currentUrl = await browser.getUrl();
     expect(currentUrl).toContain('/step/auth');
 });
 
+// Cleanup for network error tests
+After('@network-error', async () => {
+    console.log('🧹 BDD: Cleaning up network error simulation');
+    
+    try {
+        // Use WebDriverIO v9 Puppeteer integration for cleanup
+        const puppeteer = await browser.getPuppeteer();
+        const puppeteerPages = await puppeteer.pages();
+        
+        if (puppeteerPages && puppeteerPages.length > 0) {
+            const page = puppeteerPages[0];
+            // Disable request interception
+            await page.setRequestInterception(false);
+            console.log('✅ BDD: Network conditions reset to normal');
+        } else {
+            console.log('⚠️ BDD: No pages found for cleanup - skipping');
+        }
+    } catch (error) {
+        console.log('⚠️ BDD: Network cleanup failed (expected in some environments):', error.message);
+        // Fail fast - don't use fallbacks
+        throw error;
+    }
+});
+
 Then('the form should remain invalid', async () => {
     const isValid = await pages.stepLayout.nextButton.isEnabled();
     expect(isValid).toBe(false);
-});
-
-Given('I am on the auth step without valid credentials', async () => {
-    await pages.auth.open();
-    // Don't enter any credentials
 });
 
 When('I attempt to navigate to the config step', async () => {
@@ -900,5 +999,94 @@ Then('the authentication should process in the background', async () => {
     // Verify that we're still on the auth page or have moved to the next step
     const currentUrl = await browser.getUrl();
     expect(currentUrl).toMatch(/\/step\/(auth|config)/);
+});
+
+// ===== MISSING AUTH GUARD MESSAGING STEPS =====
+
+Given('I have not entered any credentials', async () => {
+    await pages.auth.open();
+    // Don't enter any credentials - leave fields empty
+});
+
+Given('I have already been authenticated', async () => {
+    await pages.auth.open();
+    // Simulate already authenticated state
+    await browser.execute(() => {
+        localStorage.setItem('bluesky_authenticated', 'true');
+        localStorage.setItem('bluesky_username', 'test.bksy.social');
+    });
+});
+
+When('I attempt to navigate to the upload step', async () => {
+    await pages.stepLayout.clickPreviousStep();
+});
+
+When('I attempt to navigate to a different URL directly', async () => {
+    // Simulate direct URL navigation
+    await browser.url('/step/config');
+});
+
+Then('the navigation should be allowed', async () => {
+    // Verify navigation succeeded by checking URL
+    const currentUrl = await browser.getUrl();
+    expect(currentUrl).toContain('/step/');
+});
+
+Then('no authentication should be triggered', async () => {
+    // Verify no splash screen appeared
+    const isSplashVisible = await pages.stepLayout.isSplashScreenVisible();
+    expect(isSplashVisible).toBe(false);
+});
+
+Then('the navigation should be allowed immediately', async () => {
+    // Verify immediate navigation without authentication process
+    const currentUrl = await browser.getUrl();
+    expect(currentUrl).toContain('/step/config');
+    
+    // Verify no splash screen appeared
+    const isSplashVisible = await pages.stepLayout.isSplashScreenVisible();
+    expect(isSplashVisible).toBe(false);
+});
+
+Then('no authentication process should be triggered', async () => {
+    // Verify no splash screen appeared
+    const isSplashVisible = await pages.stepLayout.isSplashScreenVisible();
+    expect(isSplashVisible).toBe(false);
+});
+
+Then('the authentication should succeed', async () => {
+    // Wait for navigation to config step, indicating successful authentication
+    await browser.waitUntil(
+        async () => {
+            const currentUrl = await browser.getUrl();
+            return currentUrl.includes('/step/config');
+        },
+        { timeout: 10000, timeoutMsg: 'Authentication did not succeed - not navigated to config step' }
+    );
+});
+
+Then('I should be on the config step page', async () => {
+    const currentUrl = await browser.getUrl();
+    expect(currentUrl).toContain('/step/config');
+});
+
+Then('I should be on the config step', async () => {
+    const currentUrl = await browser.getUrl();
+    expect(currentUrl).toContain('/step/config');
+});
+
+Then('I should be on the upload step', async () => {
+    const currentUrl = await browser.getUrl();
+    expect(currentUrl).toContain('/step/upload');
+});
+
+Then('the error should indicate "Authentication failed. Please check your credentials."', async () => {
+    const snackbarText = await pages.navigationGuard.getSnackbarText();
+    expect(snackbarText).toContain('Authentication failed. Please check your credentials.');
+});
+
+Then('the error should indicate "Authentication failed"', async () => {
+    const snackbarText = await pages.navigationGuard.getSnackbarText();
+    expect(snackbarText).toContain('Authentication failed');
 });
 
