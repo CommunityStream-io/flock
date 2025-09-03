@@ -91,6 +91,7 @@
     "chromedriver": "^139.0.2",
     "concurrently": "^9.2.0",
     "cross-env": "^10.0.0",
+    "devtools": "^8.42.0",
     "eslint": "8.57.1",
     "eslint-plugin-import": "^2.32.0",
     "expect-webdriverio": "^5.4.2",

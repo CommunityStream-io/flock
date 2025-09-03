@@ -46,18 +46,23 @@ export const config: Options.Testrunner = {
         maxInstances: 5,
         browserName: 'chrome',
         acceptInsecureCerts: true,
-        // Conditionally add headless mode based on environment variable
-        ...(process.env.HEADLESS === 'true' && {
-            'goog:chromeOptions': {
-                args: [
-                    '--headless',                    // Run Chrome without visible UI
-                    '--no-sandbox',                  // Disable sandbox for CI environments
-                    '--disable-dev-shm-usage',       // Prevent shared memory issues
-                    '--disable-gpu',                 // Disable GPU acceleration
-                    '--window-size=1920,1080'       // Set consistent window size
-                ]
-            }
-        })
+        // Enable Chrome DevTools Protocol for network simulation
+        'goog:chromeOptions': {
+            args: [
+                // Network simulation and CDP support
+                '--enable-chrome-browser-cloud-management',
+                '--enable-network-service-logging',
+                '--disable-web-security',              // Allow network interception
+                '--disable-features=VizDisplayCompositor',
+                // Standard Chrome options
+                '--no-sandbox',                        // Disable sandbox for CI environments
+                '--disable-dev-shm-usage',             // Prevent shared memory issues
+                '--disable-gpu',                       // Disable GPU acceleration
+                '--window-size=1920,1080',             // Set consistent window size
+                // Conditionally add headless mode
+                ...(process.env.HEADLESS === 'true' ? ['--headless'] : [])
+            ]
+        }
     }] as any,
 
     //
@@ -124,7 +129,7 @@ export const config: Options.Testrunner = {
     cucumberOpts: {
         require: ['./features/step-definitions/steps.ts'],
         backtrace: true,  // Show full stack trace on failures
-        requireModule: [],
+        requireModule: ['expect-webdriverio'],
         dryRun: false,
         failFast: false,
         snippets: true,
