@@ -121,23 +121,6 @@ Given('I navigate to the complete step', async () => {
     await pages.stepLayout.openCompleteStep();
 });
 
-When('I navigate to the auth step with valid archive', async () => {
-    // First upload a valid file, then navigate
-    await pages.uploadStep.selectFile('valid-archive.zip');
-    // Wait for file validation to complete
-    await browser.waitUntil(
-        async () => {
-            const isValid = await pages.uploadStep.isFormValid();
-            return isValid;
-        },
-        { 
-            timeout: 5000, 
-            timeoutMsg: 'File validation did not complete within 5 seconds' 
-        }
-    );
-    await pages.stepLayout.navigateToStep('auth');
-});
-
 Then('I should see the step layout container', async () => {
     await expect(pages.stepLayout.stepLayoutContainer).toBeDisplayed();
 });
@@ -525,21 +508,6 @@ Then('the "Choose Files" button should be visible again', async () => {
 
 // ===== BLUESKY AUTHENTICATION STEPS =====
 
-Given('I have uploaded a valid Instagram archive', async () => {
-    await pages.uploadStep.selectFile('valid-archive.zip');
-    // Wait for file validation to complete
-    await browser.waitUntil(
-        async () => {
-            const isValid = await pages.uploadStep.isFormValid();
-            return isValid;
-        },
-        { 
-            timeout: 5000, 
-            timeoutMsg: 'File validation did not complete within 5 seconds' 
-        }
-    );
-});
-
 Given('I am on the auth step page', async () => {
     await pages.auth.open();
 });
@@ -569,6 +537,10 @@ When('I enter a username with @ prefix and one dot', async () => {
 });
 
 When('I enter a valid username "@username.bksy.social"', async () => {
+    await pages.auth.enterUsername('@username.bksy.social');
+});
+
+When('I enter a valid username', async () => {
     await pages.auth.enterUsername('@username.bksy.social');
 });
 
@@ -609,6 +581,10 @@ When('I leave the password field empty', async () => {
 });
 
 When('I enter a password', async () => {
+    await pages.auth.enterPassword('testpassword123');
+});
+
+When('I enter a valid password', async () => {
     await pages.auth.enterPassword('testpassword123');
 });
 

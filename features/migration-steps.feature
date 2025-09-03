@@ -1,4 +1,3 @@
-@skip
 Feature: Migration Steps Workflow - Step-by-step migration process
 
   As a user migrating from Instagram to Bluesky
@@ -37,7 +36,9 @@ Feature: Migration Steps Workflow - Step-by-step migration process
     Given I navigate to the upload step
     Then the page title should be "Upload Data"
     And I should see the description "Upload instagram archive"
-    When I navigate to the auth step with valid archive
+    Given I navigate to the upload step
+    When I select a valid Instagram archive file "valid-archive.zip"
+    And I navigate to the auth step
     Then the page title should be "Authenticate with Bluesky"
     And I should see the description "Authenticate with Bluesky to migrate"
     When I navigate to the config step
@@ -46,8 +47,9 @@ Feature: Migration Steps Workflow - Step-by-step migration process
 
   @migration-steps @bluesky-auth @validation
   Scenario: Authentication form displays correctly
-    Given I have uploaded a valid Instagram archive
-    And I am on the auth step page
+    Given I navigate to the upload step
+    When I select a valid Instagram archive file "valid-archive.zip"
+    And I navigate to the auth step
     Then I should see the Bluesky authentication form
     And I should see a username input field with @ prefix
     And I should see a password input field
@@ -55,8 +57,9 @@ Feature: Migration Steps Workflow - Step-by-step migration process
 
   @migration-steps @bluesky-auth @validation
   Scenario: Username validation enforces proper format
-    Given I have uploaded a valid Instagram archive
-    And I am on the auth step page
+    Given I navigate to the upload step
+    When I select a valid Instagram archive file "valid-archive.zip"
+    And I navigate to the auth step
     When I enter a username without @ prefix
     Then the username field should show an error
     And the error should indicate "@ prefix is required"
@@ -82,8 +85,9 @@ Feature: Migration Steps Workflow - Step-by-step migration process
 
   @migration-steps @bluesky-auth @validation
   Scenario: Password validation requires non-empty value
-    Given I have uploaded a valid Instagram archive
-    And I am on the auth step page
+    Given I navigate to the upload step
+    When I select a valid Instagram archive file "valid-archive.zip"
+    And I navigate to the auth step
     When I leave the password field empty
     Then the password field should show an error
     And the error should indicate "Password is required"
@@ -95,8 +99,9 @@ Feature: Migration Steps Workflow - Step-by-step migration process
 
   @migration-steps @bluesky-auth @validation
   Scenario: Form validation requires both fields to be valid
-    Given I have uploaded a valid Instagram archive
-    And I am on the auth step page
+    Given I navigate to the upload step
+    When I select a valid Instagram archive file "valid-archive.zip"
+    And I navigate to the auth step
     Given I have entered a valid username
     When I enter a valid password
     Then the form should be valid
@@ -109,8 +114,9 @@ Feature: Migration Steps Workflow - Step-by-step migration process
 
   @migration-steps @bluesky-auth @validation
   Scenario: Successful authentication allows progression
-    Given I have uploaded a valid Instagram archive
-    And I am on the auth step page
+    Given I navigate to the upload step
+    When I select a valid Instagram archive file "valid-archive.zip"
+    And I navigate to the auth step
     And I have entered valid credentials
     When I click the "Next" button
     Then the authentication script should run in the background
@@ -118,8 +124,9 @@ Feature: Migration Steps Workflow - Step-by-step migration process
 
   @migration-steps @bluesky-auth @validation
   Scenario: Failed authentication shows appropriate error
-    Given I have uploaded a valid Instagram archive
-    And I am on the auth step page
+    Given I navigate to the upload step
+    When I select a valid Instagram archive file "valid-archive.zip"
+    And I navigate to the auth step
     And I have entered invalid credentials
     When I click the "Next" button
     Then the authentication should fail
@@ -130,8 +137,9 @@ Feature: Migration Steps Workflow - Step-by-step migration process
 
   @migration-steps @bluesky-auth @validation
   Scenario: Navigation guard prevents progression without valid credentials
-    Given I have uploaded a valid Instagram archive
-    And I am on the auth step page
+    Given I navigate to the upload step
+    When I select a valid Instagram archive file "valid-archive.zip"
+    And I navigate to the auth step
     And I am on the auth step without valid credentials
     When I attempt to navigate to the config step
     Then the navigation should be blocked
@@ -146,8 +154,9 @@ Feature: Migration Steps Workflow - Step-by-step migration process
 
   @migration-steps @bluesky-auth @validation
   Scenario: Deactivate validation ensures credentials are saved
-    Given I have uploaded a valid Instagram archive
-    And I am on the auth step page
+    Given I navigate to the upload step
+    When I select a valid Instagram archive file "valid-archive.zip"
+    And I navigate to the auth step
     And I have entered valid credentials
     When I attempt to navigate away from the auth step
     Then the system should validate my credentials
