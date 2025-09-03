@@ -1,0 +1,33 @@
+coverage:
+  status:
+    project:
+      default:
+        target: auto
+        threshold: 0%
+        base: auto
+    patch:
+      default:
+        target: auto
+        threshold: 0%
+        base: auto
+
+flags:
+  unittests:
+    paths:
+      - projects/shared/src/
+    carryforward: true
+  e2etests:
+    paths:
+      - projects/flock-mirage/src/
+      - projects/shared/src/
+    carryforward: true
+
+comment:
+  layout: "header,diff,files,footer"
+  behavior: default
+  require_changes: false
+  require_base: no
+  require_head: yes
+
+github_checks:
+  annotations: true

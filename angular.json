@@ -204,6 +204,24 @@
                   "with": "projects/flock-mirage/src/environments/environment.test.ts"
                 }
               ]
+            },
+            "test-coverage": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "fileReplacements": [
+                {
+                  "replace": "projects/flock-mirage/src/environments/environment.ts",
+                  "with": "projects/flock-mirage/src/environments/environment.test.ts"
+                }
+              ],
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2MB",
+                  "maximumError": "5MB"
+                }
+              ]
             }
           },
           "defaultConfiguration": "production"
@@ -219,6 +237,9 @@
             },
             "test": {
               "buildTarget": "flock-mirage:build:test"
+            },
+            "test-coverage": {
+              "buildTarget": "flock-mirage:build:test-coverage"
             }
           },
           "defaultConfiguration": "development"

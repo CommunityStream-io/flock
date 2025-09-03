@@ -55,8 +55,16 @@ jobs:
       - name: Build shared library
         run: npx ng build --project=shared
 
-      - name: Run tests
-        run: npm run test:ci
+      - name: Run tests with coverage
+        run: npm run test:coverage
+
+      - name: Upload unit test coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          files: ./coverage/lcov.info
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: false
 
   e2e:
     name: Practice the murmuration (E2E Test)
@@ -93,11 +101,12 @@ jobs:
       - name: Build flock-mirage app
         run: npx ng build --project=flock-mirage --configuration=development
 
-      - name: Run e2e tests with Angular app
-        run: npm run test:e2e:ci:full
+      - name: Run e2e tests with coverage
+        run: npm run test:e2e:coverage
         env:
           CI: true
           NODE_ENV: production
+          COLLECT_COVERAGE: true
 
       - name: Ensure allure-results directory exists
         run: mkdir -p allure-results
@@ -118,6 +127,14 @@ jobs:
           name: allure-results
           path: allure-results/
           retention-days: 30
+
+      - name: Upload E2E coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          files: ./coverage/lcov.info
+          flags: e2etests
+          name: codecov-umbrella
+          fail_ci_if_error: false
 
   build:
     name: Add to the flock (Build)

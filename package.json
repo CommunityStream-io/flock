@@ -1,6 +1,17 @@
 {
   "name": "flock",
   "version": "0.0.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/flock-mirage/flock.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/flock-mirage/flock/issues"
+  },
+  "homepage": "https://github.com/flock-mirage/flock#readme",
   "scripts": {
     "ng": "ng",
     "start": "ng serve flock-mirage",
@@ -9,6 +20,12 @@
     "test": "ng test shared",
     "test:watch": "ng test shared --watch",
     "test:ci": "cross-env CI=true ng test shared --watch=false",
+    "test:coverage": "cross-env CI=true ng test shared --watch=false --code-coverage",
+    "build:e2e-coverage": "ng build flock-mirage --configuration=test-coverage",
+    "serve:e2e-coverage": "ng serve flock-mirage --configuration=test-coverage --port=4200",
+    "test:e2e:coverage": "concurrently --kill-others --success first \"npm run serve:e2e-coverage\" \"wait-on http://localhost:4200 && cross-env HEADLESS=true COLLECT_COVERAGE=true wdio run wdio.conf.ts\"",
+    "coverage:merge": "nyc merge ./coverage ./coverage/merged-coverage.json && nyc report --reporter=lcov --report-dir=./coverage",
+    "coverage:all": "npm run test:coverage && npm run test:e2e:coverage && npm run coverage:merge",
     "test:shared": "ng test shared",
     "test:shared:watch": "ng test shared --watch",
     "test:shared:ci": "cross-env CI=true ng test shared",
@@ -76,6 +93,7 @@
     "@angular/build": "^20.1.6",
     "@angular/cli": "^20.1.5",
     "@angular/compiler-cli": "^20.1.0",
+    "@istanbuljs/nyc-config-typescript": "^1.0.2",
     "@types/jasmine": "~5.1.0",
     "@types/node": "^24.3.0",
     "@typescript-eslint/eslint-plugin": "7.11.0",
@@ -102,6 +120,7 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
     "ng-packagr": "^20.1.0",
+    "nyc": "^17.1.0",
     "typescript": "~5.8.2",
     "wait-on": "^8.0.4",
     "webdriverio-mcp": "^1.0.3"
