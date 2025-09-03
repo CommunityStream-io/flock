@@ -6,25 +6,38 @@
     <form [formGroup]="authForm" (ngSubmit)="onSubmit()" class="auth-form bluesky-auth">
       <div class="form-fields">
         <!-- Username Field -->
-        <mat-form-field appearance="outline" class="username-field">
-          <mat-label>Username</mat-label>
-          <input
-            matInput
-            formControlName="username"
-            name="username"
-            placeholder="@username.bksy.social"
-            type="text"
-            autocomplete="username"
-            [class.error]="authForm.get('username')?.invalid && authForm.get('username')?.touched"
+        <div class="username-field-container">
+          <mat-form-field appearance="outline" class="username-field">
+            <mat-label>Username</mat-label>
+            <span matTextPrefix>@&nbsp;</span>
+            <input
+              matInput
+              formControlName="username"
+              name="username"
+              placeholder="username.bksy.social"
+              type="text"
+              autocomplete="username"
+              [class.error]="authForm.get('username')?.invalid && authForm.get('username')?.touched"
+            >
+            <mat-icon matSuffix>account_circle</mat-icon>
+            @if (authForm.get('username')?.invalid && authForm.get('username')?.touched) {
+              <mat-error class="username-error mat-error">
+                {{ getUsernameErrorMessage() }}
+              </mat-error>
+            }
+            <mat-hint>Must contain at least two dots (e.g., username.bksy.social)</mat-hint>
+          </mat-form-field>
+          
+          <!-- Help Button -->
+          <button
+            mat-icon-button
+            class="help-button"
+            (click)="openHelpDialog()"
+            [attr.aria-label]="'Show help information'"
           >
-          <mat-icon matSuffix>account_circle</mat-icon>
-          @if (authForm.get('username')?.invalid && authForm.get('username')?.touched) {
-            <mat-error class="username-error mat-error">
-              {{ getUsernameErrorMessage() }}
-            </mat-error>
-          }
-          <mat-hint>Must start with @ and contain at least two dots (e.g., @username.bksy.social)</mat-hint>
-        </mat-form-field>
+            <mat-icon>help_outline</mat-icon>
+          </button>
+        </div>
 
         <!-- Password Field -->
         <mat-form-field appearance="outline" class="password-field">
@@ -83,24 +96,6 @@
       </div>
     </form>
 
-    <!-- Help Information -->
-    <div class="help-section">
-      <mat-card class="help-card">
-        <mat-card-header>
-          <mat-card-title>
-            <mat-icon>help</mat-icon>
-            Need Help?
-          </mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <p>Your Bluesky username should look like:</p>
-          <ul>
-            <li><code>@username.bksy.social</code> - for Bluesky's default domain</li>
-            <li><code>@user.custom.domain</code> - for custom Personal Data Servers (PDS)</li>
-          </ul>
-          <p>Make sure to include the @ symbol and that your username contains at least two dots.</p>
-        </mat-card-content>
-      </mat-card>
-    </div>
+
   </div>
 </section>

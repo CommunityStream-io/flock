@@ -577,27 +577,27 @@ Then('the "Next" button should be enabled', async () => {
 });
 
 When('I enter a username without @ prefix', async () => {
-    await pages.auth.enterUsername('username.bksy.social');
+    await pages.auth.enterUsername('@username.bksy.social');
 });
 
 When('I enter a username with @ prefix but no dots', async () => {
-    await pages.auth.enterUsername('@username');
+    await pages.auth.enterUsername('username');
 });
 
 When('I enter a username with @ prefix and one dot', async () => {
-    await pages.auth.enterUsername('@username.bksy');
+    await pages.auth.enterUsername('username.bksy');
 });
 
 When('I enter a valid username "@username.bksy.social"', async () => {
-    await pages.auth.enterUsername('@username.bksy.social');
+    await pages.auth.enterUsername('username.bksy.social');
 });
 
 When('I enter a valid username', async () => {
-    await pages.auth.enterUsername('@username.bksy.social');
+    await pages.auth.enterUsername('username.bksy.social');
 });
 
 When('I enter a valid custom domain username "@user.custom.domain"', async () => {
-    await pages.auth.enterUsername('@user.custom.domain');
+    await pages.auth.enterUsername('user.custom.domain');
 });
 
 Then('the username field should show an error', async () => {
@@ -607,7 +607,7 @@ Then('the username field should show an error', async () => {
 
 Then('the error should indicate "@ prefix is required"', async () => {
     const errorText = await pages.auth.getUsernameErrorText();
-    expect(errorText).toContain('@ prefix is required');
+    expect(errorText).toContain('Do not include the @ symbol - it is automatically added');
 });
 
 Then('the error should indicate "Username must contain at least two dots"', async () => {
@@ -793,5 +793,34 @@ Then('if invalid, I should see a snackbar error message', async () => {
 Then('the error should indicate "Please complete authentication before proceeding"', async () => {
     const snackbarText = await pages.navigationGuard.getSnackbarText();
     expect(snackbarText).toContain('Please complete authentication before proceeding');
+});
+
+// Help dialog steps
+When('I click the help icon', async () => {
+    await pages.auth.clickHelpIcon();
+});
+
+Then('I should see a help dialog with username format suggestions', async () => {
+    const isDialogVisible = await pages.auth.isHelpDialogVisible();
+    expect(isDialogVisible).toBe(true);
+});
+
+Then('the dialog should contain {string}', async (expectedText: string) => {
+    const dialogText = await pages.auth.getHelpDialogText();
+    expect(dialogText).toContain(expectedText);
+});
+
+Then('the dialog should explain that the @ symbol is automatically added', async () => {
+    const dialogText = await pages.auth.getHelpDialogText();
+    expect(dialogText).toContain('@ symbol is automatically added');
+});
+
+When('I close the help dialog', async () => {
+    await pages.auth.closeHelpDialog();
+});
+
+Then('the help dialog should be hidden', async () => {
+    const isDialogVisible = await pages.auth.isHelpDialogVisible();
+    expect(isDialogVisible).toBe(false);
 });
 

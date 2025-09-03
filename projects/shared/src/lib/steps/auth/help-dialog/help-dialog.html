@@ -1,0 +1,35 @@
+<div class="help-dialog">
+  <div class="dialog-header">
+    <h2 mat-dialog-title>
+      <mat-icon>help</mat-icon>
+      Username Format Help
+    </h2>
+    <button mat-icon-button mat-dialog-close class="close-button">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  
+  <div mat-dialog-content class="dialog-content">
+    <p>Your Bluesky username should look like:</p>
+    <ul>
+      <li>
+        <code>username.bksy.social</code> 
+        <span class="description">- for Bluesky's default domain</span>
+      </li>
+      <li>
+        <code>user.custom.domain</code> 
+        <span class="description">- for custom Personal Data Servers (PDS)</span>
+      </li>
+    </ul>
+    <p class="note">
+      <mat-icon>info</mat-icon>
+      The @ symbol is automatically added. Make sure your username contains at least two dots.
+    </p>
+  </div>
+  
+  <div mat-dialog-actions class="dialog-actions">
+    <button mat-raised-button color="primary" (click)="onClose()">
+      Got it!
+    </button>
+  </div>
+</div>

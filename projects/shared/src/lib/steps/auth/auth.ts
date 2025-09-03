@@ -1,21 +1,22 @@
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Component, inject, OnInit, OnDestroy, signal, computed, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, signal, computed, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatCardModule } from '@angular/material/card';
+import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { LOGGER, Logger } from '../../services';
 import { Bluesky } from '../../services/bluesky';
+import { HelpDialog } from './help-dialog/help-dialog';
 
 @Component({
   selector: 'shared-auth',
   standalone: true,
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -24,15 +25,20 @@ import { Bluesky } from '../../services/bluesky';
     MatButtonModule,
     MatIconModule,
     MatProgressSpinnerModule,
-    MatCardModule
+    MatCardModule,
+    MatDialogModule
   ],
   templateUrl: './auth.html',
-  styleUrl: './auth.css'
+  styleUrl: './auth.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class Auth implements OnInit, OnDestroy {
   private logger = inject(LOGGER) as Logger;
   private blueskyService = inject(Bluesky);
   private router = inject(Router);
+  private cdr = inject(ChangeDetectorRef);
+  private dialog = inject(MatDialog);
+
   private destroy$ = new Subject<void>();
 
   /**
@@ -63,12 +69,42 @@ export class Auth implements OnInit, OnDestroy {
    */
   public isAuthenticated = signal(false);
 
+
+
+  /**
+   * Check if form is valid
+   */
+  public isFormValid = computed(() => {
+    return this.authForm.valid && !this.isAuthenticating();
+  });
+
+  /**
+   * Open help dialog
+   */
+  public openHelpDialog(): void {
+    this.dialog.open(HelpDialog, {
+      width: '500px',
+      maxWidth: '90vw',
+      disableClose: false,
+      autoFocus: true,
+      restoreFocus: true
+    });
+  }
+
   ngOnInit() {
     // Subscribe to form value changes for real-time validation
     this.authForm.valueChanges.pipe(
       takeUntil(this.destroy$)
     ).subscribe(() => {
       this.clearAuthError();
+      this.cdr.markForCheck(); // Trigger change detection for OnPush
+    });
+
+    // Subscribe to form status changes to trigger validation display
+    this.authForm.statusChanges.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(() => {
+      this.cdr.markForCheck(); // Trigger change detection for OnPush
     });
   }
 
@@ -79,18 +115,18 @@ export class Auth implements OnInit, OnDestroy {
 
   /**
    * Custom validator for username format
-   * Requires @ prefix and at least two dots
+   * Prevents @ symbol and requires at least two dots
    */
-  private usernameFormatValidator(control: FormControl<string>): { [key: string]: boolean } | null {
+  private usernameFormatValidator(control: FormControl): { [key: string]: any } | null {
     const value = control.value;
 
     if (!value) {
       return null; // Let required validator handle empty values
     }
 
-    // Check for @ prefix
-    if (!value.startsWith('@')) {
-      return { prefixRequired: true };
+    // Check if user entered @ symbol (which is discouraged)
+    if (value.includes('@')) {
+      return { atSymbolNotAllowed: true };
     }
 
     // Check for at least two dots
@@ -112,12 +148,12 @@ export class Auth implements OnInit, OnDestroy {
       return 'Username is required';
     }
 
-    if (usernameControl?.hasError('prefixRequired')) {
-      return '@ prefix is required';
+    if (usernameControl?.hasError('atSymbolNotAllowed')) {
+      return 'Do not include the @ symbol - it is automatically added';
     }
 
     if (usernameControl?.hasError('dotsRequired')) {
-      return 'Username must contain at least two dots';
+      return 'Username must contain at least two dots (e.g., username.bksy.social)';
     }
 
     return '';
@@ -136,19 +172,7 @@ export class Auth implements OnInit, OnDestroy {
     return '';
   }
 
-  /**
-   * Check if form is valid
-   */
-  public isFormValid = computed(() => {
-    return this.authForm.valid && !this.isAuthenticating();
-  });
 
-  /**
-   * Check if step is complete (ready for navigation)
-   */
-  public isStepComplete = computed(() => {
-    return this.isAuthenticated() && !this.authError();
-  });
 
   /**
    * Clear authentication error message
@@ -157,9 +181,12 @@ export class Auth implements OnInit, OnDestroy {
     this.authError.set('');
   }
 
+
+
   /**
    * Handle form submission
-   * This validates credentials but doesn't navigate - navigation is handled by the stepper
+   * This validates credentials and stores authentication state
+   * Navigation validation is handled by guards and resolvers
    */
   async onSubmit(): Promise<void> {
     if (this.authForm.invalid || this.isAuthenticating()) {
@@ -171,7 +198,7 @@ export class Auth implements OnInit, OnDestroy {
 
     try {
       const credentials = {
-        username: this.authForm.get('username')?.value || '',
+        username: '@' + (this.authForm.get('username')?.value || ''),
         password: this.authForm.get('password')?.value || ''
       };
 
@@ -184,35 +211,18 @@ export class Auth implements OnInit, OnDestroy {
         this.logger.log('Bluesky authentication successful');
         this.isAuthenticated.set(true);
         this.clearAuthError();
-        // Authentication successful - the navigation stepper will handle navigation
-        // when the user clicks "Next"
+        // Authentication successful - guards will handle navigation validation
       } else {
         this.logger.error(`Bluesky authentication failed: ${result.message}`);
         this.authError.set(result.message || 'Authentication failed');
       }
-    } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
-      this.logger.error(`Authentication error: ${errorMessage}`);
+    } catch (error: any) {
+      this.logger.error(`Authentication error: ${error?.message || error}`);
       this.authError.set('An unexpected error occurred during authentication');
     } finally {
       this.isAuthenticating.set(false);
     }
   }
 
-  /**
-   * Handle navigation away from the step
-   * This ensures credentials are validated before allowing progression
-   */
-  canDeactivate(): boolean {
-    // Allow navigation if authentication was successful
-    if (this.isAuthenticated()) {
-      return true;
-    }
 
-    // If authentication hasn't been completed, prevent navigation
-    if (!this.isAuthenticated()) {
-      this.authError.set('Please complete authentication before proceeding');
-    }
-    return false;
-  }
 }

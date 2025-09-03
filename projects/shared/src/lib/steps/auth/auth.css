@@ -28,6 +28,7 @@
   /* M3 Color System - Outline Colors */
   --md-sys-color-outline: #79747e;
   --md-sys-color-outline-variant: #cac4d0;
+  --md-sys-color-scrim: rgba(0, 0, 0, 0.32);
   
   /* M3 Typography Scale */
   --md-sys-typescale-headline-large-font: 'Roboto', sans-serif;
@@ -345,8 +346,8 @@
   border: 1px solid var(--md-sys-color-outline-variant);
   border-radius: 8px; /* M3 small corner radius */
   padding: 0.25rem 0.5rem;
-  font-family: 'Roboto Mono', 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-  font-size: 0.875rem;
+  font-family: var(--md-sys-typescale-body-large-font);
+  font-size: var(--md-sys-typescale-body-large-size);
   color: var(--md-sys-color-error);
 }
 
@@ -486,4 +487,63 @@
 
 .help-card .mat-mdc-card-content::-webkit-scrollbar-thumb:hover {
   background: var(--md-sys-color-on-surface-variant);
+}
+
+/* Username Field Container */
+.username-field-container {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+
+
+/* Help Button - Enhanced for dialog interaction */
+.help-button {
+  background: var(--md-sys-color-surface-container);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  color: var(--md-sys-color-on-surface-variant);
+  transition: all 0.2s ease;
+  margin-top: 0.5rem; /* Align with form field */
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.help-button:hover {
+  background: var(--md-sys-color-surface-container-high);
+  border-color: var(--md-sys-color-outline);
+  color: var(--md-sys-color-on-surface);
+  transform: scale(1.05);
+}
+
+.help-button:active {
+  transform: scale(0.95);
+}
+
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .auth-container {
+    margin: 1rem;
+    padding: 1.5rem;
+  }
+
+  .step-title {
+    font-size: var(--md-sys-typescale-headline-medium-size);
+  }
+
+  .form-fields {
+    gap: 1rem;
+  }
+
+  .form-actions {
+    margin-top: 1.5rem;
+  }
+
+
 }
