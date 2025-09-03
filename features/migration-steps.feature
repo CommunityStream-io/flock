@@ -7,6 +7,7 @@ Feature: Migration Steps Workflow - Step-by-step migration process
 
   Background:
     Given the application is running
+    And the splash screen message should be "*flap* *flap* *flap*"
 
   @migration-steps @step-navigation
   Scenario: Step layout displays correct navigation structure

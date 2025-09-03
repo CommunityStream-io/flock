@@ -6,6 +6,7 @@ Feature: File Upload and Validation - Instagram Archive Processing
 
   Background:
     Given the application is running
+    And the splash screen message should be "*flap* *flap* *flap*"
     And I navigate to the upload step
 
   @file-upload @upload-interface
@@ -65,3 +66,10 @@ Feature: File Upload and Validation - Instagram Archive Processing
     When I try to proceed without a file
     Then I should see an error message
     And the form should remain on the upload step
+
+  @file-upload @navigation-reset
+  Scenario: Navigation back to upload step resets splash screen message
+    Given I have selected a valid Instagram archive file "test-archive.zip"
+    And I have navigated to the auth step
+    When I navigate back to the upload step
+    Then the splash screen message should be "*flap* *flap* *flap*"

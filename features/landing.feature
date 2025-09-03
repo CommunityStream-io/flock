@@ -6,7 +6,9 @@ Feature: Flock Landing Page - Birds of a Feather Migrate Together
 
   @landing-page @navigation
   Scenario: Landing page displays migration information and process
-    Given I am on the landing page
+    Given the application is running
+    And the splash screen message should be "*flap* *flap* *flap*"
+    And I am on the landing page
     Then I should see the main title "Flock: Birds of a Feather Migrate Together"
     And I should see the subtitle about spreading wings to Bluesky's decentralized skies
     And I should see the migration journey explanation

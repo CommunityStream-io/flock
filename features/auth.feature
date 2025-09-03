@@ -6,6 +6,7 @@ Feature: Bluesky Authentication - User credential validation and authentication
 
   Background:
     Given the application is running
+    And the splash screen message should be "*flap* *flap* *flap*"
     And I navigate to the upload step
     And I select a valid Instagram archive file "valid-archive.zip"
     And I navigate to the auth step
@@ -136,6 +137,7 @@ Feature: Bluesky Authentication - User credential validation and authentication
     When I attempt to navigate to the upload step
     Then the navigation should be allowed
     And I should be on the upload step
+    And the splash screen message should be "*flap* *flap* *flap*"
     And no authentication should be triggered
 
   @bluesky-auth @navigation @authentication @auth-guard

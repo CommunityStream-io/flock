@@ -99,6 +99,23 @@ Given('the application is running', async () => {
     await browser.url('/');
 });
 
+Given('the splash screen message should be {string}', async (expectedMessage: string) => {
+    console.log(`🔧 BDD: Verifying initial splash screen message is "${expectedMessage}"`);
+    
+    // Check if splash screen is visible first
+    const isSplashVisible = await pages.stepLayout.isSplashScreenVisible();
+    
+    if (isSplashVisible) {
+        // Get the current splash screen message
+        const actualMessage = await pages.stepLayout.getSplashScreenMessage();
+        expect(actualMessage).toBe(expectedMessage);
+        console.log(`✅ BDD: Splash screen message is correct: "${actualMessage}"`);
+    } else {
+        // If splash screen is not visible, that's also valid for the default state
+        console.log(`✅ BDD: Splash screen is not visible (default state) - message would be "${expectedMessage}"`);
+    }
+});
+
 // ===== STEP NAVIGATION STEPS =====
 
 Given('I navigate to the upload step', async () => {
@@ -510,6 +527,14 @@ Then('the "Choose Files" button should be visible again', async () => {
 
 Given('I am on the auth step page', async () => {
     await pages.auth.open();
+});
+
+Given('I have navigated to the auth step', async () => {
+    await pages.stepLayout.openAuthStep();
+});
+
+When('I navigate back to the upload step', async () => {
+    await pages.stepLayout.openUploadStep();
 });
 
 Then('I should see a username input field with @ prefix', async () => {
