@@ -66,7 +66,7 @@ describe('Feature: Bluesky Service', () => {
       // Given: Invalid credentials
       console.log('🔧 BDD: Setting up invalid credentials');
       const credentials: Credentials = {
-        username: '@invalid.user',
+        username: '@invalid.user.name',
         password: 'wrongpassword'
       };
       

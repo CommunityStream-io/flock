@@ -1,6 +1,6 @@
 # 🧪 Flock Testing - How Our Flock Stays Healthy and Strong
 
-> *"A healthy flock is a happy flock. We test everything to ensure our birds can fly safely through any storm. Our testing strategy keeps our migration journey smooth and reliable."*
+> *"We count every duckling in our flock—each feature gets a test, so no one gets left behind! Our testing keeps the whole migration waddling along safely and happily."*
 
 ## 🧪 **Testing Philosophy**
 

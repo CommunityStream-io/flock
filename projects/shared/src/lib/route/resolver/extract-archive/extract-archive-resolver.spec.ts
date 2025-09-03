@@ -4,22 +4,28 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable, firstValueFrom } from 'rxjs';
 
 import { extractArchiveResolver } from './extract-archive-resolver';
-import { FILE_PROCESSOR, FileService } from '../../../services';
+import { FILE_PROCESSOR, FileService, LOGGER, Logger, SplashScreenLoading } from '../../../services';
 
 describe('Feature: Archive Extraction Resolution', () => {
   let mockFileService: jasmine.SpyObj<FileService>;
   let mockSnackBar: jasmine.SpyObj<MatSnackBar>;
+  let mockLogger: jasmine.SpyObj<Logger>;
+  let mockSplashScreenLoading: jasmine.SpyObj<SplashScreenLoading>;
   let executeResolver: (route?: any, state?: any) => Observable<boolean>;
 
   beforeEach(() => {
     // Create mocks
     mockFileService = jasmine.createSpyObj<FileService>('FileService', ['extractArchive']);
     mockSnackBar = jasmine.createSpyObj<MatSnackBar>('MatSnackBar', ['open']);
+    mockLogger = jasmine.createSpyObj<Logger>('Logger', ['log', 'error', 'warn', 'workflow', 'instrument']);
+    mockSplashScreenLoading = jasmine.createSpyObj<SplashScreenLoading>('SplashScreenLoading', ['show', 'hide']);
 
     TestBed.configureTestingModule({
       providers: [
         { provide: FILE_PROCESSOR, useValue: mockFileService },
-        { provide: MatSnackBar, useValue: mockSnackBar }
+        { provide: MatSnackBar, useValue: mockSnackBar },
+        { provide: LOGGER, useValue: mockLogger },
+        { provide: SplashScreenLoading, useValue: mockSplashScreenLoading }
       ]
     });
 
@@ -43,6 +49,9 @@ describe('Feature: Archive Extraction Resolution', () => {
       expect(result).toBe(true);
       expect(mockFileService.extractArchive).toHaveBeenCalled();
       expect(mockSnackBar.open).not.toHaveBeenCalled();
+      expect(mockSplashScreenLoading.show).toHaveBeenCalledWith('Extracting Instagram Archive');
+      expect(mockSplashScreenLoading.hide).toHaveBeenCalled();
+      expect(mockLogger.log).toHaveBeenCalledWith('Archive extracted successfully');
     });
   });
 
@@ -66,6 +75,8 @@ describe('Feature: Archive Extraction Resolution', () => {
         'Close',
         { duration: 3000 }
       );
+      expect(mockLogger.error).toHaveBeenCalledWith('Error extracting archive');
+      expect(mockSplashScreenLoading.hide).toHaveBeenCalled();
     });
 
     it('Given a network error, When extraction fails, Then resolver handles error gracefully', async () => {
@@ -86,6 +97,8 @@ describe('Feature: Archive Extraction Resolution', () => {
         'Close',
         { duration: 3000 }
       );
+      expect(mockLogger.error).toHaveBeenCalledWith('Error extracting archive');
+      expect(mockSplashScreenLoading.hide).toHaveBeenCalled();
     });
   });
 

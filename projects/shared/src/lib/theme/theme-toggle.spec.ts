@@ -7,16 +7,32 @@ describe('Feature: Theme Toggle Service', () => {
 
   beforeEach(() => {
     // Mock system theme preference to light for consistent testing
-    mockMediaQuery = spyOn(window, 'matchMedia').and.returnValue({
-      matches: false,
-      media: '',
-      onchange: null,
-      addListener: () => {},
-      removeListener: () => {},
-      addEventListener: () => {},
-      removeEventListener: () => {},
-      dispatchEvent: () => true
-    } as MediaQueryList);
+    mockMediaQuery = spyOn(window, 'matchMedia').and.callFake((query: string) => {
+      // Return different results based on the media query
+      if (query === '(prefers-color-scheme: dark)') {
+        return {
+          matches: false, // Default to light theme
+          media: query,
+          onchange: null,
+          addListener: () => {},
+          removeListener: () => {},
+          addEventListener: () => {},
+          removeEventListener: () => {},
+          dispatchEvent: () => true
+        } as MediaQueryList;
+      }
+      // For any other media queries, return default
+      return {
+        matches: false,
+        media: query,
+        onchange: null,
+        addListener: () => {},
+        removeListener: () => {},
+        addEventListener: () => {},
+        removeEventListener: () => {},
+        dispatchEvent: () => true
+      } as MediaQueryList;
+    });
     
     TestBed.configureTestingModule({
       providers: [ThemeToggleService]
@@ -129,13 +145,31 @@ describe('Feature: Theme Toggle Service', () => {
       console.log('🔧 BDD: Service is in manual mode');
       service.setThemeMode('light');
       
-      // // Mock system preference for dark theme
-      // const mockMediaQuery = {
-      //   matches: true,
-      //   addListener: jasmine.createSpy('addListener'),
-      //   removeListener: jasmine.createSpy('removeListener')
-      // };
-      // mockMediaQuery.and.returnValue(mockMediaQuery as any);
+      // Mock system preference for dark theme
+      mockMediaQuery.and.callFake((query: string) => {
+        if (query === '(prefers-color-scheme: dark)') {
+          return {
+            matches: true, // Dark theme preference
+            media: query,
+            onchange: null,
+            addListener: () => {},
+            removeListener: () => {},
+            addEventListener: () => {},
+            removeEventListener: () => {},
+            dispatchEvent: () => true
+          } as MediaQueryList;
+        }
+        return {
+          matches: false,
+          media: query,
+          onchange: null,
+          addListener: () => {},
+          removeListener: () => {},
+          addEventListener: () => {},
+          removeEventListener: () => {},
+          dispatchEvent: () => true
+        } as MediaQueryList;
+      });
       
       // When: Set theme mode to auto
       console.log('⚙️ BDD: Set theme mode to auto');
@@ -153,13 +187,31 @@ describe('Feature: Theme Toggle Service', () => {
       // Given: Service is in auto mode
       console.log('🔧 BDD: Service is in auto mode');
       
-      // Mock system preference for dark theme
-      const mockMediaQuery = {
-        matches: true,
-        addListener: jasmine.createSpy('addListener'),
-        removeListener: jasmine.createSpy('removeListener')
-      };
-      spyOn(window, 'matchMedia').and.returnValue(mockMediaQuery as any);
+      // Update existing mock to return dark theme preference
+      mockMediaQuery.and.callFake((query: string) => {
+        if (query === '(prefers-color-scheme: dark)') {
+          return {
+            matches: true, // Dark theme preference
+            media: query,
+            onchange: null,
+            addListener: () => {},
+            removeListener: () => {},
+            addEventListener: () => {},
+            removeEventListener: () => {},
+            dispatchEvent: () => true
+          } as MediaQueryList;
+        }
+        return {
+          matches: false,
+          media: query,
+          onchange: null,
+          addListener: () => {},
+          removeListener: () => {},
+          addEventListener: () => {},
+          removeEventListener: () => {},
+          dispatchEvent: () => true
+        } as MediaQueryList;
+      });
       
       // When: System prefers dark theme
       console.log('⚙️ BDD: System prefers dark theme');
@@ -174,13 +226,31 @@ describe('Feature: Theme Toggle Service', () => {
       // Given: Service is in auto mode
       console.log('🔧 BDD: Service is in auto mode');
       
-      // Mock system preference for light theme
-      const mockMediaQuery = {
-        matches: false,
-        addListener: jasmine.createSpy('addListener'),
-        removeListener: jasmine.createSpy('removeListener')
-      };
-      spyOn(window, 'matchMedia').and.returnValue(mockMediaQuery as any);
+      // Update existing mock to return light theme preference
+      mockMediaQuery.and.callFake((query: string) => {
+        if (query === '(prefers-color-scheme: dark)') {
+          return {
+            matches: false, // Light theme preference
+            media: query,
+            onchange: null,
+            addListener: () => {},
+            removeListener: () => {},
+            addEventListener: () => {},
+            removeEventListener: () => {},
+            dispatchEvent: () => true
+          } as MediaQueryList;
+        }
+        return {
+          matches: false,
+          media: query,
+          onchange: null,
+          addListener: () => {},
+          removeListener: () => {},
+          addEventListener: () => {},
+          removeEventListener: () => {},
+          dispatchEvent: () => true
+        } as MediaQueryList;
+      });
       
       // When: System prefers light theme
       console.log('⚙️ BDD: System prefers light theme');
@@ -208,16 +278,19 @@ describe('Feature: Theme Toggle Service', () => {
     });
 
     it('Given the service initializes, When localStorage has saved theme, Then it should restore the theme', () => {
-      // Given: Service initializes
-      console.log('🔧 BDD: Service initializes');
+      // Given: localStorage has saved theme
+      console.log('🔧 BDD: Setting up localStorage with saved dark theme');
       spyOn(localStorage, 'getItem').and.returnValue('dark');
       
-      // When: localStorage has saved theme
-      console.log('⚙️ BDD: localStorage has saved dark theme');
+      // Create a new service instance to test initialization
+      const testService = new ThemeToggleService();
+      
+      // When: Service initializes
+      console.log('⚙️ BDD: Service initializes with saved theme');
       
       // Then: Should restore the theme
       console.log('✅ BDD: Service restores theme from localStorage');
-      expect(service.currentTheme()).toBe('dark');
+      expect(testService.currentTheme()).toBe('dark');
     });
   });
 
