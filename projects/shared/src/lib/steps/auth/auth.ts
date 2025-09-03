@@ -14,6 +14,7 @@ import { LOGGER, Logger } from '../../services';
 import { Bluesky } from '../../services/bluesky';
 import { ConfigServiceImpl } from '../../services/config';
 import { HelpDialog } from './help-dialog/help-dialog';
+import { SplashScreenLoading } from '../../services';
 
 @Component({
   selector: 'shared-auth',
@@ -40,6 +41,7 @@ export class Auth implements OnInit, OnDestroy {
   private router = inject(Router);
   private cdr = inject(ChangeDetectorRef);
   private dialog = inject(MatDialog);
+  public splashScreenLoading = inject(SplashScreenLoading);
 
   private destroy$ = new Subject<void>();
 
@@ -198,6 +200,9 @@ export class Auth implements OnInit, OnDestroy {
     this.isAuthenticating.set(true);
     this.clearAuthError();
 
+    // Show splash screen with authentication message
+    this.splashScreenLoading.show('Authenticating with bsky.social');
+
     try {
       const credentials = {
         username: '@' + (this.authForm.get('username')?.value || ''),
@@ -228,6 +233,7 @@ export class Auth implements OnInit, OnDestroy {
       this.authError.set('An unexpected error occurred during authentication');
     } finally {
       this.isAuthenticating.set(false);
+      this.splashScreenLoading.hide();
     }
   }
 

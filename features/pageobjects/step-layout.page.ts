@@ -85,6 +85,19 @@ class StepLayoutPage extends Page {
         return $('.success-message, .completion-confirmation');
     }
 
+    // Splash screen elements
+    public get splashScreen() {
+        return $('shared-splash-screen');
+    }
+
+    public get splashScreenMessage() {
+        return $('shared-splash-screen span');
+    }
+
+    public get splashScreenSpinner() {
+        return $('shared-splash-screen mat-spinner');
+    }
+
     // Methods for step operations
     public async getCurrentStepName() {
         const url = await browser.getUrl();
@@ -178,6 +191,43 @@ class StepLayoutPage extends Page {
     public async openCompleteStep() {
         await super.open('step/complete');
         await this.stepLayoutContainer.waitForDisplayed({ timeout: 10000 });
+    }
+
+    // Splash screen methods
+    public async isSplashScreenVisible() {
+        const splashScreen = await this.splashScreen;
+        return await splashScreen.isDisplayed();
+    }
+
+    public async waitForSplashScreenToAppear(timeout: number = 10000) {
+        const splashScreen = await this.splashScreen;
+        await splashScreen.waitForDisplayed({
+            timeout,
+            timeoutMsg: 'Splash screen did not appear within the specified timeout'
+        });
+    }
+
+    public async waitForSplashScreenToDisappear(timeout: number = 10000) {
+        const splashScreen = await this.splashScreen;
+        await splashScreen.waitForDisplayed({
+            timeout,
+            timeoutMsg: 'Splash screen did not disappear within the specified timeout',
+            reverse: true
+        });
+    }
+
+    public async getSplashScreenMessage() {
+        const messageElement = await this.splashScreenMessage;
+        await messageElement.waitForDisplayed({
+            timeout: 5000,
+            timeoutMsg: 'Splash screen message did not appear within 5 seconds'
+        });
+        return await messageElement.getText();
+    }
+
+    public async isSplashScreenSpinnerVisible() {
+        const spinner = await this.splashScreenSpinner;
+        return await spinner.isDisplayed();
     }
 }
 

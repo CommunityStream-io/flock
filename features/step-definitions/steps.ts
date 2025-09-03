@@ -689,7 +689,9 @@ Given('I have entered valid credentials', async () => {
 });
 
 When('I click the "Next" button', async () => {
-    await pages.stepLayout.clickNextStep();
+    console.log('🔍 BDD: Step definition matched - clicking Next button');
+    await pages.auth.clickNext();
+    console.log('🔍 BDD: Next button clicked successfully');
 });
 
 Then('the authentication script should run in the background', async () => {
@@ -848,5 +850,28 @@ When('I close the help dialog with Escape key', async () => {
 Then('the help dialog should be hidden', async () => {
     const isDialogVisible = await pages.auth.isHelpDialogVisible();
     expect(isDialogVisible).toBe(false);
+});
+
+// Splash Screen Step Definitions
+Then('I should see the splash screen', async () => {
+    await pages.stepLayout.waitForSplashScreenToAppear();
+    const isVisible = await pages.stepLayout.isSplashScreenVisible();
+    expect(isVisible).toBe(true);
+});
+
+Then('the splash screen should display {string}', async (expectedMessage: string) => {
+    await pages.stepLayout.waitForSplashScreenToAppear();
+    const actualMessage = await pages.stepLayout.getSplashScreenMessage();
+    expect(actualMessage).toContain(expectedMessage);
+});
+
+Then('the authentication should process in the background', async () => {
+    // Wait for authentication to complete (this step is more of a verification)
+    // The actual authentication processing is handled by the service
+    await browser.pause(2000); // Give time for authentication to process
+    
+    // Verify that we're still on the auth page or have moved to the next step
+    const currentUrl = await browser.getUrl();
+    expect(currentUrl).toMatch(/\/step\/(auth|config)/);
 });
 

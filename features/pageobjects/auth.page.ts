@@ -15,7 +15,7 @@ class AuthPage extends Page {
     }
 
     public get nextButton() {
-        return $('button[type="submit"], .next-step, button:contains("Next")');
+        return $('button[type="submit"], .submit-button, .next-step, button:contains("Next")');
     }
 
     public get submitButton() {
