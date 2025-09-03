@@ -40,9 +40,6 @@
       "path": "./projects/shared/tsconfig.spec.json"
     },
     {
-      "path": "./projects/flock-native/tsconfig.lib.json"
-    },
-    {
       "path": "./projects/flock-native/tsconfig.spec.json"
     },
     {
