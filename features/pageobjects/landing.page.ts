@@ -6,7 +6,7 @@ class LandingPage extends Page {
         return $('.landing-page');
     }
 
-    // Hero section elements
+    // Intro section elements
     public get introSection() {
         return $('.intro-section');
     }

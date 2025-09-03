@@ -6,7 +6,7 @@ import { Observable, firstValueFrom } from 'rxjs';
 import { extractArchiveResolver } from './extract-archive-resolver';
 import { FILE_PROCESSOR, FileService } from '../../../services';
 
-xdescribe('Feature: Archive Extraction Resolution', () => {
+describe('Feature: Archive Extraction Resolution', () => {
   let mockFileService: jasmine.SpyObj<FileService>;
   let mockSnackBar: jasmine.SpyObj<MatSnackBar>;
   let executeResolver: (route?: any, state?: any) => Observable<boolean>;
