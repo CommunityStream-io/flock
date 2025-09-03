@@ -1,0 +1,233 @@
+---
+description: BDD Testing Practices for Application Features
+globs: ["**/*.feature", "**/*-bdd.*.spec.ts", "**/features/**/*", "**/e2e/**/*"]
+alwaysApply: false
+---
+
+# BDD Testing Practices for Application Features
+
+## Feature File Structure
+
+### Gherkin Feature Files
+- Place feature files in `features/` directory
+- Use descriptive feature names: `auth.feature`, `migration-workflow.feature`
+- Follow Gherkin syntax with proper Given/When/Then structure
+- Use tags for test categorization: `@bluesky-auth`, `@validation`, `@authentication`
+
+### Feature File Template
+```gherkin
+Feature: [Feature Name] - [Brief description]
+
+  As a [user type]
+  I want to [goal]
+  So that [benefit]
+
+  Background:
+    Given the application is running
+    And I navigate to the [step]
+    And I [setup actions]
+
+  @tag1 @tag2
+  Scenario: [Scenario description]
+    Given [context]
+    When [action]
+    Then [outcome]
+    And [additional verification]
+```
+
+## Step Definition Reuse
+
+### Reusable Step Patterns
+- **Authentication Steps**: `Given I have entered a valid username`, `And I have entered a valid password`
+- **Navigation Steps**: `When I click the "Next" button`, `And I should be navigated to the config step`
+- **Validation Steps**: `Then the form should be valid`, `And the "Next" button should be enabled`
+- **Error Handling Steps**: `And I should see a snackbar error message`, `And the error should indicate`
+
+### Step Definition Best Practices
+- Use generic steps over specific ones: `Given I have entered a valid username` vs `Given I have entered "username.bksy.social"`
+- Create reusable step definitions for common actions
+- Avoid duplicating step logic across scenarios
+- Use consistent step naming conventions
+
+## Scenario Organization
+
+### Scenario Categories
+1. **Validation Scenarios**: Form validation, input validation, business rules
+2. **Authentication Scenarios**: Login flows, credential validation, session management
+3. **Navigation Scenarios**: Step progression, route guards, back navigation
+4. **Error Handling Scenarios**: Network errors, validation failures, system errors
+5. **Integration Scenarios**: End-to-end workflows, service interactions
+
+### Scenario Naming Convention
+- Use descriptive scenario titles that explain the user journey
+- Include the expected outcome in the scenario name
+- Use action-oriented language: "Valid credentials trigger authentication splash screen"
+
+## Tag Strategy
+
+### Primary Tags
+- `@bluesky-auth` - Authentication-related scenarios
+- `@migration-workflow` - Migration process scenarios
+- `@validation` - Form and input validation scenarios
+- `@navigation` - Navigation and routing scenarios
+- `@error-handling` - Error scenarios and edge cases
+
+### Secondary Tags
+- `@authentication` - Specific authentication flows
+- `@help` - Help and guidance features
+- `@dialog` - Modal and dialog interactions
+- `@escape` - Keyboard interaction scenarios
+
+## BDD Test Implementation
+
+### Component BDD Tests
+```typescript
+describe('Feature: User Authentication (BDD-Style)', () => {
+  let component: AuthComponent;
+  let fixture: ComponentFixture<AuthComponent>;
+  let mockAuthService: jasmine.SpyObj<AuthService>;
+
+  beforeEach(async () => {
+    mockAuthService = jasmine.createSpyObj('AuthService', ['authenticate']);
+    
+    await TestBed.configureTestingModule({
+      imports: [AuthComponent],
+      providers: [
+        { provide: AuthService, useValue: mockAuthService }
+      ]
+    }).compileComponents();
+    
+    fixture = TestBed.createComponent(AuthComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  describe('Scenario: Valid credentials trigger authentication splash screen', () => {
+    it('Given valid credentials, When user clicks Next, Then splash screen appears', () => {
+      // Given: Set up valid credentials
+      console.log(`🔧 BDD: Setting up valid username and password`);
+      component.usernameControl.setValue('username.bksy.social');
+      component.passwordControl.setValue('validPassword');
+      fixture.detectChanges();
+      
+      // When: User clicks Next button
+      console.log(`⚙️ BDD: User clicks Next button`);
+      const nextButton = fixture.debugElement.query(By.css('[data-testid="next-button"]'));
+      nextButton.nativeElement.click();
+      fixture.detectChanges();
+      
+      // Then: Splash screen should appear
+      console.log(`✅ BDD: Verifying splash screen appears with authentication message`);
+      const splashScreen = fixture.debugElement.query(By.css('[data-testid="splash-screen"]'));
+      expect(splashScreen).toBeTruthy();
+      expect(splashScreen.nativeElement.textContent).toContain('Authenticating with bsky.social');
+    });
+  });
+});
+```
+
+### Service BDD Tests
+```typescript
+describe('Feature: Configuration Management (BDD-Style)', () => {
+  let service: ConfigService;
+  let mockStorageService: jasmine.SpyObj<StorageService>;
+
+  beforeEach(() => {
+    mockStorageService = jasmine.createSpyObj('StorageService', ['get', 'set']);
+    
+    TestBed.configureTestingModule({
+      providers: [
+        ConfigService,
+        { provide: StorageService, useValue: mockStorageService }
+      ]
+    });
+    
+    service = TestBed.inject(ConfigService);
+  });
+
+  describe('Scenario: Valid configuration saves successfully', () => {
+    it('Given valid config data, When saving, Then data persists', () => {
+      // Given: Valid configuration data
+      console.log(`🔧 BDD: Setting up valid configuration`);
+      const validConfig = { username: 'test.user', password: 'testpass' };
+      
+      // When: Saving configuration
+      console.log(`⚙️ BDD: Saving configuration to storage`);
+      service.saveConfig(validConfig);
+      
+      // Then: Data should be persisted
+      console.log(`✅ BDD: Verifying configuration was saved`);
+      expect(mockStorageService.set).toHaveBeenCalledWith('config', validConfig);
+    });
+  });
+});
+```
+
+## Test Data Management
+
+### Test Data Patterns
+- Use consistent test data across scenarios
+- Create reusable test data factories
+- Use descriptive test data names: `valid-archive.zip`, `invalid-credentials.json`
+- Mock external dependencies with realistic data
+
+### Test Data Examples
+```typescript
+export const TEST_DATA = {
+  VALID_USERNAME: 'username.bksy.social',
+  VALID_PASSWORD: 'securePassword123',
+  INVALID_USERNAME: 'invalid-username',
+  VALID_ARCHIVE: 'valid-archive.zip',
+  INVALID_ARCHIVE: 'corrupted-archive.zip'
+};
+```
+
+## Integration with E2E Testing
+
+### E2E Test Structure
+- Use WebdriverIO for end-to-end testing
+- Implement step definitions that match feature file steps
+- Use page object pattern for maintainable E2E tests
+- Test complete user workflows from feature files
+
+### E2E Step Implementation
+```typescript
+// e2e/steps/auth.steps.ts
+Given('I have entered a valid username', async () => {
+  await browser.$('[data-testid="username-input"]').setValue('username.bksy.social');
+});
+
+When('I click the "Next" button', async () => {
+  await browser.$('[data-testid="next-button"]').click();
+});
+
+Then('I should see the splash screen', async () => {
+  const splashScreen = await browser.$('[data-testid="splash-screen"]');
+  await expect(splashScreen).toBeDisplayed();
+});
+```
+
+## Continuous Integration
+
+### Test Execution Strategy
+- Run feature validation tests on every commit
+- Execute full BDD test suite on pull requests
+- Use parallel test execution for faster feedback
+- Generate test reports with step-by-step results
+
+### Test Reporting
+- Use wdio-json-reporter for WebdriverIO test reporting
+- Generate BDD-style test reports showing Given/When/Then structure
+- Include screenshots for failed E2E tests
+- Track test coverage for BDD scenarios
+
+## Best Practices Summary
+
+1. **Feature-First Development**: Write feature files before implementation
+2. **Step Reuse**: Create reusable step definitions to avoid duplication
+3. **Clear Scenarios**: Use descriptive scenario names and clear Given/When/Then structure
+4. **Consistent Tagging**: Use tags to organize and filter test scenarios
+5. **Real Component Testing**: Test actual Angular components, not mocks
+6. **Comprehensive Coverage**: Cover happy paths, error cases, and edge scenarios
+7. **Maintainable Tests**: Keep tests focused and independent
+8. **Documentation**: Use BDD structure as living documentation

@@ -121,3 +121,15 @@ Feature: Bluesky Authentication - User credential validation and authentication
     Then I should see a help dialog with username format suggestions
     When I close the help dialog with Escape key
     Then the help dialog should be hidden
+
+  @bluesky-auth @authentication
+  Scenario: Valid credentials trigger authentication splash screen
+    Given I have entered a valid username
+    And I have entered a valid password
+    When I click the "Next" button
+    Then I should see the splash screen
+    And the splash screen should display "Authenticating with bsky.social"
+    And the authentication should process in the background
+    And I should be navigated to the config step
+    
+
