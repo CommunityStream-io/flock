@@ -200,7 +200,11 @@ export class Auth implements OnInit, OnDestroy {
       
       // Store credentials for the resolver to use
       this.configService.setBlueskyCredentials(credentials);
+      this.configService.setAuthenticated(true);
       this.logger.workflow('Credentials stored for authentication');
+    } else {
+      // Clear authentication state when form is invalid
+      this.configService.setAuthenticated(false);
     }
   }
 

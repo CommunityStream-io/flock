@@ -39,21 +39,7 @@ export class StepNavigationComponent {
     )
   ) as Signal<string>;
 
-  // Check if the current step's form is valid to enable Next button
-  public isNextEnabled = computed(() => {
-    const nextRoute = this.next();
-    if (!nextRoute) return false;
-    
-    // For auth step, check if credentials are stored (form was valid)
-    const currentUrl = this.router.url;
-    if (currentUrl.includes('/step/auth')) {
-      const credentials = this.configService.getBlueskyCredentials();
-      return !!(credentials && credentials.username && credentials.password);
-    }
-    
-    // For other steps, just check if next route exists
-    return true;
-  });
+
 
   ngOnInit() {
     this.childRouteData.subscribe();
