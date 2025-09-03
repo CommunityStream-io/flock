@@ -10,7 +10,8 @@ import {
   StepRoute,
   uploadValidGuard,
   authValidGuard,
-  extractArchiveResolver
+  extractArchiveResolver,
+  authResolver
 } from 'shared';
 
 export const routes: Routes = [
@@ -52,6 +53,9 @@ export const routes: Routes = [
           description: 'Configure migration settings',
           next: 'migrate',
           previous: 'auth',
+        },
+        resolve: {
+          auth: authResolver
         },
       },
       {

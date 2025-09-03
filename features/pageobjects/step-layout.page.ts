@@ -25,7 +25,7 @@ class StepLayoutPage extends Page {
 
     // Step navigation buttons and indicators
     public get nextButton() {
-        return $('shared-step-navigation button.next-step');
+        return $('shared-step-navigation button.next-step, .next-step');
     }
 
     public get previousButton() {

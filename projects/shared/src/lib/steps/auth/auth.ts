@@ -101,6 +101,7 @@ export class Auth implements OnInit, OnDestroy {
       takeUntil(this.destroy$)
     ).subscribe(() => {
       this.clearAuthError();
+      this.storeCredentials(); // Store credentials when form is valid
       this.cdr.markForCheck(); // Trigger change detection for OnPush
     });
 
@@ -188,52 +189,19 @@ export class Auth implements OnInit, OnDestroy {
 
 
   /**
-   * Handle form submission
-   * This validates credentials and stores authentication state
-   * Navigation validation is handled by guards and resolvers
+   * Store credentials when form is valid
+   * Authentication will be handled by the auth resolver when navigating to next step
    */
-  async onSubmit(): Promise<void> {
-    if (this.authForm.invalid || this.isAuthenticating()) {
-      return;
-    }
-
-    this.isAuthenticating.set(true);
-    this.clearAuthError();
-
-    // Show splash screen with authentication message
-    this.splashScreenLoading.show('Authenticating with bsky.social');
-
-    try {
+  private storeCredentials(): void {
+    if (this.authForm.valid) {
       const credentials = {
         username: '@' + (this.authForm.get('username')?.value || ''),
         password: this.authForm.get('password')?.value || ''
       };
-
-      this.logger.workflow('Attempting Bluesky authentication');
-
-      // Call the authentication service
-      const result = await this.blueskyService.authenticate(credentials);
-
-      if (result.success) {
-        this.logger.log('Bluesky authentication successful');
-        this.isAuthenticated.set(true);
-        this.clearAuthError();
-        
-        // Store credentials and authentication state in config service
-        this.configService.setBlueskyCredentials(credentials);
-        this.configService.setAuthenticated(true);
-        
-        // Authentication successful - guards will handle navigation validation
-      } else {
-        this.logger.error(`Bluesky authentication failed: ${result.message}`);
-        this.authError.set(result.message || 'Authentication failed');
-      }
-    } catch (error: any) {
-      this.logger.error(`Authentication error: ${error?.message || error}`);
-      this.authError.set('An unexpected error occurred during authentication');
-    } finally {
-      this.isAuthenticating.set(false);
-      this.splashScreenLoading.hide();
+      
+      // Store credentials for the resolver to use
+      this.configService.setBlueskyCredentials(credentials);
+      this.logger.workflow('Credentials stored for authentication');
     }
   }
 

@@ -630,6 +630,8 @@ When('I leave the password field empty', async () => {
     // Trigger blur to validate
     await pages.auth.passwordField.click();
     await $('body').click();
+    // Wait for validation to complete
+    await browser.pause(300);
 });
 
 When('I enter a password', async () => {
@@ -669,8 +671,8 @@ Given('I have entered a valid password', async () => {
 });
 
 Then('the form should be initially invalid', async () => {
-    const isEnabled = await pages.auth.isNextButtonEnabled();
-    expect(isEnabled).toBe(false);
+    const isFormValid = await pages.auth.isFormValid();
+    expect(isFormValid).toBe(false);
 });
 
 Then('the form should be valid', async () => {
@@ -712,7 +714,7 @@ Then('I should be navigated to the config step', async () => {
 
 Given('I have entered invalid credentials', async () => {
     await pages.auth.open();
-    await pages.auth.enterCredentials('@invalid.user', 'wrongpassword');
+    await pages.auth.enterCredentials('invalid.user.name', 'wrongpassword');
 });
 
 Then('the authentication should fail', async () => {

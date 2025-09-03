@@ -3,7 +3,7 @@
     <h2 class="step-title">Authenticate with Bluesky</h2>
     <p class="step-description">Authenticate with Bluesky to migrate</p>
 
-    <form [formGroup]="authForm" (ngSubmit)="onSubmit()" class="auth-form bluesky-auth">
+    <form [formGroup]="authForm" class="auth-form bluesky-auth">
       <div class="form-fields">
         <!-- Username Field -->
         <div class="username-field-container">
@@ -75,25 +75,7 @@
         </div>
       }
 
-      <!-- Form Actions -->
-      <div class="form-actions">
-        <button
-          type="submit"
-          mat-raised-button
-          color="primary"
-          class="submit-button"
-          [disabled]="!isFormValid()"
-          [class.loading]="isAuthenticating()"
-        >
-          @if (!isAuthenticating()) {
-            <mat-icon>check</mat-icon>
-          }
-          @if (isAuthenticating()) {
-            <mat-spinner diameter="20"></mat-spinner>
-          }
-          <span>{{ isAuthenticating() ? 'Authenticating...' : 'Authenticate' }}</span>
-        </button>
-      </div>
+      <!-- Form Actions - Navigation handled by step-navigation component -->
     </form>
 
 

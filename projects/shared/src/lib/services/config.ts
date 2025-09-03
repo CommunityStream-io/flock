@@ -48,6 +48,13 @@ export class ConfigServiceImpl implements ConfigService {
   }
 
   /**
+   * Get the Bluesky credentials
+   */
+  public getBlueskyCredentials(): Credentials | null {
+    return this.blueskyCredentialsSignal();
+  }
+
+  /**
    * Set the Bluesky credentials
    */
   public setBlueskyCredentials(credentials: Credentials): void {

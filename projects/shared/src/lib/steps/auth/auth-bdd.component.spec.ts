@@ -50,8 +50,8 @@ describe('Feature: User Authentication (BDD-Style)', () => {
     fixture.detectChanges();
   });
 
-  describe('Scenario: Valid credentials trigger authentication splash screen', () => {
-    it('Given valid credentials, When user clicks Next, Then splash screen appears', async () => {
+  describe('Scenario: Valid credentials are stored automatically', () => {
+    it('Given valid credentials, When form is valid, Then credentials are stored', () => {
       // Given: Set up valid credentials
       console.log(`🔧 BDD: Setting up valid username and password`);
       component.authForm.patchValue({
@@ -60,32 +60,21 @@ describe('Feature: User Authentication (BDD-Style)', () => {
       });
       fixture.detectChanges();
       
-      // Mock successful authentication
-      mockBlueskyService.authenticate.and.returnValue(Promise.resolve({
-        success: true,
-        message: 'Authentication successful'
-      }));
-
-      // When: User clicks Next button
-      console.log(`⚙️ BDD: User clicks Next button`);
-      const form = fixture.debugElement.query(By.css('form'));
-      form.triggerEventHandler('ngSubmit', null);
+      // When: Form becomes valid (triggers valueChanges subscription)
+      console.log(`⚙️ BDD: Form becomes valid and triggers credential storage`);
+      component.authForm.updateValueAndValidity();
       fixture.detectChanges();
       
-      // Then: Splash screen service should be called
-      console.log(`✅ BDD: Verifying splash screen service is called with authentication message`);
-      expect(mockSplashScreenLoading.show).toHaveBeenCalledWith('Authenticating with bsky.social');
-      
-      // And: Authentication should process in the background
-      console.log(`✅ BDD: Verifying authentication processes in background`);
-      expect(mockBlueskyService.authenticate).toHaveBeenCalledWith({
+      // Then: Credentials should be stored in config service
+      console.log(`✅ BDD: Verifying credentials are stored for resolver`);
+      expect(mockConfigService.setBlueskyCredentials).toHaveBeenCalledWith({
         username: '@username.bksy.social',
         password: 'validPassword123'
       });
     });
 
-    it('Given valid credentials, When authentication completes, Then user navigates to config step', async () => {
-      // Given: Set up valid credentials and start authentication
+    it('Given valid credentials, When form changes, Then credentials are automatically stored', () => {
+      // Given: Set up valid credentials
       console.log(`🔧 BDD: Setting up authentication flow`);
       component.authForm.patchValue({
         username: 'username.bksy.social',
@@ -93,93 +82,51 @@ describe('Feature: User Authentication (BDD-Style)', () => {
       });
       fixture.detectChanges();
       
-      // Mock successful authentication
-      mockBlueskyService.authenticate.and.returnValue(Promise.resolve({
-        success: true,
-        message: 'Authentication successful'
-      }));
-
-      // When: User clicks Next and authentication completes
-      console.log(`⚙️ BDD: Starting authentication process`);
-      const form = fixture.debugElement.query(By.css('form'));
-      form.triggerEventHandler('ngSubmit', null);
-      
-      // Wait for authentication to complete
-      await fixture.whenStable();
+      // When: Form value changes (triggers valueChanges subscription)
+      console.log(`⚙️ BDD: Form value changes trigger credential storage`);
+      component.authForm.patchValue({
+        username: 'username.bksy.social',
+        password: 'validPassword123'
+      });
       fixture.detectChanges();
       
-      // Then: User should be navigated to config step
-      console.log(`✅ BDD: Verifying navigation to config step`);
+      // Then: Credentials should be stored automatically
+      console.log(`✅ BDD: Verifying credentials are stored automatically`);
       expect(mockConfigService.setBlueskyCredentials).toHaveBeenCalledWith({
         username: '@username.bksy.social',
         password: 'validPassword123'
       });
-      expect(mockConfigService.setAuthenticated).toHaveBeenCalledWith(true);
-      expect(component.isAuthenticated()).toBe(true);
       
-      // And: Splash screen should be hidden
-      console.log(`✅ BDD: Verifying splash screen is hidden after authentication`);
-      expect(mockSplashScreenLoading.hide).toHaveBeenCalled();
+      // And: Form should be valid
+      console.log(`✅ BDD: Verifying form is valid`);
+      expect(component.isFormValid()).toBe(true);
     });
   });
 
-  describe('Scenario: Invalid credentials show error without splash screen', () => {
-    it('Given invalid credentials, When user clicks Next, Then error is shown', async () => {
-      // Given: Set up invalid credentials
+  describe('Scenario: Invalid credentials are not stored', () => {
+    it('Given invalid credentials, When form is invalid, Then credentials are not stored', () => {
+      // Given: Set up invalid credentials (empty password)
       console.log(`🔧 BDD: Setting up invalid credentials`);
       component.authForm.patchValue({
         username: 'username.bksy.social',
-        password: 'wrongPassword'
-      });
-      fixture.detectChanges();
-      
-      // Mock failed authentication
-      mockBlueskyService.authenticate.and.returnValue(Promise.resolve({
-        success: false,
-        message: 'Invalid Bluesky credentials'
-      }));
-
-      // When: User clicks Next button
-      console.log(`⚙️ BDD: User clicks Next with invalid credentials`);
-      const form = fixture.debugElement.query(By.css('form'));
-      form.triggerEventHandler('ngSubmit', null);
-      
-      // Wait for authentication to complete
-      await fixture.whenStable();
-      fixture.detectChanges();
-      
-      // Then: Error should be shown and splash screen should be hidden
-      console.log(`✅ BDD: Verifying error message is displayed`);
-      expect(component.authError()).toBe('Invalid Bluesky credentials');
-      
-      const errorMessage = fixture.debugElement.query(By.css('.auth-error'));
-      expect(errorMessage).toBeTruthy();
-      expect(errorMessage.nativeElement.textContent).toContain('Invalid Bluesky credentials');
-      
-      // And: Splash screen should be hidden after error
-      console.log(`✅ BDD: Verifying splash screen is hidden after authentication error`);
-      expect(mockSplashScreenLoading.hide).toHaveBeenCalled();
-    });
-  });
-
-  describe('Scenario: Form validation prevents submission', () => {
-    it('Given invalid form, When user clicks Next, Then button is disabled', () => {
-      // Given: Form with invalid data
-      console.log(`🔧 BDD: Setting up invalid form data`);
-      component.authForm.patchValue({
-        username: 'invalid-username',
         password: ''
       });
       fixture.detectChanges();
       
-      // When: User attempts to click Next
-      console.log(`⚙️ BDD: Attempting to click Next button`);
-      const nextButton = fixture.debugElement.query(By.css('.submit-button'));
+      // When: Form is invalid
+      console.log(`⚙️ BDD: Form is invalid due to empty password`);
+      component.authForm.updateValueAndValidity();
+      fixture.detectChanges();
       
-      // Then: Button should be disabled
-      console.log(`✅ BDD: Verifying Next button is disabled`);
-      expect(nextButton.nativeElement.disabled).toBe(true);
+      // Then: Credentials should not be stored for invalid form
+      console.log(`✅ BDD: Verifying credentials are not stored for invalid form`);
+      expect(mockConfigService.setBlueskyCredentials).not.toHaveBeenCalled();
+      
+      // And: Form should be invalid
+      console.log(`✅ BDD: Verifying form is invalid`);
       expect(component.isFormValid()).toBe(false);
     });
   });
+
+
 });

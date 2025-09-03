@@ -15,20 +15,16 @@ class AuthPage extends Page {
     }
 
     public get nextButton() {
-        return $('button[type="submit"], .submit-button, .next-step, button:contains("Next")');
-    }
-
-    public get submitButton() {
-        return $('button[type="submit"], .submit-button');
+        return $('.next-step');
     }
 
     // Error elements
     public get usernameError() {
-        return $('.username-error, .mat-error, [data-error="username"]');
+        return $('.username-error.mat-error');
     }
 
     public get passwordError() {
-        return $('.password-error, .mat-error, [data-error="password"]');
+        return $('.password-error.mat-error');
     }
 
     public get formError() {
@@ -72,6 +68,8 @@ class AuthPage extends Page {
         // Trigger blur to mark field as touched and trigger validation
         await this.usernameField.click();
         await browser.keys('Tab');
+        // Wait for validation to complete
+        await browser.pause(300);
     }
 
     public async enterPassword(password: string) {
@@ -80,6 +78,8 @@ class AuthPage extends Page {
         // Trigger blur to mark field as touched and trigger validation
         await this.passwordField.click();
         await browser.keys('Tab');
+        // Wait for validation to complete
+        await browser.pause(300);
     }
 
     public async enterCredentials(username: string, password: string) {
@@ -88,7 +88,7 @@ class AuthPage extends Page {
     }
 
     public async submitForm() {
-        await this.submitButton.click();
+        await this.nextButton.click();
     }
 
     public async clickNext() {
@@ -96,9 +96,9 @@ class AuthPage extends Page {
     }
 
     public async isFormValid() {
-        const usernameErrorDisplayed = await this.usernameError.isDisplayed().catch(() => false);
-        const passwordErrorDisplayed = await this.passwordError.isDisplayed().catch(() => false);
-        return !usernameErrorDisplayed && !passwordErrorDisplayed;
+        // Check if the next button is enabled (which indicates form validity)
+        const isButtonEnabled = await this.nextButton.isEnabled();
+        return isButtonEnabled;
     }
 
     public async getUsernameErrorText() {
@@ -110,7 +110,7 @@ class AuthPage extends Page {
 
     public async getPasswordErrorText() {
         if (await this.passwordError.isDisplayed()) {
-            return await this.passwordField.getText();
+            return await this.passwordError.getText();
         }
         return '';
     }
