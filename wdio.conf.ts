@@ -136,7 +136,7 @@ export const config: Options.Testrunner = {
         source: true,
         strict: false,  // Allow skipped steps without failing the entire scenario
         tags: process.env.TEST_TAGS || "",
-        timeout: 60000,
+        timeout: 30000,
         ignoreUndefinedDefinitions: true,
         format: ['pretty'],  // Add pretty format for better readability
         publishQuiet: process.env.DEBUG_TESTS !== 'true'   // Reduce noise from cucumber reporting unless debugging
@@ -156,6 +156,15 @@ export const config: Options.Testrunner = {
         // Initialize coverage collection
         if (process.env.COLLECT_COVERAGE === 'true') {
             console.log('🔍 BDD: Initializing E2E coverage collection');
+            
+            // Ensure coverage directory exists
+            const fs = require('fs');
+            const path = require('path');
+            const coverageDir = path.join(process.cwd(), 'coverage', 'e2e');
+            if (!fs.existsSync(coverageDir)) {
+                fs.mkdirSync(coverageDir, { recursive: true });
+                console.log('📁 BDD: Created E2E coverage directory:', coverageDir);
+            }
         }
     },
     
@@ -231,6 +240,12 @@ export const config: Options.Testrunner = {
                 const coverageDir = path.join(process.cwd(), 'coverage', 'e2e');
                 const outputDir = path.join(process.cwd(), 'coverage');
                 
+                // Ensure coverage directory exists
+                if (!fs.existsSync(coverageDir)) {
+                    fs.mkdirSync(coverageDir, { recursive: true });
+                    console.log('📁 BDD: Created E2E coverage directory:', coverageDir);
+                }
+                
                 if (fs.existsSync(coverageDir)) {
                     // Create NYC instance for processing
                     const nycInstance = new nyc({
@@ -268,6 +283,7 @@ export const config: Options.Testrunner = {
                         console.log('✅ BDD: E2E coverage report generated');
                     } else {
                         console.log('⚠️ BDD: No coverage files found to process');
+                        console.log('📁 BDD: Coverage directory contents:', fs.readdirSync(coverageDir));
                     }
                 } else {
                     console.log('⚠️ BDD: No E2E coverage directory found');
