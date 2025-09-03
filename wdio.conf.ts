@@ -74,14 +74,15 @@ export const config: Options.Testrunner = {
     // Define all options that are relevant for the WebdriverIO instance here
     //
     // Level of logging verbosity: trace | debug | info | warn | error | silent
-    logLevel: 'warn',
+    logLevel: 'error',
     
     // Set specific log levels per logger to reduce noise
     logLevels: {
-        webdriver: 'warn',
-        webdriverio: 'warn',
-        '@wdio/local-runner': 'warn',
-        '@wdio/cli': 'warn'
+        webdriver: 'error',
+        webdriverio: 'error',
+        '@wdio/local-runner': 'error',
+        '@wdio/cli': 'error',
+        '@wdio/cucumber-framework': 'error'
     },
 
     // If you only want to run your tests until a specific amount of tests have failed use
@@ -106,17 +107,22 @@ export const config: Options.Testrunner = {
     // Note: chromedriver service is built-in for WebdriverIO v9
     services: [],
     
+    // Environment variables to reduce debug output
+    env: {
+        DEBUG: '',
+        NODE_ENV: 'test'
+    },
+    
     // Framework you want to run your specs with.
     framework: 'cucumber',
 
     // Test reporter for stdout.
     // The 'dot' reporter provides clean, minimal output perfect for CLI
     reporters: [
-        'dot',
-        ['allure', {
-            outputDir: 'allure-results',
-            disableWebdriverStepsReporting: true,
-            disableWebdriverScreenshotsReporting: false,
+        ['dot', {
+            // Minimal output configuration
+            showProgress: true,
+            showTestNames: true
         }]
     ],
 

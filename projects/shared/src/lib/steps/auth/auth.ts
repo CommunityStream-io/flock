@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Component, inject, OnInit, OnDestroy } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
@@ -15,6 +15,7 @@ import { Bluesky } from '../../services/bluesky';
 @Component({
   selector: 'shared-auth',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -50,12 +51,17 @@ export class Auth implements OnInit, OnDestroy {
   /**
    * Loading state for authentication
    */
-  public isAuthenticating = false;
+  public isAuthenticating = signal(false);
 
   /**
    * Error message for authentication failures
    */
-  public authError = '';
+  public authError = signal('');
+
+  /**
+   * Track if authentication was successful
+   */
+  public isAuthenticated = signal(false);
 
   ngOnInit() {
     // Subscribe to form value changes for real-time validation
@@ -75,7 +81,7 @@ export class Auth implements OnInit, OnDestroy {
    * Custom validator for username format
    * Requires @ prefix and at least two dots
    */
-  private usernameFormatValidator(control: FormControl): { [key: string]: any } | null {
+  private usernameFormatValidator(control: FormControl<string>): { [key: string]: boolean } | null {
     const value = control.value;
 
     if (!value) {
@@ -133,26 +139,34 @@ export class Auth implements OnInit, OnDestroy {
   /**
    * Check if form is valid
    */
-  get isFormValid(): boolean {
-    return this.authForm.valid && !this.isAuthenticating;
-  }
+  public isFormValid = computed(() => {
+    return this.authForm.valid && !this.isAuthenticating();
+  });
+
+  /**
+   * Check if step is complete (ready for navigation)
+   */
+  public isStepComplete = computed(() => {
+    return this.isAuthenticated() && !this.authError();
+  });
 
   /**
    * Clear authentication error message
    */
   private clearAuthError(): void {
-    this.authError = '';
+    this.authError.set('');
   }
 
   /**
    * Handle form submission
+   * This validates credentials but doesn't navigate - navigation is handled by the stepper
    */
   async onSubmit(): Promise<void> {
-    if (this.authForm.invalid || this.isAuthenticating) {
+    if (this.authForm.invalid || this.isAuthenticating()) {
       return;
     }
 
-    this.isAuthenticating = true;
+    this.isAuthenticating.set(true);
     this.clearAuthError();
 
     try {
@@ -168,17 +182,20 @@ export class Auth implements OnInit, OnDestroy {
 
       if (result.success) {
         this.logger.log('Bluesky authentication successful');
-        // Navigate to the next step (config)
-        await this.router.navigate(['/step/config']);
+        this.isAuthenticated.set(true);
+        this.clearAuthError();
+        // Authentication successful - the navigation stepper will handle navigation
+        // when the user clicks "Next"
       } else {
         this.logger.error(`Bluesky authentication failed: ${result.message}`);
-        this.authError = result.message || 'Authentication failed';
+        this.authError.set(result.message || 'Authentication failed');
       }
-    } catch (error: any) {
-      this.logger.error(`Authentication error: ${error?.message || error}`);
-      this.authError = 'An unexpected error occurred during authentication';
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      this.logger.error(`Authentication error: ${errorMessage}`);
+      this.authError.set('An unexpected error occurred during authentication');
     } finally {
-      this.isAuthenticating = false;
+      this.isAuthenticating.set(false);
     }
   }
 
@@ -187,12 +204,15 @@ export class Auth implements OnInit, OnDestroy {
    * This ensures credentials are validated before allowing progression
    */
   canDeactivate(): boolean {
-    if (this.authForm.valid) {
+    // Allow navigation if authentication was successful
+    if (this.isAuthenticated()) {
       return true;
     }
 
-    // If form is invalid, show error and prevent navigation
-    this.authError = 'Please complete authentication before proceeding';
+    // If authentication hasn't been completed, prevent navigation
+    if (!this.isAuthenticated()) {
+      this.authError.set('Please complete authentication before proceeding');
+    }
     return false;
   }
 }
