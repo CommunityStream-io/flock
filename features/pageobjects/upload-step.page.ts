@@ -15,7 +15,7 @@ class UploadStepPage extends Page {
     }
 
     public get chooseFilesButton() {
-        return $('shared-file-upload-control button[mat-raised-button]');
+        return $('button[mat-raised-button]');
     }
 
     public get uploadIcon() {
@@ -24,7 +24,7 @@ class UploadStepPage extends Page {
 
     // File input (now hidden within the custom control)
     public get fileInput() {
-        return $('shared-file-upload-control input[type="file"]');
+        return $('input[type="file"]');
     }
 
     public get fileUploadForm() {
@@ -37,17 +37,17 @@ class UploadStepPage extends Page {
 
     // Selected files section (now handled by the custom control)
     public get fileListSection() {
-        return $('shared-file-upload-control .file-list');
+        return $('.file-list');
     }
 
 
 
     public get selectedFiles() {
-        return $$('shared-file-upload-control .file-selected');
+        return $$('.file-selected');
     }
 
     public get deleteButtons() {
-        return $$('shared-file-upload-control .file-selected button[mat-icon-button]');
+        return $$('.file-selected button[mat-icon-button]');
     }
 
     public get deleteIcons() {
