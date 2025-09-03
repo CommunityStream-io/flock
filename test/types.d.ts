@@ -1,6 +1,7 @@
 /// <reference types="@wdio/types" />
 /// <reference types="@wdio/cucumber-framework" />
 /// <reference types="expect-webdriverio" />
+/// <reference types="@wdio/globals" />
 
 // Declare global WebdriverIO variables and expect function
 declare global {
