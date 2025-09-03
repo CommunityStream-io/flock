@@ -42,7 +42,7 @@ export class Bluesky implements BlueSkyService {
       // Simulate successful authentication for valid credentials
       // In production, this would make an actual API call to Bluesky
       if (
-        credentials.username === '@test.bksy.social' || credentials.username === '@username.bksy.social' &&
+        (credentials.username === '@test.bksy.social' || credentials.username === '@username.bksy.social') &&
         credentials.password === 'testpassword123'
       ) {
         return {
