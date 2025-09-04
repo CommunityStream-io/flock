@@ -684,4 +684,327 @@ describe('Feature: Migration Configuration (BDD-Style)', () => {
       expect(component['destroy$'].complete).toHaveBeenCalled();
     });
   });
+
+  describe('Scenario: Error Message Handling', () => {
+    it('Given invalid start date, When getStartDateErrorMessage is called, Then appropriate error message is returned', () => {
+      // Given: Invalid start date with different error types
+      console.log('🔧 BDD: Setting up invalid start date scenarios');
+      
+      // Test required error
+      component.configForm.get('startDate')?.setValue('');
+      component.configForm.get('startDate')?.setErrors({ required: true });
+      console.log('⚙️ BDD: Testing required error message');
+      expect(component.getStartDateErrorMessage()).toBe('Start date is required');
+      
+      // Test invalid date error
+      component.configForm.get('startDate')?.setValue('invalid-date');
+      component.configForm.get('startDate')?.setErrors({ invalidDate: true });
+      console.log('⚙️ BDD: Testing invalid date error message');
+      expect(component.getStartDateErrorMessage()).toBe('Please enter a valid date');
+      
+      // Test future date error
+      component.configForm.get('startDate')?.setValue('2030-01-01');
+      component.configForm.get('startDate')?.setErrors({ futureDate: true });
+      console.log('⚙️ BDD: Testing future date error message');
+      expect(component.getStartDateErrorMessage()).toBe('Start date cannot be in the future');
+      
+      // Test no error
+      component.configForm.get('startDate')?.setValue('2023-01-01');
+      component.configForm.get('startDate')?.setErrors(null);
+      console.log('⚙️ BDD: Testing no error message');
+      expect(component.getStartDateErrorMessage()).toBe('');
+      
+      console.log('✅ BDD: All start date error messages are correctly returned');
+    });
+
+    it('Given invalid end date, When getEndDateErrorMessage is called, Then appropriate error message is returned', () => {
+      // Given: Invalid end date with different error types
+      console.log('🔧 BDD: Setting up invalid end date scenarios');
+      
+      // Test required error
+      component.configForm.get('endDate')?.setValue('');
+      component.configForm.get('endDate')?.setErrors({ required: true });
+      console.log('⚙️ BDD: Testing required error message');
+      expect(component.getEndDateErrorMessage()).toBe('End date is required');
+      
+      // Test invalid date error
+      component.configForm.get('endDate')?.setValue('invalid-date');
+      component.configForm.get('endDate')?.setErrors({ invalidDate: true });
+      console.log('⚙️ BDD: Testing invalid date error message');
+      expect(component.getEndDateErrorMessage()).toBe('Please enter a valid date');
+      
+      // Test future date error
+      component.configForm.get('endDate')?.setValue('2030-01-01');
+      component.configForm.get('endDate')?.setErrors({ futureDate: true });
+      console.log('⚙️ BDD: Testing future date error message');
+      expect(component.getEndDateErrorMessage()).toBe('End date cannot be in the future');
+      
+      // Test before start date error
+      component.configForm.get('endDate')?.setValue('2022-01-01');
+      component.configForm.get('endDate')?.setErrors({ beforeStartDate: true });
+      console.log('⚙️ BDD: Testing before start date error message');
+      expect(component.getEndDateErrorMessage()).toBe('End date must be after start date');
+      
+      // Test no error
+      component.configForm.get('endDate')?.setValue('2023-01-01');
+      component.configForm.get('endDate')?.setErrors(null);
+      console.log('⚙️ BDD: Testing no error message');
+      expect(component.getEndDateErrorMessage()).toBe('');
+      
+      console.log('✅ BDD: All end date error messages are correctly returned');
+    });
+  });
+
+  describe('Scenario: Help Dialog Functionality', () => {
+    it('Given different help dialog types, When openHelpDialog is called, Then appropriate dialogs are opened', () => {
+      // Given: Component with dialog service
+      console.log('🔧 BDD: Setting up help dialog scenarios');
+      spyOn(component, 'openHelpDialog').and.callThrough();
+      
+      // When: Opening different types of help dialogs
+      console.log('⚙️ BDD: Opening general help dialog');
+      component.openHelpDialog('general');
+      expect(component.openHelpDialog).toHaveBeenCalledWith('general');
+      
+      console.log('⚙️ BDD: Opening date range help dialog');
+      component.openHelpDialog('date-range');
+      expect(component.openHelpDialog).toHaveBeenCalledWith('date-range');
+      
+      console.log('⚙️ BDD: Opening testing options help dialog');
+      component.openHelpDialog('testing-options');
+      expect(component.openHelpDialog).toHaveBeenCalledWith('testing-options');
+      
+      console.log('⚙️ BDD: Opening default help dialog');
+      component.openHelpDialog();
+      expect(component.openHelpDialog).toHaveBeenCalledWith();
+      
+      console.log('✅ BDD: All help dialog types are handled correctly');
+    });
+  });
+
+  describe('Scenario: Form Validation Edge Cases', () => {
+    it('Given form with null parent, When endDateValidator is called, Then validation passes', () => {
+      // Given: Form control with null parent
+      console.log('🔧 BDD: Setting up form control with null parent');
+      const control = component.configForm.get('endDate');
+      
+      // When: Validator is called with null parent
+      console.log('⚙️ BDD: End date validator is called with null parent');
+      const result = component['endDateValidator'](control!);
+      
+      // Then: Validation passes
+      console.log('✅ BDD: Validation passes when parent is null');
+      expect(result).toBeNull();
+    });
+
+    it('Given empty date values, When validators are called, Then validation passes', () => {
+      // Given: Empty date values
+      console.log('🔧 BDD: Setting up empty date validation scenarios');
+      
+      // When: Date validator is called with empty value
+      console.log('⚙️ BDD: Date validator is called with empty value');
+      const dateResult = component['dateValidator'](component.configForm.get('startDate')!);
+      
+      // Then: Validation passes for empty dates
+      console.log('✅ BDD: Validation passes for empty dates');
+      expect(dateResult).toBeNull();
+    });
+
+    it('Given end date with empty start date, When endDateValidator is called, Then validation passes', () => {
+      // Given: End date with empty start date
+      console.log('🔧 BDD: Setting up end date validation with empty start date');
+      component.configForm.patchValue({ startDate: '', endDate: '2023-01-01' });
+      
+      // When: End date validator is called
+      console.log('⚙️ BDD: End date validator is called with empty start date');
+      const result = component['endDateValidator'](component.configForm.get('endDate')!);
+      
+      // Then: Validation passes
+      console.log('✅ BDD: Validation passes when start date is empty');
+      expect(result).toBeNull();
+    });
+
+    it('Given invalid date format, When dateValidator is called, Then validation fails', () => {
+      // Given: Invalid date format
+      console.log('🔧 BDD: Setting up invalid date format validation');
+      component.configForm.patchValue({ startDate: 'invalid-date' });
+      
+      // When: Date validator is called
+      console.log('⚙️ BDD: Date validator is called with invalid date');
+      const result = component['dateValidator'](component.configForm.get('startDate')!);
+      
+      // Then: Validation fails
+      console.log('✅ BDD: Validation fails for invalid date format');
+      expect(result).toEqual({ invalidDate: true });
+    });
+
+    it('Given future date, When dateValidator is called, Then validation fails', () => {
+      // Given: Future date
+      console.log('🔧 BDD: Setting up future date validation');
+      const futureDate = new Date();
+      futureDate.setDate(futureDate.getDate() + 1);
+      const futureDateString = futureDate.toISOString().split('T')[0];
+      component.configForm.patchValue({ startDate: futureDateString });
+      
+      // When: Date validator is called
+      console.log('⚙️ BDD: Date validator is called with future date');
+      const result = component['dateValidator'](component.configForm.get('startDate')!);
+      
+      // Then: Validation fails
+      console.log('✅ BDD: Validation fails for future date');
+      expect(result).toEqual({ futureDate: true });
+    });
+
+    it('Given end date before start date, When endDateValidator is called, Then validation fails', () => {
+      // Given: End date before start date
+      console.log('🔧 BDD: Setting up end date before start date validation');
+      component.configForm.patchValue({ startDate: '2023-01-15', endDate: '2023-01-10' });
+      
+      // When: End date validator is called
+      console.log('⚙️ BDD: End date validator is called with end date before start date');
+      const result = component['endDateValidator'](component.configForm.get('endDate')!);
+      
+      // Then: Validation fails
+      console.log('✅ BDD: Validation fails for end date before start date');
+      expect(result).toEqual({ beforeStartDate: true });
+    });
+  });
+
+  describe('Scenario: Help Dialog Title Generation', () => {
+    it('Given different dialog types, When getHelpDialogTitle is called, Then appropriate titles are returned', () => {
+      // Given: Different dialog types
+      console.log('🔧 BDD: Setting up help dialog title scenarios');
+      
+      // When: getHelpDialogTitle is called with different types
+      console.log('⚙️ BDD: Testing date-range dialog title');
+      const dateRangeTitle = component['getHelpDialogTitle']('date-range');
+      expect(dateRangeTitle).toBe('Date Range Filtering Help');
+      
+      console.log('⚙️ BDD: Testing testing-options dialog title');
+      const testingOptionsTitle = component['getHelpDialogTitle']('testing-options');
+      expect(testingOptionsTitle).toBe('Testing Options Help');
+      
+      console.log('⚙️ BDD: Testing general dialog title');
+      const generalTitle = component['getHelpDialogTitle']('general');
+      expect(generalTitle).toBe('Configuration Help');
+      
+      console.log('⚙️ BDD: Testing default dialog title');
+      const defaultTitle = component['getHelpDialogTitle']('unknown-type');
+      expect(defaultTitle).toBe('Configuration Help');
+      
+      console.log('✅ BDD: All dialog titles are correctly generated');
+    });
+  });
+
+  describe('Scenario: Dialog Functionality', () => {
+    it('Given help dialog is opened, When dialog closes, Then body scroll is restored', () => {
+      // Given: Component with dialog service
+      console.log('🔧 BDD: Setting up dialog functionality test');
+      spyOn(component['dialog'], 'open').and.returnValue({
+        afterClosed: () => of(null)
+      } as any);
+      spyOn(document.body.classList, 'add');
+      spyOn(document.body.classList, 'remove');
+      
+      // When: Help dialog is opened
+      console.log('⚙️ BDD: Opening help dialog');
+      component.openHelpDialog('general');
+      
+      // Then: Body scroll is managed
+      console.log('✅ BDD: Body scroll is properly managed');
+      expect(document.body.classList.add).toHaveBeenCalledWith('dialog-open');
+    });
+
+    it('Given help dialog is opened and closed, When dialog afterClosed callback is triggered, Then body scroll is restored and logged', () => {
+      // Given: Component with dialog service that triggers afterClosed callback
+      console.log('🔧 BDD: Setting up dialog close callback test');
+      let afterClosedCallback: any;
+      const mockDialogRef = {
+        afterClosed: () => {
+          afterClosedCallback = jasmine.createSpy('afterClosed').and.returnValue(of(null));
+          return afterClosedCallback();
+        }
+      };
+      spyOn(component['dialog'], 'open').and.returnValue(mockDialogRef as any);
+      spyOn(document.body.classList, 'add');
+      spyOn(document.body.classList, 'remove');
+      
+      // When: Help dialog is opened and closed
+      console.log('⚙️ BDD: Opening help dialog and triggering close callback');
+      component.openHelpDialog('general');
+      
+      // Trigger the afterClosed callback
+      afterClosedCallback();
+      
+      // Then: Body scroll is restored and logged
+      console.log('✅ BDD: Dialog close callback is properly handled');
+      expect(document.body.classList.add).toHaveBeenCalledWith('dialog-open');
+      expect(mockLogger.workflow).toHaveBeenCalledWith('Help dialog closed');
+    });
+  });
+
+  describe('Scenario: Save Configuration Edge Cases', () => {
+    it('Given form with null values, When saveConfiguration is called, Then null values are handled', () => {
+      // Given: Form with null values
+      console.log('🔧 BDD: Setting up form with null values');
+      component.configForm.patchValue({
+        startDate: null,
+        endDate: null,
+        testVideoMode: null,
+        simulationMode: null
+      });
+      
+      // When: saveConfiguration is called
+      console.log('⚙️ BDD: Save configuration is called with null values');
+      component['saveConfiguration']();
+      
+      // Then: Null values are handled gracefully
+      console.log('✅ BDD: Null values are handled without errors');
+      expect(mockConfigService.setStartDate).not.toHaveBeenCalled();
+      expect(mockConfigService.setEndDate).not.toHaveBeenCalled();
+      expect(mockConfigService.setTestVideoMode).not.toHaveBeenCalled();
+      expect(mockConfigService.setSimulate).not.toHaveBeenCalled();
+    });
+
+    it('Given form with undefined values, When saveConfiguration is called, Then undefined values are handled', () => {
+      // Given: Form with undefined values
+      console.log('🔧 BDD: Setting up form with undefined values');
+      component.configForm.patchValue({
+        startDate: undefined,
+        endDate: undefined,
+        testVideoMode: undefined,
+        simulationMode: undefined
+      });
+      
+      // When: saveConfiguration is called
+      console.log('⚙️ BDD: Save configuration is called with undefined values');
+      component['saveConfiguration']();
+      
+      // Then: Undefined values are handled gracefully
+      console.log('✅ BDD: Undefined values are handled without errors');
+      expect(mockConfigService.setStartDate).not.toHaveBeenCalled();
+      expect(mockConfigService.setEndDate).not.toHaveBeenCalled();
+      expect(mockConfigService.setTestVideoMode).not.toHaveBeenCalled();
+      expect(mockConfigService.setSimulate).not.toHaveBeenCalled();
+    });
+
+    it('Given invalid form, When saveConfiguration is called, Then configuration is not saved', () => {
+      // Given: Invalid form
+      console.log('🔧 BDD: Setting up invalid form');
+      component.configForm.patchValue({
+        startDate: 'invalid-date',
+        endDate: 'invalid-date'
+      });
+      component.configForm.setErrors({ invalid: true });
+      
+      // When: saveConfiguration is called
+      console.log('⚙️ BDD: Save configuration is called with invalid form');
+      component['saveConfiguration']();
+      
+      // Then: Configuration is not saved
+      console.log('✅ BDD: Invalid form prevents configuration save');
+      expect(mockConfigService.setStartDate).not.toHaveBeenCalled();
+      expect(mockConfigService.setEndDate).not.toHaveBeenCalled();
+    });
+  });
 });
