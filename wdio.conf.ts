@@ -1,5 +1,15 @@
 import type { Options } from '@wdio/types'
 
+// Sharding configuration
+const shardIndex = parseInt(process.env.SHARD_INDEX || '0')
+const totalShards = parseInt(process.env.SHARD_TOTAL || '1')
+const isSharded = totalShards > 1
+
+// Log sharding info if enabled
+if (isSharded) {
+    console.log(`🚀 Starting shard ${shardIndex + 1}/${totalShards}`)
+}
+
 export const config: Options.Testrunner & { capabilities: any[] } = {
     //
     // ====================
@@ -23,9 +33,40 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
     // ==================
     // Define which test specs should run. The pattern is relative to the directory
     // from which `wdio` was called.
-    specs: [
-        process.env.TEST_SPEC || './features/**/**.feature'
-    ],
+    specs: (() => {
+        // If sharding is enabled, try to load shard-specific specs
+        if (isSharded) {
+            try {
+                const fs = require('fs')
+                const path = require('path')
+                const shardInfoPath = path.join(process.cwd(), 'shard-results', `shard-${shardIndex + 1}.json`)
+                
+                if (fs.existsSync(shardInfoPath)) {
+                    const shardInfo = JSON.parse(fs.readFileSync(shardInfoPath, 'utf8'))
+                    console.log(`📁 Running ${shardInfo.fileCount} files in shard ${shardIndex + 1}`)
+                    console.log(`📋 Files: ${shardInfo.specs.map((s: string) => path.basename(s)).join(', ')}`)
+                    return shardInfo.specs
+                } else {
+                    console.log(`⚠️  Shard info file not found, using default distribution`)
+                    // Fallback to simple distribution
+                    const { TestSharder } = require('./scripts/shard-tests.js')
+                    const sharder = new TestSharder()
+                    const shards = sharder.distributeFeatures(totalShards, 'domain-based')
+                    const specs = shards[shardIndex].map((file: string) => 
+                        path.relative(process.cwd(), file)
+                    )
+                    console.log(`📁 Running ${specs.length} files in shard ${shardIndex + 1}`)
+                    return specs
+                }
+            } catch (error) {
+                console.error(`❌ Error reading shard configuration:`, error.message)
+                console.log(`🔄 Falling back to default configuration`)
+            }
+        }
+        
+        // Default specs for non-sharded or fallback
+        return [process.env.TEST_SPEC || './features/**/**.feature']
+    })(),
     
     // Patterns to exclude.
     exclude: [
@@ -40,10 +81,10 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
     // time. Depending on the number of capabilities, WebdriverIO launches several test
     // sessions. Within your capabilities you can overwrite the spec and exclude options in
     // order to group specific specs to a specific capability.
-    maxInstances: 10,
+    maxInstances: isSharded ? Math.max(1, Math.floor(10 / totalShards)) : 10,
     
     capabilities: [{
-        maxInstances: 5,
+        maxInstances: isSharded ? Math.max(1, Math.floor(5 / totalShards)) : 5,
         browserName: 'chrome',
         acceptInsecureCerts: true,
         // Enable Chrome DevTools Protocol for network simulation
@@ -88,6 +129,8 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
                 '--force-color-profile=srgb',
                 '--memory-pressure-off',
                 '--max_old_space_size=4096',
+                // Shard-specific user data directory for isolation
+                ...(isSharded ? [`--user-data-dir=/tmp/chrome-shard-${shardIndex}`] : []),
                 // Conditionally add headless mode
                 ...(process.env.HEADLESS === 'true' ? ['--headless=new'] : [])
             ]
@@ -143,13 +186,31 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
 
     // Test reporter for stdout.
     // Using spec reporter to show scenario names on failure
-    reporters: [
-        ['spec', {
-            // Show scenario names and steps
-            showTestNames: true,
-            showTestStatus: true
-        }]
-    ],
+    reporters: (() => {
+        const reporters: any[] = [
+            ['spec', {
+                // Show scenario names and steps
+                showTestNames: true,
+                showTestStatus: true,
+                // Add shard information to output if sharding is enabled
+                ...(isSharded ? {
+                    addTestNames: (test: any) => `[Shard ${shardIndex + 1}/${totalShards}] ${test.title}`
+                } : {})
+            }]
+        ]
+        
+        // Add allure reporter for sharded results
+        if (isSharded) {
+            reporters.push(['allure', {
+                outputDir: `allure-results/shard-${shardIndex + 1}`,
+                disableWebdriverStepsReporting: true,
+                disableWebdriverScreenshotsReporting: false,
+                useCucumberStepReporter: true
+            }])
+        }
+        
+        return reporters
+    })(),
 
     //
     // If you are using Cucumber you need to specify the location of your step definitions.
@@ -178,4 +239,9 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
     // it and to build services around it. You can either apply a single function or an array of
     // methods to it. If one of them returns with a promise, WebdriverIO will wait until that promise got
     // resolved to continue.
+}
+
+// Log configuration completion
+if (isSharded) {
+    console.log(`✅ Shard ${shardIndex + 1} configuration ready`)
 }
