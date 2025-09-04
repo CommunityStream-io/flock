@@ -99,7 +99,7 @@ export const config: Options.Testrunner = {
 
     // Default timeout in milliseconds for request
     // if browser driver or grid doesn't send response
-    connectionRetryTimeout: process.env.CI === 'true' ? 180000 : 120000,
+    connectionRetryTimeout: process.env.CI === 'true' ? 300000 : 120000, // 5 minutes for CI
 
     // Default request retries count
     connectionRetryCount: process.env.CI === 'true' ? 5 : 3,
