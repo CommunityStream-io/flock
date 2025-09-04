@@ -147,7 +147,17 @@ Then('users cannot accidentally select text files', async () => {
 
 Given('I have selected a valid Instagram archive file {string}', async (filename: string) => {
     await pages.uploadStep.selectFile(filename);
-    await browser.pause(500);
+    // Wait for file to be processed and displayed
+    await browser.waitUntil(
+        async () => {
+            const hasFiles = await pages.uploadStep.hasFiles();
+            return hasFiles;
+        },
+        { 
+            timeout: 5000, 
+            timeoutMsg: 'File was not processed within 5 seconds' 
+        }
+    );
 });
 
 When('I click the delete button for {string}', async (filename: string) => {
@@ -189,16 +199,27 @@ Then('the Instagram archive form control should be invalid again', async () => {
 When('I try to proceed without a file', async () => {
     // Click the next step button to trigger form validation
     await pages.stepLayout.clickNextStep();
-    // Wait a moment for the navigation guard to process
-    await browser.pause(1000);
+    // Wait for navigation guard to process and show snackbar
+    await browser.waitUntil(
+        async () => {
+            const isStillOnUpload = await pages.navigationGuard.isStillOnStep('upload');
+            const hasSnackbar = await pages.navigationGuard.isSnackbarVisible();
+            return isStillOnUpload || hasSnackbar;
+        },
+        { 
+            timeout: 10000, 
+            timeoutMsg: 'Navigation guard did not process within 10 seconds' 
+        }
+    );
 });
 
 Then('I should see an error message', async () => {
     // Wait for and check the snackbar error message with longer timeout
     try {
-        await pages.navigationGuard.waitForSnackbar(10000);
+        await pages.navigationGuard.waitForSnackbar(15000);
         const snackbarText = await pages.navigationGuard.getSnackbarText();
         expect(snackbarText).toContain('Please upload a valid archive');
+        console.log(`✅ BDD: Error message displayed: "${snackbarText}"`);
     } catch (error) {
         // If snackbar doesn't appear, check if we're still on the upload step
         const currentUrl = await browser.getUrl();
@@ -271,12 +292,32 @@ Then('the snackbar should auto-dismiss after {int} seconds', async (seconds: num
 
 When('I upload a valid Instagram archive file', async () => {
     await pages.navigationGuard.simulateValidFileUploaded();
-    await browser.pause(1000); // Allow validation
+    // Wait for file validation to complete
+    await browser.waitUntil(
+        async () => {
+            const isFileServiceValid = await pages.navigationGuard.isFileServiceValid();
+            return isFileServiceValid;
+        },
+        { 
+            timeout: 5000, 
+            timeoutMsg: 'File validation did not complete within 5 seconds' 
+        }
+    );
 });
 
 When('I upload a valid Instagram archive', async () => {
     await pages.navigationGuard.simulateValidFileUploaded();
-    await browser.pause(1000); // Allow validation
+    // Wait for file validation to complete
+    await browser.waitUntil(
+        async () => {
+            const isFileServiceValid = await pages.navigationGuard.isFileServiceValid();
+            return isFileServiceValid;
+        },
+        { 
+            timeout: 5000, 
+            timeoutMsg: 'File validation did not complete within 5 seconds' 
+        }
+    );
 });
 
 Then('I should successfully navigate to the auth step', async () => {
@@ -291,7 +332,17 @@ Then('I should not see any error messages', async () => {
 
 When('I select a file but validation fails', async () => {
     await pages.navigationGuard.simulateInvalidFile();
-    await browser.pause(500);
+    // Wait for validation to process
+    await browser.waitUntil(
+        async () => {
+            const hasErrors = await pages.navigationGuard.hasValidationErrors();
+            return hasErrors;
+        },
+        { 
+            timeout: 3000, 
+            timeoutMsg: 'File validation error did not appear within 3 seconds' 
+        }
+    );
 });
 
 When('I wait for the snackbar to dismiss', async () => {

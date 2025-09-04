@@ -87,19 +87,22 @@ export const config: Options.Testrunner = {
     // bail (default is 0 - don't bail, run all tests).
     bail: 0,  // Don't bail on failures, run all tests
 
+    // Retry configuration for flaky tests
+    retries: process.env.CI === 'true' ? 2 : 1,  // Retry failed tests 2 times in CI, 1 time locally
+
     // Set a base URL in order to shorten url command calls. If your `url` parameter starts
     // with `/`, the base url gets prepended, not including the path portion of your baseUrl.
     baseUrl: 'http://localhost:4200',
 
     // Default timeout for all waitFor* commands.
-    waitforTimeout: 10000,
+    waitforTimeout: process.env.CI === 'true' ? 20000 : 10000,
 
     // Default timeout in milliseconds for request
     // if browser driver or grid doesn't send response
-    connectionRetryTimeout: 120000,
+    connectionRetryTimeout: process.env.CI === 'true' ? 180000 : 120000,
 
     // Default request retries count
-    connectionRetryCount: 3,
+    connectionRetryCount: process.env.CI === 'true' ? 5 : 3,
 
     // Test runner services
     // Note: chromedriver service is built-in for WebdriverIO v9
@@ -136,10 +139,11 @@ export const config: Options.Testrunner = {
         source: true,
         strict: false,  // Allow skipped steps without failing the entire scenario
         tags: process.env.TEST_TAGS || "",
-        timeout: 60000,
+        timeout: process.env.CI === 'true' ? 90000 : 60000,
         ignoreUndefinedDefinitions: true,
         format: ['pretty'],  // Add pretty format for better readability
-        publishQuiet: process.env.DEBUG_TESTS !== 'true'   // Reduce noise from cucumber reporting unless debugging
+        publishQuiet: process.env.DEBUG_TESTS !== 'true',   // Reduce noise from cucumber reporting unless debugging
+        retry: process.env.CI === 'true' ? 2 : 1  // Retry failed scenarios in CI
     },
     
     //

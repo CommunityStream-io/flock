@@ -27,8 +27,14 @@ Given('the splash screen message should be {string}', async (expectedMessage: st
     console.log(`🔧 BDD: Verifying initial splash screen message is "${expectedMessage}"`);
     
     try {
-        // Check if splash screen is visible first with a reasonable timeout
-        const isSplashVisible = await pages.stepLayout.isSplashScreenVisible();
+        // Wait for splash screen to be visible with longer timeout for CI
+        const isSplashVisible = await browser.waitUntil(
+            async () => await pages.stepLayout.isSplashScreenVisible(),
+            { 
+                timeout: 15000, 
+                timeoutMsg: 'Splash screen did not appear within 15 seconds' 
+            }
+        );
         
         if (isSplashVisible) {
             // Get the current splash screen message

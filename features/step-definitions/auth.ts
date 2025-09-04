@@ -15,14 +15,34 @@ Given('I am on the auth step page without valid credentials', async () => {
 
 Given('I have navigated to the auth step', async () => {
     await pages.stepLayout.openAuthStep();
-    // Wait for navigation to complete
-    await browser.pause(500);
+    // Wait for navigation to complete and auth form to load
+    await browser.waitUntil(
+        async () => {
+            const isOnAuthStep = await pages.stepLayout.isOnStep('auth');
+            const isAuthFormVisible = await pages.auth.authForm.isDisplayed();
+            return isOnAuthStep && isAuthFormVisible;
+        },
+        { 
+            timeout: 10000, 
+            timeoutMsg: 'Navigation to auth step did not complete within 10 seconds' 
+        }
+    );
 });
 
 When('I navigate back to the upload step', async () => {
     await pages.stepLayout.openUploadStep();
-    // Wait for navigation to complete
-    await browser.pause(500);
+    // Wait for navigation to complete and page to load
+    await browser.waitUntil(
+        async () => {
+            const isOnUploadStep = await pages.stepLayout.isOnStep('upload');
+            const isUploadSectionVisible = await pages.uploadStep.uploadSection.isDisplayed();
+            return isOnUploadStep && isUploadSectionVisible;
+        },
+        { 
+            timeout: 10000, 
+            timeoutMsg: 'Navigation to upload step did not complete within 10 seconds' 
+        }
+    );
 });
 
 Then('I should see a username input field with @ prefix', async () => {
