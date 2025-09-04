@@ -2,9 +2,9 @@ name: Feathering the Nest
 
 on:
   push:
-    branches: [ "*" ]
+    branches: [ "*" ] # All branches to include development branches
   pull_request:
-    branches: [ "*" ]
+    branches: [ "*" ] # All PRs to include forks
 
 jobs:
   lint:
@@ -72,7 +72,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
-      CODECOV_TOKEN: ${{ vars.CODECOV_TOKEN }}
       HEADLESS: true
       CI: true
     steps:
@@ -104,7 +103,7 @@ jobs:
         run: npx ng build --project=flock-mirage --configuration=development
 
       - name: Run e2e tests with coverage
-        run: npm run test:e2e:coverage:ci
+        run: npm run test:e2e:ci
         env:
           CI: true
           NODE_ENV: production
@@ -129,14 +128,6 @@ jobs:
           name: allure-results
           path: allure-results/
           retention-days: 30
-
-      - name: Upload E2E coverage to Codecov
-        uses: codecov/codecov-action@v5
-        with:
-          files: ./coverage/lcov.info
-          flags: e2etests
-          name: codecov-umbrella
-          fail_ci_if_error: false
 
   build:
     name: Add to the flock (Build)
