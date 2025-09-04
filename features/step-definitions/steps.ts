@@ -21,7 +21,7 @@ Then('the URL should contain {string}', async (urlPath: string) => {
 
 Given('the application is running', async () => {
     // Ensure the application is accessible with retry logic
-    const maxRetries = 5; // Increased retries for CI
+    const maxRetries = 3; // Reasonable retries for CI
     let retryCount = 0;
     
     while (retryCount < maxRetries) {
@@ -41,8 +41,8 @@ Given('the application is running', async () => {
                     return readyState === 'complete' && isAngularReady;
                 },
                 { 
-                    timeout: 45000, // Increased timeout for CI
-                    timeoutMsg: 'Angular application did not load completely within 45 seconds' 
+                    timeout: 30000, // Reasonable timeout for CI
+                    timeoutMsg: 'Angular application did not load completely within 30 seconds' 
                 }
             );
             
@@ -113,7 +113,7 @@ Given('the splash screen message should be {string}', async (expectedMessage: st
 Given('I navigate to the application', async () => {
     console.log(`🔧 BDD: Navigating to application with retry logic`);
     
-    const maxRetries = 5; // Increased retries for CI
+    const maxRetries = 3; // Reasonable retries for CI
     let retryCount = 0;
     
     while (retryCount < maxRetries) {

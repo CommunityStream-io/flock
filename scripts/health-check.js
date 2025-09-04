@@ -4,7 +4,7 @@ const http = require('http');
 const { URL } = require('url');
 
 const HEALTH_CHECK_URL = process.env.HEALTH_CHECK_URL || 'http://localhost:4200';
-const MAX_ATTEMPTS = 60; // 60 attempts (2 minutes total)
+const MAX_ATTEMPTS = 30; // 30 attempts (1 minute total)
 const RETRY_INTERVAL = 2000; // 2 seconds between attempts
 
 /**
