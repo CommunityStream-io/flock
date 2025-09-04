@@ -21,7 +21,7 @@ Then('the URL should contain {string}', async (urlPath: string) => {
 
 Given('the application is running', async () => {
     // Ensure the application is accessible with retry logic
-    const maxRetries = 3; // Reasonable retries for CI
+    const maxRetries = 2; // Reduced retries for faster failure
     let retryCount = 0;
     
     while (retryCount < maxRetries) {
@@ -36,8 +36,8 @@ Given('the application is running', async () => {
                     return readyState === 'complete';
                 },
                 { 
-                    timeout: 10000, // Shorter timeout for basic load
-                    timeoutMsg: 'Page did not load completely within 10 seconds' 
+                    timeout: 8000, // Further reduced timeout for faster failure
+                    timeoutMsg: 'Page did not load completely within 8 seconds' 
                 }
             );
             
@@ -51,8 +51,8 @@ Given('the application is running', async () => {
                     return isAngularReady;
                 },
                 { 
-                    timeout: 15000, // Shorter timeout for Angular
-                    timeoutMsg: 'Angular application did not bootstrap within 15 seconds' 
+                    timeout: 8000, // Further reduced timeout for faster failure
+                    timeoutMsg: 'Angular application did not bootstrap within 8 seconds' 
                 }
             );
             
@@ -63,8 +63,8 @@ Given('the application is running', async () => {
                     return hasAppRoot;
                 },
                 {
-                    timeout: 10000,
-                    timeoutMsg: 'app-root element not found within 10 seconds'
+                    timeout: 5000, // Reduced timeout for faster failure
+                    timeoutMsg: 'app-root element not found within 5 seconds'
                 }
             );
             
@@ -76,7 +76,7 @@ Given('the application is running', async () => {
             if (retryCount < maxRetries) {
                 console.log(`🔄 BDD: Retrying application load (${retryCount}/${maxRetries})`);
                 // Short wait before retry
-                await new Promise(resolve => setTimeout(resolve, 2000));
+                await new Promise(resolve => setTimeout(resolve, 1000));
             } else {
                 throw new Error(`Application failed to load after ${maxRetries} attempts: ${error.message}`);
             }
@@ -117,7 +117,7 @@ Given('the splash screen message should be {string}', async (expectedMessage: st
 Given('I navigate to the application', async () => {
     console.log(`🔧 BDD: Navigating to application with retry logic`);
     
-    const maxRetries = 3; // Reasonable retries for CI
+    const maxRetries = 2; // Reduced retries for faster failure
     let retryCount = 0;
     
     while (retryCount < maxRetries) {
@@ -132,8 +132,8 @@ Given('I navigate to the application', async () => {
                     return readyState === 'complete';
                 },
                 { 
-                    timeout: 10000, // Shorter timeout for basic load
-                    timeoutMsg: 'Page did not load completely within 10 seconds' 
+                    timeout: 8000, // Further reduced timeout for faster failure
+                    timeoutMsg: 'Page did not load completely within 8 seconds' 
                 }
             );
             
@@ -147,8 +147,8 @@ Given('I navigate to the application', async () => {
                     return isAngularReady;
                 },
                 { 
-                    timeout: 15000, // Shorter timeout for Angular
-                    timeoutMsg: 'Angular application did not bootstrap within 15 seconds' 
+                    timeout: 8000, // Further reduced timeout for faster failure
+                    timeoutMsg: 'Angular application did not bootstrap within 8 seconds' 
                 }
             );
             
@@ -159,8 +159,8 @@ Given('I navigate to the application', async () => {
                     return hasAppRoot;
                 },
                 {
-                    timeout: 10000,
-                    timeoutMsg: 'app-root element not found within 10 seconds'
+                    timeout: 5000, // Reduced timeout for faster failure
+                    timeoutMsg: 'app-root element not found within 5 seconds'
                 }
             );
             
@@ -172,7 +172,7 @@ Given('I navigate to the application', async () => {
             if (retryCount < maxRetries) {
                 console.log(`🔄 BDD: Retrying navigation (${retryCount}/${maxRetries})`);
                 // Short wait before retry
-                await new Promise(resolve => setTimeout(resolve, 2000));
+                await new Promise(resolve => setTimeout(resolve, 1000));
             } else {
                 throw new Error(`Navigation failed after ${maxRetries} attempts: ${error.message}`);
             }
