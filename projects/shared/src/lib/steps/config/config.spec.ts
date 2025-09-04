@@ -3,6 +3,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MatDialogModule } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
 import { of } from 'rxjs';
+import { FormControl } from '@angular/forms';
 
 import { Config } from './config';
 import { LOGGER, ConfigServiceImpl, Logger } from '../../services';
@@ -783,7 +784,7 @@ describe('Feature: Migration Configuration (BDD-Style)', () => {
   });
 
   describe('Scenario: Form Validation Edge Cases', () => {
-    it('Given form with null parent, When endDateValidator is called, Then validation passes', () => {
+    it('Given form control with null parent, When endDateValidator is called, Then validation passes', () => {
       // Given: Form control with null parent
       console.log('🔧 BDD: Setting up form control with null parent');
       const control = component.configForm.get('endDate');
@@ -794,6 +795,24 @@ describe('Feature: Migration Configuration (BDD-Style)', () => {
       
       // Then: Validation passes
       console.log('✅ BDD: Validation passes when parent is null');
+      expect(result).toBeNull();
+    });
+
+    it('Given form control with no parent form group, When endDateValidator is called, Then validation passes', () => {
+      // Given: Form control without parent form group
+      console.log('🔧 BDD: Setting up form control without parent form group');
+      // Create a mock form control without a parent
+      const standaloneControl = {
+        value: '2023-01-01',
+        parent: null
+      } as any;
+      
+      // When: Validator is called with no parent
+      console.log('⚙️ BDD: End date validator is called with no parent form group');
+      const result = component['endDateValidator'](standaloneControl);
+      
+      // Then: Validation passes
+      console.log('✅ BDD: Validation passes when parent form group is null');
       expect(result).toBeNull();
     });
 
