@@ -5,9 +5,10 @@ const shardIndex = parseInt(process.env.SHARD_INDEX || '0')
 const totalShards = parseInt(process.env.SHARD_TOTAL || '1')
 const isSharded = totalShards > 1
 
-// Log sharding info if enabled
-if (isSharded) {
+// Log sharding info if enabled (only once)
+if (isSharded && !global.shardLogged) {
     console.log(`🚀 Starting shard ${shardIndex + 1}/${totalShards}`)
+    global.shardLogged = true
 }
 
 export const config: Options.Testrunner & { capabilities: any[] } = {
@@ -43,11 +44,16 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
                 
                 if (fs.existsSync(shardInfoPath)) {
                     const shardInfo = JSON.parse(fs.readFileSync(shardInfoPath, 'utf8'))
-                    console.log(`📁 Running ${shardInfo.fileCount} files in shard ${shardIndex + 1}`)
-                    console.log(`📋 Files: ${shardInfo.specs.map((s: string) => path.basename(s)).join(', ')}`)
+                    if (!global.shardFilesLogged) {
+                        console.log(`📁 Running ${shardInfo.fileCount} files in shard ${shardIndex + 1}`)
+                        console.log(`📋 Files: ${shardInfo.specs.map((s: string) => path.basename(s)).join(', ')}`)
+                        global.shardFilesLogged = true
+                    }
                     return shardInfo.specs
                 } else {
-                    console.log(`⚠️  Shard info file not found, using default distribution`)
+                    if (!global.shardFilesLogged) {
+                        console.log(`⚠️  Shard info file not found, using default distribution`)
+                    }
                     // Fallback to simple distribution
                     const { TestSharder } = require('./scripts/shard-tests.js')
                     const sharder = new TestSharder()
@@ -55,7 +61,10 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
                     const specs = shards[shardIndex].map((file: string) => 
                         path.relative(process.cwd(), file)
                     )
-                    console.log(`📁 Running ${specs.length} files in shard ${shardIndex + 1}`)
+                    if (!global.shardFilesLogged) {
+                        console.log(`📁 Running ${specs.length} files in shard ${shardIndex + 1}`)
+                        global.shardFilesLogged = true
+                    }
                     return specs
                 }
             } catch (error) {
@@ -163,7 +172,7 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
 
     // Set a base URL in order to shorten url command calls. If your `url` parameter starts
     // with `/`, the base url gets prepended, not including the path portion of your baseUrl.
-    baseUrl: 'http://localhost:4200',
+    baseUrl: process.env.BASE_URL || 'http://localhost:4200',
 
     // Default timeout for all waitFor* commands.
     waitforTimeout: process.env.CI === 'true' ? 20000 : 10000,
@@ -224,7 +233,7 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
         source: true,
         strict: false,  // Allow skipped steps without failing the entire scenario
         tags: process.env.TEST_TAGS || "",
-        timeout: process.env.CI === 'true' ? 90000 : 60000, // Reasonable timeout for CI
+        timeout: isSharded ? 120000 : (process.env.CI === 'true' ? 120000 : 90000), // Increased timeout for sharding and CI
         ignoreUndefinedDefinitions: true,
         format: ['pretty'],  // Add pretty format for better readability
         publishQuiet: process.env.DEBUG_TESTS !== 'true',   // Reduce noise from cucumber reporting unless debugging
@@ -241,7 +250,8 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
     // resolved to continue.
 }
 
-// Log configuration completion
-if (isSharded) {
+// Log configuration completion (only once)
+if (isSharded && !global.shardConfigLogged) {
     console.log(`✅ Shard ${shardIndex + 1} configuration ready`)
+    global.shardConfigLogged = true
 }
