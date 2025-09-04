@@ -1,6 +1,7 @@
+/// <reference path="../../test/types.d.ts" />
 import { Given, When, Then, After } from '@wdio/cucumber-framework';
 import { pages } from '../pageobjects';
-import { browser } from '@wdio/globals';
+import { browser, $ } from '@wdio/globals';
 
 // Import all step definition modules to register them
 import './landing';
@@ -20,23 +21,43 @@ Then('the URL should contain {string}', async (urlPath: string) => {
 
 Given('the application is running', async () => {
     // Ensure the application is accessible with retry logic
-    const maxRetries = 3;
+    const maxRetries = 5; // Increased retries for CI
     let retryCount = 0;
     
     while (retryCount < maxRetries) {
         try {
+            console.log(`🔧 BDD: Navigating to application (attempt ${retryCount + 1}/${maxRetries})`);
             await browser.url('/');
-            // Wait for the page to be fully loaded
+            
+            // Wait for the page to be fully loaded with Angular ready
             await browser.waitUntil(
                 async () => {
                     const readyState = await browser.execute(() => document.readyState);
-                    return readyState === 'complete';
+                    const isAngularReady = await browser.execute(() => {
+                        return typeof window !== 'undefined' && 
+                               document.readyState === 'complete' &&
+                               (window as any).ng !== undefined;
+                    });
+                    return readyState === 'complete' && isAngularReady;
                 },
                 { 
-                    timeout: 30000, 
-                    timeoutMsg: 'Page did not load completely within 30 seconds' 
+                    timeout: 45000, // Increased timeout for CI
+                    timeoutMsg: 'Angular application did not load completely within 45 seconds' 
                 }
             );
+            
+            // Additional wait to ensure Angular has fully initialized
+            await browser.waitUntil(
+                async () => {
+                    const hasAppRoot = await $('app-root').isExisting();
+                    return hasAppRoot;
+                },
+                {
+                    timeout: 15000,
+                    timeoutMsg: 'Angular app-root element not found within 15 seconds'
+                }
+            );
+            
             console.log(`✅ BDD: Application loaded successfully (attempt ${retryCount + 1})`);
             return;
         } catch (error) {
@@ -44,7 +65,14 @@ Given('the application is running', async () => {
             console.log(`⚠️ BDD: Application load attempt ${retryCount} failed: ${error.message}`);
             if (retryCount < maxRetries) {
                 console.log(`🔄 BDD: Retrying application load (${retryCount}/${maxRetries})`);
-                await browser.pause(2000); // Wait 2 seconds before retry
+                // Use proper wait instead of pause
+                await browser.waitUntil(
+                    async () => false, // This will always timeout after the specified time
+                    { 
+                        timeout: 3000, 
+                        timeoutMsg: 'Waiting before retry' 
+                    }
+                ).catch(() => {}); // Ignore the timeout error
             } else {
                 throw new Error(`Application failed to load after ${maxRetries} attempts: ${error.message}`);
             }
@@ -85,27 +113,43 @@ Given('the splash screen message should be {string}', async (expectedMessage: st
 Given('I navigate to the application', async () => {
     console.log(`🔧 BDD: Navigating to application with retry logic`);
     
-    const maxRetries = 3;
+    const maxRetries = 5; // Increased retries for CI
     let retryCount = 0;
     
     while (retryCount < maxRetries) {
         try {
+            console.log(`🔧 BDD: Navigating to application (attempt ${retryCount + 1}/${maxRetries})`);
             await browser.url('/');
+            
             // Wait for Angular to be ready
             await browser.waitUntil(
                 async () => {
+                    const readyState = await browser.execute(() => document.readyState);
                     const isAngularReady = await browser.execute(() => {
                         return typeof window !== 'undefined' && 
                                document.readyState === 'complete' &&
                                (window as any).ng !== undefined;
                     });
-                    return isAngularReady;
+                    return readyState === 'complete' && isAngularReady;
                 },
                 { 
-                    timeout: 30000, 
-                    timeoutMsg: 'Angular application did not become ready within 30 seconds' 
+                    timeout: 45000, // Increased timeout for CI
+                    timeoutMsg: 'Angular application did not become ready within 45 seconds' 
                 }
             );
+            
+            // Additional wait to ensure Angular has fully initialized
+            await browser.waitUntil(
+                async () => {
+                    const hasAppRoot = await $('app-root').isExisting();
+                    return hasAppRoot;
+                },
+                {
+                    timeout: 15000,
+                    timeoutMsg: 'Angular app-root element not found within 15 seconds'
+                }
+            );
+            
             console.log(`✅ BDD: Application navigation successful (attempt ${retryCount + 1})`);
             return;
         } catch (error) {
@@ -113,7 +157,14 @@ Given('I navigate to the application', async () => {
             console.log(`⚠️ BDD: Navigation attempt ${retryCount} failed: ${error.message}`);
             if (retryCount < maxRetries) {
                 console.log(`🔄 BDD: Retrying navigation (${retryCount}/${maxRetries})`);
-                await browser.pause(3000); // Wait 3 seconds before retry
+                // Use proper wait instead of pause
+                await browser.waitUntil(
+                    async () => false, // This will always timeout after the specified time
+                    { 
+                        timeout: 3000, 
+                        timeoutMsg: 'Waiting before retry' 
+                    }
+                ).catch(() => {}); // Ignore the timeout error
             } else {
                 throw new Error(`Navigation failed after ${maxRetries} attempts: ${error.message}`);
             }

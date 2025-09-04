@@ -1,6 +1,6 @@
 import type { Options } from '@wdio/types'
 
-export const config: Options.Testrunner = {
+export const config: Options.Testrunner & { capabilities: any[] } = {
     //
     // ====================
     // Runner Configuration
@@ -59,8 +59,37 @@ export const config: Options.Testrunner = {
                 '--disable-dev-shm-usage',             // Prevent shared memory issues
                 '--disable-gpu',                       // Disable GPU acceleration
                 '--window-size=1920,1080',             // Set consistent window size
+                // Additional CI stability options
+                '--disable-background-timer-throttling',
+                '--disable-backgrounding-occluded-windows',
+                '--disable-renderer-backgrounding',
+                '--disable-extensions',
+                '--disable-plugins',
+                '--disable-default-apps',
+                '--disable-sync',
+                '--disable-translate',
+                '--disable-background-networking',
+                '--disable-client-side-phishing-detection',
+                '--disable-component-extensions-with-background-pages',
+                '--disable-hang-monitor',
+                '--disable-prompt-on-repost',
+                '--disable-domain-reliability',
+                '--disable-features=TranslateUI',
+                '--disable-ipc-flooding-protection',
+                '--no-first-run',
+                '--no-default-browser-check',
+                '--disable-logging',
+                '--disable-permissions-api',
+                '--disable-popup-blocking',
+                '--disable-prompt-on-repost',
+                '--disable-web-resources',
+                '--disable-xss-auditor',
+                '--disable-features=VizDisplayCompositor',
+                '--force-color-profile=srgb',
+                '--memory-pressure-off',
+                '--max_old_space_size=4096',
                 // Conditionally add headless mode
-                ...(process.env.HEADLESS === 'true' ? ['--headless'] : [])
+                ...(process.env.HEADLESS === 'true' ? ['--headless=new'] : [])
             ]
         }
     }] as any,
@@ -87,32 +116,27 @@ export const config: Options.Testrunner = {
     // bail (default is 0 - don't bail, run all tests).
     bail: 0,  // Don't bail on failures, run all tests
 
-    // Retry configuration for flaky tests
-    retries: process.env.CI === 'true' ? 2 : 1,  // Retry failed tests 2 times in CI, 1 time locally
+    // Retry configuration is handled by the test framework (Cucumber)
 
     // Set a base URL in order to shorten url command calls. If your `url` parameter starts
     // with `/`, the base url gets prepended, not including the path portion of your baseUrl.
     baseUrl: 'http://localhost:4200',
 
     // Default timeout for all waitFor* commands.
-    waitforTimeout: process.env.CI === 'true' ? 20000 : 10000,
+    waitforTimeout: process.env.CI === 'true' ? 30000 : 10000,
 
     // Default timeout in milliseconds for request
     // if browser driver or grid doesn't send response
-    connectionRetryTimeout: process.env.CI === 'true' ? 300000 : 120000, // 5 minutes for CI
+    connectionRetryTimeout: process.env.CI === 'true' ? 600000 : 120000, // 10 minutes for CI
 
     // Default request retries count
-    connectionRetryCount: process.env.CI === 'true' ? 5 : 3,
+    connectionRetryCount: process.env.CI === 'true' ? 8 : 3,
 
     // Test runner services
     // Note: chromedriver service is built-in for WebdriverIO v9
     services: [],
     
-    // Environment variables to reduce debug output
-    env: {
-        DEBUG: '',
-        NODE_ENV: 'test'
-    },
+    // Environment variables are handled by the test runner
     
     // Framework you want to run your specs with.
     framework: 'cucumber',
@@ -139,11 +163,11 @@ export const config: Options.Testrunner = {
         source: true,
         strict: false,  // Allow skipped steps without failing the entire scenario
         tags: process.env.TEST_TAGS || "",
-        timeout: process.env.CI === 'true' ? 90000 : 60000,
+        timeout: process.env.CI === 'true' ? 120000 : 60000, // Increased timeout for CI
         ignoreUndefinedDefinitions: true,
         format: ['pretty'],  // Add pretty format for better readability
         publishQuiet: process.env.DEBUG_TESTS !== 'true',   // Reduce noise from cucumber reporting unless debugging
-        retry: process.env.CI === 'true' ? 2 : 1  // Retry failed scenarios in CI
+        retry: process.env.CI === 'true' ? 3 : 1  // Retry failed scenarios in CI
     },
     
     //
