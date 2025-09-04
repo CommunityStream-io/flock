@@ -1,0 +1,34 @@
+/* Help dialog specific overrides using MDC theming */
+.help-dialog {
+  /* Help-specific content styling */
+  .mat-mdc-dialog-content {
+    /* Additional help content styling if needed */
+    .help-section {
+      margin-bottom: 24px;
+      
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+    
+    .help-list {
+      margin: 16px 0;
+      padding-left: 0;
+      list-style: none;
+      
+      li {
+        position: relative;
+        padding-left: 24px;
+        margin-bottom: 12px;
+        
+        &::before {
+          content: '•';
+          color: var(--mat-sys-primary);
+          font-weight: bold;
+          position: absolute;
+          left: 0;
+        }
+      }
+    }
+  }
+}

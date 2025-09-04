@@ -1,0 +1,246 @@
+# MDC Theming Rules
+
+## Overview
+This document defines the Material Design Components (MDC) theming rules for the Flock application. All components must follow these theming patterns to ensure consistency and maintainability.
+
+## Core Principles
+
+### 1. Use Angular Material's Theming System
+- Always use `mat.define-theme()` for theme definitions
+- Apply themes using `@include mat.component-theme($theme)`
+- Never hardcode colors or use custom CSS variables
+- Leverage Material Design tokens for all styling
+
+### 2. Theme Structure
+```scss
+// Define themes
+$light-theme: mat.define-theme((...));
+$dark-theme: mat.define-theme((...));
+
+// Apply themes
+@include mat.all-component-themes($light-theme);
+@include mat.dialog-theme($light-theme);
+@include mat.button-theme($light-theme);
+```
+
+### 3. Component Theming Rules
+
+#### Dialogs
+- Use `@include mat.dialog-theme($theme)` for dialog theming
+- Apply overrides to `.mat-mdc-dialog-container` for custom styling
+- Use Material Design tokens for all dialog properties:
+  - `var(--mat-sys-surface)` for background
+  - `var(--mat-sys-on-surface)` for text color
+  - `var(--mat-sys-primary)` for accent colors
+  - `var(--mat-sys-outline-variant)` for borders
+
+#### Buttons
+- Use `@include mat.button-theme($theme)` for button theming
+- Apply overrides to `.mat-mdc-button` for custom styling
+- Use Material Design tokens for button states
+
+#### Cards
+- Use `@include mat.card-theme($theme)` for card theming
+- Apply overrides to `.mat-mdc-card` for custom styling
+- Use Material Design tokens for card properties
+
+#### Form Fields
+- Use `@include mat.form-field-theme($theme)` for form field theming
+- Apply overrides to `.mat-mdc-form-field` for custom styling
+- Use Material Design tokens for form field properties
+
+### 4. Responsive Design
+- Use Material Design breakpoints for responsive behavior
+- Apply responsive overrides within theme mixins
+- Ensure consistent behavior across all screen sizes
+
+### 5. Dark Theme Support
+- Always provide both light and dark theme variants
+- Use `html[data-theme="dark"]` selector for dark theme
+- Apply dark theme using the same component mixins
+
+### 6. Accessibility
+- Use Material Design tokens for high contrast support
+- Apply `@media (prefers-contrast: high)` overrides
+- Ensure proper focus management and ARIA attributes
+
+### 7. Animation and Motion
+- Use Material Design motion tokens for animations
+- Apply `@media (prefers-reduced-motion: reduce)` overrides
+- Use consistent easing functions across components
+
+## Implementation Examples
+
+### Dialog Theming
+```scss
+// Apply dialog theming
+@include mat.dialog-theme($light-theme);
+
+// Dialog overrides
+.mat-mdc-dialog-container {
+  border-radius: 28px;
+  max-width: 500px;
+  min-width: 400px;
+  max-height: 90vh;
+}
+
+.mat-mdc-dialog-title {
+  color: var(--mat-sys-primary);
+  font-family: var(--mat-sys-headline-font-family);
+  font-size: var(--mat-sys-headline-font-size);
+}
+
+.mat-mdc-dialog-content {
+  color: var(--mat-sys-on-surface);
+  font-family: var(--mat-sys-body-font-family);
+  font-size: var(--mat-sys-body-font-size);
+}
+```
+
+### Button Theming
+```scss
+// Apply button theming
+@include mat.button-theme($light-theme);
+
+// Button overrides
+.mat-mdc-button {
+  border-radius: 20px;
+  min-width: 80px;
+}
+
+.mat-mdc-raised-button {
+  background-color: var(--mat-sys-primary);
+  color: var(--mat-sys-on-primary);
+}
+```
+
+### Card Theming
+```scss
+// Apply card theming
+@include mat.card-theme($light-theme);
+
+// Card overrides
+.mat-mdc-card {
+  border-radius: 16px;
+  background-color: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
+}
+
+.mat-mdc-card-header {
+  padding: 24px 24px 16px 24px;
+}
+
+.mat-mdc-card-content {
+  padding: 0 24px 24px 24px;
+}
+```
+
+## File Organization
+
+### Theme Files
+- `theme/theme.scss` - Main theme definitions and component theming
+- `theme/theme_theme-colors.scss` - Color palette definitions
+- `theme/dialog-theme.scss` - Dialog-specific theming (if needed)
+
+### Component Files
+- Each component should import the main theme file
+- Use `@import '../../theme/theme.scss'` for theme access
+- Apply component-specific overrides within the theme system
+
+## Best Practices
+
+### 1. Never Hardcode Colors
+❌ Bad:
+```scss
+.dialog-container {
+  background-color: #ffffff;
+  color: #000000;
+}
+```
+
+✅ Good:
+```scss
+.dialog-container {
+  background-color: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
+}
+```
+
+### 2. Use Theme Mixins
+❌ Bad:
+```scss
+.dialog-container {
+  // Custom styling without theme integration
+}
+```
+
+✅ Good:
+```scss
+@include mat.dialog-theme($light-theme);
+
+.mat-mdc-dialog-container {
+  // Theme-aware overrides
+}
+```
+
+### 3. Consistent Spacing
+- Use Material Design spacing tokens
+- Apply consistent padding and margins
+- Follow Material Design 3 spacing guidelines
+
+### 4. Typography
+- Use Material Design typography tokens
+- Apply consistent font families and sizes
+- Follow Material Design 3 typography scale
+
+### 5. Elevation and Shadows
+- Use Material Design elevation tokens
+- Apply consistent shadow patterns
+- Follow Material Design 3 elevation guidelines
+
+## Testing
+
+### Theme Testing
+- Test both light and dark themes
+- Verify high contrast mode support
+- Test responsive behavior across breakpoints
+- Validate accessibility compliance
+
+### Component Testing
+- Test component theming in isolation
+- Verify theme token usage
+- Test theme switching functionality
+- Validate consistent styling across components
+
+## Maintenance
+
+### Adding New Components
+1. Define component theme in main theme file
+2. Apply theme using appropriate mixin
+3. Add component-specific overrides
+4. Test with both light and dark themes
+5. Update documentation
+
+### Updating Themes
+1. Update color palettes in theme files
+2. Verify all components still work
+3. Test theme switching functionality
+4. Update component overrides if needed
+5. Test accessibility compliance
+
+## Common Mistakes to Avoid
+
+1. **Hardcoding colors** - Always use Material Design tokens
+2. **Custom CSS variables** - Use Angular Material's theming system
+3. **Inconsistent spacing** - Follow Material Design spacing guidelines
+4. **Missing dark theme** - Always provide both light and dark variants
+5. **Ignoring accessibility** - Test with high contrast and reduced motion
+6. **Component-specific themes** - Use the centralized theming system
+7. **Missing responsive design** - Test across all breakpoints
+
+## Resources
+
+- [Angular Material Theming Guide](https://material.angular.io/guide/theming)
+- [Material Design 3 Guidelines](https://m3.material.io/)
+- [Angular Material Component Theming](https://material.angular.io/guide/theming-your-components)
+- [Material Design Tokens](https://m3.material.io/foundations/design-tokens)

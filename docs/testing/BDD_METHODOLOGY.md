@@ -93,6 +93,51 @@ describe('Feature: User Authentication', () => {
 3. **User Workflows** - End-to-end scenarios across multiple components
 4. **Error Handling** - Validation failures, network errors, edge cases
 
+### **Modular Feature File Structure**
+
+Our BDD tests are organized into focused, modular feature files for better maintainability and clarity:
+
+#### **📁 Feature Directory Structure**
+```
+features/
+├── auth/                           # Authentication feature group
+│   ├── auth.feature               # Core authentication (6 scenarios)
+│   ├── auth-username-validation.feature  # Username validation (1 scenario)
+│   ├── auth-password-validation.feature  # Password validation (1 scenario)
+│   ├── auth-navigation-guards.feature    # Navigation guards (7 scenarios)
+│   └── auth-help-dialog.feature          # Help dialog (2 scenarios)
+├── config/                        # Configuration feature group
+│   ├── config.feature             # Core configuration (6 scenarios)
+│   ├── config-date-range.feature  # Date range settings (4 scenarios)
+│   ├── config-testing.feature     # Testing options (3 scenarios)
+│   ├── config-validation.feature  # Validation logic (15 scenarios)
+│   ├── config-user-interface.feature    # UI/UX (20 scenarios)
+│   └── config-overview.feature    # Integration overview (6 scenarios)
+├── upload/                        # File upload feature group
+│   ├── upload.feature             # Core upload (4 scenarios)
+│   ├── upload-file-validation.feature    # File validation (1 scenario)
+│   ├── upload-file-management.feature    # File management (2 scenarios)
+│   └── upload-form-validation.feature    # Form validation (1 scenario)
+└── [other feature files...]       # Additional feature groups
+```
+
+#### **🎯 Modular File Benefits**
+- **Focused Responsibility**: Each file handles a specific aspect of functionality
+- **Easier Maintenance**: Changes to specific functionality only affect relevant files
+- **Better Organization**: Related scenarios grouped together logically
+- **Clear Navigation**: Easy to find and understand specific functionality
+- **Step Reuse**: Common steps shared across related feature files
+- **Testability**: Can run specific functionality areas independently
+
+#### **📋 File Naming Convention**
+- **`feature-name.feature`** - Core functionality for the feature
+- **`feature-name-aspect.feature`** - Specific aspect of the feature
+- **Examples**:
+  - `auth.feature` - Core authentication
+  - `auth-username-validation.feature` - Username validation
+  - `upload-file-management.feature` - File management
+  - `config-date-range.feature` - Date range configuration
+
 ### **Test Organization Structure**
 ```typescript
 // Group by business feature first

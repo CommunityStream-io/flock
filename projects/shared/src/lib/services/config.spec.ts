@@ -192,4 +192,121 @@ describe('Feature: Configuration Service', () => {
       expect(service.isAuthenticated()).toBe(false);
     });
   });
+
+  describe('Scenario: Test video mode management', () => {
+    it('Given the service is created, When test video mode is set to true, Then it should return true', () => {
+      // Given: Service is created
+      console.log('🔧 BDD: Config service is created');
+      
+      // When: Test video mode is set to true
+      console.log('⚙️ BDD: Setting test video mode to true');
+      service.setTestVideoMode(true);
+      
+      // Then: Should return true
+      console.log('✅ BDD: Test video mode is set to true');
+      expect(service.testVideoMode).toBe(true);
+    });
+
+    it('Given the service is created, When test video mode is not set, Then it should return false', () => {
+      // Given: Service is created
+      console.log('🔧 BDD: Config service is created');
+      
+      // When: Test video mode is not set
+      console.log('⚙️ BDD: Test video mode is not set');
+      
+      // Then: Should return false
+      console.log('✅ BDD: Test video mode is false by default');
+      expect(service.testVideoMode).toBe(false);
+    });
+  });
+
+  describe('Scenario: Date range management', () => {
+    it('Given the service is created, When start date is set, Then it should return the correct date', () => {
+      // Given: Service is created
+      console.log('🔧 BDD: Config service is created');
+      
+      // When: Start date is set
+      console.log('⚙️ BDD: Setting start date');
+      const testDate = '2023-01-01';
+      service.setStartDate(testDate);
+      
+      // Then: Should return the correct date
+      console.log('✅ BDD: Start date is set correctly');
+      expect(service.startDate).toBe(testDate);
+    });
+
+    it('Given the service is created, When start date is not set, Then it should return empty string', () => {
+      // Given: Service is created
+      console.log('🔧 BDD: Config service is created');
+      
+      // When: Start date is not set
+      console.log('⚙️ BDD: Start date is not set');
+      
+      // Then: Should return empty string
+      console.log('✅ BDD: Start date is empty by default');
+      expect(service.startDate).toBe('');
+    });
+
+    it('Given the service is created, When end date is set, Then it should return the correct date', () => {
+      // Given: Service is created
+      console.log('🔧 BDD: Config service is created');
+      
+      // When: End date is set
+      console.log('⚙️ BDD: Setting end date');
+      const testDate = '2023-12-31';
+      service.setEndDate(testDate);
+      
+      // Then: Should return the correct date
+      console.log('✅ BDD: End date is set correctly');
+      expect(service.endDate).toBe(testDate);
+    });
+
+    it('Given the service is created, When end date is not set, Then it should return empty string', () => {
+      // Given: Service is created
+      console.log('🔧 BDD: Config service is created');
+      
+      // When: End date is not set
+      console.log('⚙️ BDD: End date is not set');
+      
+      // Then: Should return empty string
+      console.log('✅ BDD: End date is empty by default');
+      expect(service.endDate).toBe('');
+    });
+  });
+
+  describe('Scenario: Alternative credentials access', () => {
+    it('Given the service is created, When getBlueskyCredentials is called, Then it should return the same as blueskyCredentials getter', () => {
+      // Given: Service is created
+      console.log('🔧 BDD: Config service is created');
+      
+      // When: Credentials are set and both methods are called
+      console.log('⚙️ BDD: Setting credentials and calling both access methods');
+      const testCredentials: Credentials = {
+        username: '@test.bksy.social',
+        password: 'testpassword123'
+      };
+      service.setBlueskyCredentials(testCredentials);
+      
+      // Then: Both methods should return the same value
+      console.log('✅ BDD: Both credential access methods return the same value');
+      expect(service.getBlueskyCredentials()).toEqual(testCredentials);
+      expect(service.getBlueskyCredentials()).toEqual(service.blueskyCredentials);
+    });
+  });
+
+  describe('Scenario: Authentication signal access', () => {
+    it('Given the service is created, When getIsAuthenticatedSignal is called, Then it should return a readonly signal', () => {
+      // Given: Service is created
+      console.log('🔧 BDD: Config service is created');
+      
+      // When: getIsAuthenticatedSignal is called
+      console.log('⚙️ BDD: Getting authentication signal');
+      const authSignal = service.getIsAuthenticatedSignal();
+      
+      // Then: Should return a signal
+      console.log('✅ BDD: Authentication signal is returned');
+      expect(authSignal).toBeDefined();
+      expect(typeof authSignal).toBe('function');
+    });
+  });
 });
