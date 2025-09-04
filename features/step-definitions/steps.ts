@@ -29,32 +29,45 @@ Given('the application is running', async () => {
             console.log(`🔧 BDD: Navigating to application (attempt ${retryCount + 1}/${maxRetries})`);
             await browser.url('/');
             
-            // Wait for the page to be fully loaded with Angular ready
+            // Wait for basic page load first
             await browser.waitUntil(
                 async () => {
                     const readyState = await browser.execute(() => document.readyState);
-                    const isAngularReady = await browser.execute(() => {
-                        return typeof window !== 'undefined' && 
-                               document.readyState === 'complete' &&
-                               (window as any).ng !== undefined;
-                    });
-                    return readyState === 'complete' && isAngularReady;
+                    return readyState === 'complete';
                 },
                 { 
-                    timeout: 30000, // Reasonable timeout for CI
-                    timeoutMsg: 'Angular application did not load completely within 30 seconds' 
+                    timeout: 15000, // Give more time for basic page load
+                    timeoutMsg: 'Page did not load completely within 15 seconds' 
                 }
             );
             
-            // Additional wait to ensure Angular has fully initialized
+            // Wait for Angular to be fully loaded and bootstrapped
+            await browser.waitUntil(
+                async () => {
+                    const isAngularReady = await browser.execute(() => {
+                        return typeof window !== 'undefined' && 
+                               document.readyState === 'complete' &&
+                               (window as any).ng !== undefined &&
+                               document.querySelector('app-root') !== null;
+                    });
+                    return isAngularReady;
+                },
+                { 
+                    timeout: 20000, // Give more time for Angular bootstrap
+                    timeoutMsg: 'Angular application did not bootstrap within 20 seconds' 
+                }
+            );
+            
+            // Additional wait to ensure app-root is fully rendered
             await browser.waitUntil(
                 async () => {
                     const hasAppRoot = await $('app-root').isExisting();
-                    return hasAppRoot;
+                    const appRootVisible = await $('app-root').isDisplayed();
+                    return hasAppRoot && appRootVisible;
                 },
                 {
-                    timeout: 15000,
-                    timeoutMsg: 'Angular app-root element not found within 15 seconds'
+                    timeout: 10000,
+                    timeoutMsg: 'app-root element not visible within 10 seconds'
                 }
             );
             
@@ -121,32 +134,45 @@ Given('I navigate to the application', async () => {
             console.log(`🔧 BDD: Navigating to application (attempt ${retryCount + 1}/${maxRetries})`);
             await browser.url('/');
             
-            // Wait for Angular to be ready
+            // Wait for basic page load first
             await browser.waitUntil(
                 async () => {
                     const readyState = await browser.execute(() => document.readyState);
-                    const isAngularReady = await browser.execute(() => {
-                        return typeof window !== 'undefined' && 
-                               document.readyState === 'complete' &&
-                               (window as any).ng !== undefined;
-                    });
-                    return readyState === 'complete' && isAngularReady;
+                    return readyState === 'complete';
                 },
                 { 
-                    timeout: 45000, // Increased timeout for CI
-                    timeoutMsg: 'Angular application did not become ready within 45 seconds' 
+                    timeout: 15000, // Give more time for basic page load
+                    timeoutMsg: 'Page did not load completely within 15 seconds' 
                 }
             );
             
-            // Additional wait to ensure Angular has fully initialized
+            // Wait for Angular to be fully loaded and bootstrapped
+            await browser.waitUntil(
+                async () => {
+                    const isAngularReady = await browser.execute(() => {
+                        return typeof window !== 'undefined' && 
+                               document.readyState === 'complete' &&
+                               (window as any).ng !== undefined &&
+                               document.querySelector('app-root') !== null;
+                    });
+                    return isAngularReady;
+                },
+                { 
+                    timeout: 20000, // Give more time for Angular bootstrap
+                    timeoutMsg: 'Angular application did not bootstrap within 20 seconds' 
+                }
+            );
+            
+            // Additional wait to ensure app-root is fully rendered
             await browser.waitUntil(
                 async () => {
                     const hasAppRoot = await $('app-root').isExisting();
-                    return hasAppRoot;
+                    const appRootVisible = await $('app-root').isDisplayed();
+                    return hasAppRoot && appRootVisible;
                 },
                 {
-                    timeout: 15000,
-                    timeoutMsg: 'Angular app-root element not found within 15 seconds'
+                    timeout: 10000,
+                    timeoutMsg: 'app-root element not visible within 10 seconds'
                 }
             );
             

@@ -90,6 +90,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Setup Chrome for E2E tests
+        uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: stable
+
       - name: Install Angular CLI globally
         run: npm install -g @angular/cli
 
