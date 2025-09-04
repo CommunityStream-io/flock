@@ -154,32 +154,4 @@ export const config: Options.Testrunner = {
     // it and to build services around it. You can either apply a single function or an array of
     // methods to it. If one of them returns with a promise, WebdriverIO will wait until that promise got
     // resolved to continue.
-    
-    // Add screenshot on failure and coverage collection
-    beforeSession: function (config, capabilities, specs, cid) {
-        // Initialize coverage collection
-        if (process.env.COLLECT_COVERAGE === 'true') {
-            console.log('🔍 BDD: Initializing E2E coverage collection');
-        }
-    },
-    
-    afterTest: function (test, context, { error, result, duration, passed, retries }) {
-        if (!passed) {
-            // Screenshot will be taken automatically by WebdriverIO on failure
-        }
-    },
-    
-    afterSuite: function (suite) {
-        // Collect coverage data after each suite
-        if (process.env.COLLECT_COVERAGE === 'true') {
-            console.log('📊 BDD: Collecting coverage data for suite:', suite.title);
-        }
-    },
-    
-    onComplete: function (exitCode, config, capabilities, results) {
-        // Final coverage collection and report generation
-        if (process.env.COLLECT_COVERAGE === 'true') {
-            console.log('📈 BDD: E2E tests completed, coverage data collected');
-        }
-    },
 }

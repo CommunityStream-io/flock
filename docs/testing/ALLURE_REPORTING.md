@@ -83,7 +83,6 @@ Our CI pipeline automatically generates and stores Allure reports:
   env:
     CI: true
     NODE_ENV: production
-    COLLECT_COVERAGE: true
 
 - name: Ensure allure-results directory exists
   run: mkdir -p allure-results
