@@ -9,6 +9,7 @@ import './auth';
 import './splash-screen';
 import './step-navigation';
 import './file-upload';
+import './layout';
 
 // ===== URL CHECKS =====
 

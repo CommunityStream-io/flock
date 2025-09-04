@@ -3,4 +3,38 @@
    justify-content: space-between;
    padding-left: 2rem;
    padding-right: 2rem;
+   background-color: var(--mat-sys-surface);
+   border-top: 1px solid var(--mat-sys-outline-variant);
+   color: var(--mat-sys-on-surface);
+}
+
+/* Theme-aware button styling */
+.step-navigation button {
+   color: var(--mat-sys-on-surface);
+   background-color: var(--mat-sys-surface-container);
+   border: 1px solid var(--mat-sys-outline);
+   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.step-navigation button:hover:not(:disabled) {
+   background-color: var(--mat-sys-primary-container);
+   color: var(--mat-sys-on-primary-container);
+   border-color: var(--mat-sys-primary);
+}
+
+.step-navigation button:disabled {
+   color: var(--mat-sys-on-surface-variant);
+   background-color: var(--mat-sys-surface-container-low);
+   border-color: var(--mat-sys-outline-variant);
+   opacity: 0.6;
+}
+
+.step-navigation button:focus-visible {
+   outline: 2px solid var(--mat-sys-primary);
+   outline-offset: 2px;
+}
+
+/* Icon styling */
+.step-navigation mat-icon {
+   color: inherit;
 }

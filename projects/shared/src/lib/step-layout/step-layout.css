@@ -1,3 +1,45 @@
+/* Fixed viewport layout to prevent scrolling */
+.step-layout {
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    background-color: var(--mat-sys-surface);
+    color: var(--mat-sys-on-surface);
+}
+
+.app-content {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - var(--footer-height, 4rem));
+    max-height: calc(100vh - var(--footer-height, 4rem));
+    position: relative;
+}
+
+/* Ensure router-outlet content doesn't overflow */
+router-outlet {
+    display: block;
+    height: 100%;
+    overflow: hidden;
+}
+
+/* Step content container */
+router-outlet + * {
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Navigation buttons */
 .next-step {
     display: flex;
     flex-direction: row-reverse;
@@ -9,11 +51,87 @@
     gap: 0.5rem;
 }
 
+/* Fixed footer */
 footer {
     height: var(--footer-height, 4rem);
     bottom: 0;
     width: 100%;
     position: sticky;
     padding: 1rem 0;
-    border-top: 1px solid var(--border-color, #e0e0e0);
+    border-top: 1px solid var(--mat-sys-outline-variant);
+    background: var(--mat-sys-surface);
+    color: var(--mat-sys-on-surface);
+    z-index: 10;
+    flex-shrink: 0;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+    .step-layout {
+        height: 100vh;
+        height: 100dvh; /* Dynamic viewport height for mobile */
+    }
+    
+    .app-content {
+        height: calc(100vh - var(--footer-height, 4rem));
+        height: calc(100dvh - var(--footer-height, 4rem));
+        max-height: calc(100vh - var(--footer-height, 4rem));
+        max-height: calc(100dvh - var(--footer-height, 4rem));
+    }
+    
+    footer {
+        height: var(--footer-height-mobile, 3.5rem);
+    }
+}
+
+/* Tablet responsive adjustments */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .step-layout {
+        height: 100vh;
+    }
+    
+    .app-content {
+        height: calc(100vh - var(--footer-height, 4rem));
+        max-height: calc(100vh - var(--footer-height, 4rem));
+    }
+}
+
+/* Desktop responsive adjustments */
+@media (min-width: 1025px) {
+    .step-layout {
+        height: 100vh;
+    }
+    
+    .app-content {
+        height: calc(100vh - var(--footer-height, 4rem));
+        max-height: calc(100vh - var(--footer-height, 4rem));
+    }
+}
+
+/* Prevent body scroll when step layout is active */
+body.step-layout-active {
+    overflow: hidden;
+    height: 100vh;
+    position: fixed;
+    width: 100%;
+    background-color: var(--mat-sys-surface);
+    color: var(--mat-sys-on-surface);
+}
+
+/* Ensure no scroll bars appear */
+.step-layout::-webkit-scrollbar {
+    display: none;
+}
+
+.app-content::-webkit-scrollbar {
+    display: none;
+}
+
+/* Hide scrollbars for Firefox */
+.step-layout {
+    scrollbar-width: none;
+}
+
+.app-content {
+    scrollbar-width: none;
 }
