@@ -1,0 +1,1551 @@
+
+> flock@0.0.0 test:coverage
+> cross-env CI=true ng test shared --watch=false --code-coverage
+
+❯ Building...
+✔ Building...
+Initial chunk files                                                      | Names                                                                 |  Raw size
+chunk-6WSBJITP.js                                                        | -                                                                     |   2.29 MB | 
+polyfills.js                                                             | polyfills                                                             |   1.03 MB | 
+chunk-RKX6FW77.js                                                        | -                                                                     | 352.33 kB | 
+chunk-RO72XHQ4.js                                                        | -                                                                     | 267.49 kB | 
+chunk-LLYT7B74.js                                                        | -                                                                     | 243.08 kB | 
+chunk-LRTQRHAC.js                                                        | -                                                                     | 231.58 kB | 
+chunk-Q5UJKIJQ.js                                                        | -                                                                     | 207.69 kB | 
+chunk-S2QHY4AU.js                                                        | -                                                                     | 198.78 kB | 
+chunk-2TSEI5IN.js                                                        | -                                                                     | 174.14 kB | 
+chunk-KJSMS5FF.js                                                        | -                                                                     | 119.53 kB | 
+chunk-ZCBTQ52E.js                                                        | -                                                                     |  71.47 kB | 
+jasmine-cleanup-1.js                                                     | jasmine-cleanup-1                                                     |  67.20 kB | 
+chunk-EVURSJC3.js                                                        | -                                                                     |  52.27 kB | 
+chunk-F2MGSSYY.js                                                        | -                                                                     |  49.62 kB | 
+chunk-QR3D4AYY.js                                                        | -                                                                     |  45.20 kB | 
+chunk-BKOLAVJT.js                                                        | -                                                                     |  42.11 kB | 
+chunk-KCZ3CJ6E.js                                                        | -                                                                     |  39.34 kB | 
+chunk-54GRE4YX.js                                                        | -                                                                     |  32.71 kB | 
+chunk-A4LEE4B5.js                                                        | -                                                                     |  28.62 kB | 
+chunk-53OXKLAJ.js                                                        | -                                                                     |  27.21 kB | 
+chunk-Q2J6ZGF5.js                                                        | -                                                                     |  25.16 kB | 
+chunk-O3LGQ5KN.js                                                        | -                                                                     |  24.75 kB | 
+chunk-IHQROW5L.js                                                        | -                                                                     |  20.53 kB | 
+chunk-RXDXQQ44.js                                                        | -                                                                     |  19.17 kB | 
+chunk-BLXBHZUK.js                                                        | -                                                                     |  18.80 kB | 
+chunk-DEHHILBY.js                                                        | -                                                                     |  17.90 kB | 
+chunk-QK4TEDRD.js                                                        | -                                                                     |  17.85 kB | 
+chunk-FLALRSEH.js                                                        | -                                                                     |  17.03 kB | 
+spec-lib-route-guards-auth-deactivate-guard-bdd.spec.js                  | spec-lib-route-guards-auth-deactivate-guard-bdd.spec                  |  12.97 kB | 
+chunk-NBSH5RIB.js                                                        | -                                                                     |  12.71 kB | 
+spec-lib-theme-theme-toggle.spec.js                                      | spec-lib-theme-theme-toggle.spec                                      |  12.46 kB | 
+spec-lib-landing-page-landing-page.spec.js                               | spec-lib-landing-page-landing-page.spec                               |  12.20 kB | 
+spec-lib-step-navigation-step-navigation.spec.js                         | spec-lib-step-navigation-step-navigation.spec                         |  11.12 kB | 
+chunk-KNDGITRK.js                                                        | -                                                                     |  10.19 kB | 
+spec-lib-route-guards-auth-deactivate-guard.spec.js                      | spec-lib-route-guards-auth-deactivate-guard.spec                      |   9.76 kB | 
+chunk-53362KEA.js                                                        | -                                                                     |   9.21 kB | 
+spec-lib-header-header.spec.js                                           | spec-lib-header-header.spec                                           |   9.07 kB | 
+spec-lib-route-resolver-extract-archive-extract-archive-resolver.spec.js | spec-lib-route-resolver-extract-archive-extract-archive-resolver.spec |   8.68 kB | 
+chunk-Q5QXWNFD.js                                                        | -                                                                     |   8.59 kB | 
+spec-lib-layout-layout.spec.js                                           | spec-lib-layout-layout.spec                                           |   7.64 kB | 
+spec-lib-steps-upload-upload.spec.js                                     | spec-lib-steps-upload-upload.spec                                     |   7.15 kB | 
+spec-lib-services-config.spec.js                                         | spec-lib-services-config.spec                                         |   7.03 kB | 
+spec-lib-router-splash-router-splash.spec.js                             | spec-lib-router-splash-router-splash.spec                             |   6.72 kB | 
+spec-lib-services-bluesky.spec.js                                        | spec-lib-services-bluesky.spec                                        |   6.25 kB | 
+chunk-GM3YCBLZ.js                                                        | -                                                                     |   6.12 kB | 
+chunk-3ZYAOEPO.js                                                        | -                                                                     |   6.12 kB | 
+spec-lib-steps-auth-auth-bdd.component.spec.js                           | spec-lib-steps-auth-auth-bdd.component.spec                           |   5.96 kB | 
+chunk-LIZD5QAS.js                                                        | -                                                                     |   5.38 kB | 
+chunk-CKKIV7SN.js                                                        | -                                                                     |   5.32 kB | 
+spec-lib-services-splash-screen-loading.spec.js                          | spec-lib-services-splash-screen-loading.spec                          |   5.27 kB | 
+spec-lib-theme-toggle-theme-toggle.spec.js                               | spec-lib-theme-toggle-theme-toggle.spec                               |   4.64 kB | 
+test_main.js                                                             | test_main                                                             |   4.43 kB | 
+chunk-FDODZI4X.js                                                        | -                                                                     |   4.39 kB | 
+chunk-SU2FBD4R.js                                                        | -                                                                     |   3.71 kB | 
+spec-lib-error-error.spec.js                                             | spec-lib-error-error.spec                                             |   3.71 kB | 
+spec-lib-controls-file-upload-control-file-upload-control.spec.js        | spec-lib-controls-file-upload-control-file-upload-control.spec        |   3.52 kB | 
+chunk-JPDGUCLT.js                                                        | -                                                                     |   3.20 kB | 
+chunk-EKVA6UED.js                                                        | -                                                                     |   3.15 kB | 
+chunk-JFSAZVBL.js                                                        | -                                                                     |   3.10 kB | 
+spec-lib-step-layout-step-layout.spec.js                                 | spec-lib-step-layout-step-layout.spec                                 |   2.62 kB | 
+spec-lib-steps-auth-auth.spec.js                                         | spec-lib-steps-auth-auth.spec                                         |   2.43 kB | 
+chunk-V6FC2DIM.js                                                        | -                                                                     |   2.42 kB | 
+chunk-XQGCHDKI.js                                                        | -                                                                     |   2.29 kB | 
+spec-lib-route-guards-upload-valid-guard.spec.js                         | spec-lib-route-guards-upload-valid-guard.spec                         |   2.01 kB | 
+spec-lib-route-resolver-logger-instrumentation-resolver.spec.js          | spec-lib-route-resolver-logger-instrumentation-resolver.spec          |   1.78 kB | 
+spec-lib-start-button-start-button.spec.js                               | spec-lib-start-button-start-button.spec                               |   1.53 kB | 
+spec-lib-splash-screen-splash-screen.spec.js                             | spec-lib-splash-screen-splash-screen.spec                             |   1.29 kB | 
+spec-lib-steps-complete-complete.spec.js                                 | spec-lib-steps-complete-complete.spec                                 | 998 bytes | 
+spec-lib-steps-migrate-migrate.spec.js                                   | spec-lib-steps-migrate-migrate.spec                                   | 984 bytes | 
+spec-lib-steps-config-config.spec.js                                     | spec-lib-steps-config-config.spec                                     | 970 bytes | 
+spec-lib-services-sentry-logger.spec.js                                  | spec-lib-services-sentry-logger.spec                                  | 570 bytes | 
+spec-lib-services-migration.spec.js                                      | spec-lib-services-migration.spec                                      | 545 bytes | 
+spec-lib-services-instagram.spec.js                                      | spec-lib-services-instagram.spec                                      | 545 bytes | 
+jasmine-cleanup-0.js                                                     | jasmine-cleanup-0                                                     | 519 bytes | 
+
+                                                                         | Initial total                                                         |   5.98 MB
+
+Application bundle generation complete. [2.665 seconds]
+
+isCI true
+autoWatch false
+singleRun true
+browsers [ 'ChromeHeadless' ]
+logLevel WARN
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 0 of 183 SUCCESS (0 secs / 0 secs)
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 1 of 183 SUCCESS (0 secs / 0.026 secs)
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 2 of 183 SUCCESS (0 secs / 0.032 secs)
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 3 of 183 SUCCESS (0 secs / 0.035 secs)
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0) FileUploadControl removeFile clears value and resets input element FAILED
+	InvalidStateError: Failed to set the 'value' property on 'HTMLInputElement': This input element accepts a filename, which may only be programmatically set to the empty string.
+	error properties: Object({ code: 11, INDEX_SIZE_ERR: 1, DOMSTRING_SIZE_ERR: 2, HIERARCHY_REQUEST_ERR: 3, WRONG_DOCUMENT_ERR: 4, INVALID_CHARACTER_ERR: 5, NO_DATA_ALLOWED_ERR: 6, NO_MODIFICATION_ALLOWED_ERR: 7, NOT_FOUND_ERR: 8, NOT_SUPPORTED_ERR: 9, INUSE_ATTRIBUTE_ERR: 10, INVALID_STATE_ERR: 11, SYNTAX_ERR: 12, INVALID_MODIFICATION_ERR: 13, NAMESPACE_ERR: 14, INVALID_ACCESS_ERR: 15, VALIDATION_ERR: 16, TYPE_MISMATCH_ERR: 17, SECURITY_ERR: 18, NETWORK_ERR: 19, ABORT_ERR: 20, URL_MISMATCH_ERR: 21, QUOTA_EXCEEDED_ERR: 22, TIMEOUT_ERR: 23, INVALID_NODE_TYPE_ERR: 24, DATA_CLONE_ERR: 25 })
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:398:28)
+	    at _ProxyZoneSpec.onInvoke (node_modules/zone.js/fesm2015/zone-testing.js:2132:39)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:397:34)
+	    at ZoneImpl.run (node_modules/zone.js/fesm2015/zone.js:113:43)
+	    at runInTestZone (node_modules/zone.js/fesm2015/zone-testing.js:216:38)
+	    at UserContext.<anonymous> (node_modules/zone.js/fesm2015/zone-testing.js:234:32)
+	    at <Jasmine>
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 4 of 183 (1 FAILED) (0 secs / 0.04 secs)
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 5 of 183 (1 FAILED) (0 secs / 0.043 secs)
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 6 of 183 (1 FAILED) (0 secs / 0.045 secs)
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 7 of 183 (1 FAILED) (0 secs / 0.047 secs)
+[1A[2KLOG: '🔧 BDD: Header component is created'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 7 of 183 (1 FAILED) (0 secs / 0.047 secs)
+LOG: '🔧 BDD: Header component is created'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 7 of 183 (1 FAILED) (0 secs / 0.047 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Header component renders successfully'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 7 of 183 (1 FAILED) (0 secs / 0.047 secs)
+LOG: '✅ BDD: Header component renders successfully'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 8 of 183 (1 FAILED) (0 secs / 0.065 secs)
+[1A[2KLOG: '🔧 BDD: Header component renders'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 8 of 183 (1 FAILED) (0 secs / 0.065 secs)
+LOG: '🔧 BDD: Header component renders'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 8 of 183 (1 FAILED) (0 secs / 0.065 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Header displays app title'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 8 of 183 (1 FAILED) (0 secs / 0.065 secs)
+LOG: '✅ BDD: Header displays app title'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 9 of 183 (1 FAILED) (0 secs / 0.07 secs)
+[1A[2KLOG: '🔧 BDD: Header renders'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 9 of 183 (1 FAILED) (0 secs / 0.07 secs)
+LOG: '🔧 BDD: Header renders'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 9 of 183 (1 FAILED) (0 secs / 0.07 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Header displays butterfly icon'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 9 of 183 (1 FAILED) (0 secs / 0.07 secs)
+LOG: '✅ BDD: Header displays butterfly icon'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 10 of 183 (1 FAILED) (0 secs / 0.075 secs)
+[1A[2KLOG: '🔧 BDD: Header renders'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 10 of 183 (1 FAILED) (0 secs / 0.075 secs)
+LOG: '🔧 BDD: Header renders'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 10 of 183 (1 FAILED) (0 secs / 0.075 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Header has link to home page'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 10 of 183 (1 FAILED) (0 secs / 0.075 secs)
+LOG: '✅ BDD: Header has link to home page'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 11 of 183 (1 FAILED) (0 secs / 0.079 secs)
+[1A[2KLOG: '🔧 BDD: Header renders'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 11 of 183 (1 FAILED) (0 secs / 0.079 secs)
+LOG: '🔧 BDD: Header renders'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 11 of 183 (1 FAILED) (0 secs / 0.079 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Header displays navigation menu'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 11 of 183 (1 FAILED) (0 secs / 0.079 secs)
+LOG: '✅ BDD: Header displays navigation menu'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 12 of 183 (1 FAILED) (0 secs / 0.084 secs)
+[1A[2KLOG: '🔧 BDD: Navigation menu renders'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 12 of 183 (1 FAILED) (0 secs / 0.084 secs)
+LOG: '🔧 BDD: Navigation menu renders'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 12 of 183 (1 FAILED) (0 secs / 0.084 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Navigation menu contains navigation links'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 12 of 183 (1 FAILED) (0 secs / 0.084 secs)
+LOG: '✅ BDD: Navigation menu contains navigation links'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 13 of 183 (1 FAILED) (0 secs / 0.089 secs)
+[1A[2KLOG: '🔧 BDD: Navigation links render'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 13 of 183 (1 FAILED) (0 secs / 0.089 secs)
+LOG: '🔧 BDD: Navigation links render'
+[1A[2KLOG: '⚙️ BDD: Navigation links initialize'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 13 of 183 (1 FAILED) (0 secs / 0.089 secs)
+LOG: '⚙️ BDD: Navigation links initialize'
+[1A[2KLOG: '✅ BDD: Navigation links have routerLink attributes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 13 of 183 (1 FAILED) (0 secs / 0.089 secs)
+LOG: '✅ BDD: Navigation links have routerLink attributes'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 14 of 183 (1 FAILED) (0 secs / 0.093 secs)
+[1A[2KLOG: '🔧 BDD: Navigation links render'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 14 of 183 (1 FAILED) (0 secs / 0.093 secs)
+LOG: '🔧 BDD: Navigation links render'
+[1A[2KLOG: '⚙️ BDD: Navigation links initialize'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 14 of 183 (1 FAILED) (0 secs / 0.093 secs)
+LOG: '⚙️ BDD: Navigation links initialize'
+[1A[2KLOG: '✅ BDD: Navigation links have routerLinkActive attributes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 14 of 183 (1 FAILED) (0 secs / 0.093 secs)
+LOG: '✅ BDD: Navigation links have routerLinkActive attributes'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 15 of 183 (1 FAILED) (0 secs / 0.097 secs)
+[1A[2KLOG: '🔧 BDD: Navigation links render'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 15 of 183 (1 FAILED) (0 secs / 0.097 secs)
+LOG: '🔧 BDD: Navigation links render'
+[1A[2KLOG: '⚙️ BDD: Navigation links initialize'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 15 of 183 (1 FAILED) (0 secs / 0.097 secs)
+LOG: '⚙️ BDD: Navigation links initialize'
+[1A[2KLOG: '✅ BDD: Navigation links have proper href values'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 15 of 183 (1 FAILED) (0 secs / 0.097 secs)
+LOG: '✅ BDD: Navigation links have proper href values'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 16 of 183 (1 FAILED) (0 secs / 0.102 secs)
+[1A[2KLOG: '🔧 BDD: Navigation links render'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 16 of 183 (1 FAILED) (0 secs / 0.102 secs)
+LOG: '🔧 BDD: Navigation links render'
+[1A[2KLOG: '⚙️ BDD: Navigation links initialize'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 16 of 183 (1 FAILED) (0 secs / 0.102 secs)
+LOG: '⚙️ BDD: Navigation links initialize'
+[1A[2KLOG: '✅ BDD: Navigation links have expected route paths'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 16 of 183 (1 FAILED) (0 secs / 0.102 secs)
+LOG: '✅ BDD: Navigation links have expected route paths'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 17 of 183 (1 FAILED) (0 secs / 0.108 secs)
+[1A[2KLOG: '🔧 BDD: Header renders'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 17 of 183 (1 FAILED) (0 secs / 0.108 secs)
+LOG: '🔧 BDD: Header renders'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 17 of 183 (1 FAILED) (0 secs / 0.108 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Header contains theme toggle component'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 17 of 183 (1 FAILED) (0 secs / 0.108 secs)
+LOG: '✅ BDD: Header contains theme toggle component'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 18 of 183 (1 FAILED) (0 secs / 0.113 secs)
+[1A[2KLOG: '🔧 BDD: Header renders'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 18 of 183 (1 FAILED) (0 secs / 0.113 secs)
+LOG: '🔧 BDD: Header renders'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 18 of 183 (1 FAILED) (0 secs / 0.113 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Theme toggle is in header right section'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 18 of 183 (1 FAILED) (0 secs / 0.113 secs)
+LOG: '✅ BDD: Theme toggle is in header right section'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 19 of 183 (1 FAILED) (0 secs / 0.117 secs)
+[1A[2KLOG: '🔧 BDD: Header renders'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 19 of 183 (1 FAILED) (0 secs / 0.117 secs)
+LOG: '🔧 BDD: Header renders'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 19 of 183 (1 FAILED) (0 secs / 0.117 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Header has correct structure'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 19 of 183 (1 FAILED) (0 secs / 0.117 secs)
+LOG: '✅ BDD: Header has correct structure'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 20 of 183 (1 FAILED) (0 secs / 0.122 secs)
+[1A[2KLOG: '🔧 BDD: Header renders'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 20 of 183 (1 FAILED) (0 secs / 0.122 secs)
+LOG: '🔧 BDD: Header renders'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 20 of 183 (1 FAILED) (0 secs / 0.122 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Header has correct CSS classes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 20 of 183 (1 FAILED) (0 secs / 0.122 secs)
+LOG: '✅ BDD: Header has correct CSS classes'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 21 of 183 (1 FAILED) (0 secs / 0.126 secs)
+[1A[2KLOG: '🔧 BDD: Header renders'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 21 of 183 (1 FAILED) (0 secs / 0.126 secs)
+LOG: '🔧 BDD: Header renders'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 21 of 183 (1 FAILED) (0 secs / 0.126 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Header has responsive CSS classes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 21 of 183 (1 FAILED) (0 secs / 0.126 secs)
+LOG: '✅ BDD: Header has responsive CSS classes'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 22 of 183 (1 FAILED) (0 secs / 0.13 secs)
+[1A[2KLOG: '🔧 BDD: Landing page component is created'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 22 of 183 (1 FAILED) (0 secs / 0.13 secs)
+LOG: '🔧 BDD: Landing page component is created'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 22 of 183 (1 FAILED) (0 secs / 0.13 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Landing page component renders successfully'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 22 of 183 (1 FAILED) (0 secs / 0.13 secs)
+LOG: '✅ BDD: Landing page component renders successfully'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 23 of 183 (1 FAILED) (0 secs / 0.141 secs)
+[1A[2KLOG: '🔧 BDD: Landing page component renders'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 23 of 183 (1 FAILED) (0 secs / 0.141 secs)
+LOG: '🔧 BDD: Landing page component renders'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 23 of 183 (1 FAILED) (0 secs / 0.141 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Landing page displays main content'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 23 of 183 (1 FAILED) (0 secs / 0.141 secs)
+LOG: '✅ BDD: Landing page displays main content'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 24 of 183 (1 FAILED) (0 secs / 0.145 secs)
+[1A[2KLOG: '🔧 BDD: Component renders'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 24 of 183 (1 FAILED) (0 secs / 0.145 secs)
+LOG: '🔧 BDD: Component renders'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 24 of 183 (1 FAILED) (0 secs / 0.145 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Component displays hero section'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 24 of 183 (1 FAILED) (0 secs / 0.145 secs)
+LOG: '✅ BDD: Component displays hero section'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 25 of 183 (1 FAILED) (0 secs / 0.148 secs)
+[1A[2KLOG: '🔧 BDD: Component renders'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 25 of 183 (1 FAILED) (0 secs / 0.148 secs)
+LOG: '🔧 BDD: Component renders'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 25 of 183 (1 FAILED) (0 secs / 0.148 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Component displays main heading'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 25 of 183 (1 FAILED) (0 secs / 0.148 secs)
+LOG: '✅ BDD: Component displays main heading'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 26 of 183 (1 FAILED) (0 secs / 0.152 secs)
+[1A[2KLOG: '🔧 BDD: Component renders'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 26 of 183 (1 FAILED) (0 secs / 0.152 secs)
+LOG: '🔧 BDD: Component renders'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 26 of 183 (1 FAILED) (0 secs / 0.152 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Component displays hero description'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 26 of 183 (1 FAILED) (0 secs / 0.152 secs)
+LOG: '✅ BDD: Component displays hero description'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 27 of 183 (1 FAILED) (0 secs / 0.156 secs)
+[1A[2KLOG: '🔧 BDD: Component renders'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 27 of 183 (1 FAILED) (0 secs / 0.156 secs)
+LOG: '🔧 BDD: Component renders'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 27 of 183 (1 FAILED) (0 secs / 0.156 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Component displays Get Started button'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 27 of 183 (1 FAILED) (0 secs / 0.156 secs)
+LOG: '✅ BDD: Component displays Get Started button'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 28 of 183 (1 FAILED) (0 secs / 0.161 secs)
+[1A[2KLOG: '🔧 BDD: Component renders'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 28 of 183 (1 FAILED) (0 secs / 0.161 secs)
+LOG: '🔧 BDD: Component renders'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 28 of 183 (1 FAILED) (0 secs / 0.161 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Get Started button links to upload step'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 28 of 183 (1 FAILED) (0 secs / 0.161 secs)
+LOG: '✅ BDD: Get Started button links to upload step'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 29 of 183 (1 FAILED) (0 secs / 0.166 secs)
+[1A[2KLOG: '🔧 BDD: Component renders'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 29 of 183 (1 FAILED) (0 secs / 0.166 secs)
+LOG: '🔧 BDD: Component renders'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 29 of 183 (1 FAILED) (0 secs / 0.166 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Component displays Learn More button'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 29 of 183 (1 FAILED) (0 secs / 0.166 secs)
+LOG: '✅ BDD: Component displays Learn More button'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 30 of 183 (1 FAILED) (0 secs / 0.169 secs)
+[1A[2KLOG: '🔧 BDD: Component renders'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 30 of 183 (1 FAILED) (0 secs / 0.169 secs)
+LOG: '🔧 BDD: Component renders'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 30 of 183 (1 FAILED) (0 secs / 0.169 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Component displays step navigation'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 30 of 183 (1 FAILED) (0 secs / 0.169 secs)
+LOG: '✅ BDD: Component displays step navigation'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 31 of 183 (1 FAILED) (0 secs / 0.172 secs)
+[1A[2KLOG: '🔧 BDD: Component renders'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 31 of 183 (1 FAILED) (0 secs / 0.172 secs)
+LOG: '🔧 BDD: Component renders'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 31 of 183 (1 FAILED) (0 secs / 0.172 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Step navigation is properly positioned'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 31 of 183 (1 FAILED) (0 secs / 0.172 secs)
+LOG: '✅ BDD: Step navigation is properly positioned'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 32 of 183 (1 FAILED) (0 secs / 0.175 secs)
+[1A[2KLOG: '🔧 BDD: Component renders'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 32 of 183 (1 FAILED) (0 secs / 0.175 secs)
+LOG: '🔧 BDD: Component renders'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 32 of 183 (1 FAILED) (0 secs / 0.175 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Component displays features section'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 32 of 183 (1 FAILED) (0 secs / 0.175 secs)
+LOG: '✅ BDD: Component displays features section'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 33 of 183 (1 FAILED) (0 secs / 0.178 secs)
+[1A[2KLOG: '🔧 BDD: Component renders'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 33 of 183 (1 FAILED) (0 secs / 0.178 secs)
+LOG: '🔧 BDD: Component renders'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 33 of 183 (1 FAILED) (0 secs / 0.178 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Component displays feature cards'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 33 of 183 (1 FAILED) (0 secs / 0.178 secs)
+LOG: '✅ BDD: Component displays feature cards'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 34 of 183 (1 FAILED) (0 secs / 0.19 secs)
+[1A[2KLOG: '🔧 BDD: Component renders'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 34 of 183 (1 FAILED) (0 secs / 0.19 secs)
+LOG: '🔧 BDD: Component renders'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 34 of 183 (1 FAILED) (0 secs / 0.19 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Component displays Secure & Private feature'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 34 of 183 (1 FAILED) (0 secs / 0.19 secs)
+LOG: '✅ BDD: Component displays Secure & Private feature'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 35 of 183 (1 FAILED) (0 secs / 0.193 secs)
+[1A[2KLOG: '🔧 BDD: Component renders'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 35 of 183 (1 FAILED) (0 secs / 0.193 secs)
+LOG: '🔧 BDD: Component renders'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 35 of 183 (1 FAILED) (0 secs / 0.193 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Component displays Multi-Platform feature'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 35 of 183 (1 FAILED) (0 secs / 0.193 secs)
+LOG: '✅ BDD: Component displays Multi-Platform feature'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 36 of 183 (1 FAILED) (0 secs / 0.196 secs)
+[1A[2KLOG: '🔧 BDD: Component renders'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 36 of 183 (1 FAILED) (0 secs / 0.196 secs)
+LOG: '🔧 BDD: Component renders'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 36 of 183 (1 FAILED) (0 secs / 0.196 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Component displays Fast & Efficient feature'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 36 of 183 (1 FAILED) (0 secs / 0.196 secs)
+LOG: '✅ BDD: Component displays Fast & Efficient feature'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 37 of 183 (1 FAILED) (0 secs / 0.199 secs)
+[1A[2KLOG: '🔧 BDD: Component renders'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 37 of 183 (1 FAILED) (0 secs / 0.199 secs)
+LOG: '🔧 BDD: Component renders'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 37 of 183 (1 FAILED) (0 secs / 0.199 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Component has correct CSS classes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 37 of 183 (1 FAILED) (0 secs / 0.199 secs)
+LOG: '✅ BDD: Component has correct CSS classes'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 38 of 183 (1 FAILED) (0 secs / 0.202 secs)
+[1A[2KLOG: '🔧 BDD: Component renders'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 38 of 183 (1 FAILED) (0 secs / 0.202 secs)
+LOG: '🔧 BDD: Component renders'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 38 of 183 (1 FAILED) (0 secs / 0.202 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Component has correct layout structure'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 38 of 183 (1 FAILED) (0 secs / 0.202 secs)
+LOG: '✅ BDD: Component has correct layout structure'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 39 of 183 (1 FAILED) (0 secs / 0.205 secs)
+[1A[2KLOG: '🔧 BDD: Component renders'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 39 of 183 (1 FAILED) (0 secs / 0.205 secs)
+LOG: '🔧 BDD: Component renders'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 39 of 183 (1 FAILED) (0 secs / 0.205 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Component has semantic HTML structure'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 39 of 183 (1 FAILED) (0 secs / 0.205 secs)
+LOG: '✅ BDD: Component has semantic HTML structure'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 40 of 183 (1 FAILED) (0 secs / 0.208 secs)
+[1A[2KLOG: '🔧 BDD: Component renders'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 40 of 183 (1 FAILED) (0 secs / 0.208 secs)
+LOG: '🔧 BDD: Component renders'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 40 of 183 (1 FAILED) (0 secs / 0.208 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Component has proper heading hierarchy'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 40 of 183 (1 FAILED) (0 secs / 0.208 secs)
+LOG: '✅ BDD: Component has proper heading hierarchy'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 41 of 183 (1 FAILED) (0 secs / 0.21 secs)
+[1A[2KLOG: '🔧 BDD: Component renders'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 41 of 183 (1 FAILED) (0 secs / 0.21 secs)
+LOG: '🔧 BDD: Component renders'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 41 of 183 (1 FAILED) (0 secs / 0.21 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Component has responsive CSS classes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 41 of 183 (1 FAILED) (0 secs / 0.21 secs)
+LOG: '✅ BDD: Component has responsive CSS classes'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 42 of 183 (1 FAILED) (0 secs / 0.213 secs)
+[1A[2KLOG: '🔧 BDD: Component renders'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 42 of 183 (1 FAILED) (0 secs / 0.213 secs)
+LOG: '🔧 BDD: Component renders'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 42 of 183 (1 FAILED) (0 secs / 0.213 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Component displays accurate migration information'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 42 of 183 (1 FAILED) (0 secs / 0.213 secs)
+LOG: '✅ BDD: Component displays accurate migration information'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 43 of 183 (1 FAILED) (0 secs / 0.216 secs)
+[1A[2KLOG: '🔧 BDD: Component renders'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 43 of 183 (1 FAILED) (0 secs / 0.216 secs)
+LOG: '🔧 BDD: Component renders'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 43 of 183 (1 FAILED) (0 secs / 0.216 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Component displays correct app branding'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 43 of 183 (1 FAILED) (0 secs / 0.216 secs)
+LOG: '✅ BDD: Component displays correct app branding'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 44 of 183 (1 FAILED) (0 secs / 0.219 secs)
+[1A[2KLOG: '🔧 BDD: Layout component is created'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 44 of 183 (1 FAILED) (0 secs / 0.219 secs)
+LOG: '🔧 BDD: Layout component is created'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 44 of 183 (1 FAILED) (0 secs / 0.219 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Layout component renders successfully'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 44 of 183 (1 FAILED) (0 secs / 0.219 secs)
+LOG: '✅ BDD: Layout component renders successfully'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 45 of 183 (1 FAILED) (0 secs / 0.226 secs)
+[1A[2KLOG: '🔧 BDD: Layout component renders'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 45 of 183 (1 FAILED) (0 secs / 0.226 secs)
+LOG: '🔧 BDD: Layout component renders'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 45 of 183 (1 FAILED) (0 secs / 0.226 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Layout displays header'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 45 of 183 (1 FAILED) (0 secs / 0.226 secs)
+LOG: '✅ BDD: Layout displays header'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 46 of 183 (1 FAILED) (0 secs / 0.23 secs)
+[1A[2KLOG: '🔧 BDD: Layout renders'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 46 of 183 (1 FAILED) (0 secs / 0.23 secs)
+LOG: '🔧 BDD: Layout renders'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 46 of 183 (1 FAILED) (0 secs / 0.23 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Layout has correct structure'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 46 of 183 (1 FAILED) (0 secs / 0.23 secs)
+LOG: '✅ BDD: Layout has correct structure'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 47 of 183 (1 FAILED) (0 secs / 0.233 secs)
+[1A[2KLOG: '🔧 BDD: Layout renders'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 47 of 183 (1 FAILED) (0 secs / 0.233 secs)
+LOG: '🔧 BDD: Layout renders'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 47 of 183 (1 FAILED) (0 secs / 0.233 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Layout has correct CSS classes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 47 of 183 (1 FAILED) (0 secs / 0.233 secs)
+LOG: '✅ BDD: Layout has correct CSS classes'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 48 of 183 (1 FAILED) (0 secs / 0.237 secs)
+[1A[2KLOG: '🔧 BDD: Layout renders'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 48 of 183 (1 FAILED) (0 secs / 0.237 secs)
+LOG: '🔧 BDD: Layout renders'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 48 of 183 (1 FAILED) (0 secs / 0.237 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Header is properly positioned'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 48 of 183 (1 FAILED) (0 secs / 0.237 secs)
+LOG: '✅ BDD: Header is properly positioned'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 49 of 183 (1 FAILED) (0 secs / 0.24 secs)
+[1A[2KLOG: '🔧 BDD: Layout renders'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 49 of 183 (1 FAILED) (0 secs / 0.24 secs)
+LOG: '🔧 BDD: Layout renders'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 49 of 183 (1 FAILED) (0 secs / 0.24 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Header contains shared-header component'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 49 of 183 (1 FAILED) (0 secs / 0.24 secs)
+LOG: '✅ BDD: Header contains shared-header component'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 50 of 183 (1 FAILED) (0 secs / 0.244 secs)
+[1A[2KLOG: '🔧 BDD: Layout renders'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 50 of 183 (1 FAILED) (0 secs / 0.244 secs)
+LOG: '🔧 BDD: Layout renders'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 50 of 183 (1 FAILED) (0 secs / 0.244 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Layout has main content area'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 50 of 183 (1 FAILED) (0 secs / 0.244 secs)
+LOG: '✅ BDD: Layout has main content area'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 51 of 183 (1 FAILED) (0 secs / 0.247 secs)
+[1A[2KLOG: '🔧 BDD: Layout renders'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 51 of 183 (1 FAILED) (0 secs / 0.247 secs)
+LOG: '🔧 BDD: Layout renders'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 51 of 183 (1 FAILED) (0 secs / 0.247 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Main content area is ready for router outlet'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 51 of 183 (1 FAILED) (0 secs / 0.247 secs)
+LOG: '✅ BDD: Main content area is ready for router outlet'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 52 of 183 (1 FAILED) (0 secs / 0.25 secs)
+[1A[2KLOG: '🔧 BDD: Layout renders'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 52 of 183 (1 FAILED) (0 secs / 0.25 secs)
+LOG: '🔧 BDD: Layout renders'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 52 of 183 (1 FAILED) (0 secs / 0.25 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Layout has responsive CSS classes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 52 of 183 (1 FAILED) (0 secs / 0.25 secs)
+LOG: '✅ BDD: Layout has responsive CSS classes'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 53 of 183 (1 FAILED) (0 secs / 0.254 secs)
+[1A[2KLOG: '🔧 BDD: Layout renders'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 53 of 183 (1 FAILED) (0 secs / 0.254 secs)
+LOG: '🔧 BDD: Layout renders'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 53 of 183 (1 FAILED) (0 secs / 0.254 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Layout composes header and main content'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 53 of 183 (1 FAILED) (0 secs / 0.254 secs)
+LOG: '✅ BDD: Layout composes header and main content'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 54 of 183 (1 FAILED) (0 secs / 0.257 secs)
+[1A[2KLOG: '🔧 BDD: Layout renders'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 54 of 183 (1 FAILED) (0 secs / 0.257 secs)
+LOG: '🔧 BDD: Layout renders'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 54 of 183 (1 FAILED) (0 secs / 0.257 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Layout has semantic HTML structure'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 54 of 183 (1 FAILED) (0 secs / 0.257 secs)
+LOG: '✅ BDD: Layout has semantic HTML structure'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 55 of 183 (1 FAILED) (0 secs / 0.26 secs)
+[1A[2KLOG: '🔧 BDD: Layout renders'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 55 of 183 (1 FAILED) (0 secs / 0.26 secs)
+LOG: '🔧 BDD: Layout renders'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 55 of 183 (1 FAILED) (0 secs / 0.26 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Layout supports theme changes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 55 of 183 (1 FAILED) (0 secs / 0.26 secs)
+LOG: '✅ BDD: Layout supports theme changes'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 56 of 183 (1 FAILED) (0 secs / 0.263 secs)
+[1A[2KLOG: '🔧 BDD: Setting up auth step with previous step navigation'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 56 of 183 (1 FAILED) (0 secs / 0.263 secs)
+LOG: '🔧 BDD: Setting up auth step with previous step navigation'
+[1A[2KLOG: '⚙️ BDD: User attempts to navigate to previous step'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 56 of 183 (1 FAILED) (0 secs / 0.263 secs)
+LOG: '⚙️ BDD: User attempts to navigate to previous step'
+[1A[2KLOG: '✅ BDD: Verifying navigation to previous step is allowed'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 56 of 183 (1 FAILED) (0 secs / 0.263 secs)
+LOG: '✅ BDD: Verifying navigation to previous step is allowed'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 57 of 183 (1 FAILED) (0 secs / 0.265 secs)
+[1A[2KLOG: '🔧 BDD: Setting up valid credentials for authentication'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 57 of 183 (1 FAILED) (0 secs / 0.265 secs)
+LOG: '🔧 BDD: Setting up valid credentials for authentication'
+[1A[2KLOG: '⚙️ BDD: User attempts to navigate to next step with valid credentials'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 57 of 183 (1 FAILED) (0 secs / 0.265 secs)
+LOG: '⚙️ BDD: User attempts to navigate to next step with valid credentials'
+[1A[2KLOG: '✅ BDD: Verifying authentication succeeds and navigation is allowed'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 57 of 183 (1 FAILED) (0 secs / 0.265 secs)
+LOG: '✅ BDD: Verifying authentication succeeds and navigation is allowed'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 58 of 183 (1 FAILED) (0 secs / 0.266 secs)
+[1A[2KLOG: '🔧 BDD: Setting up invalid credentials for authentication'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 58 of 183 (1 FAILED) (0 secs / 0.266 secs)
+LOG: '🔧 BDD: Setting up invalid credentials for authentication'
+[1A[2KLOG: '⚙️ BDD: User attempts to navigate to next step with invalid credentials'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 58 of 183 (1 FAILED) (0 secs / 0.266 secs)
+LOG: '⚙️ BDD: User attempts to navigate to next step with invalid credentials'
+[1A[2KLOG: '✅ BDD: Verifying authentication fails and navigation is blocked'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 58 of 183 (1 FAILED) (0 secs / 0.266 secs)
+LOG: '✅ BDD: Verifying authentication fails and navigation is blocked'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 59 of 183 (1 FAILED) (0 secs / 0.267 secs)
+[1A[2KLOG: '🔧 BDD: Setting up no credentials scenario'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 59 of 183 (1 FAILED) (0 secs / 0.267 secs)
+LOG: '🔧 BDD: Setting up no credentials scenario'
+[1A[2KLOG: '⚙️ BDD: User attempts to navigate to next step without credentials'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 59 of 183 (1 FAILED) (0 secs / 0.267 secs)
+LOG: '⚙️ BDD: User attempts to navigate to next step without credentials'
+[1A[2KLOG: '✅ BDD: Verifying navigation is blocked without credentials'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 59 of 183 (1 FAILED) (0 secs / 0.267 secs)
+LOG: '✅ BDD: Verifying navigation is blocked without credentials'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 60 of 183 (1 FAILED) (0 secs / 0.268 secs)
+[1A[2KLOG: '🔧 BDD: Setting up already authenticated user'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 60 of 183 (1 FAILED) (0 secs / 0.268 secs)
+LOG: '🔧 BDD: Setting up already authenticated user'
+[1A[2KLOG: '⚙️ BDD: Already authenticated user attempts to navigate to next step'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 60 of 183 (1 FAILED) (0 secs / 0.268 secs)
+LOG: '⚙️ BDD: Already authenticated user attempts to navigate to next step'
+[1A[2KLOG: '✅ BDD: Verifying navigation is allowed without re-authentication'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 60 of 183 (1 FAILED) (0 secs / 0.268 secs)
+LOG: '✅ BDD: Verifying navigation is allowed without re-authentication'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 61 of 183 (1 FAILED) (0 secs / 0.269 secs)
+[1A[2KLOG: '🔧 BDD: Setting up direct URL navigation scenario'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 61 of 183 (1 FAILED) (0 secs / 0.269 secs)
+LOG: '🔧 BDD: Setting up direct URL navigation scenario'
+[1A[2KLOG: '⚙️ BDD: User attempts direct URL navigation'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 61 of 183 (1 FAILED) (0 secs / 0.269 secs)
+LOG: '⚙️ BDD: User attempts direct URL navigation'
+[1A[2KLOG: '✅ BDD: Verifying direct URL navigation is allowed'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 61 of 183 (1 FAILED) (0 secs / 0.269 secs)
+LOG: '✅ BDD: Verifying direct URL navigation is allowed'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 62 of 183 (1 FAILED) (0 secs / 0.27 secs)
+[1A[2KLOG: '🔧 BDD: Setting up network error scenario'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 62 of 183 (1 FAILED) (0 secs / 0.27 secs)
+LOG: '🔧 BDD: Setting up network error scenario'
+[1A[2KLOG: '⚙️ BDD: User attempts to navigate with credentials that cause network error'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 62 of 183 (1 FAILED) (0 secs / 0.27 secs)
+LOG: '⚙️ BDD: User attempts to navigate with credentials that cause network error'
+[1A[2KLOG: '✅ BDD: Verifying network error is handled and navigation is blocked'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 62 of 183 (1 FAILED) (0 secs / 0.27 secs)
+LOG: '✅ BDD: Verifying network error is handled and navigation is blocked'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 63 of 183 (1 FAILED) (0 secs / 0.271 secs)
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 64 of 183 (1 FAILED) (0 secs / 0.271 secs)
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 65 of 183 (1 FAILED) (0 secs / 0.272 secs)
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 66 of 183 (1 FAILED) (0 secs / 0.273 secs)
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 67 of 183 (1 FAILED) (0 secs / 0.274 secs)
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 68 of 183 (1 FAILED) (0 secs / 0.275 secs)
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 69 of 183 (1 FAILED) (0 secs / 0.277 secs)
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 70 of 183 (1 FAILED) (0 secs / 0.278 secs)
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 71 of 183 (1 FAILED) (0 secs / 0.279 secs)
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 72 of 183 (1 FAILED) (0 secs / 0.28 secs)
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 73 of 183 (1 FAILED) (0 secs / 0.281 secs)
+[1A[2KLOG: '🔧 BDD: Setting up successful archive extraction'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 73 of 183 (1 FAILED) (0 secs / 0.281 secs)
+LOG: '🔧 BDD: Setting up successful archive extraction'
+[1A[2KLOG: '⚙️ BDD: Executing archive extraction resolver'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 73 of 183 (1 FAILED) (0 secs / 0.281 secs)
+LOG: '⚙️ BDD: Executing archive extraction resolver'
+[1A[2KLOG: '✅ BDD: Verifying successful extraction result'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 73 of 183 (1 FAILED) (0 secs / 0.281 secs)
+LOG: '✅ BDD: Verifying successful extraction result'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 74 of 183 (1 FAILED) (0 secs / 0.282 secs)
+[1A[2KLOG: '🔧 BDD: Setting up failed archive extraction'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 74 of 183 (1 FAILED) (0 secs / 0.282 secs)
+LOG: '🔧 BDD: Setting up failed archive extraction'
+[1A[2KLOG: '⚙️ BDD: Executing archive extraction resolver with failure'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 74 of 183 (1 FAILED) (0 secs / 0.282 secs)
+LOG: '⚙️ BDD: Executing archive extraction resolver with failure'
+[1A[2KLOG: '✅ BDD: Verifying error handling and false result'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 74 of 183 (1 FAILED) (0 secs / 0.282 secs)
+LOG: '✅ BDD: Verifying error handling and false result'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 75 of 183 (1 FAILED) (0 secs / 0.283 secs)
+[1A[2KLOG: '🔧 BDD: Setting up network error during extraction'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 75 of 183 (1 FAILED) (0 secs / 0.283 secs)
+LOG: '🔧 BDD: Setting up network error during extraction'
+[1A[2KLOG: '⚙️ BDD: Executing archive extraction resolver with network error'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 75 of 183 (1 FAILED) (0 secs / 0.283 secs)
+LOG: '⚙️ BDD: Executing archive extraction resolver with network error'
+[1A[2KLOG: '✅ BDD: Verifying network error handling'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 75 of 183 (1 FAILED) (0 secs / 0.283 secs)
+LOG: '✅ BDD: Verifying network error handling'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 76 of 183 (1 FAILED) (0 secs / 0.284 secs)
+[1A[2KLOG: '🔧 BDD: Setting up injection context test'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 76 of 183 (1 FAILED) (0 secs / 0.284 secs)
+LOG: '🔧 BDD: Setting up injection context test'
+[1A[2KLOG: '⚙️ BDD: Creating resolver executor function'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 76 of 183 (1 FAILED) (0 secs / 0.284 secs)
+LOG: '⚙️ BDD: Creating resolver executor function'
+[1A[2KLOG: '✅ BDD: Verifying resolver configuration'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 76 of 183 (1 FAILED) (0 secs / 0.284 secs)
+LOG: '✅ BDD: Verifying resolver configuration'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 77 of 183 (1 FAILED) (0 secs / 0.284 secs)
+[1A[2KLOG: '🔧 BDD: Setting up resolver parameters test'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 77 of 183 (1 FAILED) (0 secs / 0.284 secs)
+LOG: '🔧 BDD: Setting up resolver parameters test'
+[1A[2KLOG: '⚙️ BDD: Executing resolver with test parameters'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 77 of 183 (1 FAILED) (0 secs / 0.284 secs)
+LOG: '⚙️ BDD: Executing resolver with test parameters'
+[1A[2KLOG: '✅ BDD: Verifying resolver execution with parameters'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 77 of 183 (1 FAILED) (0 secs / 0.284 secs)
+LOG: '✅ BDD: Verifying resolver execution with parameters'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 78 of 183 (1 FAILED) (0 secs / 0.285 secs)
+[1A[2KLOG: '🔧 BDD: Setting up observable stream test for success'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 78 of 183 (1 FAILED) (0 secs / 0.285 secs)
+LOG: '🔧 BDD: Setting up observable stream test for success'
+[1A[2KLOG: '⚙️ BDD: Executing resolver and subscribing to observable'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 78 of 183 (1 FAILED) (0 secs / 0.285 secs)
+LOG: '⚙️ BDD: Executing resolver and subscribing to observable'
+[1A[2KLOG: '✅ BDD: Verifying observable stream value'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 78 of 183 (1 FAILED) (0 secs / 0.285 secs)
+LOG: '✅ BDD: Verifying observable stream value'
+[1A[2KLOG: '✅ BDD: Verifying observable stream completion'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 78 of 183 (1 FAILED) (0 secs / 0.285 secs)
+LOG: '✅ BDD: Verifying observable stream completion'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 79 of 183 (1 FAILED) (0 secs / 0.286 secs)
+[1A[2KLOG: '🔧 BDD: Setting up observable stream test for failure'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 79 of 183 (1 FAILED) (0 secs / 0.286 secs)
+LOG: '🔧 BDD: Setting up observable stream test for failure'
+[1A[2KLOG: '⚙️ BDD: Executing resolver and subscribing to observable'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 79 of 183 (1 FAILED) (0 secs / 0.286 secs)
+LOG: '⚙️ BDD: Executing resolver and subscribing to observable'
+[1A[2KLOG: '✅ BDD: Verifying observable stream value on failure'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 79 of 183 (1 FAILED) (0 secs / 0.286 secs)
+LOG: '✅ BDD: Verifying observable stream value on failure'
+[1A[2KLOG: '✅ BDD: Verifying observable stream completion on failure'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 79 of 183 (1 FAILED) (0 secs / 0.286 secs)
+LOG: '✅ BDD: Verifying observable stream completion on failure'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 80 of 183 (1 FAILED) (0 secs / 0.287 secs)
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 81 of 183 (1 FAILED) (0 secs / 0.288 secs)
+[1A[2KLOG: '🔧 BDD: Setting up router splash component'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 81 of 183 (1 FAILED) (0 secs / 0.288 secs)
+LOG: '🔧 BDD: Setting up router splash component'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 81 of 183 (1 FAILED) (0 secs / 0.288 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Verifying component creation'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 81 of 183 (1 FAILED) (0 secs / 0.288 secs)
+LOG: '✅ BDD: Verifying component creation'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 82 of 183 (1 FAILED) (0 secs / 0.294 secs)
+[1A[2KLOG: '🔧 BDD: Setting up idle router state'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 82 of 183 (1 FAILED) (0 secs / 0.294 secs)
+LOG: '🔧 BDD: Setting up idle router state'
+[1A[2KLOG: '⚙️ BDD: Navigation starts'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 82 of 183 (1 FAILED) (0 secs / 0.294 secs)
+LOG: '⚙️ BDD: Navigation starts'
+[1A[2KLOG: '✅ BDD: Verifying splash screen is shown'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 82 of 183 (1 FAILED) (0 secs / 0.294 secs)
+LOG: '✅ BDD: Verifying splash screen is shown'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 83 of 183 (1 FAILED) (0 secs / 0.297 secs)
+[1A[2KLOG: '🔧 BDD: Setting up active navigation state'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 83 of 183 (1 FAILED) (0 secs / 0.297 secs)
+LOG: '🔧 BDD: Setting up active navigation state'
+[1A[2KLOG: '⚙️ BDD: Navigation ends'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 83 of 183 (1 FAILED) (0 secs / 0.297 secs)
+LOG: '⚙️ BDD: Navigation ends'
+[1A[2KLOG: '✅ BDD: Verifying minimum splash duration'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 83 of 183 (1 FAILED) (0 secs / 0.297 secs)
+LOG: '✅ BDD: Verifying minimum splash duration'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 84 of 183 (1 FAILED) (0 secs / 0.299 secs)
+[1A[2KLOG: '🔧 BDD: Setting up idle router and loading service'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 84 of 183 (1 FAILED) (0 secs / 0.299 secs)
+LOG: '🔧 BDD: Setting up idle router and loading service'
+[1A[2KLOG: '⚙️ BDD: SplashScreenLoading service becomes active'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 84 of 183 (1 FAILED) (0 secs / 0.299 secs)
+LOG: '⚙️ BDD: SplashScreenLoading service becomes active'
+[1A[2KLOG: '✅ BDD: Verifying splash screen is shown for loading'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 84 of 183 (1 FAILED) (0 secs / 0.299 secs)
+LOG: '✅ BDD: Verifying splash screen is shown for loading'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 85 of 183 (1 FAILED) (0 secs / 0.301 secs)
+[1A[2KLOG: '🔧 BDD: Setting up component configuration check'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 85 of 183 (1 FAILED) (0 secs / 0.301 secs)
+LOG: '🔧 BDD: Setting up component configuration check'
+[1A[2KLOG: '⚙️ BDD: Checking minimum splash duration configuration'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 85 of 183 (1 FAILED) (0 secs / 0.301 secs)
+LOG: '⚙️ BDD: Checking minimum splash duration configuration'
+[1A[2KLOG: '✅ BDD: Verifying minimum duration is 500ms'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 85 of 183 (1 FAILED) (0 secs / 0.301 secs)
+LOG: '✅ BDD: Verifying minimum duration is 500ms'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 86 of 183 (1 FAILED) (0 secs / 0.303 secs)
+[1A[2KLOG: '🔧 BDD: Bluesky service is created'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 86 of 183 (1 FAILED) (0 secs / 0.303 secs)
+LOG: '🔧 BDD: Bluesky service is created'
+[1A[2KLOG: '⚙️ BDD: Service initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 86 of 183 (1 FAILED) (0 secs / 0.303 secs)
+LOG: '⚙️ BDD: Service initializes'
+[1A[2KLOG: '✅ BDD: Service is created successfully'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 86 of 183 (1 FAILED) (0 secs / 0.303 secs)
+LOG: '✅ BDD: Service is created successfully'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 87 of 183 (1 FAILED) (0 secs / 0.304 secs)
+[1A[2KLOG: '🔧 BDD: Bluesky service is created'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 87 of 183 (1 FAILED) (0 secs / 0.304 secs)
+LOG: '🔧 BDD: Bluesky service is created'
+[1A[2KLOG: '⚙️ BDD: Testing connection to Bluesky'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 87 of 183 (1 FAILED) (0 secs / 0.304 secs)
+LOG: '⚙️ BDD: Testing connection to Bluesky'
+[1A[2KLOG: '✅ BDD: Connection test returns success'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 87 of 183 (1 FAILED) (0 secs / 0.304 secs)
+LOG: '✅ BDD: Connection test returns success'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 88 of 183 (1 FAILED) (0 secs / 0.305 secs)
+[1A[2KLOG: '🔧 BDD: Setting up valid test credentials'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 88 of 183 (1 FAILED) (0 secs / 0.305 secs)
+LOG: '🔧 BDD: Setting up valid test credentials'
+[1A[2KLOG: '⚙️ BDD: Authenticating with valid credentials'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 88 of 183 (1 FAILED) (0 secs / 0.305 secs)
+LOG: '⚙️ BDD: Authenticating with valid credentials'
+[1A[2KLOG: '✅ BDD: Authentication succeeds'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 88 of 183 (1 FAILED) (0 secs / 0.305 secs)
+LOG: '✅ BDD: Authentication succeeds'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 89 of 183 (1 FAILED) (0 secs / 0.306 secs)
+[1A[2KLOG: '🔧 BDD: Setting up invalid credentials'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 89 of 183 (1 FAILED) (0 secs / 0.306 secs)
+LOG: '🔧 BDD: Setting up invalid credentials'
+[1A[2KLOG: '⚙️ BDD: Authenticating with invalid credentials'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 89 of 183 (1 FAILED) (0 secs / 0.306 secs)
+LOG: '⚙️ BDD: Authenticating with invalid credentials'
+[1A[2KLOG: '✅ BDD: Authentication fails'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 89 of 183 (1 FAILED) (0 secs / 0.306 secs)
+LOG: '✅ BDD: Authentication fails'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 90 of 183 (1 FAILED) (0 secs / 0.307 secs)
+[1A[2KLOG: '🔧 BDD: Setting up username without @ symbol'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 90 of 183 (1 FAILED) (0 secs / 0.307 secs)
+LOG: '🔧 BDD: Setting up username without @ symbol'
+[1A[2KLOG: '⚙️ BDD: Authenticating with invalid username format'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 90 of 183 (1 FAILED) (0 secs / 0.307 secs)
+LOG: '⚙️ BDD: Authenticating with invalid username format'
+[1A[2KLOG: '✅ BDD: Username validation fails'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 90 of 183 (1 FAILED) (0 secs / 0.307 secs)
+LOG: '✅ BDD: Username validation fails'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 91 of 183 (1 FAILED) (0 secs / 0.308 secs)
+[1A[2KLOG: '🔧 BDD: Setting up username with insufficient dots'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 91 of 183 (1 FAILED) (0 secs / 0.308 secs)
+LOG: '🔧 BDD: Setting up username with insufficient dots'
+[1A[2KLOG: '⚙️ BDD: Authenticating with username having insufficient dots'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 91 of 183 (1 FAILED) (0 secs / 0.308 secs)
+LOG: '⚙️ BDD: Authenticating with username having insufficient dots'
+[1A[2KLOG: '✅ BDD: Username dot validation fails'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 91 of 183 (1 FAILED) (0 secs / 0.308 secs)
+LOG: '✅ BDD: Username dot validation fails'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 92 of 183 (1 FAILED) (0 secs / 0.309 secs)
+[1A[2KLOG: '🔧 BDD: Setting up empty password'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 92 of 183 (1 FAILED) (0 secs / 0.309 secs)
+LOG: '🔧 BDD: Setting up empty password'
+[1A[2KLOG: '⚙️ BDD: Authenticating with empty password'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 92 of 183 (1 FAILED) (0 secs / 0.309 secs)
+LOG: '⚙️ BDD: Authenticating with empty password'
+[1A[2KLOG: '✅ BDD: Password validation fails'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 92 of 183 (1 FAILED) (0 secs / 0.309 secs)
+LOG: '✅ BDD: Password validation fails'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 93 of 183 (1 FAILED) (0 secs / 0.31 secs)
+[1A[2KLOG: '🔧 BDD: Setting up whitespace-only password'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 93 of 183 (1 FAILED) (0 secs / 0.31 secs)
+LOG: '🔧 BDD: Setting up whitespace-only password'
+[1A[2KLOG: '⚙️ BDD: Authenticating with whitespace-only password'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 93 of 183 (1 FAILED) (0 secs / 0.31 secs)
+LOG: '⚙️ BDD: Authenticating with whitespace-only password'
+[1A[2KLOG: '✅ BDD: Password whitespace validation fails'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 93 of 183 (1 FAILED) (0 secs / 0.31 secs)
+LOG: '✅ BDD: Password whitespace validation fails'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 94 of 183 (1 FAILED) (0 secs / 0.311 secs)
+[1A[2KLOG: '🔧 BDD: Config service is created'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 94 of 183 (1 FAILED) (0 secs / 0.311 secs)
+LOG: '🔧 BDD: Config service is created'
+[1A[2KLOG: '⚙️ BDD: Service initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 94 of 183 (1 FAILED) (0 secs / 0.311 secs)
+LOG: '⚙️ BDD: Service initializes'
+[1A[2KLOG: '✅ BDD: Service is created successfully'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 94 of 183 (1 FAILED) (0 secs / 0.311 secs)
+LOG: '✅ BDD: Service is created successfully'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 95 of 183 (1 FAILED) (0 secs / 0.312 secs)
+[1A[2KLOG: '🔧 BDD: Config service is created'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 95 of 183 (1 FAILED) (0 secs / 0.312 secs)
+LOG: '🔧 BDD: Config service is created'
+[1A[2KLOG: '⚙️ BDD: Setting archive path'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 95 of 183 (1 FAILED) (0 secs / 0.312 secs)
+LOG: '⚙️ BDD: Setting archive path'
+[1A[2KLOG: '✅ BDD: Archive path is set correctly'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 95 of 183 (1 FAILED) (0 secs / 0.312 secs)
+LOG: '✅ BDD: Archive path is set correctly'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 96 of 183 (1 FAILED) (0 secs / 0.313 secs)
+[1A[2KLOG: '🔧 BDD: Config service is created'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 96 of 183 (1 FAILED) (0 secs / 0.313 secs)
+LOG: '🔧 BDD: Config service is created'
+[1A[2KLOG: '⚙️ BDD: Archive path is not set'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 96 of 183 (1 FAILED) (0 secs / 0.313 secs)
+LOG: '⚙️ BDD: Archive path is not set'
+[1A[2KLOG: '✅ BDD: Archive path is empty by default'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 96 of 183 (1 FAILED) (0 secs / 0.313 secs)
+LOG: '✅ BDD: Archive path is empty by default'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 97 of 183 (1 FAILED) (0 secs / 0.314 secs)
+[1A[2KLOG: '🔧 BDD: Config service is created'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 97 of 183 (1 FAILED) (0 secs / 0.314 secs)
+LOG: '🔧 BDD: Config service is created'
+[1A[2KLOG: '⚙️ BDD: Setting Bluesky credentials'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 97 of 183 (1 FAILED) (0 secs / 0.314 secs)
+LOG: '⚙️ BDD: Setting Bluesky credentials'
+[1A[2KLOG: '✅ BDD: Credentials are set correctly'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 97 of 183 (1 FAILED) (0 secs / 0.314 secs)
+LOG: '✅ BDD: Credentials are set correctly'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 98 of 183 (1 FAILED) (0 secs / 0.316 secs)
+[1A[2KLOG: '🔧 BDD: Config service is created'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 98 of 183 (1 FAILED) (0 secs / 0.316 secs)
+LOG: '🔧 BDD: Config service is created'
+[1A[2KLOG: '⚙️ BDD: Credentials are not set'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 98 of 183 (1 FAILED) (0 secs / 0.316 secs)
+LOG: '⚙️ BDD: Credentials are not set'
+[1A[2KLOG: '✅ BDD: Credentials are null by default'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 98 of 183 (1 FAILED) (0 secs / 0.316 secs)
+LOG: '✅ BDD: Credentials are null by default'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 99 of 183 (1 FAILED) (0 secs / 0.317 secs)
+[1A[2KLOG: '🔧 BDD: Config service is created'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 99 of 183 (1 FAILED) (0 secs / 0.317 secs)
+LOG: '🔧 BDD: Config service is created'
+[1A[2KLOG: '⚙️ BDD: Setting simulation mode to true'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 99 of 183 (1 FAILED) (0 secs / 0.317 secs)
+LOG: '⚙️ BDD: Setting simulation mode to true'
+[1A[2KLOG: '✅ BDD: Simulation mode is set to true'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 99 of 183 (1 FAILED) (0 secs / 0.317 secs)
+LOG: '✅ BDD: Simulation mode is set to true'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 100 of 183 (1 FAILED) (0 secs / 0.318 secs)
+[1A[2KLOG: '🔧 BDD: Config service is created'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 100 of 183 (1 FAILED) (0 secs / 0.318 secs)
+LOG: '🔧 BDD: Config service is created'
+[1A[2KLOG: '⚙️ BDD: Simulation mode is not set'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 100 of 183 (1 FAILED) (0 secs / 0.318 secs)
+LOG: '⚙️ BDD: Simulation mode is not set'
+[1A[2KLOG: '✅ BDD: Simulation mode is false by default'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 100 of 183 (1 FAILED) (0 secs / 0.318 secs)
+LOG: '✅ BDD: Simulation mode is false by default'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 101 of 183 (1 FAILED) (0 secs / 0.319 secs)
+[1A[2KLOG: '🔧 BDD: Config service is created'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 101 of 183 (1 FAILED) (0 secs / 0.319 secs)
+LOG: '🔧 BDD: Config service is created'
+[1A[2KLOG: '⚙️ BDD: Setting authentication to true'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 101 of 183 (1 FAILED) (0 secs / 0.319 secs)
+LOG: '⚙️ BDD: Setting authentication to true'
+[1A[2KLOG: '✅ BDD: Authentication is set to true'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 101 of 183 (1 FAILED) (0 secs / 0.319 secs)
+LOG: '✅ BDD: Authentication is set to true'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 102 of 183 (1 FAILED) (0 secs / 0.32 secs)
+[1A[2KLOG: '🔧 BDD: Config service is created'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 102 of 183 (1 FAILED) (0 secs / 0.32 secs)
+LOG: '🔧 BDD: Config service is created'
+[1A[2KLOG: '⚙️ BDD: Authentication is not set'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 102 of 183 (1 FAILED) (0 secs / 0.32 secs)
+LOG: '⚙️ BDD: Authentication is not set'
+[1A[2KLOG: '✅ BDD: Authentication is false by default'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 102 of 183 (1 FAILED) (0 secs / 0.32 secs)
+LOG: '✅ BDD: Authentication is false by default'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 103 of 183 (1 FAILED) (0 secs / 0.321 secs)
+[1A[2KLOG: '🔧 BDD: Setting all required configuration'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 103 of 183 (1 FAILED) (0 secs / 0.321 secs)
+LOG: '🔧 BDD: Setting all required configuration'
+[1A[2KLOG: '⚙️ BDD: Validating configuration'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 103 of 183 (1 FAILED) (0 secs / 0.321 secs)
+LOG: '⚙️ BDD: Validating configuration'
+[1A[2KLOG: '✅ BDD: Configuration is valid'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 103 of 183 (1 FAILED) (0 secs / 0.321 secs)
+LOG: '✅ BDD: Configuration is valid'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 104 of 183 (1 FAILED) (0 secs / 0.322 secs)
+[1A[2KLOG: '🔧 BDD: Configuration is incomplete'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 104 of 183 (1 FAILED) (0 secs / 0.322 secs)
+LOG: '🔧 BDD: Configuration is incomplete'
+[1A[2KLOG: '⚙️ BDD: Validating configuration'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 104 of 183 (1 FAILED) (0 secs / 0.322 secs)
+LOG: '⚙️ BDD: Validating configuration'
+[1A[2KLOG: '✅ BDD: Configuration is invalid'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 104 of 183 (1 FAILED) (0 secs / 0.322 secs)
+LOG: '✅ BDD: Configuration is invalid'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 105 of 183 (1 FAILED) (0 secs / 0.323 secs)
+[1A[2KLOG: '🔧 BDD: Setting configuration values'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 105 of 183 (1 FAILED) (0 secs / 0.323 secs)
+LOG: '🔧 BDD: Setting configuration values'
+[1A[2KLOG: '⚙️ BDD: Resetting configuration'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 105 of 183 (1 FAILED) (0 secs / 0.323 secs)
+LOG: '⚙️ BDD: Resetting configuration'
+[1A[2KLOG: '✅ BDD: Configuration is reset to defaults'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 105 of 183 (1 FAILED) (0 secs / 0.323 secs)
+LOG: '✅ BDD: Configuration is reset to defaults'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 106 of 183 (1 FAILED) (0 secs / 0.334 secs)
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 107 of 183 (1 FAILED) (0 secs / 0.336 secs)
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 108 of 183 (1 FAILED) (0 secs / 0.337 secs)
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 109 of 183 (1 FAILED) (0 secs / 0.338 secs)
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 110 of 183 (1 FAILED) (0 secs / 0.339 secs)
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 111 of 183 (1 FAILED) (0 secs / 0.34 secs)
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 112 of 183 (1 FAILED) (0 secs / 0.341 secs)
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 113 of 183 (1 FAILED) (0 secs / 0.341 secs)
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 114 of 183 (1 FAILED) (0 secs / 0.341 secs)
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 115 of 183 (1 FAILED) (0 secs / 0.342 secs)
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 116 of 183 (1 FAILED) (0 secs / 0.343 secs)
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 117 of 183 (1 FAILED) (0 secs / 0.344 secs)
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 118 of 183 (1 FAILED) (0 secs / 0.344 secs)
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 119 of 183 (1 FAILED) (0 secs / 0.345 secs)
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 120 of 183 (1 FAILED) (0 secs / 0.346 secs)
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 121 of 183 (1 FAILED) (0 secs / 0.347 secs)
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 122 of 183 (1 FAILED) (0 secs / 0.348 secs)
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 123 of 183 (1 FAILED) (0 secs / 0.349 secs)
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 124 of 183 (1 FAILED) (0 secs / 0.35 secs)
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 125 of 183 (1 FAILED) (0 secs / 0.351 secs)
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 126 of 183 (1 FAILED) (0 secs / 0.353 secs)
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 127 of 183 (1 FAILED) (0 secs / 0.36 secs)
+[1A[2KLOG: '🔧 BDD: Step navigation component is created'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 127 of 183 (1 FAILED) (0 secs / 0.36 secs)
+LOG: '🔧 BDD: Step navigation component is created'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 127 of 183 (1 FAILED) (0 secs / 0.36 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Step navigation component renders successfully'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 127 of 183 (1 FAILED) (0 secs / 0.36 secs)
+LOG: '✅ BDD: Step navigation component renders successfully'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 128 of 183 (1 FAILED) (0 secs / 0.363 secs)
+[1A[2KLOG: '🔧 BDD: Step navigation component renders'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 128 of 183 (1 FAILED) (0 secs / 0.363 secs)
+LOG: '🔧 BDD: Step navigation component renders'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 128 of 183 (1 FAILED) (0 secs / 0.363 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Step navigation displays step list'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 128 of 183 (1 FAILED) (0 secs / 0.363 secs)
+LOG: '✅ BDD: Step navigation displays step list'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 129 of 183 (1 FAILED) (0 secs / 0.365 secs)
+[1A[2KLOG: '🔧 BDD: Component renders'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 129 of 183 (1 FAILED) (0 secs / 0.365 secs)
+LOG: '🔧 BDD: Component renders'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 129 of 183 (1 FAILED) (0 secs / 0.365 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Component displays all migration steps'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 129 of 183 (1 FAILED) (0 secs / 0.365 secs)
+LOG: '✅ BDD: Component displays all migration steps'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 130 of 183 (1 FAILED) (0 secs / 0.367 secs)
+[1A[2KLOG: '🔧 BDD: Component renders'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 130 of 183 (1 FAILED) (0 secs / 0.367 secs)
+LOG: '🔧 BDD: Component renders'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 130 of 183 (1 FAILED) (0 secs / 0.367 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Component displays Upload Instagram Export step first'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 130 of 183 (1 FAILED) (0 secs / 0.367 secs)
+LOG: '✅ BDD: Component displays Upload Instagram Export step first'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 131 of 183 (1 FAILED) (0 secs / 0.369 secs)
+[1A[2KLOG: '🔧 BDD: Component renders'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 131 of 183 (1 FAILED) (0 secs / 0.369 secs)
+LOG: '🔧 BDD: Component renders'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 131 of 183 (1 FAILED) (0 secs / 0.369 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Component displays Bluesky Authentication step second'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 131 of 183 (1 FAILED) (0 secs / 0.369 secs)
+LOG: '✅ BDD: Component displays Bluesky Authentication step second'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 132 of 183 (1 FAILED) (0 secs / 0.371 secs)
+[1A[2KLOG: '🔧 BDD: Component renders'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 132 of 183 (1 FAILED) (0 secs / 0.371 secs)
+LOG: '🔧 BDD: Component renders'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 132 of 183 (1 FAILED) (0 secs / 0.371 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Component displays Migration Settings step third'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 132 of 183 (1 FAILED) (0 secs / 0.371 secs)
+LOG: '✅ BDD: Component displays Migration Settings step third'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 133 of 183 (1 FAILED) (0 secs / 0.373 secs)
+[1A[2KLOG: '🔧 BDD: Component renders'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 133 of 183 (1 FAILED) (0 secs / 0.373 secs)
+LOG: '🔧 BDD: Component renders'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 133 of 183 (1 FAILED) (0 secs / 0.373 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Component displays Execute Migration step fourth'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 133 of 183 (1 FAILED) (0 secs / 0.373 secs)
+LOG: '✅ BDD: Component displays Execute Migration step fourth'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 134 of 183 (1 FAILED) (0 secs / 0.375 secs)
+[1A[2KLOG: '🔧 BDD: Component renders'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 134 of 183 (1 FAILED) (0 secs / 0.375 secs)
+LOG: '🔧 BDD: Component renders'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 134 of 183 (1 FAILED) (0 secs / 0.375 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Component displays Migration Complete step last'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 134 of 183 (1 FAILED) (0 secs / 0.375 secs)
+LOG: '✅ BDD: Component displays Migration Complete step last'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 135 of 183 (1 FAILED) (0 secs / 0.378 secs)
+[1A[2KLOG: '🔧 BDD: Component renders'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 135 of 183 (1 FAILED) (0 secs / 0.378 secs)
+LOG: '🔧 BDD: Component renders'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 135 of 183 (1 FAILED) (0 secs / 0.378 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Each step displays its title'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 135 of 183 (1 FAILED) (0 secs / 0.378 secs)
+LOG: '✅ BDD: Each step displays its title'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 136 of 183 (1 FAILED) (0 secs / 0.38 secs)
+[1A[2KLOG: '🔧 BDD: Component renders'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 136 of 183 (1 FAILED) (0 secs / 0.38 secs)
+LOG: '🔧 BDD: Component renders'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 136 of 183 (1 FAILED) (0 secs / 0.38 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Each step displays its description'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 136 of 183 (1 FAILED) (0 secs / 0.38 secs)
+LOG: '✅ BDD: Each step displays its description'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 137 of 183 (1 FAILED) (0 secs / 0.382 secs)
+[1A[2KLOG: '🔧 BDD: Component renders'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 137 of 183 (1 FAILED) (0 secs / 0.382 secs)
+LOG: '🔧 BDD: Component renders'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 137 of 183 (1 FAILED) (0 secs / 0.382 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Component has correct navigation structure'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 137 of 183 (1 FAILED) (0 secs / 0.382 secs)
+LOG: '✅ BDD: Component has correct navigation structure'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 138 of 183 (1 FAILED) (0 secs / 0.384 secs)
+[1A[2KLOG: '🔧 BDD: Component renders'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 138 of 183 (1 FAILED) (0 secs / 0.384 secs)
+LOG: '🔧 BDD: Component renders'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 138 of 183 (1 FAILED) (0 secs / 0.384 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Component displays navigation title'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 138 of 183 (1 FAILED) (0 secs / 0.384 secs)
+LOG: '✅ BDD: Component displays navigation title'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 139 of 183 (1 FAILED) (0 secs / 0.386 secs)
+[1A[2KLOG: '🔧 BDD: Component renders'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 139 of 183 (1 FAILED) (0 secs / 0.386 secs)
+LOG: '🔧 BDD: Component renders'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 139 of 183 (1 FAILED) (0 secs / 0.386 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Each step item has correct CSS class'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 139 of 183 (1 FAILED) (0 secs / 0.386 secs)
+LOG: '✅ BDD: Each step item has correct CSS class'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 140 of 183 (1 FAILED) (0 secs / 0.388 secs)
+[1A[2KLOG: '🔧 BDD: Component renders'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 140 of 183 (1 FAILED) (0 secs / 0.388 secs)
+LOG: '🔧 BDD: Component renders'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 140 of 183 (1 FAILED) (0 secs / 0.388 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Step list has correct CSS class'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 140 of 183 (1 FAILED) (0 secs / 0.388 secs)
+LOG: '✅ BDD: Step list has correct CSS class'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 141 of 183 (1 FAILED) (0 secs / 0.39 secs)
+[1A[2KLOG: '🔧 BDD: Component renders'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 141 of 183 (1 FAILED) (0 secs / 0.39 secs)
+LOG: '🔧 BDD: Component renders'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 141 of 183 (1 FAILED) (0 secs / 0.39 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Component has semantic HTML structure'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 141 of 183 (1 FAILED) (0 secs / 0.39 secs)
+LOG: '✅ BDD: Component has semantic HTML structure'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 142 of 183 (1 FAILED) (0 secs / 0.392 secs)
+[1A[2KLOG: '🔧 BDD: Component renders'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 142 of 183 (1 FAILED) (0 secs / 0.392 secs)
+LOG: '🔧 BDD: Component renders'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 142 of 183 (1 FAILED) (0 secs / 0.392 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Component has proper heading structure'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 142 of 183 (1 FAILED) (0 secs / 0.392 secs)
+LOG: '✅ BDD: Component has proper heading structure'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 143 of 183 (1 FAILED) (0 secs / 0.394 secs)
+[1A[2KLOG: '🔧 BDD: Component renders'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 143 of 183 (1 FAILED) (0 secs / 0.394 secs)
+LOG: '🔧 BDD: Component renders'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 143 of 183 (1 FAILED) (0 secs / 0.394 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Component has responsive CSS classes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 143 of 183 (1 FAILED) (0 secs / 0.394 secs)
+LOG: '✅ BDD: Component has responsive CSS classes'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 144 of 183 (1 FAILED) (0 secs / 0.396 secs)
+[1A[2KLOG: '🔧 BDD: Setting up valid username and password'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 144 of 183 (1 FAILED) (0 secs / 0.396 secs)
+LOG: '🔧 BDD: Setting up valid username and password'
+[1A[2KLOG: '⚙️ BDD: Form becomes valid and triggers credential storage'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 144 of 183 (1 FAILED) (0 secs / 0.396 secs)
+LOG: '⚙️ BDD: Form becomes valid and triggers credential storage'
+[1A[2KLOG: '✅ BDD: Verifying credentials are stored for resolver'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 144 of 183 (1 FAILED) (0 secs / 0.396 secs)
+LOG: '✅ BDD: Verifying credentials are stored for resolver'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 145 of 183 (1 FAILED) (0 secs / 0.43 secs)
+[1A[2KLOG: '🔧 BDD: Setting up authentication flow'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 145 of 183 (1 FAILED) (0 secs / 0.43 secs)
+LOG: '🔧 BDD: Setting up authentication flow'
+[1A[2KLOG: '⚙️ BDD: Form value changes trigger credential storage'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 145 of 183 (1 FAILED) (0 secs / 0.43 secs)
+LOG: '⚙️ BDD: Form value changes trigger credential storage'
+[1A[2KLOG: '✅ BDD: Verifying credentials are stored automatically'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 145 of 183 (1 FAILED) (0 secs / 0.43 secs)
+LOG: '✅ BDD: Verifying credentials are stored automatically'
+[1A[2KLOG: '✅ BDD: Verifying form is valid'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 145 of 183 (1 FAILED) (0 secs / 0.43 secs)
+LOG: '✅ BDD: Verifying form is valid'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 146 of 183 (1 FAILED) (0 secs / 0.44 secs)
+[1A[2KLOG: '🔧 BDD: Setting up invalid credentials'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 146 of 183 (1 FAILED) (0 secs / 0.44 secs)
+LOG: '🔧 BDD: Setting up invalid credentials'
+[1A[2KLOG: '⚙️ BDD: Form is invalid due to empty password'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 146 of 183 (1 FAILED) (0 secs / 0.44 secs)
+LOG: '⚙️ BDD: Form is invalid due to empty password'
+[1A[2KLOG: '✅ BDD: Verifying credentials are not stored for invalid form'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 146 of 183 (1 FAILED) (0 secs / 0.44 secs)
+LOG: '✅ BDD: Verifying credentials are not stored for invalid form'
+[1A[2KLOG: '✅ BDD: Verifying form is invalid'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 146 of 183 (1 FAILED) (0 secs / 0.44 secs)
+LOG: '✅ BDD: Verifying form is invalid'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 147 of 183 (1 FAILED) (0 secs / 0.448 secs)
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 148 of 183 (1 FAILED) (0 secs / 0.455 secs)
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 149 of 183 (1 FAILED) (0 secs / 0.458 secs)
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 150 of 183 (1 FAILED) (0 secs / 0.46 secs)
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 151 of 183 (1 FAILED) (0 secs / 0.462 secs)
+[1A[2KLOG: '🔧 BDD: Upload component is created'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 151 of 183 (1 FAILED) (0 secs / 0.462 secs)
+LOG: '🔧 BDD: Upload component is created'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 151 of 183 (1 FAILED) (0 secs / 0.462 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Component is created successfully'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 151 of 183 (1 FAILED) (0 secs / 0.462 secs)
+LOG: '✅ BDD: Component is created successfully'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 152 of 183 (1 FAILED) (0 secs / 0.467 secs)
+[1A[2KLOG: '🔧 BDD: Upload component is created'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 152 of 183 (1 FAILED) (0 secs / 0.467 secs)
+LOG: '🔧 BDD: Upload component is created'
+[1A[2KLOG: '⚙️ BDD: Component initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 152 of 183 (1 FAILED) (0 secs / 0.467 secs)
+LOG: '⚙️ BDD: Component initializes'
+[1A[2KLOG: '✅ BDD: Component has file upload form'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 152 of 183 (1 FAILED) (0 secs / 0.467 secs)
+LOG: '✅ BDD: Component has file upload form'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 153 of 183 (1 FAILED) (0 secs / 0.47 secs)
+[1A[2KLOG: '🔧 BDD: Setting up test file'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 153 of 183 (1 FAILED) (0 secs / 0.47 secs)
+LOG: '🔧 BDD: Setting up test file'
+[1A[2KLOG: '⚙️ BDD: File is selected'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 153 of 183 (1 FAILED) (0 secs / 0.47 secs)
+LOG: '⚙️ BDD: File is selected'
+[1A[2KLOG: '✅ BDD: File selection is logged'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 153 of 183 (1 FAILED) (0 secs / 0.47 secs)
+LOG: '✅ BDD: File selection is logged'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 154 of 183 (1 FAILED) (0 secs / 0.473 secs)
+[1A[2KLOG: '🔧 BDD: Setting up test file with successful validation'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 154 of 183 (1 FAILED) (0 secs / 0.473 secs)
+LOG: '🔧 BDD: Setting up test file with successful validation'
+[1A[2KLOG: '⚙️ BDD: File is selected'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 154 of 183 (1 FAILED) (0 secs / 0.473 secs)
+LOG: '⚙️ BDD: File is selected'
+[1A[2KLOG: '✅ BDD: Archive validation is called'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 154 of 183 (1 FAILED) (0 secs / 0.473 secs)
+LOG: '✅ BDD: Archive validation is called'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 155 of 183 (1 FAILED) (0 secs / 0.476 secs)
+[1A[2KLOG: '🔧 BDD: Setting up test file with failed validation'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 155 of 183 (1 FAILED) (0 secs / 0.476 secs)
+LOG: '🔧 BDD: Setting up test file with failed validation'
+[1A[2KLOG: '⚙️ BDD: File is selected'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 155 of 183 (1 FAILED) (0 secs / 0.476 secs)
+LOG: '⚙️ BDD: File is selected'
+[1A[2KLOG: '✅ BDD: Validation error is logged'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 155 of 183 (1 FAILED) (0 secs / 0.476 secs)
+LOG: '✅ BDD: Validation error is logged'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 156 of 183 (1 FAILED) (0 secs / 0.48 secs)
+[1A[2KLOG: '🔧 BDD: Setting up file removal scenario'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 156 of 183 (1 FAILED) (0 secs / 0.48 secs)
+LOG: '🔧 BDD: Setting up file removal scenario'
+[1A[2KLOG: '⚙️ BDD: File is removed'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 156 of 183 (1 FAILED) (0 secs / 0.48 secs)
+LOG: '⚙️ BDD: File is removed'
+[1A[2KLOG: '✅ BDD: File removal is logged'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 156 of 183 (1 FAILED) (0 secs / 0.48 secs)
+LOG: '✅ BDD: File removal is logged'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 157 of 183 (1 FAILED) (0 secs / 0.484 secs)
+[1A[2KLOG: '🔧 BDD: No file is selected'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 157 of 183 (1 FAILED) (0 secs / 0.484 secs)
+LOG: '🔧 BDD: No file is selected'
+[1A[2KLOG: '⚙️ BDD: Checking selected file'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 157 of 183 (1 FAILED) (0 secs / 0.484 secs)
+LOG: '⚙️ BDD: Checking selected file'
+[1A[2KLOG: '✅ BDD: Selected file is null'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 157 of 183 (1 FAILED) (0 secs / 0.484 secs)
+LOG: '✅ BDD: Selected file is null'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 158 of 183 (1 FAILED) (0 secs / 0.487 secs)
+[1A[2KLOG: '🔧 BDD: Setting up test file'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 158 of 183 (1 FAILED) (0 secs / 0.487 secs)
+LOG: '🔧 BDD: Setting up test file'
+[1A[2KLOG: '⚙️ BDD: Checking selected file'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 158 of 183 (1 FAILED) (0 secs / 0.487 secs)
+LOG: '⚙️ BDD: Checking selected file'
+[1A[2KLOG: '✅ BDD: Selected file is returned'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 158 of 183 (1 FAILED) (0 secs / 0.487 secs)
+LOG: '✅ BDD: Selected file is returned'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 159 of 183 (1 FAILED) (0 secs / 0.49 secs)
+[1A[2KLOG: '🔧 BDD: Theme toggle service is created'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 159 of 183 (1 FAILED) (0 secs / 0.49 secs)
+LOG: '🔧 BDD: Theme toggle service is created'
+[1A[2KLOG: '⚙️ BDD: Service initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 159 of 183 (1 FAILED) (0 secs / 0.49 secs)
+LOG: '⚙️ BDD: Service initializes'
+[1A[2KLOG: '✅ BDD: Service has theme as default'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 159 of 183 (1 FAILED) (0 secs / 0.49 secs)
+LOG: '✅ BDD: Service has theme as default'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 160 of 183 (1 FAILED) (0 secs / 0.491 secs)
+[1A[2KLOG: '🔧 BDD: Theme toggle service is created'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 160 of 183 (1 FAILED) (0 secs / 0.491 secs)
+LOG: '🔧 BDD: Theme toggle service is created'
+[1A[2KLOG: '⚙️ BDD: Service initializes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 160 of 183 (1 FAILED) (0 secs / 0.491 secs)
+LOG: '⚙️ BDD: Service initializes'
+[1A[2KLOG: '✅ BDD: Service has auto mode as default'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 160 of 183 (1 FAILED) (0 secs / 0.491 secs)
+LOG: '✅ BDD: Service has auto mode as default'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 161 of 183 (1 FAILED) (0 secs / 0.492 secs)
+[1A[2KLOG: '🔧 BDD: Service is on light theme'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 161 of 183 (1 FAILED) (0 secs / 0.492 secs)
+LOG: '🔧 BDD: Service is on light theme'
+[1A[2KLOG: '⚙️ BDD: Toggle theme is called'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 161 of 183 (1 FAILED) (0 secs / 0.492 secs)
+LOG: '⚙️ BDD: Toggle theme is called'
+[1A[2KLOG: '✅ BDD: Service switches to dark theme'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 161 of 183 (1 FAILED) (0 secs / 0.492 secs)
+LOG: '✅ BDD: Service switches to dark theme'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 162 of 183 (1 FAILED) (0 secs / 0.493 secs)
+[1A[2KLOG: '🔧 BDD: Service is on dark theme'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 162 of 183 (1 FAILED) (0 secs / 0.493 secs)
+LOG: '🔧 BDD: Service is on dark theme'
+[1A[2KLOG: '⚙️ BDD: Toggle theme is called'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 162 of 183 (1 FAILED) (0 secs / 0.493 secs)
+LOG: '⚙️ BDD: Toggle theme is called'
+[1A[2KLOG: '✅ BDD: Service switches to light theme'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 162 of 183 (1 FAILED) (0 secs / 0.493 secs)
+LOG: '✅ BDD: Service switches to light theme'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 163 of 183 (1 FAILED) (0 secs / 0.494 secs)
+[1A[2KLOG: '🔧 BDD: Service is in auto mode'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 163 of 183 (1 FAILED) (0 secs / 0.494 secs)
+LOG: '🔧 BDD: Service is in auto mode'
+[1A[2KLOG: '⚙️ BDD: Set theme mode to light'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 163 of 183 (1 FAILED) (0 secs / 0.494 secs)
+LOG: '⚙️ BDD: Set theme mode to light'
+[1A[2KLOG: '✅ BDD: Service sets light theme'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 163 of 183 (1 FAILED) (0 secs / 0.494 secs)
+LOG: '✅ BDD: Service sets light theme'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 164 of 183 (1 FAILED) (0 secs / 0.495 secs)
+[1A[2KLOG: '🔧 BDD: Service is in auto mode'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 164 of 183 (1 FAILED) (0 secs / 0.495 secs)
+LOG: '🔧 BDD: Service is in auto mode'
+[1A[2KLOG: '⚙️ BDD: Set theme mode to dark'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 164 of 183 (1 FAILED) (0 secs / 0.495 secs)
+LOG: '⚙️ BDD: Set theme mode to dark'
+[1A[2KLOG: '✅ BDD: Service sets dark theme'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 164 of 183 (1 FAILED) (0 secs / 0.495 secs)
+LOG: '✅ BDD: Service sets dark theme'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 165 of 183 (1 FAILED) (0 secs / 0.496 secs)
+[1A[2KLOG: '🔧 BDD: Service is in manual mode'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 165 of 183 (1 FAILED) (0 secs / 0.496 secs)
+LOG: '🔧 BDD: Service is in manual mode'
+[1A[2KLOG: '⚙️ BDD: Set theme mode to auto'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 165 of 183 (1 FAILED) (0 secs / 0.496 secs)
+LOG: '⚙️ BDD: Set theme mode to auto'
+[1A[2KLOG: '✅ BDD: Service detects system theme and sets to dark'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 165 of 183 (1 FAILED) (0 secs / 0.496 secs)
+LOG: '✅ BDD: Service detects system theme and sets to dark'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 166 of 183 (1 FAILED) (0 secs / 0.497 secs)
+[1A[2KLOG: '🔧 BDD: Service is in auto mode'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 166 of 183 (1 FAILED) (0 secs / 0.497 secs)
+LOG: '🔧 BDD: Service is in auto mode'
+[1A[2KLOG: '⚙️ BDD: System prefers dark theme'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 166 of 183 (1 FAILED) (0 secs / 0.497 secs)
+LOG: '⚙️ BDD: System prefers dark theme'
+[1A[2KLOG: '✅ BDD: Service sets dark theme based on system preference'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 166 of 183 (1 FAILED) (0 secs / 0.497 secs)
+LOG: '✅ BDD: Service sets dark theme based on system preference'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 167 of 183 (1 FAILED) (0 secs / 0.498 secs)
+[1A[2KLOG: '🔧 BDD: Service is in auto mode'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 167 of 183 (1 FAILED) (0 secs / 0.498 secs)
+LOG: '🔧 BDD: Service is in auto mode'
+[1A[2KLOG: '⚙️ BDD: System prefers light theme'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 167 of 183 (1 FAILED) (0 secs / 0.498 secs)
+LOG: '⚙️ BDD: System prefers light theme'
+[1A[2KLOG: '✅ BDD: Service sets light theme based on system preference'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 167 of 183 (1 FAILED) (0 secs / 0.498 secs)
+LOG: '✅ BDD: Service sets light theme based on system preference'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 168 of 183 (1 FAILED) (0 secs / 0.499 secs)
+[1A[2KLOG: '🔧 BDD: Service changes theme'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 168 of 183 (1 FAILED) (0 secs / 0.499 secs)
+LOG: '🔧 BDD: Service changes theme'
+[1A[2KLOG: '⚙️ BDD: Theme is set to dark'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 168 of 183 (1 FAILED) (0 secs / 0.499 secs)
+LOG: '⚙️ BDD: Theme is set to dark'
+[1A[2KLOG: '✅ BDD: Service saves theme to localStorage'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 168 of 183 (1 FAILED) (0 secs / 0.499 secs)
+LOG: '✅ BDD: Service saves theme to localStorage'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 169 of 183 (1 FAILED) (0 secs / 0.5 secs)
+[1A[2KLOG: '🔧 BDD: Setting up localStorage with saved dark theme'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 169 of 183 (1 FAILED) (0 secs / 0.5 secs)
+LOG: '🔧 BDD: Setting up localStorage with saved dark theme'
+[1A[2KLOG: '⚙️ BDD: Service initializes with saved theme'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 169 of 183 (1 FAILED) (0 secs / 0.5 secs)
+LOG: '⚙️ BDD: Service initializes with saved theme'
+[1A[2KLOG: '✅ BDD: Service restores theme from localStorage'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 169 of 183 (1 FAILED) (0 secs / 0.5 secs)
+LOG: '✅ BDD: Service restores theme from localStorage'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 170 of 183 (1 FAILED) (0 secs / 0.501 secs)
+[1A[2KLOG: '🔧 BDD: Service changes theme'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 170 of 183 (1 FAILED) (0 secs / 0.501 secs)
+LOG: '🔧 BDD: Service changes theme'
+[1A[2KLOG: '⚙️ BDD: Dark theme is applied'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 170 of 183 (1 FAILED) (0 secs / 0.501 secs)
+LOG: '⚙️ BDD: Dark theme is applied'
+[1A[2KLOG: '✅ BDD: Document has correct data-theme attribute'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 170 of 183 (1 FAILED) (0 secs / 0.501 secs)
+LOG: '✅ BDD: Document has correct data-theme attribute'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 171 of 183 (1 FAILED) (0 secs / 0.502 secs)
+[1A[2KLOG: '🔧 BDD: Service changes theme'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 171 of 183 (1 FAILED) (0 secs / 0.502 secs)
+LOG: '🔧 BDD: Service changes theme'
+[1A[2KLOG: '⚙️ BDD: Light theme is applied'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 171 of 183 (1 FAILED) (0 secs / 0.502 secs)
+LOG: '⚙️ BDD: Light theme is applied'
+[1A[2KLOG: '✅ BDD: Document has correct data-theme attribute'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 171 of 183 (1 FAILED) (0 secs / 0.502 secs)
+LOG: '✅ BDD: Document has correct data-theme attribute'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 172 of 183 (1 FAILED) (0 secs / 0.503 secs)
+[1A[2KLOG: '🔧 BDD: localStorage is not available'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 172 of 183 (1 FAILED) (0 secs / 0.503 secs)
+LOG: '🔧 BDD: localStorage is not available'
+[1A[2KLOG: '⚙️ BDD: Theme is saved'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 172 of 183 (1 FAILED) (0 secs / 0.503 secs)
+LOG: '⚙️ BDD: Theme is saved'
+[1A[2KLOG: '✅ BDD: Service fails gracefully when localStorage unavailable'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 172 of 183 (1 FAILED) (0 secs / 0.503 secs)
+LOG: '✅ BDD: Service fails gracefully when localStorage unavailable'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 173 of 183 (1 FAILED) (0 secs / 0.505 secs)
+[1A[2KLOG: '🔧 BDD: localStorage is not available'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 173 of 183 (1 FAILED) (0 secs / 0.505 secs)
+LOG: '🔧 BDD: localStorage is not available'
+[1A[2KLOG: '⚙️ BDD: Theme is loaded'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 173 of 183 (1 FAILED) (0 secs / 0.505 secs)
+LOG: '⚙️ BDD: Theme is loaded'
+[1A[2KLOG: '✅ BDD: Service returns null when localStorage unavailable'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 173 of 183 (1 FAILED) (0 secs / 0.505 secs)
+LOG: '✅ BDD: Service returns null when localStorage unavailable'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 174 of 183 (1 FAILED) (0 secs / 0.506 secs)
+[1A[2KLOG: '🔧 BDD: Service theme changes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 174 of 183 (1 FAILED) (0 secs / 0.506 secs)
+LOG: '🔧 BDD: Service theme changes'
+[1A[2KLOG: '⚙️ BDD: Theme is set to dark'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 174 of 183 (1 FAILED) (0 secs / 0.506 secs)
+LOG: '⚙️ BDD: Theme is set to dark'
+[1A[2KLOG: '✅ BDD: currentTheme signal returns updated value'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 174 of 183 (1 FAILED) (0 secs / 0.506 secs)
+LOG: '✅ BDD: currentTheme signal returns updated value'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 175 of 183 (1 FAILED) (0 secs / 0.507 secs)
+[1A[2KLOG: '🔧 BDD: Service mode changes'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 175 of 183 (1 FAILED) (0 secs / 0.507 secs)
+LOG: '🔧 BDD: Service mode changes'
+[1A[2KLOG: '⚙️ BDD: Mode is set to manual light'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 175 of 183 (1 FAILED) (0 secs / 0.507 secs)
+LOG: '⚙️ BDD: Mode is set to manual light'
+[1A[2KLOG: '✅ BDD: themeMode signal returns updated value'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 175 of 183 (1 FAILED) (0 secs / 0.507 secs)
+LOG: '✅ BDD: themeMode signal returns updated value'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 176 of 183 (1 FAILED) (0 secs / 0.508 secs)
+[1A[2KLOG: '🔧 BDD: Component is created and initialized'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 176 of 183 (1 FAILED) (0 secs / 0.508 secs)
+LOG: '🔧 BDD: Component is created and initialized'
+[1A[2KLOG: '✅ BDD: Component is created successfully'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 176 of 183 (1 FAILED) (0 secs / 0.508 secs)
+LOG: '✅ BDD: Component is created successfully'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 177 of 183 (1 FAILED) (0 secs / 0.51 secs)
+[1A[2KLOG: '🔧 BDD: Component is created'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 177 of 183 (1 FAILED) (0 secs / 0.51 secs)
+LOG: '🔧 BDD: Component is created'
+[1A[2KLOG: '✅ BDD: Component has theme service'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 177 of 183 (1 FAILED) (0 secs / 0.51 secs)
+LOG: '✅ BDD: Component has theme service'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 178 of 183 (1 FAILED) (0 secs / 0.513 secs)
+[1A[2KLOG: '🔧 BDD: Component is created'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 178 of 183 (1 FAILED) (0 secs / 0.513 secs)
+LOG: '🔧 BDD: Component is created'
+[1A[2KLOG: '⚙️ BDD: Toggle theme is called'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 178 of 183 (1 FAILED) (0 secs / 0.513 secs)
+LOG: '⚙️ BDD: Toggle theme is called'
+[1A[2KLOG: '🔧 BDD: Theme toggle clicked, switching to', 'dark', 'theme'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 178 of 183 (1 FAILED) (0 secs / 0.513 secs)
+LOG: '🔧 BDD: Theme toggle clicked, switching to', 'dark', 'theme'
+[1A[2KLOG: '✅ BDD: Theme service toggle method is called'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 178 of 183 (1 FAILED) (0 secs / 0.513 secs)
+LOG: '✅ BDD: Theme service toggle method is called'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 179 of 183 (1 FAILED) (0 secs / 0.515 secs)
+[1A[2KLOG: '🔧 BDD: Component is created'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 179 of 183 (1 FAILED) (0 secs / 0.515 secs)
+LOG: '🔧 BDD: Component is created'
+[1A[2KLOG: '✅ BDD: Component is accessible'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 179 of 183 (1 FAILED) (0 secs / 0.515 secs)
+LOG: '✅ BDD: Component is accessible'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 180 of 183 (1 FAILED) (0 secs / 0.533 secs)
+[1A[2KLOG: '🔧 BDD: Component is created'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 180 of 183 (1 FAILED) (0 secs / 0.533 secs)
+LOG: '🔧 BDD: Component is created'
+[1A[2KLOG: '✅ BDD: Component has visual feedback'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 180 of 183 (1 FAILED) (0 secs / 0.533 secs)
+LOG: '✅ BDD: Component has visual feedback'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 181 of 183 (1 FAILED) (0 secs / 0.535 secs)
+[1A[2KLOG: '🔧 BDD: Component is created'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 181 of 183 (1 FAILED) (0 secs / 0.535 secs)
+LOG: '🔧 BDD: Component is created'
+[1A[2KLOG: '✅ BDD: Component has text content'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 181 of 183 (1 FAILED) (0 secs / 0.535 secs)
+LOG: '✅ BDD: Component has text content'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 182 of 183 (1 FAILED) (0 secs / 0.538 secs)
+[1A[2KLOG: '🔧 BDD: Component is created'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 182 of 183 (1 FAILED) (0 secs / 0.538 secs)
+LOG: '🔧 BDD: Component is created'
+[1A[2KLOG: '✅ BDD: Component has correct structure'
+Chrome Headless 139.0.0.0 (Linux 0.0.0): Executed 182 of 183 (1 FAILED) (0 secs / 0.538 secs)
+LOG: '✅ BDD: Component has correct structure'
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 183 of 183 (1 FAILED) (0 secs / 0.54 secs)
+[1A[2KChrome Headless 139.0.0.0 (Linux 0.0.0): Executed 183 of 183 (1 FAILED) (0.638 secs / 0.54 secs)
+TOTAL: 1 FAILED, 182 SUCCESS
+
+=============================== Coverage summary ===============================
+Statements   : 81.19% ( 298/367 )
+Branches     : 65.76% ( 73/111 )
+Functions    : 69.07% ( 67/97 )
+Lines        : 80.05% ( 277/346 )
+================================================================================
