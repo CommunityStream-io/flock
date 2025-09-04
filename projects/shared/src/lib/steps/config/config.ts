@@ -57,35 +57,48 @@ export class Config implements OnInit, OnDestroy {
   });
 
   /**
+   * Form state signals
+   */
+  private formStateSignal = signal({
+    dirty: false,
+    pristine: true,
+    touched: false
+  });
+
+  /**
    * Check if form is dirty
    */
   public isFormDirty = computed(() => {
-    return this.configForm.dirty;
+    return this.formStateSignal().dirty;
   });
 
   /**
    * Check if form is pristine
    */
   public isFormPristine = computed(() => {
-    return this.configForm.pristine;
+    return this.formStateSignal().pristine;
   });
 
   /**
    * Check if form is touched
    */
   public isFormTouched = computed(() => {
-    return this.configForm.touched;
+    return this.formStateSignal().touched;
   });
 
   ngOnInit() {
     // Load existing configuration
     this.loadConfiguration();
 
+    // Initialize form state
+    this.updateFormState();
+
     // Subscribe to form value changes
     this.configForm.valueChanges.pipe(
       takeUntil(this.destroy$)
     ).subscribe(() => {
       this.saveConfiguration();
+      this.updateFormState();
       this.cdr.markForCheck();
     });
 
@@ -93,6 +106,7 @@ export class Config implements OnInit, OnDestroy {
     this.configForm.statusChanges.pipe(
       takeUntil(this.destroy$)
     ).subscribe(() => {
+      this.updateFormState();
       this.cdr.markForCheck();
     });
   }
@@ -100,6 +114,17 @@ export class Config implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  /**
+   * Update form state signal
+   */
+  private updateFormState(): void {
+    this.formStateSignal.set({
+      dirty: this.configForm.dirty,
+      pristine: this.configForm.pristine,
+      touched: this.configForm.touched
+    });
   }
 
   /**

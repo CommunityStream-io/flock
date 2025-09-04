@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MatDialog } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
+import { of } from 'rxjs';
 
 import { Config } from './config';
 import { LOGGER, ConfigServiceImpl, Logger } from '../../services';
@@ -31,7 +32,12 @@ describe('Feature: Migration Configuration (BDD-Style)', () => {
       testVideoMode: false,
       simulate: false
     });
+    // Mock dialog reference
+    const mockDialogRef = jasmine.createSpyObj('MatDialogRef', ['afterClosed']);
+    mockDialogRef.afterClosed.and.returnValue(of(null));
+    
     mockDialog = jasmine.createSpyObj('MatDialog', ['open']);
+    mockDialog.open.and.returnValue(mockDialogRef);
 
     await TestBed.configureTestingModule({
       imports: [Config, NoopAnimationsModule],
@@ -313,6 +319,7 @@ describe('Feature: Migration Configuration (BDD-Style)', () => {
       // ⚙️ BDD: User modifies form value
       console.log(`⚙️ BDD: User enters value in start date field`);
       component.configForm.get('startDate')?.setValue('2023-01-01');
+      fixture.detectChanges(); // Trigger change detection
       
       // ✅ BDD: Verify form becomes dirty
       console.log(`✅ BDD: Form state indicates modifications have been made`);
@@ -330,6 +337,7 @@ describe('Feature: Migration Configuration (BDD-Style)', () => {
       // ⚙️ BDD: User interacts with form field
       console.log(`⚙️ BDD: User touches start date field`);
       component.configForm.get('startDate')?.markAsTouched();
+      fixture.detectChanges(); // Trigger change detection
       
       // ✅ BDD: Verify form becomes touched
       console.log(`✅ BDD: Form state indicates user interaction`);
@@ -347,6 +355,7 @@ describe('Feature: Migration Configuration (BDD-Style)', () => {
       // ⚙️ BDD: User modifies form value
       console.log(`⚙️ BDD: User enters value in start date field`);
       component.configForm.get('startDate')?.setValue('2023-01-01');
+      fixture.detectChanges(); // Trigger change detection
       
       // ✅ BDD: Verify form is no longer pristine
       console.log(`✅ BDD: Form state indicates modifications have been made`);
@@ -510,10 +519,11 @@ describe('Feature: Migration Configuration (BDD-Style)', () => {
       
       // ⚙️ BDD: Template renders form elements
       console.log(`⚙️ BDD: Angular renders form with reactive form binding`);
+      fixture.detectChanges(); // Ensure template is rendered
       
       // ✅ BDD: Verify form elements are present
       console.log(`✅ BDD: Form element with reactive form binding is rendered`);
-      const formElement = fixture.debugElement.query(By.css('form[formGroup]'));
+      const formElement = fixture.debugElement.query(By.css('section[formGroup]'));
       expect(formElement).toBeTruthy();
     });
 
@@ -523,6 +533,7 @@ describe('Feature: Migration Configuration (BDD-Style)', () => {
       
       // ⚙️ BDD: Template renders date range section
       console.log(`⚙️ BDD: Angular renders date range section with form controls`);
+      fixture.detectChanges(); // Ensure template is rendered
       
       // ✅ BDD: Verify date range section is present
       console.log(`✅ BDD: Date range section is rendered with proper styling`);
@@ -536,6 +547,7 @@ describe('Feature: Migration Configuration (BDD-Style)', () => {
       
       // ⚙️ BDD: Template renders testing options section
       console.log(`⚙️ BDD: Angular renders testing options section with toggles`);
+      fixture.detectChanges(); // Ensure template is rendered
       
       // ✅ BDD: Verify testing options section is present
       console.log(`✅ BDD: Testing options section is rendered with toggle controls`);
@@ -549,6 +561,7 @@ describe('Feature: Migration Configuration (BDD-Style)', () => {
       
       // ⚙️ BDD: Template renders date input fields
       console.log(`⚙️ BDD: Angular renders start and end date input fields`);
+      fixture.detectChanges(); // Ensure template is rendered
       
       // ✅ BDD: Verify date input fields are present
       console.log(`✅ BDD: Both start and end date input fields are rendered`);
@@ -565,6 +578,7 @@ describe('Feature: Migration Configuration (BDD-Style)', () => {
       
       // ⚙️ BDD: Template renders toggle controls
       console.log(`⚙️ BDD: Angular renders test video and simulation mode toggles`);
+      fixture.detectChanges(); // Ensure template is rendered
       
       // ✅ BDD: Verify toggle controls are present
       console.log(`✅ BDD: Both toggle controls are rendered with proper form binding`);
@@ -581,6 +595,7 @@ describe('Feature: Migration Configuration (BDD-Style)', () => {
       
       // ⚙️ BDD: Template renders clear dates button
       console.log(`⚙️ BDD: Angular renders clear dates button with proper test ID`);
+      fixture.detectChanges(); // Ensure template is rendered
       
       // ✅ BDD: Verify clear dates button is present
       console.log(`✅ BDD: Clear dates button is rendered with correct test identifier`);
@@ -594,6 +609,7 @@ describe('Feature: Migration Configuration (BDD-Style)', () => {
       
       // ⚙️ BDD: Template renders help buttons
       console.log(`⚙️ BDD: Angular renders help buttons for both sections`);
+      fixture.detectChanges(); // Ensure template is rendered
       
       // ✅ BDD: Verify help buttons are present
       console.log(`✅ BDD: Both help buttons are rendered with correct test identifiers`);
@@ -623,6 +639,8 @@ describe('Feature: Migration Configuration (BDD-Style)', () => {
 
   describe('Accessibility', () => {
     it('should have proper ARIA labels on form controls', () => {
+      fixture.detectChanges(); // Ensure template is rendered
+      
       const startDateInput = fixture.debugElement.query(By.css('input[formControlName="startDate"]'));
       const endDateInput = fixture.debugElement.query(By.css('input[formControlName="endDate"]'));
       
@@ -631,6 +649,8 @@ describe('Feature: Migration Configuration (BDD-Style)', () => {
     });
 
     it('should have proper ARIA labels on toggles', () => {
+      fixture.detectChanges(); // Ensure template is rendered
+      
       const testVideoToggle = fixture.debugElement.query(By.css('mat-slide-toggle[formControlName="testVideoMode"]'));
       const simulationToggle = fixture.debugElement.query(By.css('mat-slide-toggle[formControlName="simulationMode"]'));
       
@@ -639,6 +659,8 @@ describe('Feature: Migration Configuration (BDD-Style)', () => {
     });
 
     it('should have proper ARIA labels on help buttons', () => {
+      fixture.detectChanges(); // Ensure template is rendered
+      
       const helpButtons = fixture.debugElement.queryAll(By.css('button[data-testid="help-icon"]'));
       
       expect(helpButtons[0].nativeElement.getAttribute('aria-label')).toBe('Help with date range filtering');
