@@ -1,105 +1,160 @@
-import type { Config } from '@wdio/types';
+import type { Options } from '@wdio/types'
 
-export const config: Config = {
-    // =====
-    // WebdriverIO Configuration
-    // =====
-    
-    // Test runner configuration
+export const config: Options.Testrunner = {
+    //
+    // ====================
+    // Runner Configuration
+    // ====================
+    //
+    // WebdriverIO allows it to run your tests in arbitrary locations (e.g. locally or
+    // on a remote machine).
     runner: 'local',
     
-    // Test specs
+    //
+    // =====================
+    // TypeScript Configurations
+    // =====================
+    //
+    // TypeScript support is handled by ts-node automatically
+
+    //
+    // ==================
+    // Specify Test Files
+    // ==================
+    // Define which test specs should run. The pattern is relative to the directory
+    // from which `wdio` was called.
     specs: [
-        './features/**/*.feature'
+        process.env.TEST_SPEC || './features/**/**.feature'
     ],
     
-    // Exclude patterns
+    // Patterns to exclude.
     exclude: [
-        './features/**/*.skipped.feature'
+        // 'path/to/excluded/files'
     ],
+
+    //
+    // ============
+    // Capabilities
+    // ============
+    // Define your capabilities here. WebdriverIO can run multiple capabilities at the same
+    // time. Depending on the number of capabilities, WebdriverIO launches several test
+    // sessions. Within your capabilities you can overwrite the spec and exclude options in
+    // order to group specific specs to a specific capability.
+    maxInstances: 10,
     
-    // Maximum number of total parallel running workers
-    maxInstances: 4,
-    
-    // Capabilities for different browsers
-    capabilities: [
-        {
-            browserName: 'chrome',
-            'goog:chromeOptions': {
-                args: process.env.HEADLESS === 'true' ? [
-                    '--headless',
-                    '--no-sandbox',
-                    '--disable-dev-shm-usage',
-                    '--disable-gpu',
-                    '--window-size=1920,1080'
-                ] : [
-                    '--no-sandbox',
-                    '--disable-dev-shm-usage',
-                    '--window-size=1920,1080'
-                ]
-            }
+    capabilities: [{
+        maxInstances: 5,
+        browserName: 'chrome',
+        acceptInsecureCerts: true,
+        // Enable Chrome DevTools Protocol for network simulation
+        'goog:chromeOptions': {
+            args: [
+                // Network simulation and CDP support
+                '--enable-chrome-browser-cloud-management',
+                '--enable-network-service-logging',
+                '--disable-web-security',              // Allow network interception
+                '--disable-features=VizDisplayCompositor',
+                // Standard Chrome options
+                '--no-sandbox',                        // Disable sandbox for CI environments
+                '--disable-dev-shm-usage',             // Prevent shared memory issues
+                '--disable-gpu',                       // Disable GPU acceleration
+                '--window-size=1920,1080',             // Set consistent window size
+                // Conditionally add headless mode
+                ...(process.env.HEADLESS === 'true' ? ['--headless'] : [])
+            ]
         }
-    ],
+    }] as any,
+
+    //
+    // ===================
+    // Test Configurations
+    // ===================
+    // Define all options that are relevant for the WebdriverIO instance here
+    //
+    // Level of logging verbosity: trace | debug | info | warn | error | silent
+    logLevel: process.env.DEBUG_TESTS === 'true' ? 'info' : 'error',
     
-    // Test configuration
-    logLevel: 'info',
-    bail: 0,
+    // Set specific log levels per logger to reduce noise
+    logLevels: {
+        webdriver: process.env.DEBUG_TESTS === 'true' ? 'info' : 'error',
+        webdriverio: process.env.DEBUG_TESTS === 'true' ? 'info' : 'error',
+        '@wdio/local-runner': process.env.DEBUG_TESTS === 'true' ? 'info' : 'error',
+        '@wdio/cli': process.env.DEBUG_TESTS === 'true' ? 'info' : 'error',
+        '@wdio/cucumber-framework': process.env.DEBUG_TESTS === 'true' ? 'info' : 'error'
+    },
+
+    // If you only want to run your tests until a specific amount of tests have failed use
+    // bail (default is 0 - don't bail, run all tests).
+    bail: 0,  // Don't bail on failures, run all tests
+
+    // Set a base URL in order to shorten url command calls. If your `url` parameter starts
+    // with `/`, the base url gets prepended, not including the path portion of your baseUrl.
     baseUrl: 'http://localhost:4200',
+
+    // Default timeout for all waitFor* commands.
     waitforTimeout: 10000,
+
+    // Default timeout in milliseconds for request
+    // if browser driver or grid doesn't send response
     connectionRetryTimeout: 120000,
+
+    // Default request retries count
     connectionRetryCount: 3,
-    
+
     // Test runner services
+    // Note: chromedriver service is built-in for WebdriverIO v9
     services: [],
     
-    // Environment variables
+    // Environment variables to reduce debug output
     env: {
         DEBUG: '',
         NODE_ENV: 'test'
     },
     
-    // Framework configuration
+    // Framework you want to run your specs with.
     framework: 'cucumber',
+
+    // Test reporter for stdout.
+    // Using spec reporter to show scenario names on failure
+    reporters: [
+        ['spec', {
+            // Show scenario names and steps
+            showTestNames: true,
+            showTestStatus: true
+        }]
+    ],
+
+    //
+    // If you are using Cucumber you need to specify the location of your step definitions.
     cucumberOpts: {
-        require: ['./features/step-definitions/**/*.ts'],
-        backtrace: false,
-        requireModule: ['ts-node/register'],
+        require: ['./features/step-definitions/steps.ts'],
+        backtrace: true,  // Show full stack trace on failures
+        requireModule: ['expect-webdriverio'],
         dryRun: false,
         failFast: false,
         snippets: true,
         source: true,
-        strict: false,
+        strict: false,  // Allow skipped steps without failing the entire scenario
         tags: process.env.TEST_TAGS || "",
-        timeout: 30000,
-        ignoreUndefinedDefinitions: true,
-        format: ['pretty'],
-        publishQuiet: process.env.DEBUG_TESTS !== 'true'
+        timeout: 60000,
+        ignoreUndefinedDefinitions: false,
+        format: ['pretty'],  // Add pretty format for better readability
+        publishQuiet: process.env.DEBUG_TESTS !== 'true'   // Reduce noise from cucumber reporting unless debugging
     },
     
+    //
     // =====
     // Hooks
     // =====
+    // WebdriverIO provides several hooks you can use to interfere with the test process in order to enhance
+    // it and to build services around it. You can either apply a single function or an array of
+    // methods to it. If one of them returns with a promise, WebdriverIO will wait until that promise got
+    // resolved to continue.
     
-    beforeSession: function (config, capabilities, specs, cid) {
-        // Initialize test session
-    },
-    
-    beforeTest: async function (test, context) {
-        // Initialize test
-    },
-    
-    afterTest: async function (test, context, { error, result, duration, passed, retries }) {
+    // Add screenshot on failure
+    afterTest: function (test, context, { error, result, duration, passed, retries }) {
         if (!passed) {
             // Screenshot will be taken automatically by WebdriverIO on failure
         }
     },
-    
-    afterSuite: function (suite) {
-        // Clean up after each suite
-    },
-    
-    onComplete: async function (exitCode, config, capabilities, results) {
-        // Final cleanup
-        console.log('📈 BDD: E2E tests completed');
-    }
-};
+}
