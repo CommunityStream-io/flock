@@ -4,14 +4,14 @@
 
 ## 🎯 **Coverage Philosophy**
 
-We believe in **comprehensive coverage** that goes beyond just unit tests. Our coverage strategy includes:
+We believe in **focused, high-quality coverage** that provides meaningful insights into our code quality:
 
 - **Unit Test Coverage** - Individual component and service testing
-- **E2E Test Coverage** - Full user journey and integration testing  
-- **Combined Coverage** - Merged reports showing complete test coverage
 - **Coverage Trends** - Tracking coverage improvements over time
+- **Quality Focus** - Coverage as a tool for identifying untested code paths
+- **Maintainable Tests** - Tests that are easy to understand and maintain
 
-## 📈 **Coverage Types**
+## 📈 **Coverage Strategy**
 
 ### **Unit Test Coverage**
 - **Target**: Individual components, services, and utilities
@@ -19,44 +19,14 @@ We believe in **comprehensive coverage** that goes beyond just unit tests. Our c
 - **Format**: LCOV reports
 - **Scope**: Shared library and application components
 
-### **E2E Test Coverage** 
-- **Target**: Full user workflows and integration scenarios
-- **Tool**: WebdriverIO with NYC coverage collection
-- **Format**: LCOV reports
-- **Scope**: Complete application functionality
-
-### **Combined Coverage**
-- **Target**: Comprehensive view of all testing
-- **Tool**: NYC merge functionality
-- **Format**: Merged LCOV reports
-- **Scope**: Complete codebase coverage
+### **Coverage Goals**
+- **Unit Test Coverage**: 80%+ for shared library
+- **Line Coverage**: Every line of code executed
+- **Branch Coverage**: All conditional paths tested
+- **Function Coverage**: All functions called
+- **Statement Coverage**: All statements executed
 
 ## 🔧 **Coverage Configuration**
-
-### **NYC Configuration** (`.nycrc.json`)
-```json
-{
-  "extends": "@istanbuljs/nyc-config-typescript",
-  "all": true,
-  "check-coverage": false,
-  "reporter": ["text", "text-summary", "html", "lcov"],
-  "report-dir": "./coverage",
-  "temp-dir": "./.nyc_output",
-  "include": [
-    "projects/flock-mirage/src/**/*.ts",
-    "projects/shared/src/**/*.ts"
-  ],
-  "exclude": [
-    "projects/**/*.spec.ts",
-    "projects/**/*.test.ts",
-    "projects/**/test/**",
-    "projects/**/spec/**",
-    "projects/**/environments/**",
-    "projects/**/main.ts",
-    "projects/**/polyfills.ts"
-  ]
-}
-```
 
 ### **Karma Coverage Configuration**
 ```javascript
@@ -81,37 +51,19 @@ npm run test:coverage
 # Coverage report will be generated in ./coverage/
 ```
 
-### **E2E Test Coverage**
+### **View Coverage Reports**
 ```bash
-# Run E2E tests with coverage collection
-npm run test:e2e:coverage
+# Open HTML coverage report
+open ./coverage/index.html
 
-# Coverage data collected during E2E test execution
-```
-
-### **Combined Coverage**
-```bash
-# Run all tests with coverage and merge reports
-npm run coverage:all
-
-# This runs:
-# 1. Unit test coverage
-# 2. E2E test coverage  
-# 3. Merges both reports
-```
-
-### **Coverage Merging**
-```bash
-# Merge existing coverage reports
-npm run coverage:merge
-
-# Creates combined LCOV report for Codecov upload
+# View coverage summary in terminal
+npm run test:coverage
 ```
 
 ## 📊 **Codecov Integration**
 
 ### **Coverage Upload Configuration**
-Our CI pipeline automatically uploads coverage to Codecov with separate flags:
+Our CI pipeline automatically uploads coverage to Codecov:
 
 **Unit Test Coverage:**
 ```yaml
@@ -123,29 +75,19 @@ Our CI pipeline automatically uploads coverage to Codecov with separate flags:
     name: codecov-umbrella
 ```
 
-**E2E Test Coverage:**
-```yaml
-- name: Upload E2E coverage to Codecov
-  uses: codecov/codecov-action@v5
-  with:
-    files: ./coverage/lcov.info
-    flags: e2etests
-    name: codecov-umbrella
-```
-
 ### **Codecov Configuration** (`codecov.yml`)
 ```yaml
 coverage:
   status:
     project:
       default:
-        target: auto
-        threshold: 0%
+        target: 80%
+        threshold: 1%
         base: auto
     patch:
       default:
-        target: auto
-        threshold: 0%
+        target: 80%
+        threshold: 1%
         base: auto
 
 flags:
@@ -153,11 +95,19 @@ flags:
     paths:
       - projects/shared/src/
     carryforward: true
-  e2etests:
-    paths:
-      - projects/flock-mirage/src/
-      - projects/shared/src/
-    carryforward: true
+
+comment:
+  layout: "header,diff,files,footer"
+  behavior: default
+  require_changes: true
+  require_base: no
+  require_head: yes
+  hide_comment: false
+  hide_project_coverage: false
+  hide_patch_coverage: false
+
+github_checks:
+  annotations: true
 ```
 
 ## 📈 **Coverage Reports**
@@ -176,21 +126,7 @@ npm run test:coverage
 ### **Codecov Dashboard**
 - **Repository**: [https://app.codecov.io/github/CommunityStream-io/flock](https://app.codecov.io/github/CommunityStream-io/flock)
 - **Unit Tests**: Flagged as `unittests`
-- **E2E Tests**: Flagged as `e2etests`
-- **Combined View**: Shows both coverage types together
-
-## 🎯 **Coverage Goals**
-
-### **Current Targets**
-- **Unit Test Coverage**: 80%+ for shared library
-- **E2E Test Coverage**: 70%+ for critical user flows
-- **Combined Coverage**: 75%+ overall
-
-### **Coverage Quality**
-- **Line Coverage**: Every line of code executed
-- **Branch Coverage**: All conditional paths tested
-- **Function Coverage**: All functions called
-- **Statement Coverage**: All statements executed
+- **Coverage Trends**: Historical coverage data and trends
 
 ## 🔍 **Coverage Analysis**
 
@@ -209,9 +145,8 @@ npm run test:coverage
 ## 🛠️ **Coverage Tools**
 
 ### **Primary Tools**
-- **Istanbul/NYC**: Coverage collection and reporting
+- **Istanbul**: Coverage collection and reporting
 - **Karma**: Unit test coverage integration
-- **WebdriverIO**: E2E test coverage hooks
 - **Codecov**: Coverage reporting and trends
 
 ### **Coverage Collection Process**
@@ -219,23 +154,17 @@ npm run test:coverage
 graph TB
     subgraph "Coverage Collection"
         A[Unit Tests] --> B[Karma Coverage]
-        C[E2E Tests] --> D[WebdriverIO Hooks]
-        B --> E[LCOV Report]
-        D --> F[Coverage Data]
-        E --> G[NYC Merge]
-        F --> G
-        G --> H[Combined Report]
+        B --> C[LCOV Report]
     end
     
     subgraph "Upload Process"
-        H --> I[Codecov Upload]
-        I --> J[Coverage Dashboard]
+        C --> D[Codecov Upload]
+        D --> E[Coverage Dashboard]
     end
     
     style A fill:#4caf50
-    style C fill:#ff9800
-    style G fill:#2196f3
-    style J fill:#9c27b0
+    style C fill:#2196f3
+    style E fill:#9c27b0
 ```
 
 ## 📋 **Coverage Best Practices**
@@ -271,19 +200,13 @@ graph TB
 #### **Coverage Collection Failures**
 - **Build Issues**: Ensure application builds successfully
 - **Test Failures**: Fix failing tests before collecting coverage
-- **Configuration**: Verify NYC and Karma configuration
+- **Configuration**: Verify Karma configuration
 - **File Paths**: Check include/exclude patterns in configuration
-
-#### **E2E Coverage Issues**
-- **Application Startup**: Ensure Angular app starts correctly
-- **Test Execution**: Verify WebdriverIO tests run successfully
-- **Coverage Hooks**: Check coverage collection hooks in WebdriverIO config
-- **Environment Variables**: Verify `COLLECT_COVERAGE=true` is set
 
 ### **Debugging Coverage**
 ```bash
-# Check coverage configuration
-cat .nycrc.json
+# Check karma configuration
+cat karma.conf.js
 
 # Verify coverage files are generated
 ls -la ./coverage/
@@ -301,7 +224,7 @@ npm run test:coverage -- --verbose
 - **Overall Coverage**: Percentage of code covered by tests
 - **Coverage Trends**: Coverage changes over time
 - **Coverage by Module**: Which parts of the codebase are well-tested
-- **Coverage by Test Type**: Unit vs E2E coverage breakdown
+- **Coverage Quality**: Meaningful tests vs. just hitting lines
 
 ### **Coverage Reports**
 - **HTML Reports**: Visual coverage reports with line-by-line details

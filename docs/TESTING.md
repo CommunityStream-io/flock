@@ -689,9 +689,9 @@ graph LR
 Our testing approach combines the best of both worlds:
 
 ### **Comprehensive Coverage**
-- **Unit Tests** - Fast, isolated component and service testing
+- **Unit Tests** - Fast, isolated component and service testing with coverage
 - **E2E Tests** - Full user journey and integration testing
-- **Coverage Tracking** - Complete coverage reporting with Codecov
+- **Coverage Tracking** - Unit test coverage reporting with Codecov
 - **CI Integration** - Automated testing pipeline with quality gates
 
 ### **BDD Methodology**
@@ -703,7 +703,7 @@ Our testing approach combines the best of both worlds:
 ### **Quality Assurance**
 - **Automated Testing** - All tests run automatically on every commit
 - **Quality Gates** - Tests must pass before code can be merged
-- **Coverage Tracking** - Coverage reports are generated and tracked
+- **Coverage Tracking** - Unit test coverage reports are generated and tracked
 - **Multi-Environment** - Tests run in consistent, isolated environments
 
 ## 📚 **Next Steps**

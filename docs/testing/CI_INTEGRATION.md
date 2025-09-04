@@ -8,7 +8,7 @@ Our CI/CD pipeline ensures that every change is thoroughly tested before deploym
 
 - **Automated Testing** - All tests run automatically on every commit
 - **Quality Gates** - Tests must pass before code can be merged
-- **Coverage Tracking** - Coverage reports are generated and tracked
+- **Coverage Tracking** - Unit test coverage reports are generated and tracked
 - **Multi-Environment** - Tests run in consistent, isolated environments
 
 ## 🏗️ **CI Pipeline Structure**
@@ -26,16 +26,13 @@ graph TB
     
     subgraph "Test Execution"
         G[Unit Test Coverage]
-        H[E2E Test Coverage]
-        I[Allure Reports]
-        J[Codecov Upload]
+        H[Allure Reports]
+        I[Codecov Upload]
     end
     
     C --> G
     D --> H
-    D --> I
-    G --> J
-    H --> J
+    G --> I
     
     style A fill:#4caf50
     style B fill:#ff9800
@@ -47,164 +44,45 @@ graph TB
 ### **Pipeline Jobs**
 1. **Lint** - Code quality and style checking
 2. **Unit Tests** - Component and service testing with coverage
-3. **E2E Tests** - Full user journey testing with coverage
+3. **E2E Tests** - Full user journey testing
 4. **Build** - Application build verification
 
 ## 🔧 **CI Configuration**
 
-### **GitHub Actions Workflow** (`.github/workflows/ci.yml`)
-```yaml
-name: Feathering the Nest
+### **GitHub Actions Workflow**
+The complete CI pipeline is defined in [`.github/workflows/ci.yml`](../../.github/workflows/ci.yml).
 
-on:
-  push:
-    branches: [ "*" ]
-  pull_request:
-    branches: [ "*" ]
+**Pipeline Structure:**
+- **Lint Job** ([lines 10-30](../../.github/workflows/ci.yml#L10-L30)): Code quality and style checking
+- **Test Job** ([lines 32-58](../../.github/workflows/ci.yml#L32-L58)): Unit tests with coverage collection  
+- **E2E Job** ([lines 60-100](../../.github/workflows/ci.yml#L60-L100)): End-to-end testing with Allure reporting
 
-jobs:
-  lint:
-    name: Waterproof feathers (Lint)
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '24.5.0'
-          cache: 'npm'
-      - name: Install dependencies
-        run: npm ci
-      - name: Lint all projects
-        run: npm run lint:all
-
-  test:
-    name: Count the flock (Unit Test)
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '24.5.0'
-          cache: 'npm'
-      - name: Install dependencies
-        run: npm ci
-      - name: Build shared library
-        run: npx ng build --project=shared
-      - name: Run tests with coverage
-        run: npm run test:coverage
-      - name: Upload unit test coverage to Codecov
-        uses: codecov/codecov-action@v5
-        with:
-          files: ./coverage/lcov.info
-          flags: unittests
-          name: codecov-umbrella
-          fail_ci_if_error: false
-
-  e2e:
-    name: Practice the murmuration (E2E Test)
-    runs-on: ubuntu-latest
-    env:
-      HEADLESS: true
-      CI: true
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '24.5.0'
-          cache: 'npm'
-      - name: Install dependencies
-        run: npm ci
-      - name: Install Angular CLI globally
-        run: npm install -g @angular/cli
-      - name: Install Allure command line
-        run: npm install -g allure-commandline
-      - name: Build shared library
-        run: npx ng build --project=shared
-      - name: Build flock-mirage app
-        run: npx ng build --project=flock-mirage --configuration=development
-      - name: Run e2e tests with coverage
-        run: npm run test:e2e:coverage
-        env:
-          CI: true
-          NODE_ENV: production
-          COLLECT_COVERAGE: true
-      - name: Generate Allure report
-        run: npm run allure:generate
-      - name: Upload Allure report as artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: allure-report
-          path: allure-report/
-          retention-days: 30
-      - name: Upload E2E coverage to Codecov
-        uses: codecov/codecov-action@v5
-        with:
-          files: ./coverage/lcov.info
-          flags: e2etests
-          name: codecov-umbrella
-          fail_ci_if_error: false
-```
+**Key Configuration:**
+- **Node.js Version**: 24.5.0 ([line 24](../../.github/workflows/ci.yml#L24))
+- **Cache Strategy**: npm cache with package-lock.json ([lines 25-26](../../.github/workflows/ci.yml#L25-L26))
+- **Environment Variables**: PACKAGE_TOKEN and CODECOV_TOKEN ([lines 14, 35](../../.github/workflows/ci.yml#L14-L35))
 
 ## 📊 **Coverage Integration**
 
 ### **Coverage Collection**
 - **Unit Tests**: Karma with Istanbul coverage
-- **E2E Tests**: WebdriverIO with NYC coverage collection
-- **Combined Reports**: Merged coverage reports for comprehensive view
+- **Coverage Reports**: LCOV format for Codecov integration
 
 ### **Codecov Integration**
-```yaml
-# Unit test coverage upload
-- name: Upload unit test coverage to Codecov
-  uses: codecov/codecov-action@v5
-  with:
-    files: ./coverage/lcov.info
-    flags: unittests
-    name: codecov-umbrella
-    fail_ci_if_error: false
+**Coverage Upload Configuration:**
+- Unit test coverage upload: [lines 50-55](../../.github/workflows/ci.yml#L50-L55)
+- Codecov action configuration: [codecov/codecov-action@v5](https://github.com/codecov/codecov-action)
 
-# E2E test coverage upload
-- name: Upload E2E coverage to Codecov
-  uses: codecov/codecov-action@v5
-  with:
-    files: ./coverage/lcov.info
-    flags: e2etests
-    name: codecov-umbrella
-    fail_ci_if_error: false
-```
+**Coverage File Paths:**
+- Coverage reports: `./coverage/lcov.info`
+- Coverage flags: `unittests` for unit test coverage
 
-### **Coverage Configuration** (`codecov.yml`)
-```yaml
-coverage:
-  status:
-    project:
-      default:
-        target: auto
-        threshold: 0%
-        base: auto
-    patch:
-      default:
-        target: auto
-        threshold: 0%
-        base: auto
-
-flags:
-  unittests:
-    paths:
-      - projects/shared/src/
-    carryforward: true
-  e2etests:
-    paths:
-      - projects/flock-mirage/src/
-      - projects/shared/src/
-    carryforward: true
-```
+### **Coverage Configuration**
+**Codecov Settings:**
+- Configuration file: [codecov.yml](../../codecov.yml)
+- Coverage targets: 80% for project and patch coverage ([lines 4-5, 9-10](../../codecov.yml#L4-L5))
+- Unit test paths: `projects/shared/src/` ([lines 15-17](../../codecov.yml#L15-L17))
+- PR comments: Enabled with diff and files layout ([lines 20-25](../../codecov.yml#L20-L25))
 
 ## 📈 **Test Reporting**
 
@@ -217,17 +95,14 @@ flags:
 - **Historical Tracking**: Track test performance and trends over time
 
 ### **Allure Configuration**
-```yaml
-- name: Generate Allure report
-  run: npm run allure:generate
+**CI Integration:**
+- Allure report generation: [lines 85-86](../../.github/workflows/ci.yml#L85-L86)
+- Report upload as artifact: [lines 87-92](../../.github/workflows/ci.yml#L87-L92)
+- Retention period: 30 days for historical tracking
 
-- name: Upload Allure report as artifact
-  uses: actions/upload-artifact@v4
-  with:
-    name: allure-report
-    path: allure-report/
-    retention-days: 30
-```
+**Local Development:**
+- Allure serve command: [package.json line 42](../../package.json#L42)
+- Allure open command: [package.json line 41](../../package.json#L41)
 
 ### **Report Access**
 - **CI Artifacts**: Download reports from GitHub Actions (30-day retention)
@@ -269,7 +144,6 @@ flags:
 ### **Supporting Tools**
 - **npm**: Package management and script execution
 - **Karma**: Unit test execution and coverage
-- **NYC**: Coverage collection and merging
 - **ESLint**: Code quality and style checking
 
 ## 🚨 **CI/CD Troubleshooting**
@@ -295,20 +169,19 @@ flags:
 - **Resource Issues**: Check for memory or disk space issues
 
 ### **Debugging Strategies**
-```bash
-# Run CI commands locally
-npm run lint:all
-npm run test:coverage
-npm run test:e2e:coverage
+**Local CI Simulation:**
+- Lint all projects: [package.json line 58](../../package.json#L58)
+- Unit tests with coverage: [package.json line 23](../../package.json#L23)
+- E2E tests in CI mode: [package.json line 25](../../package.json#L25)
 
-# Check coverage reports
-ls -la ./coverage/
-cat ./coverage/lcov.info
+**Coverage Debugging:**
+- Coverage directory: `./coverage/`
+- LCOV report: `./coverage/lcov.info`
+- Karma configuration: [karma.conf.js](../../karma.conf.js)
 
-# Verify Allure reports
-npm run allure:generate
-npm run allure:serve
-```
+**Allure Debugging:**
+- Allure generate: [package.json line 41](../../package.json#L41)
+- Allure serve: [package.json line 42](../../package.json#L42)
 
 ## 📋 **CI/CD Maintenance**
 

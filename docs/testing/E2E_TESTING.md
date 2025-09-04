@@ -201,8 +201,8 @@ export class UploadStepPage extends Page {
 # Run all E2E tests
 npm run test:e2e:headless
 
-# Run tests with coverage
-npm run test:e2e:coverage
+# Run E2E tests
+npm run test:e2e
 
 # Run tests in debug mode
 npm run e2e:debug
@@ -295,32 +295,25 @@ export TEST_SPEC="./features/auth.feature" && npm run test:e2e:headless
 npm run test:e2e:headless
 ```
 
-## 📊 **E2E Test Coverage**
+## 📊 **E2E Test Results**
 
-### **Coverage Collection**
+### **Test Execution**
+Our E2E tests provide comprehensive validation of user workflows:
+
 ```bash
-# Run E2E tests with coverage
-npm run test:e2e:coverage
+# Run E2E tests
+npm run test:e2e
 
-# Coverage data is collected during test execution
-# Results are uploaded to Codecov with 'e2etests' flag
+# Run E2E tests in CI mode
+npm run test:e2e:ci
 ```
 
-### **Coverage Configuration**
-Our WebdriverIO configuration includes coverage collection hooks:
-```typescript
-beforeSession: function (config, capabilities, specs, cid) {
-  if (process.env.COLLECT_COVERAGE === 'true') {
-    console.log('🔍 BDD: Initializing E2E coverage collection');
-  }
-},
+### **Test Reporting**
+WebdriverIO provides detailed test execution reports:
 
-afterSuite: function (suite) {
-  if (process.env.COLLECT_COVERAGE === 'true') {
-    console.log('📊 BDD: Collecting coverage data for suite:', suite.title);
-  }
-}
-```
+- **Spec Reporter**: Real-time test progress and results
+- **Allure Reports**: Rich HTML reports with screenshots and details
+- **Console Output**: BDD-style logging with emoji indicators
 
 ## 🎯 **E2E Testing Best Practices**
 
