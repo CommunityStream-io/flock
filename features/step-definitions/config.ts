@@ -724,3 +724,189 @@ Then('validation should occur in the background', async () => {
     // Validation should occur in background
     console.log(`✅ BDD: Validation occurs in background`);
 });
+
+// Help dialog scroll detection steps
+When('I click the date range help button', async () => {
+    await pages.configStep.clickDateRangeHelpButton();
+    console.log(`⚙️ BDD: Clicked date range help button`);
+});
+
+When('I click the testing options help button', async () => {
+    await pages.configStep.clickTestingOptionsHelpButton();
+    console.log(`⚙️ BDD: Clicked testing options help button`);
+});
+
+Then('the help dialog should open', async () => {
+    const isVisible = await pages.configStep.isHelpDialogVisible();
+    expect(isVisible).toBe(true);
+    console.log(`✅ BDD: Help dialog is open`);
+});
+
+Then('the help dialog should not have scroll bars', async () => {
+    const hasScrollBars = await pages.configStep.helpDialogHasScrollBars();
+    expect(hasScrollBars).toBe(false);
+    console.log(`✅ BDD: Help dialog does not have scroll bars`);
+});
+
+Then('the help dialog content should fit within the viewport', async () => {
+    const fitsViewport = await pages.configStep.helpDialogFitsViewport();
+    expect(fitsViewport).toBe(true);
+    console.log(`✅ BDD: Help dialog content fits within viewport`);
+});
+
+Then('the help dialog should not cause page scroll', async () => {
+    const causesPageScroll = await pages.configStep.helpDialogCausesPageScroll();
+    expect(causesPageScroll).toBe(false);
+    console.log(`✅ BDD: Help dialog does not cause page scroll`);
+});
+
+Then('the help dialog footer should be visible without scrolling', async () => {
+    const footerVisible = await pages.configStep.helpDialogFooterVisible();
+    expect(footerVisible).toBe(true);
+    console.log(`✅ BDD: Help dialog footer is visible without scrolling`);
+});
+
+Then('the help dialog content should be properly constrained', async () => {
+    const isConstrained = await pages.configStep.helpDialogContentConstrained();
+    expect(isConstrained).toBe(true);
+    console.log(`✅ BDD: Help dialog content is properly constrained`);
+});
+
+Then('the help dialog should maintain proper spacing', async () => {
+    const hasProperSpacing = await pages.configStep.helpDialogHasProperSpacing();
+    expect(hasProperSpacing).toBe(true);
+    console.log(`✅ BDD: Help dialog maintains proper spacing`);
+});
+
+Then('the help dialog should not overflow the viewport', async () => {
+    const overflowsViewport = await pages.configStep.helpDialogOverflowsViewport();
+    expect(overflowsViewport).toBe(false);
+    console.log(`✅ BDD: Help dialog does not overflow viewport`);
+});
+
+When('I resize the browser to mobile size', async () => {
+    await browser.setWindowSize(375, 667); // iPhone SE size
+    console.log(`⚙️ BDD: Resized browser to mobile size`);
+});
+
+When('I resize the browser to tablet size', async () => {
+    await browser.setWindowSize(768, 1024); // iPad size
+    console.log(`⚙️ BDD: Resized browser to tablet size`);
+});
+
+Then('the help dialog should fit within the mobile viewport', async () => {
+    const fitsMobileViewport = await pages.configStep.helpDialogFitsMobileViewport();
+    expect(fitsMobileViewport).toBe(true);
+    console.log(`✅ BDD: Help dialog fits within mobile viewport`);
+});
+
+Then('the help dialog should fit within the tablet viewport', async () => {
+    const fitsTabletViewport = await pages.configStep.helpDialogFitsTabletViewport();
+    expect(fitsTabletViewport).toBe(true);
+    console.log(`✅ BDD: Help dialog fits within tablet viewport`);
+});
+
+Then('the help dialog should be fully accessible', async () => {
+    const isAccessible = await pages.configStep.helpDialogIsAccessible();
+    expect(isAccessible).toBe(true);
+    console.log(`✅ BDD: Help dialog is fully accessible`);
+});
+
+Then('the body should not be scrollable', async () => {
+    const bodyScrollable = await pages.configStep.isBodyScrollable();
+    expect(bodyScrollable).toBe(false);
+    console.log(`✅ BDD: Body is not scrollable`);
+});
+
+Then('the page content should not move', async () => {
+    const contentMoved = await pages.configStep.pageContentMoved();
+    expect(contentMoved).toBe(false);
+    console.log(`✅ BDD: Page content has not moved`);
+});
+
+Then('the help dialog should be the only scrollable element', async () => {
+    const onlyDialogScrollable = await pages.configStep.onlyHelpDialogScrollable();
+    expect(onlyDialogScrollable).toBe(true);
+    console.log(`✅ BDD: Help dialog is the only scrollable element`);
+});
+
+When('I close the help dialog', async () => {
+    await pages.configStep.closeHelpDialog();
+    console.log(`⚙️ BDD: Closed help dialog`);
+});
+
+Then('the body should be scrollable again', async () => {
+    const bodyScrollable = await pages.configStep.isBodyScrollable();
+    expect(bodyScrollable).toBe(true);
+    console.log(`✅ BDD: Body is scrollable again`);
+});
+
+Then('the page should return to its original state', async () => {
+    const returnedToOriginal = await pages.configStep.pageReturnedToOriginalState();
+    expect(returnedToOriginal).toBe(true);
+    console.log(`✅ BDD: Page returned to original state`);
+});
+
+Then('no scroll issues should remain', async () => {
+    const hasScrollIssues = await pages.configStep.hasScrollIssues();
+    expect(hasScrollIssues).toBe(false);
+    console.log(`✅ BDD: No scroll issues remain`);
+});
+
+Then('the page should not have any scroll issues', async () => {
+    const hasScrollIssues = await pages.configStep.hasScrollIssues();
+    expect(hasScrollIssues).toBe(false);
+    console.log(`✅ BDD: Page has no scroll issues`);
+});
+
+Then('the body should be scrollable', async () => {
+    const bodyScrollable = await pages.configStep.isBodyScrollable();
+    expect(bodyScrollable).toBe(true);
+    console.log(`✅ BDD: Body is scrollable`);
+});
+
+Then('no layout problems should persist', async () => {
+    const hasLayoutProblems = await pages.configStep.hasLayoutProblems();
+    expect(hasLayoutProblems).toBe(false);
+    console.log(`✅ BDD: No layout problems persist`);
+});
+
+When('I use Tab to navigate through the dialog', async () => {
+    await pages.configStep.navigateDialogWithTab();
+    console.log(`⚙️ BDD: Used Tab to navigate through dialog`);
+});
+
+Then('the focused element should be visible', async () => {
+    const focusedElementVisible = await pages.configStep.focusedElementVisible();
+    expect(focusedElementVisible).toBe(true);
+    console.log(`✅ BDD: Focused element is visible`);
+});
+
+Then('the dialog should not scroll unexpectedly', async () => {
+    const scrolledUnexpectedly = await pages.configStep.dialogScrolledUnexpectedly();
+    expect(scrolledUnexpectedly).toBe(false);
+    console.log(`✅ BDD: Dialog did not scroll unexpectedly`);
+});
+
+Then('the dialog should maintain proper focus management', async () => {
+    const properFocusManagement = await pages.configStep.dialogHasProperFocusManagement();
+    expect(properFocusManagement).toBe(true);
+    console.log(`✅ BDD: Dialog maintains proper focus management`);
+});
+
+When('I resize the browser window', async () => {
+    await browser.setWindowSize(1200, 800); // Desktop size
+    console.log(`⚙️ BDD: Resized browser window`);
+});
+
+Then('the help dialog should adapt to the new size', async () => {
+    const adaptedToSize = await pages.configStep.helpDialogAdaptedToSize();
+    expect(adaptedToSize).toBe(true);
+    console.log(`✅ BDD: Help dialog adapted to new size`);
+});
+
+Then('no scroll issues should be introduced', async () => {
+    const hasScrollIssues = await pages.configStep.hasScrollIssues();
+    expect(hasScrollIssues).toBe(false);
+    console.log(`✅ BDD: No scroll issues were introduced`);
+});

@@ -1,1 +1,116 @@
-<p>config works!</p>
+<section class="config-section" [formGroup]="configForm">
+  <h2>Migration Configuration</h2>
+  <p>Configure your migration settings to customize how your Instagram posts are migrated to Bluesky.</p>
+  
+  <!-- Date Range Section -->
+  <mat-card class="date-range-section">
+    <mat-card-header>
+      <mat-card-title>
+        <h3>Date Range Filtering</h3>
+        <button 
+          mat-icon-button 
+          type="button"
+          data-testid="help-icon"
+          (click)="openHelpDialog('date-range')"
+          aria-label="Help with date range filtering">
+          <mat-icon>help_outline</mat-icon>
+        </button>
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <p>Filter your Instagram posts by date range. Both dates are optional - leave empty to migrate all posts.</p>
+      
+      <div class="date-inputs">
+        <mat-form-field appearance="outline" class="date-field">
+          <mat-label>Start Date</mat-label>
+          <input 
+            matInput 
+            type="date" 
+            formControlName="startDate"
+            [class.mat-error]="configForm.get('startDate')?.invalid && configForm.get('startDate')?.touched"
+            aria-label="Start date for filtering posts">
+          <mat-error *ngIf="configForm.get('startDate')?.invalid && configForm.get('startDate')?.touched">
+            {{ getStartDateErrorMessage() }}
+          </mat-error>
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline" class="date-field">
+          <mat-label>End Date</mat-label>
+          <input 
+            matInput 
+            type="date" 
+            formControlName="endDate"
+            [class.mat-error]="configForm.get('endDate')?.invalid && configForm.get('endDate')?.touched"
+            aria-label="End date for filtering posts">
+          <mat-error *ngIf="configForm.get('endDate')?.invalid && configForm.get('endDate')?.touched">
+            {{ getEndDateErrorMessage() }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+      
+      <button 
+        mat-button 
+        type="button"
+        data-testid="clear-dates"
+        (click)="clearDates()"
+        [disabled]="!configForm.get('startDate')?.value && !configForm.get('endDate')?.value">
+        <mat-icon>clear</mat-icon>
+        Clear Dates
+      </button>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Testing Options Section -->
+  <mat-card class="testing-options-section">
+    <mat-card-header>
+      <mat-card-title>
+        <h3>Testing Options</h3>
+        <button 
+          mat-icon-button 
+          type="button"
+          data-testid="help-icon"
+          (click)="openHelpDialog('testing-options')"
+          aria-label="Help with testing options">
+          <mat-icon>help_outline</mat-icon>
+        </button>
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <p>Use these options to test your migration safely before posting to Bluesky.</p>
+      
+      <div class="toggle-options">
+        <mat-slide-toggle 
+          formControlName="testVideoMode"
+          [attr.aria-label]="'Test video mode toggle'"
+          class="toggle-option">
+          <div class="toggle-content">
+            <span class="toggle-label">Test Video Mode</span>
+            <span class="toggle-description">Process videos for testing without posting them to Bluesky</span>
+          </div>
+        </mat-slide-toggle>
+        
+        <mat-slide-toggle 
+          formControlName="simulationMode"
+          [attr.aria-label]="'Simulation mode toggle'"
+          class="toggle-option">
+          <div class="toggle-content">
+            <span class="toggle-label">Simulation Mode</span>
+            <span class="toggle-description">Run migration in simulation mode - no actual posts will be created</span>
+          </div>
+        </mat-slide-toggle>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Form State Indicators -->
+  <div class="form-state-indicators" *ngIf="isFormDirty()">
+    <mat-icon class="state-icon" [class.dirty]="isFormDirty()">edit</mat-icon>
+    <span class="state-text">Configuration has been modified</span>
+  </div>
+
+  <!-- Validation Success Indicators -->
+  <div class="validation-success" *ngIf="isFormValid() && isFormTouched()">
+    <mat-icon class="success-icon">check_circle</mat-icon>
+    <span class="success-text">Configuration is valid</span>
+  </div>
+</section>

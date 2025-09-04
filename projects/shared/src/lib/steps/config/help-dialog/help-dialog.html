@@ -1,0 +1,21 @@
+<div class="help-dialog">
+  <div class="dialog-header">
+    <h2 mat-dialog-title>
+      <mat-icon>help</mat-icon>
+      {{ data.title }}
+    </h2>
+    <button mat-icon-button mat-dialog-close class="close-button" aria-label="Close dialog">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  
+  <div mat-dialog-content class="dialog-content">
+    <div [innerHTML]="getHelpContent()"></div>
+  </div>
+  
+  <div mat-dialog-actions class="dialog-actions">
+    <button mat-raised-button color="primary" (click)="onClose()" aria-label="Close help dialog">
+      Got it!
+    </button>
+  </div>
+</div>
