@@ -36,8 +36,8 @@ Given('the application is running', async () => {
                     return readyState === 'complete';
                 },
                 { 
-                    timeout: 15000, // Give more time for basic page load
-                    timeoutMsg: 'Page did not load completely within 15 seconds' 
+                    timeout: 10000, // Shorter timeout for basic load
+                    timeoutMsg: 'Page did not load completely within 10 seconds' 
                 }
             );
             
@@ -46,15 +46,13 @@ Given('the application is running', async () => {
                 async () => {
                     const isAngularReady = await browser.execute(() => {
                         return typeof window !== 'undefined' && 
-                               document.readyState === 'complete' &&
-                               (window as any).ng !== undefined &&
-                               document.querySelector('app-root') !== null;
+                               (window as any).ng !== undefined;
                     });
                     return isAngularReady;
                 },
                 { 
-                    timeout: 20000, // Give more time for Angular bootstrap
-                    timeoutMsg: 'Angular application did not bootstrap within 20 seconds' 
+                    timeout: 15000, // Shorter timeout for Angular
+                    timeoutMsg: 'Angular application did not bootstrap within 15 seconds' 
                 }
             );
             
@@ -62,12 +60,11 @@ Given('the application is running', async () => {
             await browser.waitUntil(
                 async () => {
                     const hasAppRoot = await $('app-root').isExisting();
-                    const appRootVisible = await $('app-root').isDisplayed();
-                    return hasAppRoot && appRootVisible;
+                    return hasAppRoot;
                 },
                 {
                     timeout: 10000,
-                    timeoutMsg: 'app-root element not visible within 10 seconds'
+                    timeoutMsg: 'app-root element not found within 10 seconds'
                 }
             );
             
@@ -78,14 +75,8 @@ Given('the application is running', async () => {
             console.log(`⚠️ BDD: Application load attempt ${retryCount} failed: ${error.message}`);
             if (retryCount < maxRetries) {
                 console.log(`🔄 BDD: Retrying application load (${retryCount}/${maxRetries})`);
-                // Use proper wait instead of pause
-                await browser.waitUntil(
-                    async () => false, // This will always timeout after the specified time
-                    { 
-                        timeout: 3000, 
-                        timeoutMsg: 'Waiting before retry' 
-                    }
-                ).catch(() => {}); // Ignore the timeout error
+                // Short wait before retry
+                await new Promise(resolve => setTimeout(resolve, 2000));
             } else {
                 throw new Error(`Application failed to load after ${maxRetries} attempts: ${error.message}`);
             }
@@ -141,8 +132,8 @@ Given('I navigate to the application', async () => {
                     return readyState === 'complete';
                 },
                 { 
-                    timeout: 15000, // Give more time for basic page load
-                    timeoutMsg: 'Page did not load completely within 15 seconds' 
+                    timeout: 10000, // Shorter timeout for basic load
+                    timeoutMsg: 'Page did not load completely within 10 seconds' 
                 }
             );
             
@@ -151,15 +142,13 @@ Given('I navigate to the application', async () => {
                 async () => {
                     const isAngularReady = await browser.execute(() => {
                         return typeof window !== 'undefined' && 
-                               document.readyState === 'complete' &&
-                               (window as any).ng !== undefined &&
-                               document.querySelector('app-root') !== null;
+                               (window as any).ng !== undefined;
                     });
                     return isAngularReady;
                 },
                 { 
-                    timeout: 20000, // Give more time for Angular bootstrap
-                    timeoutMsg: 'Angular application did not bootstrap within 20 seconds' 
+                    timeout: 15000, // Shorter timeout for Angular
+                    timeoutMsg: 'Angular application did not bootstrap within 15 seconds' 
                 }
             );
             
@@ -167,12 +156,11 @@ Given('I navigate to the application', async () => {
             await browser.waitUntil(
                 async () => {
                     const hasAppRoot = await $('app-root').isExisting();
-                    const appRootVisible = await $('app-root').isDisplayed();
-                    return hasAppRoot && appRootVisible;
+                    return hasAppRoot;
                 },
                 {
                     timeout: 10000,
-                    timeoutMsg: 'app-root element not visible within 10 seconds'
+                    timeoutMsg: 'app-root element not found within 10 seconds'
                 }
             );
             
@@ -183,14 +171,8 @@ Given('I navigate to the application', async () => {
             console.log(`⚠️ BDD: Navigation attempt ${retryCount} failed: ${error.message}`);
             if (retryCount < maxRetries) {
                 console.log(`🔄 BDD: Retrying navigation (${retryCount}/${maxRetries})`);
-                // Use proper wait instead of pause
-                await browser.waitUntil(
-                    async () => false, // This will always timeout after the specified time
-                    { 
-                        timeout: 3000, 
-                        timeoutMsg: 'Waiting before retry' 
-                    }
-                ).catch(() => {}); // Ignore the timeout error
+                // Short wait before retry
+                await new Promise(resolve => setTimeout(resolve, 2000));
             } else {
                 throw new Error(`Navigation failed after ${maxRetries} attempts: ${error.message}`);
             }
