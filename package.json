@@ -1,6 +1,17 @@
 {
   "name": "flock",
   "version": "0.0.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/flock-mirage/flock.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/flock-mirage/flock/issues"
+  },
+  "homepage": "https://github.com/flock-mirage/flock#readme",
   "scripts": {
     "ng": "ng",
     "start": "ng serve flock-mirage",
@@ -9,16 +20,21 @@
     "test": "ng test shared",
     "test:watch": "ng test shared --watch",
     "test:ci": "cross-env CI=true ng test shared --watch=false",
+    "test:coverage": "cross-env CI=true ng test shared --watch=false --code-coverage",
+    "test:e2e": "concurrently --kill-others --success first \"ng serve flock-mirage --configuration=test-coverage --port=4200\" \"wait-on http://localhost:4200 && cross-env HEADLESS=true wdio run wdio.conf.ts\"",
+    "test:e2e:ci": "concurrently --kill-others --success first \"ng serve flock-mirage --configuration=test-coverage --port=4200 --host=0.0.0.0\" \"node scripts/health-check.js && cross-env HEADLESS=true CI=true wdio run wdio.conf.ts\"",
+    "coverage:all": "npm run test:coverage",
     "test:shared": "ng test shared",
     "test:shared:watch": "ng test shared --watch",
     "test:shared:ci": "cross-env CI=true ng test shared",
-    "test:e2e": "concurrently --kill-others --success first \"ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0\" \"wait-on http://localhost:4200 && wdio run wdio.conf.ts\"",
     "test:e2e:headless": "concurrently --kill-others --success first \"ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0\" \"wait-on http://localhost:4200 && cross-env HEADLESS=true wdio run wdio.conf.ts\"",
     "test:e2e:watch": "wdio run wdio.conf.ts --watch",
     "test:e2e:watch:headless": "cross-env HEADLESS=true wdio run wdio.conf.ts --watch",
     "e2e": "wdio run wdio.conf.ts",
     "e2e:headless": "cross-env HEADLESS=true wdio run wdio.conf.ts",
-    "test:e2e:ci": "concurrently --kill-others --success first \"ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0\" \"wait-on http://localhost:4200 && cross-env CI=true HEADLESS=true wdio run wdio.conf.ts\"",
+    "e2e:debug": "cross-env HEADLESS=true DEBUG_TESTS=true wdio run wdio.conf.ts",
+    "e2e:validation": "cross-env HEADLESS=true TEST_TAGS=\"@bluesky-auth and @validation\" wdio run wdio.conf.ts",
+    "e2e:debug-validation": "cross-env HEADLESS=true DEBUG_TESTS=true TEST_TAGS=\"@bluesky-auth and @validation\" wdio run wdio.conf.ts",
     "allure:generate": "npx allure generate allure-results",
     "allure:open": "npx allure open allure-report",
     "allure:serve": "npx allure serve allure-results",
@@ -80,6 +96,7 @@
     "@wdio/allure-reporter": "^9.19.1",
     "@wdio/cli": "^9.19.1",
     "@wdio/cucumber-framework": "^9.19.1",
+    "@wdio/devtools-service": "^8.42.0",
     "@wdio/local-runner": "^9.19.1",
     "@wdio/spec-reporter": "^9.19.1",
     "@wdio/types": "^9.19.1",
@@ -88,6 +105,7 @@
     "chromedriver": "^139.0.2",
     "concurrently": "^9.2.0",
     "cross-env": "^10.0.0",
+    "devtools": "^8.42.0",
     "eslint": "8.57.1",
     "eslint-plugin-import": "^2.32.0",
     "expect-webdriverio": "^5.4.2",
@@ -99,6 +117,7 @@
     "karma-jasmine-html-reporter": "~2.1.0",
     "ng-packagr": "^20.1.0",
     "typescript": "~5.8.2",
-    "wait-on": "^8.0.4"
+    "wait-on": "^8.0.4",
+    "webdriverio-mcp": "^1.0.3"
   }
 }

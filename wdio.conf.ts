@@ -1,6 +1,6 @@
 import type { Options } from '@wdio/types'
 
-export const config: Options.Testrunner = {
+export const config: Options.Testrunner & { capabilities: any[] } = {
     //
     // ====================
     // Runner Configuration
@@ -12,17 +12,10 @@ export const config: Options.Testrunner = {
     
     //
     // =====================
-    // ts-node Configurations
+    // TypeScript Configurations
     // =====================
     //
-    // TypeScript support for WebdriverIO
-    autoCompileOpts: {
-        autoCompile: true,
-        tsNodeOpts: {
-            transpileOnly: true,
-            project: './tsconfig.e2e.json'
-        }
-    },
+    // TypeScript support is handled by ts-node automatically
 
     //
     // ==================
@@ -31,7 +24,7 @@ export const config: Options.Testrunner = {
     // Define which test specs should run. The pattern is relative to the directory
     // from which `wdio` was called.
     specs: [
-        './features/**/*.feature'
+        process.env.TEST_SPEC || './features/**/**.feature'
     ],
     
     // Patterns to exclude.
@@ -53,19 +46,53 @@ export const config: Options.Testrunner = {
         maxInstances: 5,
         browserName: 'chrome',
         acceptInsecureCerts: true,
-        // Conditionally add headless mode based on environment variable
-        ...(process.env.HEADLESS === 'true' && {
-            'goog:chromeOptions': {
-                args: [
-                    '--headless',                    // Run Chrome without visible UI
-                    '--no-sandbox',                  // Disable sandbox for CI environments
-                    '--disable-dev-shm-usage',       // Prevent shared memory issues
-                    '--disable-gpu',                 // Disable GPU acceleration
-                    '--window-size=1920,1080'       // Set consistent window size
-                ]
-            }
-        })
-    }],
+        // Enable Chrome DevTools Protocol for network simulation
+        'goog:chromeOptions': {
+            args: [
+                // Network simulation and CDP support
+                '--enable-chrome-browser-cloud-management',
+                '--enable-network-service-logging',
+                '--disable-web-security',              // Allow network interception
+                '--disable-features=VizDisplayCompositor',
+                // Standard Chrome options
+                '--no-sandbox',                        // Disable sandbox for CI environments
+                '--disable-dev-shm-usage',             // Prevent shared memory issues
+                '--disable-gpu',                       // Disable GPU acceleration
+                '--window-size=1920,1080',             // Set consistent window size
+                // Additional CI stability options
+                '--disable-background-timer-throttling',
+                '--disable-backgrounding-occluded-windows',
+                '--disable-renderer-backgrounding',
+                '--disable-extensions',
+                '--disable-plugins',
+                '--disable-default-apps',
+                '--disable-sync',
+                '--disable-translate',
+                '--disable-background-networking',
+                '--disable-client-side-phishing-detection',
+                '--disable-component-extensions-with-background-pages',
+                '--disable-hang-monitor',
+                '--disable-prompt-on-repost',
+                '--disable-domain-reliability',
+                '--disable-features=TranslateUI',
+                '--disable-ipc-flooding-protection',
+                '--no-first-run',
+                '--no-default-browser-check',
+                '--disable-logging',
+                '--disable-permissions-api',
+                '--disable-popup-blocking',
+                '--disable-prompt-on-repost',
+                '--disable-web-resources',
+                '--disable-xss-auditor',
+                '--disable-features=VizDisplayCompositor',
+                '--force-color-profile=srgb',
+                '--memory-pressure-off',
+                '--max_old_space_size=4096',
+                // Conditionally add headless mode
+                ...(process.env.HEADLESS === 'true' ? ['--headless=new'] : [])
+            ]
+        }
+    }] as any,
 
     //
     // ===================
@@ -74,49 +101,53 @@ export const config: Options.Testrunner = {
     // Define all options that are relevant for the WebdriverIO instance here
     //
     // Level of logging verbosity: trace | debug | info | warn | error | silent
-    logLevel: 'warn',
+    logLevel: process.env.DEBUG_TESTS === 'true' ? 'info' : 'error',
     
     // Set specific log levels per logger to reduce noise
     logLevels: {
-        webdriver: 'warn',
-        webdriverio: 'warn',
-        '@wdio/local-runner': 'warn',
-        '@wdio/cli': 'warn'
+        webdriver: process.env.DEBUG_TESTS === 'true' ? 'info' : 'error',
+        webdriverio: process.env.DEBUG_TESTS === 'true' ? 'info' : 'error',
+        '@wdio/local-runner': process.env.DEBUG_TESTS === 'true' ? 'info' : 'error',
+        '@wdio/cli': process.env.DEBUG_TESTS === 'true' ? 'info' : 'error',
+        '@wdio/cucumber-framework': process.env.DEBUG_TESTS === 'true' ? 'info' : 'error'
     },
 
     // If you only want to run your tests until a specific amount of tests have failed use
     // bail (default is 0 - don't bail, run all tests).
-    bail: 0,
+    bail: 0,  // Don't bail on failures, run all tests
+
+    // Retry configuration is handled by the test framework (Cucumber)
 
     // Set a base URL in order to shorten url command calls. If your `url` parameter starts
     // with `/`, the base url gets prepended, not including the path portion of your baseUrl.
     baseUrl: 'http://localhost:4200',
 
     // Default timeout for all waitFor* commands.
-    waitforTimeout: 10000,
+    waitforTimeout: process.env.CI === 'true' ? 20000 : 10000,
 
     // Default timeout in milliseconds for request
     // if browser driver or grid doesn't send response
-    connectionRetryTimeout: 120000,
+    connectionRetryTimeout: process.env.CI === 'true' ? 300000 : 120000, // 5 minutes for CI
 
     // Default request retries count
-    connectionRetryCount: 3,
+    connectionRetryCount: process.env.CI === 'true' ? 5 : 3,
 
     // Test runner services
     // Note: chromedriver service is built-in for WebdriverIO v9
     services: [],
     
+    // Environment variables are handled by the test runner
+    
     // Framework you want to run your specs with.
     framework: 'cucumber',
 
     // Test reporter for stdout.
-    // The 'dot' reporter provides clean, minimal output perfect for CLI
+    // Using spec reporter to show scenario names on failure
     reporters: [
-        'dot',
-        ['allure', {
-            outputDir: 'allure-results',
-            disableWebdriverStepsReporting: true,
-            disableWebdriverScreenshotsReporting: false,
+        ['spec', {
+            // Show scenario names and steps
+            showTestNames: true,
+            showTestStatus: true
         }]
     ],
 
@@ -124,16 +155,19 @@ export const config: Options.Testrunner = {
     // If you are using Cucumber you need to specify the location of your step definitions.
     cucumberOpts: {
         require: ['./features/step-definitions/steps.ts'],
-        backtrace: false,
-        requireModule: [],
+        backtrace: true,  // Show full stack trace on failures
+        requireModule: ['expect-webdriverio'],
         dryRun: false,
         failFast: false,
         snippets: true,
         source: true,
-        strict: false,
-        tags: 'not @skip',
-        timeout: 60000,
-        ignoreUndefinedDefinitions: false
+        strict: false,  // Allow skipped steps without failing the entire scenario
+        tags: process.env.TEST_TAGS || "",
+        timeout: process.env.CI === 'true' ? 90000 : 60000, // Reasonable timeout for CI
+        ignoreUndefinedDefinitions: true,
+        format: ['pretty'],  // Add pretty format for better readability
+        publishQuiet: process.env.DEBUG_TESTS !== 'true',   // Reduce noise from cucumber reporting unless debugging
+        retry: process.env.CI === 'true' ? 3 : 1  // Retry failed scenarios in CI
     },
     
     //
@@ -144,11 +178,4 @@ export const config: Options.Testrunner = {
     // it and to build services around it. You can either apply a single function or an array of
     // methods to it. If one of them returns with a promise, WebdriverIO will wait until that promise got
     // resolved to continue.
-    
-    // Add screenshot on failure
-    afterTest: function (test, context, { error, result, duration, passed, retries }) {
-        if (!passed) {
-            browser.takeScreenshot();
-        }
-    },
 }

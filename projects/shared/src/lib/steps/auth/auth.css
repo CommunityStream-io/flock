@@ -1,0 +1,551 @@
+:root {
+  /* M3 Color System - Primary Colors */
+  --md-sys-color-primary: #6750a4;
+  --md-sys-color-on-primary: #ffffff;
+  --md-sys-color-primary-container: #eaddff;
+  --md-sys-color-on-primary-container: #21005d;
+  
+  /* M3 Color System - Secondary Colors */
+  --md-sys-color-secondary: #625b71;
+  --md-sys-color-on-secondary: #ffffff;
+  --md-sys-color-secondary-container: #e8def8;
+  --md-sys-color-on-secondary-container: #1d192b;
+  
+  /* M3 Color System - Surface Colors */
+  --md-sys-color-surface: #fffbfe;
+  --md-sys-color-on-surface: #1c1b1f;
+  --md-sys-color-surface-variant: #e7e0ec;
+  --md-sys-color-on-surface-variant: #49454f;
+  --md-sys-color-surface-container: #f3edf7;
+  --md-sys-color-surface-container-high: #ece6f0;
+  
+  /* M3 Color System - Error Colors */
+  --md-sys-color-error: #ba1a1a;
+  --md-sys-color-on-error: #ffffff;
+  --md-sys-color-error-container: #ffdad6;
+  --md-sys-color-on-error-container: #410002;
+  
+  /* M3 Color System - Outline Colors */
+  --md-sys-color-outline: #79747e;
+  --md-sys-color-outline-variant: #cac4d0;
+  --md-sys-color-scrim: rgba(0, 0, 0, 0.32);
+  
+  /* M3 Typography Scale */
+  --md-sys-typescale-headline-large-font: 'Roboto', sans-serif;
+  --md-sys-typescale-headline-large-size: 2rem;
+  --md-sys-typescale-headline-large-weight: 400;
+  --md-sys-typescale-headline-large-line-height: 2.5rem;
+  
+  --md-sys-typescale-body-large-font: 'Roboto', sans-serif;
+  --md-sys-typescale-body-large-size: 1rem;
+  --md-sys-typescale-body-large-weight: 400;
+  --md-sys-typescale-body-large-line-height: 1.5rem;
+  
+  --md-sys-typescale-label-large-font: 'Roboto', sans-serif;
+  --md-sys-typescale-label-large-size: 0.875rem;
+  --md-sys-typescale-label-large-weight: 500;
+  --md-sys-typescale-label-large-line-height: 1.25rem;
+  
+  /* M3 Elevation */
+  --md-sys-elevation-level1: 0px 1px 2px 0px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+  --md-sys-elevation-level2: 0px 1px 2px 0px rgba(0, 0, 0, 0.3), 0px 2px 6px 2px rgba(0, 0, 0, 0.15);
+  --md-sys-elevation-level3: 0px 1px 3px 0px rgba(0, 0, 0, 0.3), 0px 4px 8px 3px rgba(0, 0, 0, 0.15);
+  
+  /* M3 State Layers */
+  --md-sys-state-hover: 0.08;
+  --md-sys-state-focus: 0.12;
+  --md-sys-state-pressed: 0.12;
+  --md-sys-state-dragged: 0.16;
+  
+  /* Legacy theme support */
+  --auth-bg-primary: var(--md-sys-color-primary);
+  --auth-bg-secondary: var(--md-sys-color-secondary);
+  --auth-surface: var(--md-sys-color-surface);
+  --auth-text-primary: var(--md-sys-color-on-surface);
+  --auth-text-secondary: var(--md-sys-color-on-surface-variant);
+  --auth-text-muted: var(--md-sys-color-on-surface-variant);
+  --auth-border: var(--md-sys-color-outline-variant);
+  --auth-error-bg: var(--md-sys-color-error-container);
+  --auth-error-border: var(--md-sys-color-error);
+  --auth-error-text: var(--md-sys-color-on-error-container);
+  --auth-success: var(--md-sys-color-primary);
+  --auth-code-bg: var(--md-sys-color-surface-container);
+  --auth-code-border: var(--md-sys-color-outline-variant);
+  --auth-code-text: var(--md-sys-color-error);
+  --auth-shadow-light: var(--md-sys-elevation-level1);
+  --auth-shadow-medium: var(--md-sys-elevation-level2);
+  --auth-shadow-heavy: var(--md-sys-elevation-level3);
+  --auth-focus: var(--md-sys-color-primary);
+}
+
+.auth-section {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  padding: 2rem 1rem;
+  background: var(--md-sys-color-surface);
+}
+
+.auth-container {
+  background: var(--md-sys-color-surface-container);
+  border-radius: 28px; /* M3 large corner radius */
+  box-shadow: var(--md-sys-elevation-level2);
+  padding: 3rem;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  border: 1px solid var(--md-sys-color-outline-variant);
+}
+
+.step-title {
+  color: var(--md-sys-color-on-surface);
+  font-family: var(--md-sys-typescale-headline-large-font);
+  font-size: var(--md-sys-typescale-headline-large-size);
+  font-weight: var(--md-sys-typescale-headline-large-weight);
+  line-height: var(--md-sys-typescale-headline-large-line-height);
+  margin: 0 0 0.5rem 0;
+  text-align: center;
+}
+
+.step-description {
+  color: var(--md-sys-color-on-surface-variant);
+  font-family: var(--md-sys-typescale-body-large-font);
+  font-size: var(--md-sys-typescale-body-large-size);
+  font-weight: var(--md-sys-typescale-body-large-weight);
+  line-height: var(--md-sys-typescale-body-large-line-height);
+  text-align: center;
+  margin: 0 0 2rem 0;
+}
+
+.auth-form {
+  margin-bottom: 2rem;
+}
+
+.form-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.username-field,
+.password-field {
+  width: 100%;
+}
+
+.username-field .mat-mdc-form-field,
+.password-field .mat-mdc-form-field {
+  width: 100%;
+}
+
+.username-field input,
+.password-field input {
+  font-family: var(--md-sys-typescale-body-large-font);
+  font-size: var(--md-sys-typescale-body-large-size);
+  font-weight: var(--md-sys-typescale-body-large-weight);
+  line-height: var(--md-sys-typescale-body-large-line-height);
+  padding: 0.75rem 0;
+  color: var(--md-sys-color-on-surface);
+}
+
+.username-field .mat-mdc-form-field-subscript-wrapper,
+.password-field .mat-mdc-form-field-subscript-wrapper {
+  height: auto;
+}
+
+.username-field .mat-mdc-form-field-hint,
+.password-field .mat-mdc-form-field-hint {
+  font-family: var(--md-sys-typescale-label-large-font);
+  font-size: var(--md-sys-typescale-label-large-size);
+  font-weight: var(--md-sys-typescale-label-large-weight);
+  line-height: var(--md-sys-typescale-label-large-line-height);
+  color: var(--md-sys-color-on-surface-variant);
+  margin-top: 0.5rem;
+}
+
+/* M3 Form Field Styling */
+.username-field .mat-mdc-form-field-outline,
+.password-field .mat-mdc-form-field-outline {
+  color: var(--md-sys-color-outline);
+}
+
+.username-field.mat-focused .mat-mdc-form-field-outline,
+.password-field.mat-focused .mat-mdc-form-field-outline {
+  color: var(--md-sys-color-primary);
+}
+
+.username-field .mat-mdc-form-field-label,
+.password-field .mat-mdc-form-field-label {
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+.username-field.mat-focused .mat-mdc-form-field-label,
+.password-field.mat-focused .mat-mdc-form-field-label {
+  color: var(--md-sys-color-primary);
+}
+
+.auth-error {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: var(--md-sys-color-error-container);
+  border: 1px solid var(--md-sys-color-error);
+  border-radius: 12px; /* M3 medium corner radius */
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  color: var(--md-sys-color-on-error-container);
+}
+
+.error-icon {
+  color: var(--md-sys-color-error);
+  font-size: 1.25rem;
+}
+
+.error-message {
+  font-family: var(--md-sys-typescale-body-large-font);
+  font-size: var(--md-sys-typescale-body-large-size);
+  font-weight: 500;
+  line-height: var(--md-sys-typescale-body-large-line-height);
+}
+
+
+
+/* Success Messages */
+.auth-success {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: var(--md-sys-color-primary-container);
+  border: 1px solid var(--md-sys-color-primary);
+  border-radius: 12px; /* M3 medium corner radius */
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  color: var(--md-sys-color-on-primary-container);
+}
+
+.success-icon {
+  color: var(--md-sys-color-primary);
+  font-size: 1.25rem;
+}
+
+.success-message {
+  font-family: var(--md-sys-typescale-body-large-font);
+  font-size: var(--md-sys-typescale-body-large-size);
+  font-weight: 500;
+  line-height: var(--md-sys-typescale-body-large-line-height);
+}
+
+.form-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.submit-button {
+  min-width: 160px;
+  height: 40px; /* M3 standard button height */
+  font-family: var(--md-sys-typescale-label-large-font);
+  font-size: var(--md-sys-typescale-label-large-size);
+  font-weight: var(--md-sys-typescale-label-large-weight);
+  line-height: var(--md-sys-typescale-label-large-line-height);
+  border-radius: 20px; /* M3 button corner radius */
+  text-transform: none; /* M3 doesn't use uppercase */
+  letter-spacing: 0.1px;
+  transition: all 0.2s cubic-bezier(0.2, 0, 0, 1); /* M3 standard easing */
+  box-shadow: var(--md-sys-elevation-level1);
+  background: var(--md-sys-color-primary);
+  color: var(--md-sys-color-on-primary);
+}
+
+.submit-button:hover:not(:disabled) {
+  box-shadow: var(--md-sys-elevation-level2);
+  background: color-mix(in srgb, var(--md-sys-color-primary) 92%, var(--md-sys-color-on-primary) 8%);
+}
+
+.submit-button:focus-visible {
+  outline: 2px solid var(--md-sys-color-primary);
+  outline-offset: 2px;
+}
+
+.submit-button:disabled {
+  background: color-mix(in srgb, var(--md-sys-color-on-surface) 12%, transparent);
+  color: color-mix(in srgb, var(--md-sys-color-on-surface) 38%, transparent);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.submit-button .mat-icon {
+  margin-right: 0.5rem;
+  font-size: 1.125rem;
+}
+
+.submit-button.loading {
+  background: var(--md-sys-color-secondary);
+  color: var(--md-sys-color-on-secondary);
+}
+
+.help-section {
+  margin-top: 3rem;
+}
+
+.help-card {
+  background: var(--md-sys-color-surface-container-high);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: 16px; /* M3 medium corner radius */
+  box-shadow: var(--md-sys-elevation-level1);
+}
+
+.help-card .mat-mdc-card-header {
+  padding: 1.5rem 1.5rem 0.5rem;
+}
+
+.help-card .mat-mdc-card-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--md-sys-color-on-surface);
+  font-family: var(--md-sys-typescale-headline-small-font, var(--md-sys-typescale-body-large-font));
+  font-size: 1.25rem;
+  font-weight: 500;
+  line-height: 1.5rem;
+}
+
+.help-card .mat-mdc-card-title .mat-icon {
+  color: var(--md-sys-color-primary);
+  font-size: 1.25rem;
+}
+
+.help-card .mat-mdc-card-content {
+  padding: 0 1.5rem 1.5rem;
+}
+
+.help-card p {
+  color: var(--md-sys-color-on-surface-variant);
+  font-family: var(--md-sys-typescale-body-large-font);
+  font-size: var(--md-sys-typescale-body-large-size);
+  font-weight: var(--md-sys-typescale-body-large-weight);
+  line-height: var(--md-sys-typescale-body-large-line-height);
+  margin: 0.75rem 0;
+}
+
+.help-card ul {
+  margin: 1rem 0;
+  padding-left: 1.5rem;
+}
+
+.help-card li {
+  color: var(--md-sys-color-on-surface-variant);
+  font-family: var(--md-sys-typescale-body-large-font);
+  font-size: var(--md-sys-typescale-body-large-size);
+  font-weight: var(--md-sys-typescale-body-large-weight);
+  line-height: var(--md-sys-typescale-body-large-line-height);
+  margin: 0.5rem 0;
+}
+
+.help-card code {
+  background: var(--md-sys-color-surface-container);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: 8px; /* M3 small corner radius */
+  padding: 0.25rem 0.5rem;
+  font-family: var(--md-sys-typescale-body-large-font);
+  font-size: var(--md-sys-typescale-body-large-size);
+  color: var(--md-sys-color-error);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .auth-container {
+    padding: 2rem 1.5rem;
+    margin: 1rem;
+    border-radius: 24px; /* M3 large corner radius for mobile */
+  }
+
+  .step-title {
+    font-size: 1.75rem;
+  }
+
+  .step-description {
+    font-size: 1rem;
+  }
+
+  .submit-button {
+    min-width: 140px;
+    height: 40px; /* Keep M3 standard height */
+    font-size: 0.875rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-container {
+    padding: 1.5rem 1rem;
+    border-radius: 20px; /* M3 medium corner radius for small screens */
+  }
+
+  .step-title {
+    font-size: 1.5rem;
+  }
+
+  .form-fields {
+    gap: 1rem;
+  }
+
+  .help-card .mat-mdc-card-header,
+  .help-card .mat-mdc-card-content {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+/* M3 Animation for form appearance */
+.auth-container {
+  animation: slideInUp 0.4s cubic-bezier(0.2, 0, 0, 1); /* M3 standard easing */
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px); /* Reduced distance for subtlety */
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Loading state animations */
+.submit-button.loading .mat-spinner {
+  margin-right: 0.5rem;
+}
+
+/* M3 Error state animations */
+.auth-error {
+  animation: slideInDown 0.3s cubic-bezier(0.2, 0, 0, 1);
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* M3 Focus states for better accessibility */
+.username-field input:focus,
+.password-field input:focus {
+  outline: none;
+}
+
+.username-field.mat-focused .mat-mdc-form-field-outline,
+.password-field.mat-focused .mat-mdc-form-field-outline {
+  color: var(--md-sys-color-primary);
+}
+
+/* M3 State layer hover effects */
+.submit-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--md-sys-color-on-primary);
+  opacity: 0;
+  border-radius: inherit;
+  transition: opacity 0.2s cubic-bezier(0.2, 0, 0, 1);
+  pointer-events: none;
+}
+
+.submit-button:hover::before {
+  opacity: var(--md-sys-state-hover);
+}
+
+.submit-button:focus-visible::before {
+  opacity: var(--md-sys-state-focus);
+}
+
+.submit-button:active::before {
+  opacity: var(--md-sys-state-pressed);
+}
+
+/* M3 Custom scrollbar for help section */
+.help-card .mat-mdc-card-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.help-card .mat-mdc-card-content::-webkit-scrollbar-track {
+  background: var(--md-sys-color-surface-container);
+  border-radius: 3px;
+}
+
+.help-card .mat-mdc-card-content::-webkit-scrollbar-thumb {
+  background: var(--md-sys-color-outline-variant);
+  border-radius: 3px;
+}
+
+.help-card .mat-mdc-card-content::-webkit-scrollbar-thumb:hover {
+  background: var(--md-sys-color-on-surface-variant);
+}
+
+/* Username Field Container */
+.username-field-container {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+
+
+/* Help Button - Enhanced for dialog interaction */
+.help-button {
+  background: var(--md-sys-color-surface-container);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  color: var(--md-sys-color-on-surface-variant);
+  transition: all 0.2s ease;
+  margin-top: 0.5rem; /* Align with form field */
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.help-button:hover {
+  background: var(--md-sys-color-surface-container-high);
+  border-color: var(--md-sys-color-outline);
+  color: var(--md-sys-color-on-surface);
+  transform: scale(1.05);
+}
+
+.help-button:active {
+  transform: scale(0.95);
+}
+
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .auth-container {
+    margin: 1rem;
+    padding: 1.5rem;
+  }
+
+  .step-title {
+    font-size: var(--md-sys-typescale-headline-medium-size);
+  }
+
+  .form-fields {
+    gap: 1rem;
+  }
+
+  .form-actions {
+    margin-top: 1.5rem;
+  }
+
+
+}

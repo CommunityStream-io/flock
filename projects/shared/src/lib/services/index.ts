@@ -11,6 +11,9 @@ import { InjectionToken } from '@angular/core';
  export * from './sentry-logger';
  export * from './splash-screen-loading';
 
+// ==== Validators ====
+ export * from './validators/username.validator';
+
  // ==== Injection Tokens ====
  export const BLUESKY = new InjectionToken('Bluesky');
  export const CONFIG = new InjectionToken('Config');

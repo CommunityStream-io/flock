@@ -10,7 +10,8 @@
             "expect-webdriverio",
             "@wdio/local-runner",
             "@wdio/cucumber-framework",
-            "@wdio/spec-reporter"
+            "@wdio/spec-reporter",
+            "@wdio/globals"
         ],
         "strict": false,
         "noImplicitAny": false,
@@ -29,7 +30,8 @@
     },
     "include": [
         "features/**/*.ts",
-        "features/**/*.js"
+        "features/**/*.js",
+        "test/types.d.ts"
     ],
     "exclude": [
         "node_modules",

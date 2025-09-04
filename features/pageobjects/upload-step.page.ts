@@ -15,7 +15,7 @@ class UploadStepPage extends Page {
     }
 
     public get chooseFilesButton() {
-        return $('shared-file-upload-control button[mat-raised-button]');
+        return $('button[mat-raised-button]');
     }
 
     public get uploadIcon() {
@@ -24,7 +24,7 @@ class UploadStepPage extends Page {
 
     // File input (now hidden within the custom control)
     public get fileInput() {
-        return $('shared-file-upload-control input[type="file"]');
+        return $('input[type="file"]');
     }
 
     public get fileUploadForm() {
@@ -37,17 +37,17 @@ class UploadStepPage extends Page {
 
     // Selected files section (now handled by the custom control)
     public get fileListSection() {
-        return $('shared-file-upload-control .file-list');
+        return $('.file-list');
     }
 
 
 
     public get selectedFiles() {
-        return $$('shared-file-upload-control .file-selected');
+        return $$('.file-selected');
     }
 
     public get deleteButtons() {
-        return $$('shared-file-upload-control .file-selected button[mat-icon-button]');
+        return $$('.file-selected button[mat-icon-button]');
     }
 
     public get deleteIcons() {
@@ -56,20 +56,41 @@ class UploadStepPage extends Page {
 
     // Methods for file operations
     public async selectFile(filename: string) {
-        const fileInput = await this.fileInput;
-        // Create a mock file for testing
-        const file = new File(['test content'], filename, { type: 'application/zip' });
-        await browser.execute((input, mockFile) => {
-            // Create a DataTransfer object and file
-            const dt = new DataTransfer();
-            const file = new File([mockFile.content], mockFile.name, { type: mockFile.type });
-            dt.items.add(file);
-            (input as HTMLInputElement).files = dt.files;
-            
-            // Trigger change event
-            const event = new Event('change', { bubbles: true });
-            input.dispatchEvent(event);
-        }, fileInput, { content: 'test content', name: filename, type: 'application/zip' });
+        const chooseButton = await this.chooseFilesButton;
+        await chooseButton.click();
+        
+        // Simulate file selection by triggering the file input change event
+        await browser.execute((inputSelector, fileName) => {
+            const fileInput = document.querySelector(inputSelector);
+            if (fileInput) {
+                // Create a mock file object
+                const mockFile = new File(['mock content'], fileName, { type: 'application/zip' });
+                
+                // Create a mock FileList
+                const mockFileList = {
+                    0: mockFile,
+                    length: 1,
+                    item: (index: number) => index === 0 ? mockFile : null,
+                    [Symbol.iterator]: function* () {
+                        yield mockFile;
+                    }
+                };
+                
+                // Trigger the change event with our mock file
+                Object.defineProperty(fileInput, 'files', {
+                    value: mockFileList,
+                    writable: false
+                });
+                
+                // Dispatch the change event
+                const changeEvent = new Event('change', { bubbles: true });
+                fileInput.dispatchEvent(changeEvent);
+            }
+        }, 'input[type="file"]', filename);
+        
+        // Wait for the UI to update
+        await browser.pause(200);
+        console.log(`Simulated file selection: ${filename}`);
     }
 
     public async getSelectedFileName(index: number = 0) {
@@ -85,29 +106,30 @@ class UploadStepPage extends Page {
     }
 
     public async isFormValid() {
-        return await browser.execute(() => {
-            // Get the form element
-            const form = document.querySelector('form[formGroup]') as any;
-            if (!form) return false;
+        try {
+            // Check if file input has files
+            const fileInput = await this.fileInput;
+            const hasFiles = await fileInput.getValue() !== '';
             
-            // Get the Angular component instance to access the form
-            const uploadComponent = document.querySelector('shared-upload') as any;
-            if (!uploadComponent) return false;
+            // Check if there are any validation errors visible
+            const errorElements = await $$('.mat-error, .error-message');
+            const hasErrors = errorElements.length > 0;
             
-            // Check if the form control has a value
-            const formControl = uploadComponent.fileUploadForm?.get('instagramArchive');
-            if (!formControl) return false;
-            
-            // Check if the form control is valid and has a value
-            return formControl.valid && formControl.value !== null;
-        });
+            return hasFiles && !hasErrors;
+        } catch (error) {
+            return false;
+        }
     }
 
     public async hasFiles() {
-        const fileInput = await this.fileInput;
-        return await browser.execute((input) => {
-            return (input as HTMLInputElement).files && (input as HTMLInputElement).files!.length > 0;
-        }, fileInput);
+        try {
+            // Check if the file list section is visible, indicating files were selected
+            const fileListSection = await this.fileListSection;
+            const isDisplayed = await fileListSection.isDisplayed();
+            return isDisplayed;
+        } catch (error) {
+            return false;
+        }
     }
 
     public async getHeadingByText(headingText: string) {

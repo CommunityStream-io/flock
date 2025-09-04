@@ -1,0 +1,32 @@
+{
+  "extends": "@istanbuljs/nyc-config-typescript",
+  "all": true,
+  "check-coverage": false,
+  "reporter": [
+    "text",
+    "text-summary",
+    "html",
+    "lcov"
+  ],
+  "report-dir": "./coverage",
+  "temp-dir": "./.nyc_output",
+  "include": [
+    "projects/flock-mirage/src/**/*.ts",
+    "projects/shared/src/**/*.ts"
+  ],
+  "exclude": [
+    "projects/**/*.spec.ts",
+    "projects/**/*.test.ts",
+    "projects/**/test/**",
+    "projects/**/spec/**",
+    "projects/**/environments/**",
+    "projects/**/main.ts",
+    "projects/**/polyfills.ts"
+  ],
+  "extension": [
+    ".ts"
+  ],
+  "require": [
+    "ts-node/register"
+  ]
+}

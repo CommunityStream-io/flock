@@ -15,11 +15,13 @@ import { routes } from './app.routes';
 import {
   FILE_PROCESSOR,
   LOGGER,
+  BLUESKY,
   SplashScreenLoading,
   StepReuseStrategy,
 } from 'shared';
 import { FileProcessor } from './service/file-processor';
 import { ConsoleLogger } from './service/console-logger';
+import { Bluesky } from './service/bluesky';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -39,6 +41,10 @@ export const appConfig: ApplicationConfig = {
     {
       provide: LOGGER,
       useClass: ConsoleLogger,
+    },
+    {
+      provide: BLUESKY,
+      useClass: Bluesky,
     },
     SplashScreenLoading,
   ],

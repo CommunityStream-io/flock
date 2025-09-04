@@ -1,4 +1,4 @@
-  @if (!stepRouter.isActivated || (isNavigating | async)) {
+  @if (!stepRouter.isActivated || (shouldShowSplash | async)) {
     <shared-splash-screen></shared-splash-screen>
   }
   <router-outlet #stepRouter="outlet"></router-outlet>

@@ -1,7 +1,7 @@
-import { Component, inject, Signal, signal } from '@angular/core';
+import { Component, inject, Signal, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, ActivationEnd, Router, RouterModule } from '@angular/router';
-import { LOGGER, Logger, StepRouteData } from '../';
+import { LOGGER, Logger, StepRouteData, ConfigServiceImpl } from '../';
 import { MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { filter, map, Observable, tap } from 'rxjs';
@@ -18,6 +18,7 @@ export class StepNavigationComponent {
   // Route data parameters have next and previous properties
   private router = inject(Router);
   private logger = inject(LOGGER) as Logger;
+  private configService = inject(ConfigServiceImpl);
   private currentRoute: Observable<StepRouteData> = this.router.events.pipe(
     filter((event): event is ActivationEnd => typeof event === 'object' && event instanceof ActivationEnd),
     // tap((event) => this.logger.log('Current route:', event)),
@@ -37,6 +38,8 @@ export class StepNavigationComponent {
       // tap((next) => this.logger.log('Previous route:', next))
     )
   ) as Signal<string>;
+
+
 
   ngOnInit() {
     this.childRouteData.subscribe();

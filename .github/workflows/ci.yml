@@ -2,13 +2,13 @@ name: Feathering the Nest
 
 on:
   push:
-    branches: [ "*" ]
+    branches: [ "*" ] # All branches to include development branches
   pull_request:
-    branches: [ "*" ]
+    branches: [ "*" ] # All PRs to include forks
 
 jobs:
   lint:
-    name: Lint That Flocker
+    name: Waterproof feathers (Lint)
     runs-on: ubuntu-latest
     env:
       PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
@@ -32,10 +32,11 @@ jobs:
         run: npm run lint:all
 
   test:
-    name: Test That Flocker
+    name: Count the flock (Unit Test)
     runs-on: ubuntu-latest
     env:
       PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
+      CODECOV_TOKEN: ${{ vars.CODECOV_TOKEN }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -55,11 +56,19 @@ jobs:
       - name: Build shared library
         run: npx ng build --project=shared
 
-      - name: Run tests
-        run: npm run test:ci
+      - name: Run tests with coverage
+        run: npm run test:coverage
+
+      - name: Upload unit test coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          files: ./coverage/lcov.info
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: false
 
   e2e:
-    name: End-to-End Test That Flocker
+    name: Practice the murmuration (E2E Test)
     runs-on: ubuntu-latest
     env:
       PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
@@ -81,6 +90,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Setup Chrome for E2E tests
+        uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: stable
+
       - name: Install Angular CLI globally
         run: npm install -g @angular/cli
 
@@ -93,8 +107,8 @@ jobs:
       - name: Build flock-mirage app
         run: npx ng build --project=flock-mirage --configuration=development
 
-      - name: Run e2e tests with Angular app
-        run: npm run test:e2e:ci:full
+      - name: Run e2e tests with coverage
+        run: npm run test:e2e:ci
         env:
           CI: true
           NODE_ENV: production
@@ -120,7 +134,7 @@ jobs:
           retention-days: 30
 
   build:
-    name: Build That Flocker
+    name: Add to the flock (Build)
     runs-on: ubuntu-latest
     env:
       PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}

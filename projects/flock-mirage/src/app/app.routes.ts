@@ -9,7 +9,9 @@ import {
   StepLayout,
   StepRoute,
   uploadValidGuard,
-  extractArchiveResolver
+  authValidGuard,
+  extractArchiveResolver,
+  authDeactivateGuard
 } from 'shared';
 
 export const routes: Routes = [
@@ -38,6 +40,7 @@ export const routes: Routes = [
           next: 'config',
           previous: 'upload',
         },
+        canDeactivate: [authDeactivateGuard],
         resolve: {
           extractedArchive: extractArchiveResolver
         },

@@ -1,4 +1,4 @@
-@skip
+@skip()
 Feature: Navigation Guard Protection - Upload Validation Requirements
 
   As a user migrating from Instagram to Bluesky
@@ -7,6 +7,7 @@ Feature: Navigation Guard Protection - Upload Validation Requirements
 
   Background:
     Given the application is running
+    And the splash screen message should be "*flap* *flap* *flap*"
 
   @navigation-guard @upload-guard 
   Scenario: Navigation blocked without valid archive

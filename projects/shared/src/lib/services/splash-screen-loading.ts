@@ -7,7 +7,8 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class SplashScreenLoading implements Loading {
   isLoading = new BehaviorSubject<boolean>(false);
-  message = new BehaviorSubject<string>('*flap* *flap* *flap*');
+  private defaultMessage = '*flap* *flap* *flap*';
+  message = new BehaviorSubject<string>(this.defaultMessage);
 
   show(message: string) {
     this.message.next(message);
@@ -16,6 +17,7 @@ export class SplashScreenLoading implements Loading {
 
   hide() {
     this.isLoading.next(false);
+    this.message.next(this.defaultMessage);
   }
 }
 

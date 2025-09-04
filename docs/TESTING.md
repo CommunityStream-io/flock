@@ -1,6 +1,6 @@
 # 🧪 Flock Testing - How Our Flock Stays Healthy and Strong
 
-> *"A healthy flock is a happy flock. We test everything to ensure our birds can fly safely through any storm. Our testing strategy keeps our migration journey smooth and reliable."*
+> *"We count every duckling in our flock—each feature gets a test, so no one gets left behind! Our testing keeps the whole migration waddling along safely and happily."*
 
 ## 🧪 **Testing Philosophy**
 
@@ -11,6 +11,25 @@ We follow **BDD (Behavior-Driven Development)** methodology using Angular's nati
 - **🎯 Business Value** - Tests validate business requirements, not just code
 - **🧪 Real Components** - Test actual Angular components, not mocked behavior
 - **📚 Living Documentation** - Tests serve as executable specifications
+
+## 📚 **Testing Documentation Structure**
+
+Our testing documentation is organized into focused modules for better navigation and maintenance:
+
+### **🧪 Core Testing Guides**
+- **[BDD Methodology](testing/BDD_METHODOLOGY.md)** - Behavior-Driven Development approach and patterns
+- **[Unit Testing](testing/UNIT_TESTING.md)** - Component and service testing with Angular/Jasmine
+- **[E2E Testing](testing/E2E_TESTING.md)** - Full user journey testing with WebdriverIO
+- **[Coverage](testing/COVERAGE.md)** - Test coverage collection, reporting, and Codecov integration
+- **[Allure Reporting](testing/ALLURE_REPORTING.md)** - Beautiful test reports and analysis
+- **[CI Integration](testing/CI_INTEGRATION.md)** - Automated testing pipeline and deployment
+
+### **🎯 Quick Navigation**
+- **Getting Started**: Start with [BDD Methodology](testing/BDD_METHODOLOGY.md) to understand our approach
+- **Writing Tests**: Use [Unit Testing](testing/UNIT_TESTING.md) for component tests, [E2E Testing](testing/E2E_TESTING.md) for user workflows
+- **Coverage**: Check [Coverage](testing/COVERAGE.md) for coverage collection and reporting
+- **Reports**: See [Allure Reporting](testing/ALLURE_REPORTING.md) for beautiful test reports and analysis
+- **CI/CD**: See [CI Integration](testing/CI_INTEGRATION.md) for automated testing pipeline
 
 ## 🧪 **Testing Strategy Overview**
 
@@ -145,34 +164,61 @@ ng test --watch
 ### **Test Structure**
 ```
 features/
-├── migration-steps.feature    # Complete migration workflow
-├── file-upload.feature        # File selection and validation
-└── navigation-guard.feature   # Route protection and validation
+├── auth.feature              # Authentication and credential validation
+├── file-upload.feature       # File selection and validation
+├── landing.feature           # Landing page and navigation
+└── navigation-guard.feature  # Route protection and validation
 ```
 
-### **Feature File Example**
-```gherkin
-Feature: Migration Steps
-  As a user migrating from Instagram to Bluesky
-  I want to follow a guided step-by-step process
-  So that I can complete my migration successfully
+### **Modular Step Definitions**
+Our step definitions are organized into focused modules for better maintainability:
 
-  Scenario: Complete migration workflow
-    Given I have a valid Instagram export file
-    When I upload the file
-    Then the file should be validated successfully
-    
-    When I proceed to authentication
-    Then I should be able to enter Bluesky credentials
-    
-    When I proceed to configuration
-    Then I should be able to set migration options
-    
-    When I execute the migration
-    Then I should see real-time progress updates
-    
-    When the migration completes
-    Then I should see a success summary
+```
+features/step-definitions/
+├── steps.ts              # Main file with imports and common steps
+├── auth.ts               # Authentication-related steps
+├── file-upload.ts        # File upload and validation steps
+├── landing.ts            # Landing page interaction steps
+├── splash-screen.ts      # Splash screen and loading states
+└── step-navigation.ts    # Step navigation and routing
+```
+
+**Benefits of Modular Approach:**
+- **🎯 Focused Responsibility** - Each file handles specific functionality
+- **🔧 Easier Maintenance** - Changes to one feature don't affect others
+- **📚 Better Organization** - Related steps are grouped together
+- **🚀 Faster Development** - Developers can work on specific modules independently
+
+### **Feature File Examples**
+
+#### **Authentication Feature**
+```gherkin
+Feature: Bluesky Authentication
+  As a user migrating from Instagram to Bluesky
+  I want to authenticate with my Bluesky credentials
+  So that I can proceed with the migration process
+
+  Scenario: Valid credentials allow progression
+    Given the application is running
+    And I navigate to the auth step
+    And I have entered valid credentials
+    When I click the "Next" button
+    Then the authentication script should run in the background
+    And I should be navigated to the config step
+```
+
+#### **File Upload Feature**
+```gherkin
+Feature: File Upload and Validation
+  As a user starting the migration process
+  I want to upload my Instagram archive file
+  So that the system can validate and process it
+
+  Scenario: Valid file upload succeeds
+    Given I am on the upload step
+    When I select a valid Instagram archive file "valid-archive.zip"
+    Then the file should be selected in the file input
+    And I should see validation success indicators
 ```
 
 ### **Page Object Pattern**
@@ -215,19 +261,23 @@ graph TB
 
 ### **Running E2E Tests**
 ```bash
-# Full migration journey tests
-ng e2e
+# Full test suite (all features)
+npm run test:e2e:headless
 
-# Test specific migration paths:
-ng e2e flock-mirage
-ng e2e flock-murmur
-ng e2e flock-native
+# Test specific features:
+export TEST_SPEC="./features/auth.feature" && npm run test:e2e:headless
+export TEST_SPEC="./features/file-upload.feature" && npm run test:e2e:headless
+export TEST_SPEC="./features/landing.feature" && npm run test:e2e:headless
 
 # Test with specific tags
-ng e2e --cucumberOpts.tagExpression='@migration-steps'
+export TEST_TAGS="@bluesky-auth" && npm run test:e2e:headless
+export TEST_TAGS="@file-upload" && npm run test:e2e:headless
 
-# Test in watch mode
-ng e2e --watch
+# Test in debug mode
+npm run e2e:debug
+
+# Test with verbose output
+export DEBUG_TESTS=true && npm run test:e2e:headless
 ```
 
 ## 🧪 **BDD Testing Methodology**
@@ -340,6 +390,99 @@ graph TB
     style H fill:#2196f3
 ```
 
+## 🧪 **Modular Step Definitions Architecture**
+
+### **Step Definition Organization**
+Our step definitions follow a modular architecture that separates concerns and improves maintainability:
+
+```mermaid
+graph TB
+    subgraph "Step Definition Modules"
+        A[steps.ts<br/>Main Entry Point]
+        B[auth.ts<br/>Authentication Steps]
+        C[file-upload.ts<br/>File Operations]
+        D[landing.ts<br/>Landing Page]
+        E[splash-screen.ts<br/>Loading States]
+        F[step-navigation.ts<br/>Navigation]
+    end
+    
+    subgraph "Feature Files"
+        G[auth.feature]
+        H[file-upload.feature]
+        I[landing.feature]
+        J[navigation-guard.feature]
+    end
+    
+    A --> B
+    A --> C
+    A --> D
+    A --> E
+    A --> F
+    
+    B --> G
+    C --> H
+    D --> I
+    F --> J
+    
+    style A fill:#4caf50
+    style B fill:#2196f3
+    style C fill:#ff9800
+    style D fill:#9c27b0
+    style E fill:#e91e63
+    style F fill:#795548
+```
+
+### **Module Responsibilities**
+
+#### **`steps.ts` - Main Entry Point**
+- Imports all step definition modules
+- Contains common/shared step definitions
+- Handles URL checks and application setup
+
+#### **`auth.ts` - Authentication Steps**
+- User credential validation
+- Form field interactions
+- Authentication flow testing
+- Help dialog interactions
+
+#### **`file-upload.ts` - File Operations**
+- File selection and validation
+- Upload interface testing
+- File removal operations
+- Navigation guard integration
+
+#### **`landing.ts` - Landing Page**
+- Landing page content verification
+- Navigation button interactions
+- Process step display testing
+
+#### **`splash-screen.ts` - Loading States**
+- Splash screen visibility
+- Loading message verification
+- Authentication process states
+
+#### **`step-navigation.ts` - Navigation**
+- Step-to-step navigation
+- URL routing verification
+- Step layout testing
+
+### **Import Strategy**
+```typescript
+// steps.ts - Main file imports all modules
+import './landing';
+import './auth';
+import './splash-screen';
+import './step-navigation';
+import './file-upload';
+```
+
+### **Benefits of Modular Approach**
+- **🎯 Single Responsibility** - Each module handles one aspect of functionality
+- **🔧 Easier Debugging** - Issues are isolated to specific modules
+- **📚 Better Documentation** - Clear separation makes code self-documenting
+- **🚀 Parallel Development** - Multiple developers can work on different modules
+- **🔄 Reusability** - Common patterns can be extracted and shared
+
 ## 🧪 **Test Implementation Details**
 
 ### **File Mocking Strategy**
@@ -356,6 +499,117 @@ graph TB
 - **Zone Stability** - Wait for Angular zone stability before assertions
 - **Reactive Forms** - Test real Angular reactive forms validation
 - **Material Components** - Integrate with Angular Material components
+
+## 🧪 **Test Debugging & Targeted Execution**
+
+### **Running Specific Test Suites**
+Instead of waiting for all tests to complete, you can target specific test files or scenarios:
+
+#### **E2E Test Targeting**
+```bash
+# Run only auth flow tests
+export TEST_SPEC="./features/auth.feature" && npm run test:e2e:headless
+
+# Run only file upload tests  
+export TEST_SPEC="./features/file-upload.feature" && npm run test:e2e:headless
+
+# Run only landing page tests
+export TEST_SPEC="./features/landing.feature" && npm run test:e2e:headless
+
+# Run only navigation guard tests
+export TEST_SPEC="./features/navigation-guard.feature" && npm run test:e2e:headless
+```
+
+#### **Using Test Tags for Filtering**
+```bash
+# Run tests with specific tags
+npm run e2e:validation  # Runs @bluesky-auth and @validation tagged tests
+
+# Run tests excluding certain tags
+npm run test:e2e:skip-failing  # Excludes @skip tagged tests
+
+# Run only passing tests
+npm run test:e2e:only-passing  # Excludes @skip tagged tests
+```
+
+#### **Debug Mode for E2E Tests**
+```bash
+# Run with debug output and headless mode
+npm run e2e:debug
+
+# Run specific validation tests in debug mode
+npm run e2e:debug-validation
+```
+
+### **Unit Test Targeting**
+```bash
+# Test specific project
+ng test flock-mirage
+ng test flock-murmur  
+ng test flock-native
+
+# Test with watch mode for faster iteration
+ng test --watch
+
+# Test specific file pattern
+ng test --include="**/*auth*.spec.ts"
+```
+
+### **Common Debugging Scenarios**
+
+#### **When Tests Fail with Missing Step Definitions**
+```bash
+# Check which steps are missing
+export TEST_SPEC="./features/auth.feature" && npm run test:e2e:headless
+
+# Look for "Step is not defined" errors in output
+# Add missing step definitions to the appropriate module:
+# - features/step-definitions/auth.ts (for auth-related steps)
+# - features/step-definitions/file-upload.ts (for file upload steps)
+# - features/step-definitions/landing.ts (for landing page steps)
+# - features/step-definitions/step-navigation.ts (for navigation steps)
+# - features/step-definitions/splash-screen.ts (for splash screen steps)
+```
+
+#### **When Snackbar Tests Fail**
+```bash
+# Test snackbar functionality in isolation
+export TEST_SPEC="./features/auth.feature" && npm run e2e:headless
+
+# Look for "element still not displayed after 5000ms" errors
+# Check snackbar selectors in page objects
+```
+
+#### **When Navigation Tests Fail**
+```bash
+# Test navigation guards specifically
+export TEST_SPEC="./features/navigation-guard.feature" && npm run test:e2e:headless
+
+# Verify guard implementation and URL routing
+```
+
+### **Quick Test Iteration Workflow**
+```bash
+# 1. Run specific failing test suite
+export TEST_SPEC="./features/auth.feature" && npm run test:e2e:headless
+
+# 2. Fix issues in code
+
+# 3. Re-run just that suite to verify fix
+export TEST_SPEC="./features/auth.feature" && npm run test:e2e:headless
+
+# 4. Once fixed, run full test suite
+npm run test:e2e:headless
+```
+
+### **Environment Variables for Test Control**
+```bash
+# Control test execution
+export TEST_SPEC="./features/auth.feature"    # Target specific feature file
+export HEADLESS=true                          # Run in headless mode
+export DEBUG_TESTS=true                       # Enable debug output
+export TEST_TAGS="@auth and @validation"      # Filter by tags
+```
 
 ## 🧪 **Test Maintenance**
 
@@ -429,6 +683,37 @@ graph LR
 - **Test Data Management** - Centralized test data and environment management
 - **Reporting Dashboard** - Real-time test results and trend analysis
 - **Test Analytics** - Insights into test coverage and quality metrics
+
+## 🎯 **Testing Summary**
+
+Our testing approach combines the best of both worlds:
+
+### **Comprehensive Coverage**
+- **Unit Tests** - Fast, isolated component and service testing with coverage
+- **E2E Tests** - Full user journey and integration testing
+- **Coverage Tracking** - Unit test coverage reporting with Codecov
+- **CI Integration** - Automated testing pipeline with quality gates
+
+### **BDD Methodology**
+- **User-Focused** - Tests describe real user behavior and scenarios
+- **Business Value** - Tests validate business requirements, not just code
+- **Real Components** - Test actual Angular components, not mocked behavior
+- **Living Documentation** - Tests serve as executable specifications
+
+### **Quality Assurance**
+- **Automated Testing** - All tests run automatically on every commit
+- **Quality Gates** - Tests must pass before code can be merged
+- **Coverage Tracking** - Unit test coverage reports are generated and tracked
+- **Multi-Environment** - Tests run in consistent, isolated environments
+
+## 📚 **Next Steps**
+
+1. **Start with BDD**: Read [BDD Methodology](testing/BDD_METHODOLOGY.md) to understand our approach
+2. **Write Unit Tests**: Use [Unit Testing](testing/UNIT_TESTING.md) for component and service tests
+3. **Add E2E Tests**: Use [E2E Testing](testing/E2E_TESTING.md) for user workflow tests
+4. **Check Coverage**: Use [Coverage](testing/COVERAGE.md) to ensure comprehensive test coverage
+5. **Generate Reports**: Use [Allure Reporting](testing/ALLURE_REPORTING.md) for beautiful test reports
+6. **CI Integration**: See [CI Integration](testing/CI_INTEGRATION.md) for automated testing pipeline
 
 ---
 
