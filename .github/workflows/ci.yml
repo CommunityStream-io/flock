@@ -70,6 +70,10 @@ jobs:
   e2e:
     name: Practice the murmuration (E2E Test)
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        shard: [1, 2, 3, 4]
+      fail-fast: false
     env:
       PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
       HEADLESS: true
@@ -107,8 +111,8 @@ jobs:
       - name: Build flock-mirage app
         run: npx ng build --project=flock-mirage --configuration=development
 
-      - name: Run e2e tests with coverage
-        run: npm run test:e2e:ci
+      - name: Run e2e shard ${{ matrix.shard }}
+        run: npm run test:e2e:shard:${{ matrix.shard }}
         env:
           CI: true
           NODE_ENV: production
@@ -116,22 +120,25 @@ jobs:
       - name: Ensure allure-results directory exists
         run: mkdir -p allure-results
 
-      - name: Generate Allure report
+      - name: Generate Allure report for shard ${{ matrix.shard }}
         run: npm run allure:generate
+        continue-on-error: true
 
-      - name: Upload Allure report as artifact
+      - name: Upload Allure report as artifact (Shard ${{ matrix.shard }})
         uses: actions/upload-artifact@v4
         with:
-          name: allure-report
+          name: allure-report-shard-${{ matrix.shard }}
           path: allure-report/
           retention-days: 30
+        continue-on-error: true
 
-      - name: Upload Allure results as artifact
+      - name: Upload Allure results as artifact (Shard ${{ matrix.shard }})
         uses: actions/upload-artifact@v4
         with:
-          name: allure-results
+          name: allure-results-shard-${{ matrix.shard }}
           path: allure-results/
           retention-days: 30
+        continue-on-error: true
 
   build:
     name: Add to the flock (Build)

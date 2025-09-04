@@ -60,9 +60,18 @@ Distributes files evenly across shards regardless of domain.
    npm run test:e2e:sharded:parallel
    ```
 
-4. **Run individual shard:**
+4. **Run individual shard (multiple ways):**
    ```bash
+   # Using predefined shard numbers
    npm run test:e2e:shard:1
+   npm run test:e2e:shard:2
+   npm run test:e2e:shard:3
+   npm run test:e2e:shard:4
+   
+   # Using parameterized command
+   npm run test:e2e:shard -- --shard=0 --total=4
+   npm run test:e2e:shard -- --shard=1 --total=4
+   npm run test:e2e:shard -- --shard=2 --total=6  # Custom total shards
    ```
 
 ### Available Scripts
@@ -70,7 +79,8 @@ Distributes files evenly across shards regardless of domain.
 | Script | Description |
 |--------|-------------|
 | `test:e2e:shard:create` | Create shard configuration files |
-| `test:e2e:shard:1-4` | Run individual shards |
+| `test:e2e:shard` | Run parameterized shard (use with --shard=X --total=Y) |
+| `test:e2e:shard:1-4` | Run individual shards (predefined) |
 | `test:e2e:sharded` | Run all shards sequentially |
 | `test:e2e:sharded:parallel` | Run all shards in parallel |
 | `test:e2e:sharded:ci` | CI version (sequential) |
@@ -78,14 +88,31 @@ Distributes files evenly across shards regardless of domain.
 
 ### Advanced Usage
 
+#### Parameterized Shard Execution
+
+The main shard command accepts parameters for maximum flexibility:
+
+```bash
+# Basic usage with parameters
+npm run test:e2e:shard -- --shard=0 --total=4
+
+# Custom shard count
+npm run test:e2e:shard -- --shard=2 --total=6
+
+# With additional options
+npm run test:e2e:shard -- --shard=1 --total=4 --debug=true
+npm run test:e2e:shard -- --shard=0 --total=4 --headless=false
+npm run test:e2e:shard -- --shard=3 --total=4 --ci=true
+```
+
 #### Custom Shard Count
 
 ```bash
 # Create 6 shards instead of default 4
 node scripts/shard-tests.js create 6
 
-# Run specific shard
-node scripts/shard-tests.js run 0 6 --headless
+# Run specific shard using parameterized command
+npm run test:e2e:shard -- --shard=0 --total=6
 
 # Run all 6 shards in parallel
 node scripts/shard-tests.js run-all 6 --headless --ci
