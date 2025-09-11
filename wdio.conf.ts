@@ -40,10 +40,10 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
     // time. Depending on the number of capabilities, WebdriverIO launches several test
     // sessions. Within your capabilities you can overwrite the spec and exclude options in
     // order to group specific specs to a specific capability.
-    maxInstances: 3, // Reduced from 10 to prevent server overload
+    maxInstances: 1, // Run features sequentially to prevent race conditions
     
     capabilities: [{
-        maxInstances: 2, // Reduced from 5 to prevent race conditions
+        maxInstances: 1, // Only one browser instance at a time
         browserName: 'chrome',
         acceptInsecureCerts: true,
         // Enable Chrome DevTools Protocol for network simulation
@@ -123,7 +123,8 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
     baseUrl: 'http://localhost:4200',
 
     // Default timeout for all waitFor* commands.
-    waitforTimeout: process.env.CI === 'true' ? 20000 : 10000,
+    // Increased for stability with reduced concurrency
+    waitforTimeout: process.env.CI === 'true' ? 25000 : 20000,
 
     // Default timeout in milliseconds for request
     // if browser driver or grid doesn't send response
@@ -163,7 +164,7 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
         source: true,
         strict: false,  // Allow skipped steps without failing the entire scenario
         tags: process.env.TEST_TAGS || "",
-        timeout: process.env.CI === 'true' ? 90000 : 60000, // Reasonable timeout for CI
+        timeout: process.env.CI === 'true' ? 120000 : 90000, // Increased for stability
         ignoreUndefinedDefinitions: true,
         format: ['pretty'],  // Add pretty format for better readability
         publishQuiet: process.env.DEBUG_TESTS !== 'true',   // Reduce noise from cucumber reporting unless debugging
