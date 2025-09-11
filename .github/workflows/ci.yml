@@ -240,43 +240,23 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Checkout GitHub Pages branch
-        uses: actions/checkout@v4
-        with:
-          ref: gh-pages
-          path: gh-pages
-          fetch-depth: 0
-
       - name: Download combined Allure results
         uses: actions/download-artifact@v4
         with:
           name: allure-results-combined
-          path: allure-results/
+          path: combined-allure-results/
 
-      - name: Install Allure command line
-        run: npm install -g allure-commandline
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
 
-      - name: Generate Allure Report with history
-        run: |
-          # Generate the report
-          allure generate allure-results --clean -o allure-report
-          
-          # Copy to gh-pages directory
-          cp -r allure-report/* gh-pages/
-          
-          # Create history directory if it doesn't exist
-          mkdir -p gh-pages/history
-          
-          # Copy current report to history
-          cp -r allure-report/* gh-pages/history/$(date +%Y%m%d_%H%M%S)/
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: combined-allure-results/
 
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_branch: gh-pages
-          publish_dir: gh-pages
+        uses: actions/deploy-pages@v4
 
   build:
     name: Add to the flock (Build)
