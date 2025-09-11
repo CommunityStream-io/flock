@@ -179,3 +179,4 @@ ng build --configuration=development
 ---
 
 **🦅 Built with Angular 20.1.5** | **🏗️ Architecture-first design** | **🦜 Multi-bird support** | **🎨 Shared M3 Material nest**
+# Trigger deployment
