@@ -183,11 +183,34 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Download existing reports (if any)
+        run: |
+          # Try to download existing reports from the gh-pages branch
+          git fetch origin gh-pages:gh-pages || true
+          if git show-ref --verify --quiet refs/remotes/origin/gh-pages; then
+            echo "Found existing gh-pages branch, downloading reports..."
+            git checkout gh-pages -- reports/ || echo "No existing reports found"
+          else
+            echo "No existing gh-pages branch found, starting fresh"
+          fi
+
       - name: Download combined Allure report
         uses: actions/download-artifact@v4
         with:
           name: allure-report-combined
           path: allure-report/
+
+      - name: Generate Allure report index
+        run: |
+          # Install Node.js dependencies if needed
+          if [ ! -d "node_modules" ]; then
+            npm install
+          fi
+          
+          # Run the Allure index generator script
+          node scripts/generate-allure-index.js \
+            --report-dir ./allure-report \
+            --output-dir ./reports
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
@@ -195,7 +218,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: allure-report/
+          path: reports/
 
       - name: Deploy to GitHub Pages
         id: deployment

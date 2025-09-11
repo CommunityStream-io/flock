@@ -346,6 +346,16 @@ WebdriverIO provides detailed test execution reports:
 - **Allure Reports**: Rich HTML reports with screenshots and details
 - **Console Output**: BDD-style logging with emoji indicators
 
+### **Allure Report Access**
+Our E2E tests generate comprehensive Allure reports that are automatically published to GitHub Pages:
+
+- **Main Dashboard**: `https://communitystream-io.github.io/flock/`
+- **Branch Reports**: Organized by branch with historical tracking
+- **Run-Specific Reports**: Each CI run gets its own detailed report
+- **Mobile-Friendly**: Access reports on any device
+
+For detailed information about the Allure reporting system, see [ALLURE_REPORTING.md](./ALLURE_REPORTING.md).
+
 ## 🎯 **E2E Testing Best Practices**
 
 ### **Test Organization**

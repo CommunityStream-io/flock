@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flock E2E Test Reports</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+            margin: 0; 
+            padding: 20px; 
+            background: #f8f9fa; 
+            line-height: 1.6;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .header { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white; 
+            padding: 30px; 
+            border-radius: 10px; 
+            margin-bottom: 30px; 
+            text-align: center;
+        }
+        .header h1 { margin: 0 0 10px 0; font-size: 2.5em; }
+        .header p { margin: 0; opacity: 0.9; font-size: 1.1em; }
+        .stats { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+            gap: 20px; 
+            margin-bottom: 30px; 
+        }
+        .stat-card { 
+            background: white; 
+            padding: 20px; 
+            border-radius: 8px; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+            text-align: center;
+        }
+        .stat-number { font-size: 2em; font-weight: bold; color: #667eea; }
+        .stat-label { color: #666; margin-top: 5px; }
+        .branch { 
+            background: white; 
+            margin: 20px 0; 
+            padding: 20px; 
+            border-radius: 8px; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-left: 4px solid #28a745;
+        }
+        .branch h2 { 
+            margin: 0 0 15px 0; 
+            color: #333; 
+            display: flex; 
+            align-items: center; 
+            gap: 10px;
+        }
+        .branch-icon { font-size: 1.2em; }
+        .runs { display: grid; gap: 10px; }
+        .run { 
+            padding: 15px; 
+            background: #f8f9fa; 
+            border-radius: 6px; 
+            border: 1px solid #e9ecef;
+            transition: all 0.2s ease;
+        }
+        .run:hover { 
+            background: #e9ecef; 
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .run a { 
+            text-decoration: none; 
+            color: #0366d6; 
+            display: block;
+        }
+        .run a:hover { text-decoration: underline; }
+        .run-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 5px;
+        }
+        .run-id { font-weight: bold; color: #333; }
+        .run-date { color: #666; font-size: 0.9em; }
+        .run-sha { 
+            font-family: monospace; 
+            background: #e9ecef; 
+            padding: 2px 6px; 
+            border-radius: 3px; 
+            font-size: 0.8em;
+        }
+        .status { 
+            display: inline-block; 
+            padding: 4px 8px; 
+            border-radius: 4px; 
+            font-size: 0.8em; 
+            font-weight: bold; 
+            text-transform: uppercase;
+        }
+        .status.latest { background: #d4edda; color: #155724; }
+        .status.success { background: #d4edda; color: #155724; }
+        .status.failure { background: #f8d7da; color: #721c24; }
+        .status.pending { background: #fff3cd; color: #856404; }
+        .footer { 
+            text-align: center; 
+            margin-top: 40px; 
+            padding: 20px; 
+            color: #666; 
+            border-top: 1px solid #e9ecef;
+        }
+        @media (max-width: 768px) {
+            .header h1 { font-size: 2em; }
+            .stats { grid-template-columns: 1fr; }
+            .run-header { flex-direction: column; align-items: flex-start; gap: 5px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Flock E2E Test Reports</h1>
+            <p>Comprehensive test execution history across all branches and commits</p>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number">1</div>
+                <div class="stat-label">Branches</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">1</div>
+                <div class="stat-label">Total Runs</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">1</div>
+                <div class="stat-label">Active Branches</div>
+            </div>
+        </div>
+        
+        
+        <div class="branch">
+            <h2>
+                <span class="branch-icon">🌿</span>
+                config-step
+                <span class="status latest">Latest</span>
+            </h2>
+            <div class="runs">
+                
+                <div class="run">
+                    <a href="config-step/1757560968271-unknown/index.html">
+                        <div class="run-header">
+                            <span class="run-id">Run #1757560968271</span>
+                            <span class="run-date">2025-09-11T03:22:48.279Z</span>
+                        </div>
+                        <div class="run-sha">unknown</div>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="footer">
+            <p>Generated on 2025-09-11T03:22:48.283Z | <a href="https://github.com/CommunityStream-io/flock">View Source</a></p>
+        </div>
+    </div>
+</body>
+</html>
