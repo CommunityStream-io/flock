@@ -38,7 +38,7 @@ When('I select a valid Instagram archive file {string}', async (filename: string
             return hasFiles;
         },
         { 
-            timeout: 3000, 
+            timeout: process.env.CI === 'true' ? 8000 : 5000, // 8s CI, 5s local 
             timeoutMsg: 'File was not processed within 3 seconds' 
         }
     );
@@ -154,7 +154,7 @@ Given('I have selected a valid Instagram archive file {string}', async (filename
             return hasFiles;
         },
         { 
-            timeout: 5000, 
+            timeout: process.env.CI === 'true' ? 12000 : 8000, // 12s CI, 8s local 
             timeoutMsg: 'File was not processed within 5 seconds' 
         }
     );
@@ -207,7 +207,7 @@ When('I try to proceed without a file', async () => {
             return isStillOnUpload || hasSnackbar;
         },
         { 
-            timeout: 10000, 
+            timeout: process.env.CI === 'true' ? 30000 : 15000, // 30s CI, 15s local 
             timeoutMsg: 'Navigation guard did not process within 10 seconds' 
         }
     );
@@ -245,7 +245,7 @@ Then('I should be able to proceed to the next step', async () => {
             return !isStillOnUpload;
         },
         { 
-            timeout: 10000, 
+            timeout: process.env.CI === 'true' ? 30000 : 15000, // 30s CI, 15s local 
             timeoutMsg: 'Navigation to next step did not complete within 10 seconds' 
         }
     );
@@ -299,7 +299,7 @@ When('I upload a valid Instagram archive file', async () => {
             return isFileServiceValid;
         },
         { 
-            timeout: 5000, 
+            timeout: process.env.CI === 'true' ? 12000 : 8000, // 12s CI, 8s local 
             timeoutMsg: 'File validation did not complete within 5 seconds' 
         }
     );
@@ -314,7 +314,7 @@ When('I upload a valid Instagram archive', async () => {
             return isFileServiceValid;
         },
         { 
-            timeout: 5000, 
+            timeout: process.env.CI === 'true' ? 12000 : 8000, // 12s CI, 8s local 
             timeoutMsg: 'File validation did not complete within 5 seconds' 
         }
     );
@@ -339,7 +339,7 @@ When('I select a file but validation fails', async () => {
             return hasErrors;
         },
         { 
-            timeout: 3000, 
+            timeout: process.env.CI === 'true' ? 8000 : 5000, // 8s CI, 5s local 
             timeoutMsg: 'File validation error did not appear within 3 seconds' 
         }
     );

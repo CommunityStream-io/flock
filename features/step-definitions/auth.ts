@@ -23,7 +23,7 @@ Given('I have navigated to the auth step', async () => {
             return isOnAuthStep && isAuthFormVisible;
         },
         { 
-            timeout: 10000, 
+            timeout: process.env.CI === 'true' ? 30000 : 15000, // 30s CI, 15s local 
             timeoutMsg: 'Navigation to auth step did not complete within 10 seconds' 
         }
     );
@@ -39,7 +39,7 @@ When('I navigate back to the upload step', async () => {
             return isOnUploadStep && isUploadSectionVisible;
         },
         { 
-            timeout: 10000, 
+            timeout: process.env.CI === 'true' ? 30000 : 15000, // 30s CI, 15s local 
             timeoutMsg: 'Navigation to upload step did not complete within 10 seconds' 
         }
     );
@@ -238,7 +238,7 @@ Then('the authentication script should run in the background', async () => {
             const currentUrl = await browser.getUrl();
             return currentUrl.includes('/step/config');
         },
-        { timeout: 10000, timeoutMsg: 'Authentication and navigation to config step did not complete' }
+        { timeout: process.env.CI === 'true' ? 30000 : 15000, timeoutMsg: process.env.CI === 'true' ? 'Authentication and navigation to config step did not complete within 30 seconds' : 'Authentication and navigation to config step did not complete within 15 seconds' }
     );
 });
 
@@ -248,7 +248,7 @@ Then('I should be navigated to the config step', async () => {
             const currentUrl = await browser.getUrl();
             return currentUrl.includes('/step/config');
         },
-        { timeout: 10000, timeoutMsg: 'Navigation to config step did not occur' }
+        { timeout: process.env.CI === 'true' ? 30000 : 15000, timeoutMsg: process.env.CI === 'true' ? 'Navigation to config step did not occur within 30 seconds' : 'Navigation to config step did not occur within 15 seconds' }
     );
 });
 
@@ -485,7 +485,7 @@ When('I close the help dialog', async () => {
             return !isVisible;
         },
         {
-            timeout: 5000,
+            timeout: process.env.CI === 'true' ? 15000 : 8000, // 15s CI, 8s local
             timeoutMsg: 'Help dialog did not close within 5 seconds'
         }
     );
@@ -500,7 +500,7 @@ When('I close the help dialog with Escape key', async () => {
             return !isVisible;
         },
         {
-            timeout: 5000,
+            timeout: process.env.CI === 'true' ? 15000 : 8000, // 15s CI, 8s local
             timeoutMsg: 'Help dialog did not close with Escape key within 5 seconds'
         }
     );

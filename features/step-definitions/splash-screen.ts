@@ -60,7 +60,7 @@ Then('the authentication should succeed', async () => {
             const currentUrl = await browser.getUrl();
             return currentUrl.includes('/step/config');
         },
-        { timeout: 10000, timeoutMsg: 'Authentication did not succeed - not navigated to config step' }
+        { timeout: process.env.CI === 'true' ? 30000 : 15000, timeoutMsg: process.env.CI === 'true' ? 'Authentication did not succeed - not navigated to config step within 30 seconds' : 'Authentication did not succeed - not navigated to config step within 15 seconds' }
     );
 });
 

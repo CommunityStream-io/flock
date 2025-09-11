@@ -124,15 +124,15 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
     baseUrl: 'http://localhost:4200',
 
     // Default timeout for all waitFor* commands.
-    // Increased for stability with reduced concurrency
-    waitforTimeout: process.env.CI === 'true' ? 25000 : 20000,
+    // Reduced for faster failure detection
+    waitforTimeout: process.env.CI === 'true' ? 30000 : 15000, // 30s CI, 15s local
 
     // Default timeout in milliseconds for request
     // if browser driver or grid doesn't send response
-    connectionRetryTimeout: process.env.CI === 'true' ? 300000 : 120000, // 5 minutes for CI
+    connectionRetryTimeout: process.env.CI === 'true' ? 120000 : 60000, // 2 minutes CI, 1 minute local
 
     // Default request retries count
-    connectionRetryCount: process.env.CI === 'true' ? 5 : 3,
+    connectionRetryCount: process.env.CI === 'true' ? 3 : 2,
 
     // Test runner services
     // Note: chromedriver service is built-in for WebdriverIO v9
@@ -165,7 +165,7 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
         source: true,
         strict: false,  // Allow skipped steps without failing the entire scenario
         tags: process.env.TEST_TAGS || "",
-        timeout: process.env.CI === 'true' ? 120000 : 90000, // Increased for stability
+        timeout: process.env.CI === 'true' ? 30000 : 15000, // 30s CI, 15s local - reduced for faster failure detection
         ignoreUndefinedDefinitions: true,
         format: ['pretty'],  // Add pretty format for better readability
         publishQuiet: process.env.DEBUG_TESTS !== 'true',   // Reduce noise from cucumber reporting unless debugging

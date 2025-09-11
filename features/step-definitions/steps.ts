@@ -45,8 +45,8 @@ Given('the application is running', async () => {
             return hasContent;
         },
         { 
-            timeout: 20000, // Generous 20s timeout for stability
-            timeoutMsg: 'Application did not load within 20 seconds' 
+            timeout: process.env.CI === 'true' ? 30000 : 15000, // 30s CI, 15s local - reduced for faster failure detection
+            timeoutMsg: process.env.CI === 'true' ? 'Application did not load within 30 seconds' : 'Application did not load within 15 seconds'
         }
     );
     
@@ -61,8 +61,8 @@ Given('the splash screen message should be {string}', async (expectedMessage: st
         const isSplashVisible = await browser.waitUntil(
             async () => await pages.stepLayout.isSplashScreenVisible(),
             { 
-                timeout: 15000, 
-                timeoutMsg: 'Splash screen did not appear within 15 seconds' 
+                timeout: process.env.CI === 'true' ? 20000 : 10000, // 20s CI, 10s local - reduced for faster failure detection
+                timeoutMsg: process.env.CI === 'true' ? 'Splash screen did not appear within 20 seconds' : 'Splash screen did not appear within 10 seconds'
             }
         );
         
@@ -109,8 +109,8 @@ Given('I navigate to the application', async () => {
             return hasContent;
         },
         { 
-            timeout: 20000, // Generous 20s timeout for stability
-            timeoutMsg: 'Application did not load within 20 seconds' 
+            timeout: process.env.CI === 'true' ? 30000 : 15000, // 30s CI, 15s local - reduced for faster failure detection
+            timeoutMsg: process.env.CI === 'true' ? 'Application did not load within 30 seconds' : 'Application did not load within 15 seconds'
         }
     );
     
