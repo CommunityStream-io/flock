@@ -2,79 +2,53 @@
 
 ## Overview
 
-The Flock project uses a comprehensive Allure reporting system that automatically generates and publishes test reports for every CI run. Reports are organized by branch and run, providing a complete history of test execution across all branches and commits.
+The Flock project uses the official Allure GitHub Action (`simple-elf/allure-report-action`) to automatically generate and publish test reports for every CI run. This provides a standardized, reliable approach to Allure reporting with built-in history preservation and GitHub Pages integration.
 
 ## Features
 
-- 🌿 **Multi-Branch Support**: Separate reports for each branch
-- 🏃 **Run-Specific Reports**: Each CI run gets its own report directory
-- 📊 **Historical Tracking**: Complete test history across all branches
+- 📊 **Historical Tracking**: Complete test history with trend analysis
 - 🌐 **GitHub Pages Integration**: Automatic publishing to GitHub Pages
 - 📱 **Mobile-Friendly**: Responsive design for all devices
 - 🔍 **Easy Navigation**: Clean, intuitive interface
+- ⚡ **Official Support**: Uses the official Allure GitHub Action
+- 🔄 **Automatic Updates**: Reports update automatically on every CI run
 
 ## Report Structure
 
+The official Allure GitHub Action creates a standardized report structure:
+
 ```
 https://communitystream-io.github.io/flock/
-├── index.html                    # Main navigation dashboard
-├── branches.json                 # Metadata for all branches and runs
-├── main/                        # Main branch reports
-│   ├── 1234567-abc1234/        # Run ID + Short SHA
-│   │   └── index.html          # Allure report
-│   └── 1234568-def5678/
-├── feature-auth/                # Feature branch reports
-│   ├── 1234569-ghi9012/
-│   └── 1234570-jkl3456/
-└── hotfix-bug/                  # Hotfix branch reports
-    └── 1234571-mno7890/
+├── index.html                    # Main Allure dashboard
+├── data/                        # Test execution data
+├── widgets/                     # Report widgets and components
+├── history/                     # Historical test data
+└── static/                      # Static assets (CSS, JS, images)
 ```
+
+The action automatically:
+- **Preserves History**: Maintains test execution history across runs
+- **Generates Trends**: Shows test trends and statistics over time
+- **Creates Navigation**: Provides intuitive navigation between reports
+- **Handles Updates**: Automatically updates reports on each CI run
 
 ## Accessing Reports
 
 ### Main Dashboard
 - **URL**: `https://communitystream-io.github.io/flock/`
-- **Shows**: All branches, latest runs, statistics
-- **Features**: Search, filter, and navigate to specific reports
+- **Shows**: Latest test results with historical trends
+- **Features**: 
+  - Test execution overview
+  - Historical trends and statistics
+  - Detailed test case information
+  - Failure analysis and screenshots
 
-### Branch-Specific Reports
-- **URL**: `https://communitystream-io.github.io/flock/{branch-name}/`
-- **Shows**: All runs for a specific branch
-- **Example**: `https://communitystream-io.github.io/flock/main/`
-
-### Specific Run Reports
-- **URL**: `https://communitystream-io.github.io/flock/{branch-name}/{run-id}-{sha}/`
-- **Shows**: Full Allure report for that specific run
-- **Example**: `https://communitystream-io.github.io/flock/main/1234567-abc1234/`
-
-## Script Usage
-
-The Allure reporting system uses a Node.js script (`scripts/generate-allure-index.js`) to generate the navigation structure and maintain historical data.
-
-### Command Line Usage
-
-```bash
-# Basic usage (uses environment variables)
-node scripts/generate-allure-index.js
-
-# With explicit parameters
-node scripts/generate-allure-index.js \
-  --branch main \
-  --run-id 1234567 \
-  --sha abc1234 \
-  --report-dir ./allure-report \
-  --output-dir ./reports
-```
-
-### Parameters
-
-| Parameter | Description | Default | Environment Variable |
-|-----------|-------------|---------|---------------------|
-| `--branch` | Branch name | Auto-detected | `GITHUB_HEAD_REF` or `GITHUB_REF` |
-| `--run-id` | CI run ID | Current timestamp | `GITHUB_RUN_ID` |
-| `--sha` | Commit SHA (short) | Auto-detected | `GITHUB_SHA` |
-| `--report-dir` | Source Allure report directory | `./allure-report` | - |
-| `--output-dir` | Output directory for reports | `./reports` | - |
+### Report Features
+- **Test History**: View test results over time
+- **Trend Analysis**: See test stability and performance trends
+- **Failure Details**: Detailed failure information with screenshots
+- **Test Categories**: Organized by test suites and features
+- **Search & Filter**: Find specific tests or failures quickly
 
 ## Local Development
 
@@ -87,27 +61,80 @@ node scripts/generate-allure-index.js \
    allure generate allure-results/ --clean -o allure-report/
    ```
 
-2. **Generate the index**:
-   ```bash
-   node scripts/generate-allure-index.js \
-     --branch feature-my-feature \
-     --run-id local-$(date +%s) \
-     --sha $(git rev-parse --short HEAD) \
-     --report-dir ./allure-report \
-     --output-dir ./reports
-   ```
-
-3. **View locally**:
+2. **View locally**:
    ```bash
    # Serve the reports directory
-   npx serve ./reports
+   npx serve ./allure-report
    # or
-   python -m http.server 8000 --directory ./reports
+   python -m http.server 8000 --directory ./allure-report
    ```
+
+### Local Allure Commands
+
+```bash
+# Generate report from results
+npm run allure:generate
+
+# Open report in browser
+npm run allure:open
+
+# Serve report with live updates
+npm run allure:serve
+```
 
 ## CI/CD Integration
 
-The reporting system is fully integrated into the GitHub Actions CI pipeline and automatically publishes reports to GitHub Pages.
+The reporting system uses the official `simple-elf/allure-report-action` in the GitHub Actions CI pipeline:
+
+### Workflow Configuration
+
+```yaml
+deploy-allure:
+  name: Deploy Allure Report to GitHub Pages
+  runs-on: ubuntu-latest
+  needs: e2e-report
+  if: always()
+  permissions:
+    contents: write
+    pages: write
+    id-token: write
+  steps:
+    - name: Checkout GitHub Pages branch
+      uses: actions/checkout@v4
+      with:
+        ref: gh-pages
+        path: gh-pages
+        fetch-depth: 0
+
+    - name: Download combined Allure results
+      uses: actions/download-artifact@v4
+      with:
+        name: allure-results-combined
+        path: allure-results/
+
+    - name: Generate Allure Report with history
+      uses: simple-elf/allure-report-action@v1.4.5
+      with:
+        allure_results: allure-results
+        gh_pages: gh-pages
+        allure_report: allure-report
+        allure_history: allure-history
+
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_branch: gh-pages
+        publish_dir: allure-history
+```
+
+### Key Benefits
+
+- **Official Support**: Uses the official Allure GitHub Action
+- **Automatic History**: Preserves test history across runs
+- **Standardized**: Follows Allure best practices
+- **Reliable**: Well-maintained and widely used action
+- **Zero Configuration**: Works out of the box
 
 ## Troubleshooting
 

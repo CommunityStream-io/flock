@@ -154,17 +154,11 @@ jobs:
           path: combined-allure-results/
           merge-multiple: true
 
-      - name: Install Allure command line
-        run: npm install -g allure-commandline
-
-      - name: Generate combined Allure report
-        run: allure generate combined-allure-results/ --clean -o combined-allure-report/
-
-      - name: Upload combined Allure report
+      - name: Upload combined Allure results
         uses: actions/upload-artifact@v4
         with:
-          name: allure-report-combined
-          path: combined-allure-report/
+          name: allure-results-combined
+          path: combined-allure-results/
           retention-days: 30
 
   deploy-allure:
@@ -173,56 +167,41 @@ jobs:
     needs: e2e-report
     if: always()
     permissions:
-      contents: read
+      contents: write
       pages: write
       id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Checkout code
+      - name: Checkout GitHub Pages branch
         uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: gh-pages
+          fetch-depth: 0
 
-      - name: Download existing reports (if any)
-        run: |
-          # Try to download existing reports from the gh-pages branch
-          git fetch origin gh-pages:gh-pages || true
-          if git show-ref --verify --quiet refs/remotes/origin/gh-pages; then
-            echo "Found existing gh-pages branch, downloading reports..."
-            git checkout gh-pages -- reports/ || echo "No existing reports found"
-          else
-            echo "No existing gh-pages branch found, starting fresh"
-          fi
-
-      - name: Download combined Allure report
+      - name: Download combined Allure results
         uses: actions/download-artifact@v4
         with:
-          name: allure-report-combined
-          path: allure-report/
+          name: allure-results-combined
+          path: allure-results/
 
-      - name: Generate Allure report index
-        run: |
-          # Install Node.js dependencies if needed
-          if [ ! -d "node_modules" ]; then
-            npm install
-          fi
-          
-          # Run the Allure index generator script
-          node scripts/generate-allure-index.js \
-            --report-dir ./allure-report \
-            --output-dir ./reports
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+      - name: Generate Allure Report with history
+        uses: simple-elf/allure-report-action@v1.4.5
         with:
-          path: reports/
+          allure_results: allure-results
+          gh_pages: gh-pages
+          allure_report: allure-report
+          allure_history: allure-history
 
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: allure-history
 
   build:
     name: Add to the flock (Build)
