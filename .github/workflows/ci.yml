@@ -72,8 +72,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        shard: [1, 2, 3]
-        total-shards: [3]
+        shard: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
+        total-shards: [17]
     env:
       PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
       HEADLESS: true
@@ -109,7 +109,7 @@ jobs:
         run: npx ng build --project=shared
 
       - name: Run e2e tests with concurrent app serving
-        run: npx concurrently --kill-others --success first "ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0" "wait-on http://localhost:4200 && cross-env CI=true HEADLESS=true wdio run wdio.conf.ts --shard=${{ matrix.shard }}/${{ matrix.total-shards }}"
+        run: npx concurrently --kill-others --success first "ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0" "wait-on http://localhost:4200 && cross-env CI=true HEADLESS=true wdio run wdio.conf.ts --shard=${{ matrix.shard }}/17"
         env:
           CI: true
           NODE_ENV: production
