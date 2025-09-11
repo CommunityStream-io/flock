@@ -40,10 +40,10 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
     // time. Depending on the number of capabilities, WebdriverIO launches several test
     // sessions. Within your capabilities you can overwrite the spec and exclude options in
     // order to group specific specs to a specific capability.
-    maxInstances: 10,
+    maxInstances: 3, // Reduced from 10 to prevent server overload
     
     capabilities: [{
-        maxInstances: 5,
+        maxInstances: 2, // Reduced from 5 to prevent race conditions
         browserName: 'chrome',
         acceptInsecureCerts: true,
         // Enable Chrome DevTools Protocol for network simulation
