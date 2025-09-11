@@ -40,20 +40,20 @@ export interface TimeoutConfig {
  */
 export function getTimeoutConfig(isCI: boolean = process.env.CI === 'true'): TimeoutConfig {
   if (isCI) {
-    // CI timeouts - optimized for faster failure detection
+    // CI timeouts - drastically reduced for faster failure detection
     return {
-      appLoad: 5000,           // 5s - Application loading
-      splashScreen: 5000,      // 5s - Splash screen appearance
-      navigation: 5000,        // 5s - General navigation
-      quickNavigation: 3000,   // 3s - Quick navigation operations
-      fileProcessing: 3000,    // 3s - File processing operations
-      fileValidation: 5000,    // 5s - File validation
-      fileError: 2000,         // 2s - File error display
-      auth: 5000,              // 5s - Authentication operations
-      authNavigation: 5000,    // 5s - Auth-related navigation
-      uiInteraction: 5000,     // 5s - UI interactions
-      dialogClose: 5000,       // 5s - Dialog closing
-      immediate: 2000,         // 2s - Very quick operations
+      appLoad: 3000,           // 3s - Application loading (reduced from 5s)
+      splashScreen: 3000,      // 3s - Splash screen appearance (reduced from 5s)
+      navigation: 3000,        // 3s - General navigation (reduced from 5s)
+      quickNavigation: 2000,   // 2s - Quick navigation operations (reduced from 3s)
+      fileProcessing: 2000,    // 2s - File processing operations (reduced from 3s)
+      fileValidation: 3000,    // 3s - File validation (reduced from 5s)
+      fileError: 1500,         // 1.5s - File error display (reduced from 2s)
+      auth: 3000,              // 3s - Authentication operations (reduced from 5s)
+      authNavigation: 3000,    // 3s - Auth-related navigation (reduced from 5s)
+      uiInteraction: 3000,     // 3s - UI interactions (reduced from 5s)
+      dialogClose: 3000,       // 3s - Dialog closing (reduced from 5s)
+      immediate: 1500,         // 1.5s - Very quick operations (reduced from 2s)
     };
   } else {
     // Local development timeouts - slightly more generous

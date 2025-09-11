@@ -46,8 +46,8 @@ jobs:
             type=ref,event=branch
             type=ref,event=pr
             type=sha,prefix=sha-
-            type=raw,value=latest,enable={{is_default_branch}}
-            type=raw,value=pr-{{github.event.number}},enable={{github.event_name == 'pull_request'}}
+            type=raw,value=latest,enable=${{ is_default_branch }}
+            type=raw,value=pr-${{ github.event.number }},enable=${{ github.event_name == 'pull_request' }}
 
       - name: Debug metadata
         run: |
