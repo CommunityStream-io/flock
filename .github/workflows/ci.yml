@@ -109,7 +109,7 @@ jobs:
         run: npx ng build --project=shared
 
       - name: Run e2e tests with concurrent app serving
-        run: concurrently --kill-others --success first "ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0" "wait-on http://localhost:4200 && cross-env CI=true HEADLESS=true wdio run wdio.conf.ts --shard=${{ matrix.shard }}/${{ matrix.total-shards }}"
+        run: npx concurrently --kill-others --success first "ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0" "wait-on http://localhost:4200 && cross-env CI=true HEADLESS=true wdio run wdio.conf.ts --shard=${{ matrix.shard }}/${{ matrix.total-shards }}"
         env:
           CI: true
           NODE_ENV: production
