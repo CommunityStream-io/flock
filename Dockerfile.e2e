@@ -1,0 +1,92 @@
+# Multi-stage Dockerfile for E2E Testing
+# This creates a pre-built image with all dependencies and tools installed
+
+# Stage 1: Base image with Node.js and system dependencies
+FROM node:24.5.0-alpine AS base
+
+# Install system dependencies
+RUN apk add --no-cache \
+    chromium \
+    nss \
+    freetype \
+    freetype-dev \
+    harfbuzz \
+    ca-certificates \
+    ttf-freefont \
+    curl \
+    bash \
+    git
+
+# Set Chrome environment variables
+ENV CHROME_BIN=/usr/bin/chromium-browser
+ENV CHROME_PATH=/usr/bin/chromium-browser
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
+
+# Stage 2: Dependencies installation
+FROM base AS dependencies
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files for better layer caching
+COPY package*.json ./
+COPY angular.json ./
+COPY tsconfig*.json ./
+
+# Install global packages
+RUN npm install -g @angular/cli@latest allure-commandline@latest
+
+# Install project dependencies
+RUN npm ci --only=production --no-audit --no-fund
+
+# Stage 3: Build stage
+FROM dependencies AS builder
+
+# Copy source code
+COPY . .
+
+# Build shared library
+RUN npx ng build --project=shared --configuration=production
+
+# Build the main application for testing
+RUN npx ng build --project=flock-mirage --configuration=test
+
+# Stage 4: Final runtime image
+FROM base AS runtime
+
+# Set working directory
+WORKDIR /app
+
+# Copy built artifacts from builder stage
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/angular.json ./
+COPY --from=builder /app/tsconfig*.json ./
+
+# Copy test files
+COPY features ./features
+COPY wdio.conf.ts ./
+COPY test ./test
+
+# Install global packages in runtime
+RUN npm install -g @angular/cli@latest allure-commandline@latest
+
+# Create non-root user for security
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nextjs -u 1001
+
+# Change ownership of the app directory
+RUN chown -R nextjs:nodejs /app
+USER nextjs
+
+# Expose port
+EXPOSE 4200
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:4200 || exit 1
+
+# Default command
+CMD ["ng", "serve", "flock-mirage", "--configuration=test", "--port=4200", "--host=0.0.0.0", "--live-reload=false"]
