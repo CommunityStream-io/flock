@@ -1,6 +1,7 @@
 import Page from './page';
 import StepLayoutPage from './step-layout.page';
 import { browser, $ } from '@wdio/globals';
+import { timeouts, timeoutMessages } from '../support/timeout-config';
 
 class AuthPage extends Page {
     // Form elements
@@ -59,9 +60,9 @@ class AuthPage extends Page {
     }
 
     public async waitForPageLoad() {
-        await this.authForm.waitForDisplayed({ timeout: 10000 });
-        await this.usernameField.waitForDisplayed({ timeout: 5000 });
-        await this.passwordField.waitForDisplayed({ timeout: 5000 });
+        await this.authForm.waitForDisplayed({ timeout: timeouts.uiInteraction });
+        await this.usernameField.waitForDisplayed({ timeout: timeouts.uiInteraction });
+        await this.passwordField.waitForDisplayed({ timeout: timeouts.uiInteraction });
     }
 
     public async enterUsername(username: string) {
@@ -147,12 +148,12 @@ class AuthPage extends Page {
                 const hasError = await this.formError.isDisplayed().catch(() => false);
                 return currentUrl.includes('/step/config') || hasError;
             },
-            { timeout: 15000, timeoutMsg: 'Authentication did not complete' }
+            { timeout: timeouts.auth, timeoutMsg: timeoutMessages.auth(process.env.CI === 'true') }
         );
     }
 
     public async waitForError() {
-        await this.formError.waitForDisplayed({ timeout: 5000 });
+        await this.formError.waitForDisplayed({ timeout: timeouts.uiInteraction });
     }
 
     public async waitForSuccess() {
@@ -161,7 +162,7 @@ class AuthPage extends Page {
                 const currentUrl = await browser.getUrl();
                 return currentUrl.includes('/step/config');
             },
-            { timeout: 10000, timeoutMsg: 'Navigation to config step did not occur' }
+            { timeout: timeouts.navigation, timeoutMsg: timeoutMessages.navigation(process.env.CI === 'true') }
         );
     }
 
