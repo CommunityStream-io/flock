@@ -219,6 +219,15 @@ jobs:
           pattern: allure-results-shard-*
           path: combined-allure-results/
           merge-multiple: true
+        continue-on-error: true
+
+      - name: Create empty Allure results if none exist
+        run: |
+          if [ ! -d "combined-allure-results" ] || [ -z "$(ls -A combined-allure-results 2>/dev/null)" ]; then
+            echo "No Allure results found, creating empty directory"
+            mkdir -p combined-allure-results
+            echo '{"name": "No test results available", "status": "skipped"}' > combined-allure-results/empty-result.json
+          fi
 
       - name: Upload combined Allure results
         uses: actions/upload-artifact@v4
@@ -245,6 +254,37 @@ jobs:
         with:
           name: allure-results-combined
           path: combined-allure-results/
+        continue-on-error: true
+
+      - name: Create fallback if no results
+        run: |
+          if [ ! -d "combined-allure-results" ] || [ -z "$(ls -A combined-allure-results 2>/dev/null)" ]; then
+            echo "No Allure results available, creating fallback page"
+            mkdir -p combined-allure-results
+            cat > combined-allure-results/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html>
+          <head>
+              <title>E2E Test Results - No Data Available</title>
+              <style>
+                  body { font-family: Arial, sans-serif; margin: 40px; }
+                  .container { max-width: 600px; margin: 0 auto; text-align: center; }
+                  .warning { color: #ff6b35; font-size: 24px; margin-bottom: 20px; }
+                  .message { color: #666; font-size: 16px; }
+              </style>
+          </head>
+          <body>
+              <div class="container">
+                  <div class="warning">⚠️ No Test Results Available</div>
+                  <div class="message">
+                      <p>No E2E test results were generated for this run.</p>
+                      <p>This could be due to test failures or configuration issues.</p>
+                  </div>
+              </div>
+          </body>
+          </html>
+          EOF
+          fi
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
