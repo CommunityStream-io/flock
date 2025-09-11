@@ -10,6 +10,9 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
     // on a remote machine).
     runner: 'local',
     
+    // Force sequential execution to prevent race conditions
+    executionMode: 'sequential',
+    
     //
     // =====================
     // TypeScript Configurations
