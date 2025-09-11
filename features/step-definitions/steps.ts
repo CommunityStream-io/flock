@@ -2,6 +2,7 @@
 import { Given, When, Then, After } from '@wdio/cucumber-framework';
 import { pages } from '../pageobjects';
 import { browser, $ } from '@wdio/globals';
+import { timeouts, timeoutMessages } from '../support/timeout-config';
 
 // Import all step definition modules to register them
 import './landing';
@@ -45,8 +46,8 @@ Given('the application is running', async () => {
             return hasContent;
         },
         { 
-            timeout: process.env.CI === 'true' ? 30000 : 15000, // 30s CI, 15s local - reduced for faster failure detection
-            timeoutMsg: process.env.CI === 'true' ? 'Application did not load within 30 seconds' : 'Application did not load within 15 seconds'
+            timeout: timeouts.appLoad,
+            timeoutMsg: timeoutMessages.appLoad(process.env.CI === 'true')
         }
     );
     
@@ -61,8 +62,8 @@ Given('the splash screen message should be {string}', async (expectedMessage: st
         const isSplashVisible = await browser.waitUntil(
             async () => await pages.stepLayout.isSplashScreenVisible(),
             { 
-                timeout: process.env.CI === 'true' ? 20000 : 10000, // 20s CI, 10s local - reduced for faster failure detection
-                timeoutMsg: process.env.CI === 'true' ? 'Splash screen did not appear within 20 seconds' : 'Splash screen did not appear within 10 seconds'
+                timeout: timeouts.splashScreen,
+                timeoutMsg: timeoutMessages.splashScreen(process.env.CI === 'true')
             }
         );
         
@@ -109,8 +110,8 @@ Given('I navigate to the application', async () => {
             return hasContent;
         },
         { 
-            timeout: process.env.CI === 'true' ? 30000 : 15000, // 30s CI, 15s local - reduced for faster failure detection
-            timeoutMsg: process.env.CI === 'true' ? 'Application did not load within 30 seconds' : 'Application did not load within 15 seconds'
+            timeout: timeouts.appLoad,
+            timeoutMsg: timeoutMessages.appLoad(process.env.CI === 'true')
         }
     );
     

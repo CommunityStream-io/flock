@@ -1,6 +1,7 @@
 import { Given, When, Then, After } from '@wdio/cucumber-framework';
 import { pages } from '../pageobjects';
 import { browser } from '@wdio/globals';
+import { timeouts, timeoutMessages } from '../support/timeout-config';
 
 Then('I should see the upload section', async () => {
     await expect(pages.uploadStep.uploadSection).toBeDisplayed();
@@ -38,8 +39,8 @@ When('I select a valid Instagram archive file {string}', async (filename: string
             return hasFiles;
         },
         { 
-            timeout: process.env.CI === 'true' ? 8000 : 5000, // 8s CI, 5s local 
-            timeoutMsg: 'File was not processed within 3 seconds' 
+            timeout: timeouts.fileProcessing,
+            timeoutMsg: timeoutMessages.fileProcessing(process.env.CI === 'true')
         }
     );
 });
@@ -154,8 +155,8 @@ Given('I have selected a valid Instagram archive file {string}', async (filename
             return hasFiles;
         },
         { 
-            timeout: process.env.CI === 'true' ? 12000 : 8000, // 12s CI, 8s local 
-            timeoutMsg: 'File was not processed within 5 seconds' 
+            timeout: timeouts.fileValidation,
+            timeoutMsg: timeoutMessages.fileValidation(process.env.CI === 'true')
         }
     );
 });
@@ -207,8 +208,8 @@ When('I try to proceed without a file', async () => {
             return isStillOnUpload || hasSnackbar;
         },
         { 
-            timeout: process.env.CI === 'true' ? 30000 : 15000, // 30s CI, 15s local 
-            timeoutMsg: 'Navigation guard did not process within 10 seconds' 
+            timeout: timeouts.navigation,
+            timeoutMsg: timeoutMessages.navigation(process.env.CI === 'true')
         }
     );
 });
@@ -245,8 +246,8 @@ Then('I should be able to proceed to the next step', async () => {
             return !isStillOnUpload;
         },
         { 
-            timeout: process.env.CI === 'true' ? 30000 : 15000, // 30s CI, 15s local 
-            timeoutMsg: 'Navigation to next step did not complete within 10 seconds' 
+            timeout: timeouts.navigation,
+            timeoutMsg: timeoutMessages.navigation(process.env.CI === 'true')
         }
     );
 });
@@ -299,8 +300,8 @@ When('I upload a valid Instagram archive file', async () => {
             return isFileServiceValid;
         },
         { 
-            timeout: process.env.CI === 'true' ? 12000 : 8000, // 12s CI, 8s local 
-            timeoutMsg: 'File validation did not complete within 5 seconds' 
+            timeout: timeouts.fileValidation,
+            timeoutMsg: timeoutMessages.fileValidation(process.env.CI === 'true')
         }
     );
 });
@@ -314,8 +315,8 @@ When('I upload a valid Instagram archive', async () => {
             return isFileServiceValid;
         },
         { 
-            timeout: process.env.CI === 'true' ? 12000 : 8000, // 12s CI, 8s local 
-            timeoutMsg: 'File validation did not complete within 5 seconds' 
+            timeout: timeouts.fileValidation,
+            timeoutMsg: timeoutMessages.fileValidation(process.env.CI === 'true')
         }
     );
 });
@@ -339,8 +340,8 @@ When('I select a file but validation fails', async () => {
             return hasErrors;
         },
         { 
-            timeout: process.env.CI === 'true' ? 8000 : 5000, // 8s CI, 5s local 
-            timeoutMsg: 'File validation error did not appear within 3 seconds' 
+            timeout: timeouts.fileError,
+            timeoutMsg: timeoutMessages.fileError(process.env.CI === 'true')
         }
     );
 });

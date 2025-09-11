@@ -1,6 +1,7 @@
 import { Given, When, Then, After } from '@wdio/cucumber-framework';
 import { pages } from '../pageobjects';
 import { browser, $ } from '@wdio/globals';
+import { timeouts, timeoutMessages } from '../support/timeout-config';
 
 Given('I am on the auth step page', async () => {
     await pages.auth.open();
@@ -23,8 +24,8 @@ Given('I have navigated to the auth step', async () => {
             return isOnAuthStep && isAuthFormVisible;
         },
         { 
-            timeout: process.env.CI === 'true' ? 30000 : 15000, // 30s CI, 15s local 
-            timeoutMsg: 'Navigation to auth step did not complete within 10 seconds' 
+            timeout: timeouts.navigation,
+            timeoutMsg: timeoutMessages.navigation(process.env.CI === 'true')
         }
     );
 });
@@ -39,8 +40,8 @@ When('I navigate back to the upload step', async () => {
             return isOnUploadStep && isUploadSectionVisible;
         },
         { 
-            timeout: process.env.CI === 'true' ? 30000 : 15000, // 30s CI, 15s local 
-            timeoutMsg: 'Navigation to upload step did not complete within 10 seconds' 
+            timeout: process.env.CI === 'true' ? 5000 : 3000, // 5s CI, 3s local - drastically reduced 
+            timeoutMsg: 'Navigation to upload step did not complete within 5 seconds' 
         }
     );
 });
@@ -238,7 +239,7 @@ Then('the authentication script should run in the background', async () => {
             const currentUrl = await browser.getUrl();
             return currentUrl.includes('/step/config');
         },
-        { timeout: process.env.CI === 'true' ? 30000 : 15000, timeoutMsg: process.env.CI === 'true' ? 'Authentication and navigation to config step did not complete within 30 seconds' : 'Authentication and navigation to config step did not complete within 15 seconds' }
+        { timeout: timeouts.authNavigation, timeoutMsg: timeoutMessages.authNavigation(process.env.CI === 'true') }
     );
 });
 
@@ -248,7 +249,7 @@ Then('I should be navigated to the config step', async () => {
             const currentUrl = await browser.getUrl();
             return currentUrl.includes('/step/config');
         },
-        { timeout: process.env.CI === 'true' ? 30000 : 15000, timeoutMsg: process.env.CI === 'true' ? 'Navigation to config step did not occur within 30 seconds' : 'Navigation to config step did not occur within 15 seconds' }
+        { timeout: timeouts.navigation, timeoutMsg: timeoutMessages.navigation(process.env.CI === 'true') }
     );
 });
 
@@ -485,8 +486,8 @@ When('I close the help dialog', async () => {
             return !isVisible;
         },
         {
-            timeout: process.env.CI === 'true' ? 15000 : 8000, // 15s CI, 8s local
-            timeoutMsg: 'Help dialog did not close within 5 seconds'
+            timeout: timeouts.dialogClose,
+            timeoutMsg: timeoutMessages.dialogClose(process.env.CI === 'true')
         }
     );
 });
@@ -500,7 +501,7 @@ When('I close the help dialog with Escape key', async () => {
             return !isVisible;
         },
         {
-            timeout: process.env.CI === 'true' ? 15000 : 8000, // 15s CI, 8s local
+            timeout: process.env.CI === 'true' ? 5000 : 3000, // 5s CI, 3s local - drastically reduced
             timeoutMsg: 'Help dialog did not close with Escape key within 5 seconds'
         }
     );
