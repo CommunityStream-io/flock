@@ -71,6 +71,8 @@ jobs:
   e2e-prepare:
     name: Prepare E2E Test Environment
     runs-on: ubuntu-latest
+    env:
+      PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
     outputs:
       cache-key: ${{ steps.cache-key.outputs.key }}
     steps:
