@@ -124,8 +124,8 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
     baseUrl: 'http://localhost:4200',
 
         // Default timeout for all waitFor* commands.
-        // Drastically reduced for faster failure detection
-        waitforTimeout: process.env.CI === 'true' ? 3000 : 2000, // 3s CI, 2s local - even more aggressive
+        // Extremely aggressive for maximum speed
+        waitforTimeout: process.env.CI === 'true' ? 2000 : 1500, // 2s CI, 1.5s local - extremely aggressive
 
     // Default timeout in milliseconds for request
     // if browser driver or grid doesn't send response
@@ -165,7 +165,7 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
         source: true,
         strict: false,  // Allow skipped steps without failing the entire scenario
         tags: process.env.TEST_TAGS || "",
-        timeout: 3000, // 3s CI, 3s local - even more aggressive for faster failure detection
+        timeout: 2000, // 2s CI, 2s local - extremely aggressive for maximum speed
         ignoreUndefinedDefinitions: true,
         format: ['pretty'],  // Add pretty format for better readability
         publishQuiet: process.env.DEBUG_TESTS !== 'true',   // Reduce noise from cucumber reporting unless debugging

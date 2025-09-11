@@ -40,36 +40,36 @@ export interface TimeoutConfig {
  */
 export function getTimeoutConfig(isCI: boolean = process.env.CI === 'true'): TimeoutConfig {
   if (isCI) {
-    // CI timeouts - drastically reduced for faster failure detection
+    // CI timeouts - extremely aggressive for maximum speed
     return {
-      appLoad: 3000,           // 3s - Application loading (reduced from 5s)
-      splashScreen: 3000,      // 3s - Splash screen appearance (reduced from 5s)
-      navigation: 3000,        // 3s - General navigation (reduced from 5s)
-      quickNavigation: 2000,   // 2s - Quick navigation operations (reduced from 3s)
-      fileProcessing: 2000,    // 2s - File processing operations (reduced from 3s)
-      fileValidation: 3000,    // 3s - File validation (reduced from 5s)
-      fileError: 1500,         // 1.5s - File error display (reduced from 2s)
-      auth: 3000,              // 3s - Authentication operations (reduced from 5s)
-      authNavigation: 3000,    // 3s - Auth-related navigation (reduced from 5s)
-      uiInteraction: 3000,     // 3s - UI interactions (reduced from 5s)
-      dialogClose: 3000,       // 3s - Dialog closing (reduced from 5s)
-      immediate: 1500,         // 1.5s - Very quick operations (reduced from 2s)
+      appLoad: 2000,           // 2s - Application loading (reduced from 3s)
+      splashScreen: 2000,      // 2s - Splash screen appearance (reduced from 3s)
+      navigation: 2000,        // 2s - General navigation (reduced from 3s)
+      quickNavigation: 1000,   // 1s - Quick navigation operations (reduced from 2s)
+      fileProcessing: 1000,    // 1s - File processing operations (reduced from 2s)
+      fileValidation: 2000,    // 2s - File validation (reduced from 3s)
+      fileError: 1000,         // 1s - File error display (reduced from 1.5s)
+      auth: 2000,              // 2s - Authentication operations (reduced from 3s)
+      authNavigation: 2000,    // 2s - Auth-related navigation (reduced from 3s)
+      uiInteraction: 2000,     // 2s - UI interactions (reduced from 3s)
+      dialogClose: 2000,       // 2s - Dialog closing (reduced from 3s)
+      immediate: 1000,         // 1s - Very quick operations (reduced from 1.5s)
     };
   } else {
-    // Local development timeouts - slightly more generous
+    // Local development timeouts - also aggressive for fast feedback
     return {
-      appLoad: 3000,           // 3s - Application loading
-      splashScreen: 3000,      // 3s - Splash screen appearance
-      navigation: 3000,        // 3s - General navigation
-      quickNavigation: 2000,   // 2s - Quick navigation operations
-      fileProcessing: 2000,    // 2s - File processing operations
-      fileValidation: 3000,    // 3s - File validation
-      fileError: 1500,         // 1.5s - File error display
-      auth: 3000,              // 3s - Authentication operations
-      authNavigation: 3000,    // 3s - Auth-related navigation
-      uiInteraction: 3000,     // 3s - UI interactions
-      dialogClose: 3000,       // 3s - Dialog closing
-      immediate: 1500,         // 1.5s - Very quick operations
+      appLoad: 2000,           // 2s - Application loading (reduced from 3s)
+      splashScreen: 2000,      // 2s - Splash screen appearance (reduced from 3s)
+      navigation: 2000,        // 2s - General navigation (reduced from 3s)
+      quickNavigation: 1000,   // 1s - Quick navigation operations (reduced from 2s)
+      fileProcessing: 1000,    // 1s - File processing operations (reduced from 2s)
+      fileValidation: 2000,    // 2s - File validation (reduced from 3s)
+      fileError: 1000,         // 1s - File error display (reduced from 1.5s)
+      auth: 2000,              // 2s - Authentication operations (reduced from 3s)
+      authNavigation: 2000,    // 2s - Auth-related navigation (reduced from 3s)
+      uiInteraction: 2000,     // 2s - UI interactions (reduced from 3s)
+      dialogClose: 2000,       // 2s - Dialog closing (reduced from 3s)
+      immediate: 1000,         // 1s - Very quick operations (reduced from 1.5s)
     };
   }
 }
