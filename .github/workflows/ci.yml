@@ -169,11 +169,8 @@ jobs:
         run: npx ng build --project=shared
         if: steps.restore-cache.outputs.cache-hit != 'true'
 
-      - name: Build Angular application for E2E tests
-        run: npx ng build flock-mirage --configuration=test --output-path=dist/e2e-app
-
-      - name: Run e2e tests with static file serving
-        run: npx concurrently --kill-others --success first "npx http-server dist/e2e-app -p 4200 -a 0.0.0.0 --cors" "wait-on http://localhost:4200 --timeout=10000 && cross-env CI=true HEADLESS=true wdio run wdio.conf.ts --shard=${{ matrix.shard }}/17"
+      - name: Run e2e tests with Angular dev server
+        run: npx concurrently --kill-others --success first "npx ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0" "wait-on http://localhost:4200 --timeout=60000 && cross-env CI=true HEADLESS=true wdio run wdio.conf.ts --shard=${{ matrix.shard }}/17"
         env:
           CI: true
           NODE_ENV: production
