@@ -51,3 +51,4 @@ allure-report/
 *.log
 *.pid
 *.timing
+*.exit

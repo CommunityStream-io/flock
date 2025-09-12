@@ -87,7 +87,8 @@ run_shard() {
     
     # Run the shard with increased timeouts and log to file
     # Update the baseUrl to use the shard-specific port
-    npx cross-env CI=true HEADLESS=true BASE_URL=http://localhost:${port} wdio run wdio.conf.ts --shard=${shard_num}/${total_shards} > "${log_file}" 2>&1
+    # Redirect browser logs to separate file to reduce clutter
+    npx cross-env CI=true HEADLESS=true BASE_URL=http://localhost:${port} wdio run wdio.conf.ts --shard=${shard_num}/${total_shards} > "${log_file}" 2> "logs/shards/shard-${shard_num}.browser.log"
     
     local exit_code=$?
     local end_time=$(date +%s)
@@ -118,9 +119,9 @@ generate_summary() {
             # Try to get duration from timing file
             if [ -f "logs/shards/shard-${i}.timing" ]; then
                 local duration_line=$(grep "total duration:" "logs/shards/shard-${i}.timing" | cut -d' ' -f4)
-                if [ -n "$duration_line" ]; then
+                if [ -n "$duration_line" ] && [ "$duration_line" -eq "$duration_line" ] 2>/dev/null; then
                     duration="${duration_line}s"
-                    total_duration=$((total_duration + ${duration_line}))
+                    total_duration=$((total_duration + duration_line))
                 fi
             fi
             
@@ -144,7 +145,7 @@ generate_summary() {
     echo ""
     echo "=== LOG DIRECTORY STRUCTURE ==="
     echo "📁 logs/servers/ - Angular dev server logs"
-    echo "📁 logs/shards/  - Test execution logs and timing"
+    echo "📁 logs/shards/  - Test execution logs, timing, and browser logs"
     echo "📁 logs/exits/   - Exit codes for each shard"
 }
 
@@ -167,20 +168,28 @@ echo "Started ${#pids[@]} shards with PIDs: ${pids[*]}"
 
 # Wait for any shard to complete and check for failures
 failed_shard=""
-while [ ${#pids[@]} -gt 0 ]; do
+timeout_counter=0
+max_timeout=300  # 5 minutes max wait time
+
+while [ ${#pids[@]} -gt 0 ] && [ $timeout_counter -lt $max_timeout ]; do
     for i in "${!pids[@]}"; do
         if ! kill -0 "${pids[$i]}" 2>/dev/null; then
             # Process has finished, check exit code
-            wait "${pids[$i]}"
+            wait "${pids[$i]}" 2>/dev/null
             exit_code=$?
             shard_num=$((i + 1))
             
             if [ "$exit_code" -ne 0 ]; then
                 echo "❌ Shard ${shard_num} failed with exit code ${exit_code} - stopping execution (fail-fast)"
                 failed_shard=$shard_num
-                # Kill all remaining processes
-                for pid in "${pids[@]}"; do
-                    kill "$pid" 2>/dev/null || true
+                # Kill all remaining processes and record their exit codes
+                for j in "${!pids[@]}"; do
+                    if [ $j -ne $i ]; then
+                        remaining_shard=$((j + 1))
+                        echo "Killing shard ${remaining_shard} (PID: ${pids[$j]})..."
+                        kill "${pids[$j]}" 2>/dev/null || true
+                        echo "130" > "logs/exits/shard-${remaining_shard}.exit"  # SIGTERM exit code
+                    fi
                 done
                 break 2
             else
@@ -192,9 +201,22 @@ while [ ${#pids[@]} -gt 0 ]; do
         fi
     done
     
-    # Small delay to prevent busy waiting
-    sleep 0.1
+    # Increment timeout counter
+    ((timeout_counter++))
+    sleep 1
 done
+
+# Handle timeout
+if [ $timeout_counter -ge $max_timeout ]; then
+    echo "⚠️  Timeout reached (${max_timeout}s) - killing remaining processes"
+    for i in "${!pids[@]}"; do
+        shard_num=$((i + 1))
+        echo "Killing timed out shard ${shard_num} (PID: ${pids[$i]})..."
+        kill "${pids[$i]}" 2>/dev/null || true
+        echo "124" > "logs/exits/shard-${shard_num}.exit"  # Timeout exit code
+    done
+    failed_shard="timeout"
+fi
 
 # Stop all servers
 stop_all_servers $TOTAL_SHARDS
@@ -211,6 +233,6 @@ fi
 echo "=== SHARDED TEST EXECUTION COMPLETE ==="
 echo "Check organized logs in logs/ directory for detailed results:"
 echo "  📁 logs/servers/ - Angular dev server logs for each shard"
-echo "  📁 logs/shards/  - Test execution logs and timing metrics"
+echo "  📁 logs/shards/  - Test execution logs, timing metrics, and browser logs"
 echo "  📁 logs/exits/   - Exit codes for each shard"
 echo "Each shard ran on its own port: 4201-4219"
