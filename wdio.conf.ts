@@ -56,7 +56,6 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
             args: [
                 // Network simulation and CDP support
                 '--enable-chrome-browser-cloud-management',
-                '--enable-network-service-logging',
                 '--disable-web-security',              // Allow network interception
                 '--disable-features=VizDisplayCompositor',
                 // Standard Chrome options
@@ -93,9 +92,19 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
                 '--force-color-profile=srgb',
                 '--memory-pressure-off',
                 '--max_old_space_size=4096',
+                // Log suppression options
+                '--log-level=3',                       // Only show fatal errors
+                '--silent',                            // Suppress most output
+                '--disable-gpu-logging',               // Disable GPU logging
                 // Conditionally add headless mode
                 ...(process.env.HEADLESS === 'true' ? ['--headless=new'] : [])
-            ]
+            ],
+            // Redirect Chrome logs to separate files
+            prefs: {
+                'logging': {
+                    'level': 'OFF'
+                }
+            }
         }
     }] as any,
 

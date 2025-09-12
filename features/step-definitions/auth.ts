@@ -220,10 +220,27 @@ Then('the "Next" button should be enabled', async () => {
 });
 
 Given('I have entered valid credentials', async () => {
+    console.log('🔧 BDD: Entering valid credentials with proper timeout handling');
+    
     await pages.auth.open();
     await pages.auth.enterCredentials('test.bksy.social', 'testpassword123');
-    // Wait for form validation to complete
-    await browser.pause(500);
+    
+    // Wait for form validation to complete with proper timeout
+    await browser.waitUntil(
+        async () => {
+            // Check if form is valid and ready
+            const isFormValid = await pages.auth.isFormValid();
+            const hasUsername = await pages.auth.usernameField.getValue();
+            const hasPassword = await pages.auth.passwordField.getValue();
+            return isFormValid && hasUsername && hasPassword;
+        },
+        { 
+            timeout: timeouts.credentialEntry,
+            timeoutMsg: timeoutMessages.credentialEntry(process.env.CI === 'true')
+        }
+    );
+    
+    console.log('✅ BDD: Valid credentials entered and form validated successfully');
 });
 
 When('I click the "Next" button', async () => {

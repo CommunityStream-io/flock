@@ -18,7 +18,7 @@ start_shard_server() {
     local log_file="logs/servers/server-${shard_num}.log"
     
     echo "Starting Angular dev server for shard ${shard_num} on port ${port}..."
-    npx ng serve flock-mirage --configuration=test --port=${port} --host=0.0.0.0 > "${log_file}" 2> "logs/servers/server-${shard_num}.browser.log" &
+    npx ng serve flock-mirage --configuration=test --port=${port} --host=0.0.0.0 > "${log_file}" 2>&1 &
     local server_pid=$!
     echo "Server for shard ${shard_num} started with PID: ${server_pid}"
     echo "${server_pid}" > "logs/servers/server-${shard_num}.pid"
@@ -154,8 +154,8 @@ TOTAL_SHARDS=19  # Use 19 shards - one per feature file
 
 echo "Running ${TOTAL_SHARDS} shards in parallel, each with its own server..."
 
-# Run all shards in parallel (each shard fails fast with strict timeouts)
-echo "Starting all ${TOTAL_SHARDS} shards in parallel..."
+# Run all shards in parallel with fail-fast behavior
+echo "Starting all ${TOTAL_SHARDS} shards in parallel (fail-fast)..."
 
 # Start all shards in background
 pids=()
@@ -166,10 +166,10 @@ done
 
 echo "Started ${#pids[@]} shards with PIDs: ${pids[*]}"
 
-# Wait for all shards to complete (no fail-fast, let all complete)
-echo "Waiting for all shards to complete..."
+# Wait for any shard to complete and check for failures
+failed_shard=""
 timeout_counter=0
-max_timeout=600  # 10 minutes max wait time
+max_timeout=300  # 5 minutes max wait time
 
 while [ ${#pids[@]} -gt 0 ] && [ $timeout_counter -lt $max_timeout ]; do
     for i in "${!pids[@]}"; do
@@ -179,10 +179,21 @@ while [ ${#pids[@]} -gt 0 ] && [ $timeout_counter -lt $max_timeout ]; do
             exit_code=$?
             shard_num=$((i + 1))
             
-            if [ "$exit_code" -eq 0 ]; then
-                echo "✅ Shard ${shard_num} passed"
+            if [ "$exit_code" -ne 0 ]; then
+                echo "❌ Shard ${shard_num} failed with exit code ${exit_code} - stopping execution (fail-fast)"
+                failed_shard=$shard_num
+                # Kill all remaining processes and record their exit codes
+                for j in "${!pids[@]}"; do
+                    if [ $j -ne $i ]; then
+                        remaining_shard=$((j + 1))
+                        echo "Killing shard ${remaining_shard} (PID: ${pids[$j]})..."
+                        kill "${pids[$j]}" 2>/dev/null || true
+                        echo "130" > "logs/exits/shard-${remaining_shard}.exit"  # SIGTERM exit code
+                    fi
+                done
+                break 2
             else
-                echo "❌ Shard ${shard_num} failed with exit code ${exit_code}"
+                echo "✅ Shard ${shard_num} passed"
             fi
             
             # Remove completed process from array
@@ -204,13 +215,20 @@ if [ $timeout_counter -ge $max_timeout ]; then
         kill "${pids[$i]}" 2>/dev/null || true
         echo "124" > "logs/exits/shard-${shard_num}.exit"  # Timeout exit code
     done
+    failed_shard="timeout"
 fi
 
 # Stop all servers
 stop_all_servers $TOTAL_SHARDS
 
-# Generate summary
+# Generate summary (always show, even on failure)
 generate_summary $TOTAL_SHARDS
+
+# If any shard failed, exit with error code
+if [ -n "$failed_shard" ]; then
+    echo "❌ Execution stopped due to shard ${failed_shard} failure (fail-fast)"
+    exit 1
+fi
 
 echo "=== SHARDED TEST EXECUTION COMPLETE ==="
 echo "Check organized logs in logs/ directory for detailed results:"

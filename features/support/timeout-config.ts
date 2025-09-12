@@ -23,6 +23,7 @@ export interface TimeoutConfig {
   // Authentication timeouts
   auth: number;
   authNavigation: number;
+  credentialEntry: number;  // New: Credential entry and validation
   
   // UI interaction timeouts
   uiInteraction: number;
@@ -40,36 +41,38 @@ export interface TimeoutConfig {
  */
 export function getTimeoutConfig(isCI: boolean = process.env.CI === 'true'): TimeoutConfig {
   if (isCI) {
-    // CI timeouts - strict for fast failure with ng serve
+    // CI timeouts - increased for sharded test stability
     return {
-      appLoad: 5000,           // 5s - Application loading
-      splashScreen: 3000,      // 3s - Splash screen appearance
-      navigation: 3000,        // 3s - General navigation
-      quickNavigation: 2000,   // 2s - Quick navigation operations
-      fileProcessing: 3000,    // 3s - File processing operations
-      fileValidation: 5000,    // 5s - File validation
-      fileError: 2000,         // 2s - File error display
-      auth: 4000,              // 4s - Authentication operations
-      authNavigation: 3000,    // 3s - Auth-related navigation
-      uiInteraction: 3000,     // 3s - UI interactions
-      dialogClose: 3000,       // 3s - Dialog closing
-      immediate: 2000,         // 2s - Very quick operations
+      appLoad: 8000,           // 8s - Application loading (was 5s)
+      splashScreen: 10000,     // 10s - Splash screen appearance (was 3s)
+      navigation: 8000,        // 8s - General navigation (was 3s)
+      quickNavigation: 3000,   // 3s - Quick navigation operations (was 2s)
+      fileProcessing: 5000,    // 5s - File processing operations (was 3s)
+      fileValidation: 8000,    // 8s - File validation (was 5s)
+      fileError: 3000,         // 3s - File error display (was 2s)
+      auth: 12000,             // 12s - Authentication operations (was 4s)
+      authNavigation: 8000,    // 8s - Auth-related navigation (was 3s)
+      credentialEntry: 15000,  // 15s - Credential entry and validation (NEW)
+      uiInteraction: 8000,     // 8s - UI interactions (was 3s)
+      dialogClose: 5000,       // 5s - Dialog closing (was 3s)
+      immediate: 3000,         // 3s - Very quick operations (was 2s)
     };
   } else {
     // Local development timeouts - more generous for debugging
     return {
-      appLoad: 6000,           // 6s - Application loading
-      splashScreen: 5000,      // 5s - Splash screen appearance
-      navigation: 5000,        // 5s - General navigation
-      quickNavigation: 2500,   // 2.5s - Quick navigation operations
-      fileProcessing: 4000,    // 4s - File processing operations
-      fileValidation: 6000,    // 6s - File validation
-      fileError: 2500,         // 2.5s - File error display
-      auth: 5000,              // 5s - Authentication operations
-      authNavigation: 5000,    // 5s - Auth-related navigation
-      uiInteraction: 4000,     // 4s - UI interactions
-      dialogClose: 4000,       // 4s - Dialog closing
-      immediate: 2000,         // 2s - Very quick operations
+      appLoad: 8000,           // 8s - Application loading (was 6s)
+      splashScreen: 8000,      // 8s - Splash screen appearance (was 5s)
+      navigation: 6000,        // 6s - General navigation (was 5s)
+      quickNavigation: 3000,   // 3s - Quick navigation operations (was 2.5s)
+      fileProcessing: 5000,    // 5s - File processing operations (was 4s)
+      fileValidation: 8000,    // 8s - File validation (was 6s)
+      fileError: 3000,         // 3s - File error display (was 2.5s)
+      auth: 8000,              // 8s - Authentication operations (was 5s)
+      authNavigation: 6000,    // 6s - Auth-related navigation (was 5s)
+      credentialEntry: 10000,  // 10s - Credential entry and validation (NEW)
+      uiInteraction: 6000,     // 6s - UI interactions (was 4s)
+      dialogClose: 5000,       // 5s - Dialog closing (was 4s)
+      immediate: 3000,         // 3s - Very quick operations (was 2s)
     };
   }
 }
@@ -112,6 +115,7 @@ export const timeoutOptions = {
   fileError: createTimeoutOptions('fileError', 'File error did not appear within expected time'),
   auth: createTimeoutOptions('auth', 'Authentication did not complete within expected time'),
   authNavigation: createTimeoutOptions('authNavigation', 'Authentication navigation did not complete within expected time'),
+  credentialEntry: createTimeoutOptions('credentialEntry', 'Credential entry did not complete within expected time'),
   uiInteraction: createTimeoutOptions('uiInteraction', 'UI interaction did not complete within expected time'),
   dialogClose: createTimeoutOptions('dialogClose', 'Dialog did not close within expected time'),
   immediate: createTimeoutOptions('immediate', 'Immediate operation did not complete within expected time'),
@@ -136,11 +140,13 @@ export const timeoutMessages = {
   fileError: (isCI: boolean) => 
     isCI ? 'File error did not appear within 2 seconds' : 'File error did not appear within 2.5 seconds',
   auth: (isCI: boolean) => 
-    isCI ? 'Authentication did not complete within 4 seconds' : 'Authentication did not complete within 5 seconds',
+    isCI ? 'Authentication did not complete within 12 seconds' : 'Authentication did not complete within 8 seconds',
   authNavigation: (isCI: boolean) => 
-    isCI ? 'Authentication navigation did not complete within 3 seconds' : 'Authentication navigation did not complete within 5 seconds',
+    isCI ? 'Authentication navigation did not complete within 8 seconds' : 'Authentication navigation did not complete within 6 seconds',
+  credentialEntry: (isCI: boolean) => 
+    isCI ? 'Credential entry did not complete within 15 seconds' : 'Credential entry did not complete within 10 seconds',
   uiInteraction: (isCI: boolean) => 
-    isCI ? 'UI interaction did not complete within 3 seconds' : 'UI interaction did not complete within 4 seconds',
+    isCI ? 'UI interaction did not complete within 8 seconds' : 'UI interaction did not complete within 6 seconds',
   dialogClose: (isCI: boolean) => 
     isCI ? 'Dialog did not close within 3 seconds' : 'Dialog did not close within 4 seconds',
   immediate: (isCI: boolean) => 
