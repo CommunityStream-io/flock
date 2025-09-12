@@ -40,20 +40,20 @@ export interface TimeoutConfig {
  */
 export function getTimeoutConfig(isCI: boolean = process.env.CI === 'true'): TimeoutConfig {
   if (isCI) {
-    // CI timeouts - increased for static file serving reliability
+    // CI timeouts - strict for fast failure with ng serve
     return {
-      appLoad: 3000,           // 3s - Application loading (reduced from 5s)
-      splashScreen: 3000,      // 3s - Splash screen appearance (reduced from 5s)
-      navigation: 3000,        // 3s - General navigation (reduced from 5s)
-      quickNavigation: 2000,   // 2s - Quick navigation operations (reduced from 3s)
-      fileProcessing: 2000,    // 2s - File processing operations (reduced from 3s)
-      fileValidation: 3000,    // 3s - File validation (reduced from 5s)
-      fileError: 1500,         // 1.5s - File error display (reduced from 2s)
-      auth: 3000,              // 3s - Authentication operations (reduced from 5s)
-      authNavigation: 3000,    // 3s - Auth-related navigation (reduced from 5s)
-      uiInteraction: 3000,     // 3s - UI interactions (reduced from 5s)
-      dialogClose: 3000,       // 3s - Dialog closing (reduced from 5s)
-      immediate: 1500,         // 1.5s - Very quick operations (reduced from 2s)
+      appLoad: 5000,           // 5s - Application loading
+      splashScreen: 3000,      // 3s - Splash screen appearance
+      navigation: 3000,        // 3s - General navigation
+      quickNavigation: 2000,   // 2s - Quick navigation operations
+      fileProcessing: 3000,    // 3s - File processing operations
+      fileValidation: 5000,    // 5s - File validation
+      fileError: 2000,         // 2s - File error display
+      auth: 4000,              // 4s - Authentication operations
+      authNavigation: 3000,    // 3s - Auth-related navigation
+      uiInteraction: 3000,     // 3s - UI interactions
+      dialogClose: 3000,       // 3s - Dialog closing
+      immediate: 2000,         // 2s - Very quick operations
     };
   } else {
     // Local development timeouts - more generous for debugging
@@ -122,27 +122,27 @@ export const timeoutOptions = {
  */
 export const timeoutMessages = {
   appLoad: (isCI: boolean) => 
-    isCI ? 'Application did not load within 5 seconds' : 'Application did not load within 3 seconds',
+    isCI ? 'Application did not load within 5 seconds' : 'Application did not load within 6 seconds',
   splashScreen: (isCI: boolean) => 
-    isCI ? 'Splash screen did not appear within 5 seconds' : 'Splash screen did not appear within 3 seconds',
+    isCI ? 'Splash screen did not appear within 3 seconds' : 'Splash screen did not appear within 5 seconds',
   navigation: (isCI: boolean) => 
-    isCI ? 'Navigation did not complete within 5 seconds' : 'Navigation did not complete within 3 seconds',
+    isCI ? 'Navigation did not complete within 3 seconds' : 'Navigation did not complete within 5 seconds',
   quickNavigation: (isCI: boolean) => 
-    isCI ? 'Quick navigation did not complete within 3 seconds' : 'Quick navigation did not complete within 2 seconds',
+    isCI ? 'Quick navigation did not complete within 2 seconds' : 'Quick navigation did not complete within 2.5 seconds',
   fileProcessing: (isCI: boolean) => 
-    isCI ? 'File processing did not complete within 3 seconds' : 'File processing did not complete within 2 seconds',
+    isCI ? 'File processing did not complete within 3 seconds' : 'File processing did not complete within 4 seconds',
   fileValidation: (isCI: boolean) => 
-    isCI ? 'File validation did not complete within 5 seconds' : 'File validation did not complete within 3 seconds',
+    isCI ? 'File validation did not complete within 5 seconds' : 'File validation did not complete within 6 seconds',
   fileError: (isCI: boolean) => 
-    isCI ? 'File error did not appear within 2 seconds' : 'File error did not appear within 1.5 seconds',
+    isCI ? 'File error did not appear within 2 seconds' : 'File error did not appear within 2.5 seconds',
   auth: (isCI: boolean) => 
-    isCI ? 'Authentication did not complete within 5 seconds' : 'Authentication did not complete within 3 seconds',
+    isCI ? 'Authentication did not complete within 4 seconds' : 'Authentication did not complete within 5 seconds',
   authNavigation: (isCI: boolean) => 
-    isCI ? 'Authentication navigation did not complete within 5 seconds' : 'Authentication navigation did not complete within 3 seconds',
+    isCI ? 'Authentication navigation did not complete within 3 seconds' : 'Authentication navigation did not complete within 5 seconds',
   uiInteraction: (isCI: boolean) => 
-    isCI ? 'UI interaction did not complete within 5 seconds' : 'UI interaction did not complete within 3 seconds',
+    isCI ? 'UI interaction did not complete within 3 seconds' : 'UI interaction did not complete within 4 seconds',
   dialogClose: (isCI: boolean) => 
-    isCI ? 'Dialog did not close within 5 seconds' : 'Dialog did not close within 3 seconds',
+    isCI ? 'Dialog did not close within 3 seconds' : 'Dialog did not close within 4 seconds',
   immediate: (isCI: boolean) => 
-    isCI ? 'Immediate operation did not complete within 2 seconds' : 'Immediate operation did not complete within 1.5 seconds',
+    isCI ? 'Immediate operation did not complete within 2 seconds' : 'Immediate operation did not complete within 2 seconds',
 };
