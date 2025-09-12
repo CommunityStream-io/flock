@@ -125,7 +125,7 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
 
     // Set a base URL in order to shorten url command calls. If your `url` parameter starts
     // with `/`, the base url gets prepended, not including the path portion of your baseUrl.
-    baseUrl: 'http://localhost:4200',
+    baseUrl: process.env.BASE_URL || 'http://localhost:4200',
 
         // Default timeout for all waitFor* commands.
         // Environment-driven timeout configuration

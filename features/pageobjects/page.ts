@@ -8,7 +8,7 @@ export default class Page {
     * @param path path of the sub page (e.g. /path/to/page.html)
     */
     public open (path: string) {
-        // Use your actual Flock application running at localhost:4200
-        return browser.url(`http://localhost:4200/${path}`);
+        // Use the baseUrl from WebdriverIO configuration
+        return browser.url(`/${path}`);
     }
 }
