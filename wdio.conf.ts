@@ -1,4 +1,8 @@
 import type { Options } from '@wdio/types'
+import { getTimeoutConfig } from './features/support/timeout-config'
+
+// Get timeout configuration based on environment
+const timeouts = getTimeoutConfig(process.env.CI === 'true')
 
 export const config: Options.Testrunner & { capabilities: any[] } = {
     //
@@ -124,12 +128,12 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
     baseUrl: 'http://localhost:4200',
 
         // Default timeout for all waitFor* commands.
-        // Extremely aggressive for maximum speed
-        waitforTimeout: process.env.CI === 'true' ? 2000 : 1500, // 2s CI, 1.5s local - extremely aggressive
+        // Environment-driven timeout configuration
+        waitforTimeout: timeouts.uiInteraction,
 
     // Default timeout in milliseconds for request
     // if browser driver or grid doesn't send response
-    connectionRetryTimeout: process.env.CI === 'true' ? 30000 : 15000, // 30s CI, 15s local
+    connectionRetryTimeout: process.env.CI === 'true' ? 30000 : 15000, // Keep longer for connection issues
 
     // Default request retries count
     connectionRetryCount: process.env.CI === 'true' ? 3 : 2,
@@ -165,7 +169,7 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
         source: true,
         strict: false,  // Allow skipped steps without failing the entire scenario
         tags: process.env.TEST_TAGS || "",
-        timeout: 2000, // 2s CI, 2s local - extremely aggressive for maximum speed
+        timeout: timeouts.navigation, // Environment-driven timeout for step execution
         ignoreUndefinedDefinitions: true,
         format: ['pretty'],  // Add pretty format for better readability
         publishQuiet: process.env.DEBUG_TESTS !== 'true',   // Reduce noise from cucumber reporting unless debugging

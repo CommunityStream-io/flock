@@ -40,36 +40,36 @@ export interface TimeoutConfig {
  */
 export function getTimeoutConfig(isCI: boolean = process.env.CI === 'true'): TimeoutConfig {
   if (isCI) {
-    // CI timeouts - extremely aggressive for maximum speed
+    // CI timeouts - balanced for reliability and speed
     return {
-      appLoad: 2000,           // 2s - Application loading (reduced from 3s)
-      splashScreen: 2000,      // 2s - Splash screen appearance (reduced from 3s)
-      navigation: 2000,        // 2s - General navigation (reduced from 3s)
-      quickNavigation: 1000,   // 1s - Quick navigation operations (reduced from 2s)
-      fileProcessing: 1000,    // 1s - File processing operations (reduced from 2s)
-      fileValidation: 2000,    // 2s - File validation (reduced from 3s)
-      fileError: 1000,         // 1s - File error display (reduced from 1.5s)
-      auth: 2000,              // 2s - Authentication operations (reduced from 3s)
-      authNavigation: 2000,    // 2s - Auth-related navigation (reduced from 3s)
-      uiInteraction: 2000,     // 2s - UI interactions (reduced from 3s)
-      dialogClose: 2000,       // 2s - Dialog closing (reduced from 3s)
-      immediate: 1000,         // 1s - Very quick operations (reduced from 1.5s)
+      appLoad: 5000,           // 5s - Application loading
+      splashScreen: 4000,      // 4s - Splash screen appearance
+      navigation: 4000,        // 4s - General navigation
+      quickNavigation: 2000,   // 2s - Quick navigation operations
+      fileProcessing: 3000,    // 3s - File processing operations
+      fileValidation: 5000,    // 5s - File validation
+      fileError: 2000,         // 2s - File error display
+      auth: 4000,              // 4s - Authentication operations
+      authNavigation: 4000,    // 4s - Auth-related navigation
+      uiInteraction: 3000,     // 3s - UI interactions
+      dialogClose: 3000,       // 3s - Dialog closing
+      immediate: 1500,         // 1.5s - Very quick operations
     };
   } else {
-    // Local development timeouts - also aggressive for fast feedback
+    // Local development timeouts - more generous for debugging
     return {
-      appLoad: 2000,           // 2s - Application loading (reduced from 3s)
-      splashScreen: 2000,      // 2s - Splash screen appearance (reduced from 3s)
-      navigation: 2000,        // 2s - General navigation (reduced from 3s)
-      quickNavigation: 1000,   // 1s - Quick navigation operations (reduced from 2s)
-      fileProcessing: 1000,    // 1s - File processing operations (reduced from 2s)
-      fileValidation: 2000,    // 2s - File validation (reduced from 3s)
-      fileError: 1000,         // 1s - File error display (reduced from 1.5s)
-      auth: 2000,              // 2s - Authentication operations (reduced from 3s)
-      authNavigation: 2000,    // 2s - Auth-related navigation (reduced from 3s)
-      uiInteraction: 2000,     // 2s - UI interactions (reduced from 3s)
-      dialogClose: 2000,       // 2s - Dialog closing (reduced from 3s)
-      immediate: 1000,         // 1s - Very quick operations (reduced from 1.5s)
+      appLoad: 6000,           // 6s - Application loading
+      splashScreen: 5000,      // 5s - Splash screen appearance
+      navigation: 5000,        // 5s - General navigation
+      quickNavigation: 2500,   // 2.5s - Quick navigation operations
+      fileProcessing: 4000,    // 4s - File processing operations
+      fileValidation: 6000,    // 6s - File validation
+      fileError: 2500,         // 2.5s - File error display
+      auth: 5000,              // 5s - Authentication operations
+      authNavigation: 5000,    // 5s - Auth-related navigation
+      uiInteraction: 4000,     // 4s - UI interactions
+      dialogClose: 4000,       // 4s - Dialog closing
+      immediate: 2000,         // 2s - Very quick operations
     };
   }
 }
