@@ -6,8 +6,10 @@
 echo "=== SHARDED E2E TEST RUNNER ==="
 echo "Starting sharded test execution..."
 
-# Create logs directory
+# Create logs directory and clean up old logs
 mkdir -p logs
+echo "Cleaning up old logs..."
+rm -f logs/shard-*.log logs/shard-*.pid logs/shard-*.exit logs/server-*.pid logs/server-*.log
 
 # Function to start a server for a specific shard
 start_shard_server() {
@@ -130,7 +132,7 @@ generate_summary() {
 }
 
 # Main execution
-TOTAL_SHARDS=4  # Use 4 shards for manageable parallel execution
+TOTAL_SHARDS=19  # Use 19 shards - one per feature file
 
 echo "Running ${TOTAL_SHARDS} shards in parallel, each with its own server..."
 
@@ -151,4 +153,4 @@ generate_summary $TOTAL_SHARDS
 
 echo "=== SHARDED TEST EXECUTION COMPLETE ==="
 echo "Check individual logs in logs/ directory for detailed results"
-echo "Each shard ran on its own port: 4201, 4202, 4203, 4204"
+echo "Each shard ran on its own port: 4201-4219"
