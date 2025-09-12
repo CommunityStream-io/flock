@@ -49,3 +49,4 @@ allure-report/
 
 # Logs
 *.log
+*.pid
