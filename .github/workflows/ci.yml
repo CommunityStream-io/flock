@@ -204,6 +204,9 @@ jobs:
           merge-multiple: true
         continue-on-error: true
 
+      - name: Filter out phantom hook failures
+        run: node scripts/filter-allure-hooks.js
+
       - name: Generate Allure Report
         uses: simple-elf/allure-report-action@v1.9
         with:
