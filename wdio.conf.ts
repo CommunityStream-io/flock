@@ -136,13 +136,13 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
   baseUrl: process.env.BASE_URL || 'http://localhost:4200',
 
   // Default timeout for all waitFor* commands.
-  // Environment-driven timeout configuration - optimized for auto-wait
-  waitforTimeout: 10000,  // Reduce from 30s to 10s for faster failures
-  waitforInterval: 250,   // Reduce polling interval for faster response
+  // Environment-driven timeout configuration - optimized for Phase 3 auto-wait
+  waitforTimeout: timeouts.waitUntilGlobal,  // Use centralized timeout config (8s for Phase 3)
+  waitforInterval: 200,    // Faster polling interval for Phase 3 optimization
 
   // Default timeout in milliseconds for request
   // if browser driver or grid doesn't send response
-  connectionRetryTimeout: process.env.CI === 'true' ? 30000 : 15000, // Keep longer for connection issues
+  connectionRetryTimeout: timeouts.global, // Use centralized timeout config for connection issues
 
   // Default request retries count
   connectionRetryCount: process.env.CI === 'true' ? 3 : 2,

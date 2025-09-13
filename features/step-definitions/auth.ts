@@ -516,22 +516,32 @@ Then('the dialog should explain that the @ symbol is automatically added', async
 
 When('I close the help dialog', async () => {
     await pages.auth.closeHelpDialog();
-    // Wait for dialog to disappear using waitForDisplayed with reverse
-    await pages.auth.helpDialog.waitForDisplayed({ 
-        reverse: true, 
-        timeout: timeouts.dialogClose, 
-        timeoutMsg: timeoutMessages.dialogClose(process.env.CI === 'true')
-    });
+    // Wait for dialog to disappear using waitUntil for more reliable dialog closing
+    await browser.waitUntil(
+        async () => {
+            const isDialogVisible = await pages.auth.isHelpDialogVisible();
+            return !isDialogVisible;
+        },
+        { 
+            timeout: timeouts.dialogClose, 
+            timeoutMsg: timeoutMessages.dialogClose(process.env.CI === 'true')
+        }
+    );
 });
 
 When('I close the help dialog with Escape key', async () => {
     await pages.auth.closeHelpDialogWithEscape();
-    // Wait for dialog to disappear using waitForDisplayed with reverse
-    await pages.auth.helpDialog.waitForDisplayed({ 
-        reverse: true, 
-        timeout: timeouts.dialogClose, 
-        timeoutMsg: 'Help dialog did not close with Escape key within expected time'
-    });
+    // Wait for dialog to disappear using waitUntil for more reliable dialog closing
+    await browser.waitUntil(
+        async () => {
+            const isDialogVisible = await pages.auth.isHelpDialogVisible();
+            return !isDialogVisible;
+        },
+        { 
+            timeout: timeouts.dialogClose, 
+            timeoutMsg: 'Help dialog did not close with Escape key within expected time'
+        }
+    );
 });
 
 Then('the help dialog should be hidden', async () => {
