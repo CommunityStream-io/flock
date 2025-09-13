@@ -11,7 +11,7 @@
 | **Phase 1** | 1 | 2024-12-19 | ✅ Complete | 2/2 | 0/2 | ~15s | Simple element waits migration - auth.ts and file-upload.ts |
 | **Phase 1** | 2 | 2024-12-19 | ✅ Complete | 19/19 | 0/19 | ~2.8 min | Comprehensive auto-wait migration - 20+ unnecessary waits removed, complex waits preserved |
 | **Phase 2** | 1 | 2024-12-19 | ✅ Complete | 19/19 | 0/19 | ~2.8 min | Complex element waits migration - dialog waits optimized, guard execution simplified |
-| **Phase 3** | 1 | - | ⏸️ Not Started | - | - | - | Keep complex waits, optimize timeouts |
+| **Phase 3** | 1 | 2024-12-19 | ✅ Complete | 19/19 | 0/19 | ~2.2 min | Timeout optimization completed, dialog closing fixed |
 | **Phase 4** | 1 | - | ⏸️ Not Started | - | - | - | Final validation and cleanup |
 
 ### Legend
@@ -461,21 +461,28 @@ This implementation plan provides a clear roadmap for migrating from manual `wai
 | navigation-guard.page.ts | 4 | ⏸️ Not Started | Navigation and snackbar waits |
 | config.page.ts | 2 | ⏸️ Not Started | Input field processing |
 
-### Phase 3: Keep Complex Waits (Optimization Only)
+### Phase 3: Keep Complex Waits (Optimization Only) - ✅ COMPLETED
 
-#### Files to Keep as waitUntil
-- [ ] `features/step-definitions/steps.ts` - 2 application loading waitUntil calls
-- [ ] `features/step-definitions/splash-screen.ts` - 1 URL navigation waitUntil call
-- [ ] `features/step-definitions/landing.ts` - 1 URL navigation waitUntil call
-- [ ] `features/step-definitions/auth.ts` - 2 URL navigation waitUntil calls
+#### Files Optimized in Phase 3
+- ✅ `features/step-definitions/steps.ts` - 1 splash screen waitUntil call (optimized timeout)
+- ✅ `features/step-definitions/splash-screen.ts` - 1 URL navigation waitUntil call (optimized timeout)
+- ✅ `features/step-definitions/landing.ts` - 1 URL navigation waitUntil call (optimized timeout)
+- ✅ `features/step-definitions/auth.ts` - 7 waitUntil calls (optimized timeouts, fixed dialog closing)
 
-#### Phase 3 Progress Log
+#### Phase 3 Progress Log - ✅ COMPLETED
 | File | waitUntil Count | Status | Notes |
 |------|----------------|--------|-------|
-| steps.ts | 2 | ⏸️ Not Started | Application loading - KEEP |
-| splash-screen.ts | 1 | ⏸️ Not Started | URL navigation - KEEP |
-| landing.ts | 1 | ⏸️ Not Started | URL navigation - KEEP |
-| auth.ts | 2 | ⏸️ Not Started | URL navigation - KEEP |
+| steps.ts | 1 | ✅ Complete | Splash screen wait optimized |
+| splash-screen.ts | 1 | ✅ Complete | URL navigation wait optimized |
+| landing.ts | 1 | ✅ Complete | URL navigation wait optimized |
+| auth.ts | 7 | ✅ Complete | All waits optimized, dialog closing fixed |
+
+#### Phase 3 Achievements
+- ✅ **Timeout Configuration Optimized**: Reduced timeouts for better performance while maintaining reliability
+- ✅ **WebdriverIO Configuration Updated**: Centralized timeout config integration
+- ✅ **Dialog Closing Fixed**: Replaced unreliable `waitForDisplayed({ reverse: true })` with robust `waitUntil` approach
+- ✅ **All Tests Passing**: 19/19 shards successful with optimized timeouts
+- ✅ **Performance Maintained**: ~2.2 minute execution time (similar to Phase 2)
 
 ### Performance Metrics Tracking
 
