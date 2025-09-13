@@ -170,13 +170,17 @@ jobs:
         if: steps.restore-cache.outputs.cache-hit != 'true'
 
       - name: Run e2e tests with Angular dev server
-        run: npx concurrently --kill-others --success first "npx ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0" "wait-on http://localhost:4200 --timeout=60000 && cross-env CI=true HEADLESS=true SHARDED_TESTS=true DEBUG_TESTS=false wdio run wdio.conf.ts --shard=${{ matrix.shard }}/19"
+        run: npx concurrently --kill-others --success first "npx ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0" "wait-on http://localhost:4200 --timeout=60000 && cross-env wdio run wdio.conf.ts --shard=${{ matrix.shard }}/19"
         env:
           CI: true
           NODE_ENV: production
           # Optimize Angular build
           NG_CLI_ANALYTICS: false
           NG_FORCE_TTY: false
+          # Timeout telemetry
+          TIMEOUT_TELEMETRY: true
+          SHARD: ${{ matrix.shard }}
+          TOTAL_SHARDS: 19
 
       - name: Upload Allure results as artifact (shard ${{ matrix.shard }})
         uses: actions/upload-artifact@v4
@@ -186,10 +190,100 @@ jobs:
           retention-days: 30
         if: always()
 
+      - name: Upload timeout telemetry as artifact (shard ${{ matrix.shard }})
+        uses: actions/upload-artifact@v4
+        with:
+          name: timeout-telemetry-shard-${{ matrix.shard }}-${{ github.run_number }}
+          path: logs/metrics/timeout-telemetry-*.json
+          retention-days: 30
+        if: always()
+
+      - name: Upload test metrics as artifact (shard ${{ matrix.shard }})
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-metrics-shard-${{ matrix.shard }}-${{ github.run_number }}
+          path: logs/metrics/test-metrics-*.json
+          retention-days: 30
+        if: always()
+
+  timeout-analysis:
+    name: Analyze Timeout Patterns
+    runs-on: ubuntu-latest
+    needs: e2e
+    if: always()
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24.5.0'
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download timeout telemetry from all shards
+        uses: actions/download-artifact@v4
+        with:
+          pattern: timeout-telemetry-shard-*-${{ github.run_number }}
+          path: logs/metrics/
+          merge-multiple: true
+        continue-on-error: true
+
+      - name: Download test metrics from all shards
+        uses: actions/download-artifact@v4
+        with:
+          pattern: test-metrics-shard-*-${{ github.run_number }}
+          path: logs/metrics/
+          merge-multiple: true
+        continue-on-error: true
+
+      - name: Analyze timeout telemetry
+        run: |
+          echo "🔍 TIMEOUT TELEMETRY ANALYSIS"
+          echo "=============================="
+          echo "📁 Checking for timeout telemetry files..."
+          ls -la logs/metrics/timeout-telemetry-*.json 2>/dev/null || echo "No timeout telemetry files found"
+          echo ""
+          echo "📊 Running CI-specific timeout analysis..."
+          npm run analyze:timeouts:ci
+        continue-on-error: true
+
+      - name: Analyze test metrics
+        run: |
+          echo "📊 TEST METRICS ANALYSIS"
+          echo "========================"
+          echo "📁 Checking for test metrics files..."
+          ls -la logs/metrics/test-metrics-*.json 2>/dev/null || echo "No test metrics files found"
+          echo ""
+          echo "📊 Running metrics analysis..."
+          npm run analyze:metrics
+        continue-on-error: true
+
+      - name: Generate timeout analysis report
+        run: |
+          echo "📋 TIMEOUT ANALYSIS SUMMARY"
+          echo "==========================="
+          echo "Run: ${{ github.run_number }}"
+          echo "Commit: ${{ github.sha }}"
+          echo "Branch: ${{ github.ref_name }}"
+          echo "Date: $(date)"
+          echo ""
+          echo "📁 Artifacts collected:"
+          find logs/metrics/ -name "*.json" -type f | wc -l | xargs echo "Total metric files:"
+          echo ""
+          echo "🔍 For detailed analysis, check the artifacts uploaded by each shard."
+        continue-on-error: true
+
   deploy-allure:
     name: Deploy Allure Report to GitHub Pages
     runs-on: ubuntu-latest
-    needs: e2e
+    needs: [e2e, timeout-analysis]
     if: always()
     permissions:
       contents: write
@@ -209,8 +303,32 @@ jobs:
           merge-multiple: true
         continue-on-error: true
 
+      - name: Download timeout telemetry from all shards
+        uses: actions/download-artifact@v4
+        with:
+          pattern: timeout-telemetry-shard-*-${{ github.run_number }}
+          path: logs/metrics/
+          merge-multiple: true
+        continue-on-error: true
+
+      - name: Download test metrics from all shards
+        uses: actions/download-artifact@v4
+        with:
+          pattern: test-metrics-shard-*-${{ github.run_number }}
+          path: logs/metrics/
+          merge-multiple: true
+        continue-on-error: true
+
       - name: Filter out phantom hook failures
         run: node scripts/filter-allure-hooks.js
+
+      - name: Analyze timeout telemetry across all shards
+        run: |
+          echo "🔍 Analyzing timeout telemetry from all shards..."
+          npm run analyze:timeouts || echo "⚠️ Timeout analysis failed, continuing..."
+          
+          echo "📊 Analyzing test metrics across all shards..."
+          npm run analyze:metrics || echo "⚠️ Metrics analysis failed, continuing..."
 
       - name: Generate Allure Badge
         run: node scripts/generate-allure-badge.js

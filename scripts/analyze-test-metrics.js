@@ -134,6 +134,73 @@ class TestMetricsAnalyzer {
     console.log(`Network Errors: ${networkErrors} (${((networkErrors/totalErrors)*100).toFixed(1)}%)`);
     console.log(`Other Errors: ${otherErrors} (${((otherErrors/totalErrors)*100).toFixed(1)}%)`);
 
+    // Enhanced timeout analysis
+    const timeoutDetails = this.metrics.flatMap(test => test.errors.timeoutDetails || []);
+    if (timeoutDetails.length > 0) {
+      console.log('');
+      console.log('⏱️ Timeout Details');
+      console.log('------------------');
+      const avgTimeoutDuration = timeoutDetails.reduce((sum, t) => sum + t.actualDuration, 0) / timeoutDetails.length;
+      const maxTimeoutDuration = Math.max(...timeoutDetails.map(t => t.actualDuration));
+      console.log(`Average timeout duration: ${avgTimeoutDuration.toFixed(0)}ms`);
+      console.log(`Longest timeout: ${maxTimeoutDuration}ms`);
+      
+      // Group by operation type
+      const timeoutByOperation = timeoutDetails.reduce((acc, t) => {
+        acc[t.operation] = (acc[t.operation] || 0) + 1;
+        return acc;
+      }, {});
+      
+      console.log('Timeouts by operation:');
+      Object.entries(timeoutByOperation).forEach(([op, count]) => {
+        console.log(`  ${op}: ${count} timeouts`);
+      });
+    }
+
+    // Resource error analysis
+    const resourceErrors = this.metrics.flatMap(test => test.errors.resourceErrors || []);
+    if (resourceErrors.length > 0) {
+      console.log('');
+      console.log('💾 Resource Issues');
+      console.log('------------------');
+      resourceErrors.forEach(error => {
+        console.log(`${error.type.toUpperCase()}: ${error.message}`);
+        if (error.value && error.threshold) {
+          console.log(`  Value: ${error.value.toFixed(2)}, Threshold: ${error.threshold}`);
+        }
+      });
+    }
+
+    // System metrics analysis
+    const systemMetrics = this.metrics.map(test => test.system).filter(Boolean);
+    if (systemMetrics.length > 0) {
+      const avgMemoryUsage = systemMetrics.reduce((sum, sys) => sum + sys.memoryUsage.heapUsed, 0) / systemMetrics.length;
+      const maxMemoryUsage = Math.max(...systemMetrics.map(sys => sys.memoryUsage.heapUsed));
+      console.log('');
+      console.log('🖥️ System Metrics');
+      console.log('-----------------');
+      console.log(`Average memory usage: ${(avgMemoryUsage / 1024 / 1024).toFixed(2)}MB`);
+      console.log(`Peak memory usage: ${(maxMemoryUsage / 1024 / 1024).toFixed(2)}MB`);
+    }
+
+    // Shard analysis
+    const shardMetrics = this.metrics.map(test => test.shard).filter(Boolean);
+    const failedShards = shardMetrics.filter(shard => shard.status === 'failed' || shard.status === 'timeout');
+    if (failedShards.length > 0) {
+      console.log('');
+      console.log('🔧 Failed Shards');
+      console.log('----------------');
+      failedShards.forEach(shard => {
+        console.log(`Shard ${shard.shardId}: ${shard.status} (exit code: ${shard.exitCode})`);
+        if (shard.errorMessage) {
+          console.log(`  Error: ${shard.errorMessage}`);
+        }
+        if (shard.duration) {
+          console.log(`  Duration: ${(shard.duration / 1000).toFixed(1)}s`);
+        }
+      });
+    }
+
     // Find most error-prone tests
     const errorProneTests = this.metrics
       .map(test => ({

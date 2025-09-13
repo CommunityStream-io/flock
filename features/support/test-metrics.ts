@@ -62,6 +62,23 @@ export interface TestMetrics {
       timestamp: number;
       step?: string;
     }>;
+    // Enhanced timeout tracking
+    timeoutDetails: Array<{
+      operation: string;
+      timeout: number;
+      actualDuration: number;
+      element?: string;
+      step?: string;
+      timestamp: number;
+    }>;
+    // Resource-related errors
+    resourceErrors: Array<{
+      type: 'memory' | 'cpu' | 'disk' | 'network';
+      message: string;
+      value?: number;
+      threshold?: number;
+      timestamp: number;
+    }>;
   };
   
   // Resource metrics
@@ -93,6 +110,36 @@ export interface TestMetrics {
     totalShards?: number;
     nodeVersion: string;
     webdriverioVersion: string;
+  };
+
+  // System metrics
+  system: {
+    processId: number;
+    memoryUsage: {
+      rss: number;
+      heapTotal: number;
+      heapUsed: number;
+      external: number;
+    };
+    cpuUsage: {
+      user: number;
+      system: number;
+    };
+    uptime: number;
+    platform: string;
+    arch: string;
+  };
+
+  // Shard-level metrics
+  shard: {
+    shardId: number;
+    totalShards: number;
+    startTime: number;
+    endTime?: number;
+    duration?: number;
+    status: 'running' | 'completed' | 'failed' | 'timeout';
+    exitCode?: number;
+    errorMessage?: string;
   };
 }
 
@@ -152,7 +199,9 @@ class TestMetricsCollector {
         scriptErrors: 0,
         networkErrors: 0,
         otherErrors: 0,
-        errorDetails: []
+        errorDetails: [],
+        timeoutDetails: [],
+        resourceErrors: []
       },
       resources: {
         totalRequests: 0,
@@ -178,6 +227,20 @@ class TestMetricsCollector {
         totalShards: process.env.TOTAL_SHARDS ? parseInt(process.env.TOTAL_SHARDS) : undefined,
         nodeVersion: process.version,
         webdriverioVersion: '9.19.1' // Update as needed
+      },
+      system: {
+        processId: process.pid,
+        memoryUsage: process.memoryUsage(),
+        cpuUsage: process.cpuUsage(),
+        uptime: process.uptime(),
+        platform: process.platform,
+        arch: process.arch
+      },
+      shard: {
+        shardId: process.env.SHARD ? parseInt(process.env.SHARD) : 0,
+        totalShards: process.env.TOTAL_SHARDS ? parseInt(process.env.TOTAL_SHARDS) : 1,
+        startTime: Date.now(),
+        status: 'running'
       }
     };
 
@@ -360,6 +423,49 @@ class TestMetricsCollector {
         timestamp: Date.now(),
         step
       });
+    }
+  }
+
+  public recordTimeout(operation: string, timeout: number, actualDuration: number, element?: string, step?: string) {
+    if (this.currentTest.errors) {
+      this.currentTest.errors.timeoutDetails.push({
+        operation,
+        timeout,
+        actualDuration,
+        element,
+        step,
+        timestamp: Date.now()
+      });
+    }
+  }
+
+  public recordResourceError(type: 'memory' | 'cpu' | 'disk' | 'network', message: string, value?: number, threshold?: number) {
+    if (this.currentTest.errors) {
+      this.currentTest.errors.resourceErrors.push({
+        type,
+        message,
+        value,
+        threshold,
+        timestamp: Date.now()
+      });
+    }
+  }
+
+  public updateSystemMetrics() {
+    if (this.currentTest.system) {
+      this.currentTest.system.memoryUsage = process.memoryUsage();
+      this.currentTest.system.cpuUsage = process.cpuUsage();
+      this.currentTest.system.uptime = process.uptime();
+    }
+  }
+
+  public updateShardStatus(status: 'completed' | 'failed' | 'timeout', exitCode?: number, errorMessage?: string) {
+    if (this.currentTest.shard) {
+      this.currentTest.shard.status = status;
+      this.currentTest.shard.endTime = Date.now();
+      this.currentTest.shard.duration = this.currentTest.shard.endTime - this.currentTest.shard.startTime;
+      if (exitCode !== undefined) this.currentTest.shard.exitCode = exitCode;
+      if (errorMessage) this.currentTest.shard.errorMessage = errorMessage;
     }
   }
 

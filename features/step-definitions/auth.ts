@@ -31,19 +31,57 @@ Given('I have navigated to the auth step', async () => {
 });
 
 When('I navigate back to the upload step', async () => {
-    await pages.stepLayout.openUploadStep();
-    // Wait for navigation to complete and page to load
-    await browser.waitUntil(
-        async () => {
-            const isOnUploadStep = await pages.stepLayout.isOnStep('upload');
-            const isUploadSectionVisible = await pages.uploadStep.uploadSection.isDisplayed();
-            return isOnUploadStep && isUploadSectionVisible;
-        },
-        { 
-            timeout: timeouts.navigation,
-            timeoutMsg: timeoutMessages.navigation(process.env.CI === 'true')
+    try {
+        // Record navigation start time for metrics
+        const navigationStart = Date.now();
+        
+        await pages.stepLayout.openUploadStep();
+        
+        // Wait for navigation to complete and page to load with enhanced error handling
+        await browser.waitUntil(
+            async () => {
+                try {
+                    const isOnUploadStep = await pages.stepLayout.isOnStep('upload');
+                    const isUploadSectionVisible = await pages.uploadStep.uploadSection.isDisplayed();
+                    return isOnUploadStep && isUploadSectionVisible;
+                } catch (error) {
+                    // Log navigation errors for debugging
+                    console.log(`Navigation check error: ${error.message}`);
+                    return false;
+                }
+            },
+            { 
+                timeout: timeouts.navigation,
+                timeoutMsg: `Navigation to upload step did not complete within ${timeouts.navigation}ms. This may indicate a server connectivity issue or port conflict.`
+            }
+        );
+        
+        // Record successful navigation for metrics
+        const navigationEnd = Date.now();
+        if (typeof testMetrics !== 'undefined') {
+            testMetrics.recordNavigation(navigationStart, navigationEnd, true);
         }
-    );
+        
+    } catch (error) {
+        // Record failed navigation for metrics
+        const navigationEnd = Date.now();
+        if (typeof testMetrics !== 'undefined') {
+            testMetrics.recordNavigation(navigationStart, navigationEnd, false);
+            testMetrics.recordError(error, 'navigate back to upload step');
+        }
+        
+        // Enhanced error message with troubleshooting info
+        const enhancedError = new Error(
+            `Failed to navigate back to upload step: ${error.message}\n` +
+            `This may be caused by:\n` +
+            `- Server not running on expected port\n` +
+            `- Port conflict (check if another process is using the port)\n` +
+            `- Network connectivity issues\n` +
+            `- Application not responding\n` +
+            `Original error: ${error.message}`
+        );
+        throw enhancedError;
+    }
 });
 
 Then('I should see a username input field with @ prefix', async () => {

@@ -6,11 +6,13 @@
 # Set environment variable for sharded tests to reduce logging
 export SHARDED_TESTS=true
 export DEBUG_TESTS=false
+export TIMEOUT_TELEMETRY=true
 
 # Parse command line arguments
 AUTO_SERVE_ALLURE=false
 SKIP_ALLURE=false
 TRACK_PERFORMANCE=false
+ANALYZE_TIMEOUTS=true
 
 while [[ $# -gt 0 ]]; do
     case $1 in
@@ -26,6 +28,10 @@ while [[ $# -gt 0 ]]; do
             TRACK_PERFORMANCE=true
             shift
             ;;
+        --skip-timeout-analysis)
+            ANALYZE_TIMEOUTS=false
+            shift
+            ;;
         --help|-h)
             echo "Sharded E2E Test Runner with Allure Integration"
             echo ""
@@ -35,6 +41,7 @@ while [[ $# -gt 0 ]]; do
             echo "  --serve-allure        Automatically serve Allure report after completion"
             echo "  --skip-allure         Skip Allure report generation and serving"
             echo "  --track-performance   Enable detailed performance timing tracking"
+            echo "  --skip-timeout-analysis Skip timeout telemetry analysis"
             echo "  --help, -h            Show this help message"
             echo ""
             echo "Examples:"
@@ -61,6 +68,17 @@ mkdir -p logs/servers logs/shards logs/exits
 echo "Cleaning up old logs..."
 rm -f logs/servers/* logs/shards/* logs/exits/*
 
+# Clean up any existing Angular dev servers
+echo "Cleaning up any existing Angular dev servers..."
+if command -v tasklist >/dev/null 2>&1; then
+    # Windows
+    tasklist | findstr "ng serve" | awk '{print $2}' | xargs -r taskkill /F /PID 2>/dev/null || true
+elif command -v pkill >/dev/null 2>&1; then
+    # Linux/macOS
+    pkill -f "ng serve" 2>/dev/null || true
+fi
+echo "Cleanup completed"
+
 # Create Allure directories only if not skipping
 if [ "$SKIP_ALLURE" = false ]; then
     mkdir -p allure-results
@@ -79,34 +97,102 @@ if [ "$TRACK_PERFORMANCE" = true ]; then
     OVERALL_START_TIME=$(date +%s)
 fi
 
+# Function to check if a port is available
+check_port_available() {
+    local port=$1
+    if command -v netstat >/dev/null 2>&1; then
+        # Windows netstat - check for LISTENING state
+        netstat -ano | grep ":${port}" | grep "LISTENING" >/dev/null 2>&1 && return 1 || return 0
+    elif command -v ss >/dev/null 2>&1; then
+        # Linux ss - check for listening state
+        ss -tuln | grep ":${port}" | grep "LISTEN" >/dev/null 2>&1 && return 1 || return 0
+    else
+        # Fallback to curl test
+        curl -s http://localhost:${port} >/dev/null 2>&1 && return 1 || return 0
+    fi
+}
+
+# Global array to track used ports
+declare -a USED_PORTS=()
+
+# Function to find an available port starting from the base port
+find_available_port() {
+    local base_port=$1
+    local port=$base_port
+    local max_attempts=50
+    
+    for i in $(seq 0 $max_attempts); do
+        # Check if port is available AND not already assigned to another shard
+        if check_port_available $port && [[ ! " ${USED_PORTS[@]} " =~ " ${port} " ]]; then
+            # Mark port as used
+            USED_PORTS+=($port)
+            echo $port
+            return 0
+        fi
+        port=$((port + 1))
+    done
+    
+    echo "ERROR: Could not find available port starting from ${base_port}"
+    return 1
+}
+
 # Function to start a server for a specific shard
 start_shard_server() {
     local shard_num=$1
-    local port=$((4200 + shard_num))
+    local base_port=$((4200 + shard_num))
     local log_file="logs/servers/server-${shard_num}.log"
+    
+    # Find an available port
+    local port=$(find_available_port $base_port)
+    if [ $? -ne 0 ]; then
+        echo "ERROR: Could not find available port for shard ${shard_num}"
+        return 1
+    fi
+    
+    # If port is different from expected, log it
+    if [ "$port" -ne "$base_port" ]; then
+        echo "WARNING: Port ${base_port} was occupied, using port ${port} for shard ${shard_num}"
+    fi
     
     echo "Starting Angular dev server for shard ${shard_num} on port ${port}..."
     npx ng serve flock-mirage --configuration=test --port=${port} --host=0.0.0.0 > "${log_file}" 2>&1 &
     local server_pid=$!
-    echo "Server for shard ${shard_num} started with PID: ${server_pid}"
+    echo "Server for shard ${shard_num} started with PID: ${server_pid} on port ${port}"
     echo "${server_pid}" > "logs/servers/server-${shard_num}.pid"
+    echo "${port}" > "logs/servers/server-${shard_num}.port"
     
-    # Wait for server to be ready
-    echo "Waiting for shard ${shard_num} server to be ready..."
+    # Wait for server to be ready with enhanced validation
+    echo "Waiting for shard ${shard_num} server to be ready on port ${port}..."
     local max_attempts=30
     local attempt=0
     
     while [ $attempt -lt $max_attempts ]; do
+        # Check if process is still running
+        if ! kill -0 $server_pid 2>/dev/null; then
+            echo "ERROR: Server process for shard ${shard_num} died unexpectedly"
+            return 1
+        fi
+        
+        # Check if server is responding
         if curl -s http://localhost:${port} > /dev/null 2>&1; then
             echo "Server for shard ${shard_num} is ready on port ${port}!"
             return 0
         fi
+        
+        # Check for port conflict in logs
+        if grep -q "Port ${port} is already in use" "${log_file}" 2>/dev/null; then
+            echo "ERROR: Port ${port} conflict detected for shard ${shard_num}"
+            return 1
+        fi
+        
         sleep 2
         ((attempt++))
         echo "Attempt ${attempt}/${max_attempts}: Shard ${shard_num} server not ready yet..."
     done
     
     echo "ERROR: Server for shard ${shard_num} failed to start after ${max_attempts} attempts"
+    echo "Last few lines of server log:"
+    tail -5 "${log_file}" 2>/dev/null || echo "Could not read server log"
     return 1
 }
 
@@ -133,10 +219,18 @@ stop_all_servers() {
 run_shard() {
     local shard_num=$1
     local total_shards=$2
-    local port=$((4200 + shard_num))
     local log_file="logs/shards/shard-${shard_num}.log"
     local timing_file="logs/shards/shard-${shard_num}.timing"
     local exit_file="logs/exits/shard-${shard_num}.exit"
+    
+    # Get the actual port used by the server
+    local port
+    if [ -f "logs/servers/server-${shard_num}.port" ]; then
+        port=$(cat "logs/servers/server-${shard_num}.port")
+    else
+        port=$((4200 + shard_num))
+        echo "WARNING: Could not find port file for shard ${shard_num}, using default port ${port}"
+    fi
     
     # Record start time
     local start_time=$(date +%s)
@@ -162,7 +256,7 @@ run_shard() {
         allure_env="SKIP_ALLURE_REPORTER=true"
     fi
     
-    npx cross-env CI=true HEADLESS=true BASE_URL=http://localhost:${port} SHARDED_TESTS=true DEBUG_TESTS=false ${allure_env} wdio run wdio.conf.ts --shard=${shard_num}/${total_shards} > "${log_file}" 2> "logs/shards/shard-${shard_num}.browser.log"
+    npx cross-env CI=true HEADLESS=true BASE_URL=http://localhost:${port} SHARDED_TESTS=true DEBUG_TESTS=false TIMEOUT_TELEMETRY=true ${allure_env} wdio run wdio.conf.ts --shard=${shard_num}/${total_shards} > "${log_file}" 2> "logs/shards/shard-${shard_num}.browser.log"
     
     local exit_code=$?
     local end_time=$(date +%s)
@@ -430,6 +524,18 @@ else
     echo "🔧 Filtering out phantom hook failures..."
     node scripts/filter-allure-hooks.js
     
+    # Analyze timeout telemetry
+    if [ "$ANALYZE_TIMEOUTS" = true ]; then
+        echo "🔍 Analyzing timeout telemetry..."
+        if command -v node >/dev/null 2>&1; then
+            node scripts/analyze-timeout-telemetry.js
+        else
+            echo "⚠️  Node.js not found - skipping timeout analysis"
+        fi
+    else
+        echo "⏭️  Skipping timeout analysis (--skip-timeout-analysis flag)"
+    fi
+    
     # If any shard failed, show error but still try to generate reports
     if [ -n "$failed_shard" ]; then
         echo "❌ Execution stopped due to shard ${failed_shard} failure (fail-fast)"
@@ -456,31 +562,10 @@ elif [ "$AUTO_SERVE_ALLURE" = true ]; then
     echo "🚀 Automatically serving Allure report (--serve-allure flag)..."
     serve_allure_report
 else
-    # Interactive mode - ask user if they want to serve the Allure report
-    echo "🌐 Allure Report Options:"
-    echo "   1. Serve combined report locally (opens browser automatically)"
-    echo "   2. Skip serving report (you can serve manually later)"
-    echo "   3. Generate report only (no serving)"
-    echo ""
-    read -p "Choose option (1-3): " choice
-
-    case $choice in
-        1)
-            serve_allure_report
-            ;;
-        2)
-            echo "📊 To serve the report later, run:"
-            echo "   allure open allure-report-combined --port 8080"
-            ;;
-        3)
-            echo "📊 Report generated at: allure-report-combined/"
-            echo "   To serve later: allure open allure-report-combined --port 8080"
-            ;;
-        *)
-            echo "📊 Invalid choice. Report generated at: allure-report-combined/"
-            echo "   To serve later: allure open allure-report-combined --port 8080"
-            ;;
-    esac
+    # Non-interactive mode - just generate the report
+    echo "📊 Generating Allure report (non-interactive mode)..."
+    echo "📊 Report generated at: allure-report-combined/"
+    echo "   To serve later: allure open allure-report-combined --port 8080"
 fi
 
 # Final performance tracking

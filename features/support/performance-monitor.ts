@@ -1,5 +1,6 @@
 import { browser } from '@wdio/globals';
 import { testMetrics } from './test-metrics';
+import { timeoutTelemetry } from './timeout-telemetry';
 import logger, { bddLogger } from './logger';
 
 /**
@@ -19,12 +20,84 @@ export class PerformanceMonitor {
 
   public startMonitoring() {
     this.isMonitoring = true;
+    timeoutTelemetry.startCollection();
     logger.info({ type: 'performance-monitoring-start' }, 'Performance monitoring started');
   }
 
   public stopMonitoring() {
     this.isMonitoring = false;
+    timeoutTelemetry.stopCollection();
     logger.info({ type: 'performance-monitoring-stop' }, 'Performance monitoring stopped');
+  }
+
+  /**
+   * Monitor operation with custom timeout and detailed tracking
+   */
+  public async monitorWithTimeout<T>(
+    operation: () => Promise<T>,
+    operationName: string,
+    timeout: number,
+    elementDescription?: string
+  ): Promise<T> {
+    const startTime = Date.now();
+    bddLogger.action(`${operationName} with ${timeout}ms timeout`);
+    
+    try {
+      const result = await Promise.race([
+        operation(),
+        new Promise<never>((_, reject) => 
+          setTimeout(() => reject(new Error(`Operation ${operationName} timed out after ${timeout}ms`)), timeout)
+        )
+      ]);
+      
+      const duration = Date.now() - startTime;
+      bddLogger.success(`${operationName} completed in ${duration}ms`);
+      return result;
+    } catch (error) {
+      const duration = Date.now() - startTime;
+      
+      if (error.message.includes('timed out')) {
+        testMetrics.recordTimeout(operationName, timeout, duration, elementDescription);
+        await timeoutTelemetry.recordTimeout(
+          operationName, 
+          timeout, 
+          duration, 
+          'custom', 
+          elementDescription, 
+          undefined, 
+          undefined
+        );
+        bddLogger.error(`${operationName} timed out after ${duration}ms (limit: ${timeout}ms)`);
+      } else {
+        bddLogger.error(`${operationName} failed after ${duration}ms: ${error.message}`);
+      }
+      
+      testMetrics.recordError(error as Error, elementDescription);
+      throw error;
+    }
+  }
+
+  /**
+   * Check system resource usage and record warnings
+   */
+  public checkResourceUsage() {
+    const memUsage = process.memoryUsage();
+    
+    // Check memory thresholds
+    const memoryThresholdMB = 500; // 500MB threshold
+    const memoryUsageMB = memUsage.heapUsed / 1024 / 1024;
+    
+    if (memoryUsageMB > memoryThresholdMB) {
+      testMetrics.recordResourceError(
+        'memory',
+        `High memory usage: ${memoryUsageMB.toFixed(2)}MB`,
+        memoryUsageMB,
+        memoryThresholdMB
+      );
+    }
+    
+    // Update system metrics
+    testMetrics.updateSystemMetrics();
   }
 
   /**
@@ -43,8 +116,29 @@ export class PerformanceMonitor {
       bddLogger.action(`Navigating to ${url}`);
       await browser.url(url);
       success = true;
+      
+      // Record successful navigation
+      const duration = Date.now() - startTime;
+      await timeoutTelemetry.recordSuccess(
+        `navigation_${url}`, 
+        duration, 
+        'navigation'
+      );
     } catch (error) {
-      bddLogger.error(`Navigation failed to ${url}: ${error.message}`);
+      const duration = Date.now() - startTime;
+      
+      if (error.message.includes('timed out')) {
+        await timeoutTelemetry.recordTimeout(
+          `navigation_${url}`, 
+          15000, // Default navigation timeout
+          duration, 
+          'navigation'
+        );
+        bddLogger.error(`Navigation timed out to ${url} after ${duration}ms`);
+      } else {
+        bddLogger.error(`Navigation failed to ${url}: ${error.message}`);
+      }
+      
       testMetrics.recordError(error as Error, 'navigation');
       throw error;
     } finally {
@@ -84,9 +178,32 @@ export class PerformanceMonitor {
         testMetrics.recordWait(startTime, endTime);
       }
       
+      // Record successful interaction
+      const duration = Date.now() - startTime;
+      await timeoutTelemetry.recordSuccess(
+        `${interactionType}_${elementDescription || 'unknown'}`, 
+        duration, 
+        'element', 
+        elementDescription
+      );
+      
       return result;
     } catch (error) {
-      bddLogger.error(`${interactionType} operation failed${elementDescription ? ` on ${elementDescription}` : ''}: ${error.message}`);
+      const duration = Date.now() - startTime;
+      
+      if (error.message.includes('timed out')) {
+        await timeoutTelemetry.recordTimeout(
+          `${interactionType}_${elementDescription || 'unknown'}`, 
+          5000, // Default element timeout
+          duration, 
+          'element', 
+          elementDescription
+        );
+        bddLogger.error(`${interactionType} operation timed out${elementDescription ? ` on ${elementDescription}` : ''} after ${duration}ms`);
+      } else {
+        bddLogger.error(`${interactionType} operation failed${elementDescription ? ` on ${elementDescription}` : ''}: ${error.message}`);
+      }
+      
       testMetrics.recordError(error as Error, `${interactionType}${elementDescription ? `_${elementDescription}` : ''}`);
       throw error;
     }
@@ -107,14 +224,41 @@ export class PerformanceMonitor {
     const startTime = Date.now();
     let success = false;
     let result: T;
+    const timeout = options.timeout || 5000;
 
     try {
       bddLogger.action(`Waiting for condition${description ? `: ${description}` : ''}`);
       result = await browser.waitUntil(condition, options);
       success = true;
+      
+      // Record successful wait
+      const duration = Date.now() - startTime;
+      await timeoutTelemetry.recordSuccess(
+        `waitUntil_${description || 'unknown'}`, 
+        duration, 
+        'waitUntil', 
+        undefined, 
+        description
+      );
+      
       return result;
     } catch (error) {
-      bddLogger.error(`Wait condition failed${description ? `: ${description}` : ''}: ${error.message}`);
+      const duration = Date.now() - startTime;
+      
+      if (error.message.includes('timed out')) {
+        await timeoutTelemetry.recordTimeout(
+          `waitUntil_${description || 'unknown'}`, 
+          timeout, 
+          duration, 
+          'waitUntil', 
+          undefined, 
+          description
+        );
+        bddLogger.error(`Wait condition timed out${description ? `: ${description}` : ''} after ${duration}ms (limit: ${timeout}ms)`);
+      } else {
+        bddLogger.error(`Wait condition failed${description ? `: ${description}` : ''}: ${error.message}`);
+      }
+      
       testMetrics.recordError(error as Error, `wait_${description || 'unknown'}`);
       throw error;
     } finally {
@@ -132,7 +276,7 @@ export class PerformanceMonitor {
     description?: string
   ): Promise<T> {
     if (!this.isMonitoring) {
-      return await browser.execute(script, args);
+      return await browser.execute(script, args) as T;
     }
 
     const startTime = Date.now();
@@ -141,7 +285,7 @@ export class PerformanceMonitor {
 
     try {
       bddLogger.action(`Executing script${description ? `: ${description}` : ''}`);
-      result = await browser.execute(script, args);
+      result = await browser.execute(script, args) as T;
       success = true;
       return result;
     } catch (error) {
@@ -206,7 +350,7 @@ export class PerformanceMonitor {
           navigation: {
             domContentLoaded: navigation ? navigation.domContentLoadedEventEnd - navigation.domContentLoadedEventStart : 0,
             loadComplete: navigation ? navigation.loadEventEnd - navigation.loadEventStart : 0,
-            totalLoadTime: navigation ? navigation.loadEventEnd - navigation.navigationStart : 0
+            totalLoadTime: navigation ? navigation.loadEventEnd - navigation.fetchStart : 0
           },
           paint: {
             firstPaint: paintEntries.find(entry => entry.name === 'first-paint')?.startTime || 0,

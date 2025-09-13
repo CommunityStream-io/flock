@@ -1,5 +1,6 @@
 import { testMetrics, TestMetrics } from './test-metrics';
 import { performanceMonitor } from './performance-monitor';
+import { timeoutTelemetry } from './timeout-telemetry';
 import logger, { bddLogger } from './logger';
 
 /**
@@ -25,8 +26,14 @@ export async function beforeScenario(world: any, context: any) {
   // Start metrics collection for scenario
   testMetrics.startTest(scenarioName, world.pickle?.id);
   
+  // Set global test name for timeout telemetry context
+  global.currentTestName = scenarioName;
+  
   // Collect browser info
   await testMetrics.collectBrowserInfo();
+  
+  // Check initial resource usage
+  performanceMonitor.checkResourceUsage();
 }
 
 /**
@@ -89,11 +96,17 @@ export async function afterScenario(world: any, context: any, result: any) {
     type: 'scenario-complete' 
   }, `Scenario completed: ${scenarioName} (${status})`);
   
+  // Check final resource usage
+  performanceMonitor.checkResourceUsage();
+  
   // Stop performance monitoring
   performanceMonitor.stopMonitoring();
   
   // End metrics collection
   testMetrics.endTest(status);
+  
+  // Clear global test name
+  global.currentTestName = undefined;
   
   // Log test summary
   const currentMetrics = testMetrics.getCurrentTestMetrics();
@@ -178,12 +191,19 @@ export async function after(result: number, capabilities: any, specs: string[]) 
   // Export metrics to file
   await testMetrics.exportMetrics();
   
+  // Export timeout telemetry
+  await timeoutTelemetry.exportTelemetry();
+  
   // Log detailed metrics for debugging
   const allMetrics = testMetrics.getMetrics();
   logger.info({ 
     metricsCount: allMetrics.length,
     type: 'metrics-collection-complete' 
   }, `Collected metrics for ${allMetrics.length} tests`);
+  
+  // Log timeout telemetry summary
+  const timeoutReport = timeoutTelemetry.generateTimeoutReport();
+  logger.info({ type: 'timeout-telemetry-summary' }, timeoutReport);
   
   // Log performance insights
   logPerformanceInsights(allMetrics);
@@ -303,5 +323,21 @@ export function logPerformanceInsights(metrics: TestMetrics[]) {
       ...errorPatterns,
       type: 'performance-error-patterns'
     }, 'Error Pattern Analysis');
+    
+    // Add timeout-specific analysis
+    const timeoutAnalysis = timeoutTelemetry.analyzeTimeouts();
+    if (timeoutAnalysis.totalTimeouts > 0) {
+      logger.info({
+        totalTimeouts: timeoutAnalysis.totalTimeouts,
+        timeoutRate: timeoutAnalysis.timeoutRate,
+        criticalIssues: timeoutAnalysis.criticalIssues.length,
+        topPatterns: timeoutAnalysis.patterns.slice(0, 3).map(p => ({
+          operation: p.operation,
+          frequency: p.frequency,
+          timeoutRate: p.timeoutRate
+        })),
+        type: 'timeout-analysis-summary'
+      }, 'Timeout Analysis Summary');
+    }
 }
 
