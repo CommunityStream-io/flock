@@ -48,6 +48,8 @@
     "test:e2e:only-passing": "wdio run wdio.conf.ts --cucumberOpts.tags='not @skip'",
     "test:e2e:run-all": "wdio run wdio.conf.ts --cucumberOpts.tags=''",
     "test:all": "npm run test:ci && npm run test:e2e:ci",
+    "analyze:metrics": "node scripts/analyze-test-metrics.js",
+    "analyze:metrics:latest": "node scripts/analyze-test-metrics.js $(ls -t logs/metrics/test-metrics-*.json | head -1)",
     "lint": "ng lint",
     "lint:fix": "ng lint --fix",
     "lint:shared": "ng lint shared",

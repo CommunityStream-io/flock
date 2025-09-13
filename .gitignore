@@ -54,7 +54,4 @@ allure-report-new/
 
 
 # Logs
-*.log
-*.pid
-*.timing
-*.exit
+logs/

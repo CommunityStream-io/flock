@@ -208,4 +208,45 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
   // it and to build services around it. You can either apply a single function or an array of
   // methods to it. If one of them returns with a promise, WebdriverIO will wait until that promise got
   // resolved to continue.
+  
+  // Import hooks for metrics collection - using individual function imports
+  before: async function (capabilities, specs, browser) {
+    const { before } = await import('./features/support/webdriverio-hooks');
+    return before(capabilities, specs, browser);
+  },
+
+  after: async function (result, capabilities, specs) {
+    const { after } = await import('./features/support/webdriverio-hooks');
+    return after(result, capabilities, specs);
+  },
+
+  beforeStep: async function (step, context) {
+    const { beforeStep } = await import('./features/support/webdriverio-hooks');
+    return beforeStep(step, context);
+  },
+
+  afterStep: async function (step, context, error) {
+    const { afterStep } = await import('./features/support/webdriverio-hooks');
+    return afterStep(step, context, error);
+  },
+
+  beforeScenario: async function (world, context) {
+    const { beforeScenario } = await import('./features/support/webdriverio-hooks');
+    return beforeScenario(world, context);
+  },
+
+  afterScenario: async function (world, context, result) {
+    const { afterScenario } = await import('./features/support/webdriverio-hooks');
+    return afterScenario(world, context, result);
+  },
+
+  beforeFeature: async function (uri, feature) {
+    const { beforeFeature } = await import('./features/support/webdriverio-hooks');
+    return beforeFeature(uri, feature);
+  },
+
+  afterFeature: async function (uri, feature) {
+    const { afterFeature } = await import('./features/support/webdriverio-hooks');
+    return afterFeature(uri, feature);
+  },
 };
