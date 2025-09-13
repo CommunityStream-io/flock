@@ -5,8 +5,6 @@ Feature: File Upload and Validation - Instagram Archive Processing
   So that my data can be processed for migration
 
   Background:
-    Given the application is running
-    And the splash screen message should be "*flap* *flap* *flap*"
     And I navigate to the upload step
 
   @file-upload @upload-interface

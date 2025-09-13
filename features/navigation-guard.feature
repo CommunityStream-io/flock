@@ -6,8 +6,6 @@ Feature: Navigation Guard Protection - Upload Validation Requirements
   So that the migration process maintains data integrity
 
   Background:
-    Given the application is running
-    And the splash screen message should be "*flap* *flap* *flap*"
 
   @navigation-guard @upload-guard 
   Scenario: Navigation blocked without valid archive

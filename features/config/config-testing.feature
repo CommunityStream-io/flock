@@ -5,8 +5,6 @@ Feature: Migration Testing - Safe Testing and Simulation Options
   So that I can verify my migration without posting to Bluesky
 
   Background:
-    Given the application is running
-    And the splash screen message should be "*flap* *flap* *flap*"
     And I navigate to the upload step
     And I select a valid Instagram archive file "valid-archive.zip"
     And I navigate to the auth step

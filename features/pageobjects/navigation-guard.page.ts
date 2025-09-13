@@ -103,10 +103,12 @@ class NavigationGuardPage extends Page {
     }
 
     public async waitForSnackbarToDismiss(timeout: number = timeouts.dialogClose) {
-        await browser.waitUntil(
-            async () => !(await this.isSnackbarVisible()),
-            { timeout, timeoutMsg: timeoutMessages.dialogClose(process.env.CI === 'true') }
-        );
+        // Use waitForDisplayed with reverse for snackbar dismissal
+        await this.snackbar.waitForDisplayed({ 
+            reverse: true, 
+            timeout, 
+            timeoutMsg: timeoutMessages.dialogClose(process.env.CI === 'true') 
+        });
     }
 
     public async clickSnackbarClose() {
@@ -182,15 +184,8 @@ class NavigationGuardPage extends Page {
 
     // Wait for guard execution
     public async waitForGuardExecution(timeout: number = 3000) {
-        // Wait for guard to execute and potentially show messages
-        // Wait for the specified timeout period
-        await browser.waitUntil(
-            async () => {
-                // This is a deliberate delay, so we just wait for the timeout period
-                return true;
-            },
-            { timeout: timeout, timeoutMsg: `Deliberate delay of ${timeout}ms completed` }
-        );
+        // Simple delay for guard execution - no need for waitUntil
+        await browser.pause(timeout);
     }
 }
 

@@ -45,42 +45,42 @@ export interface TimeoutConfig {
  */
 export function getTimeoutConfig(isCI: boolean = process.env.CI === 'true'): TimeoutConfig {
   if (isCI) {
-    // CI timeouts - increased for sharded test stability
+    // CI timeouts - optimized for Phase 3 with complex waits
     return {
       global: 120000,          // 120s (2 minutes) - Global timeout (must be higher than all step-specific timeouts)
-      waitUntilGlobal: 30000,  // 30s - Global timeout for waitUntil calls
-      appLoad: 25000,          // 25s - Application loading (lower than global timeout)
-      splashScreen: 25000,     // 25s - Splash screen appearance (lower than global timeout)
-      navigation: 25000,       // 25s - General navigation (lower than global timeout)
+      waitUntilGlobal: 8000,   // 8s - Global timeout for waitUntil calls (optimized for Phase 3)
+      appLoad: 20000,          // 20s - Application loading (optimized for Phase 3)
+      splashScreen: 15000,     // 15s - Splash screen appearance (optimized for Phase 3)
+      navigation: 15000,       // 15s - General navigation (optimized for Phase 3)
       quickNavigation: 3000,   // 3s - Quick navigation operations (was 2s)
       fileProcessing: 8000,    // 8s - File processing operations (was 5s)
       fileValidation: 10000,   // 10s - File validation (was 8s)
       fileError: 3000,         // 3s - File error display (was 2s)
-      auth: 25000,             // 25s - Authentication operations (lower than global timeout)
-      authNavigation: 10000,   // 10s - Auth-related navigation (was 8s)
-      credentialEntry: 15000,  // 15s - Credential entry and validation (NEW)
-      uiInteraction: 10000,    // 10s - UI interactions (was 8s)
-      dialogClose: 5000,       // 5s - Dialog closing (was 3s)
-      immediate: 3000,         // 3s - Very quick operations (was 2s)
+      auth: 20000,             // 20s - Authentication operations (optimized for Phase 3)
+      authNavigation: 8000,    // 8s - Auth-related navigation (optimized for Phase 3)
+      credentialEntry: 10000,  // 10s - Credential entry and validation (optimized for Phase 3)
+      uiInteraction: 5000,     // 5s - UI interactions (balanced for Phase 3)
+      dialogClose: 5000,       // 5s - Dialog closing (balanced for Phase 3)
+      immediate: 2000,         // 2s - Very quick operations (optimized for Phase 3)
     };
   } else {
-    // Local development timeouts - more generous for debugging
+    // Local development timeouts - optimized for Phase 3 with debugging support
     return {
       global: 120000,          // 120s (2 minutes) - Global timeout (must be higher than all step-specific timeouts)
-      waitUntilGlobal: 30000,  // 30s - Global timeout for waitUntil calls
-      appLoad: 20000,          // 20s - Application loading (lower than global timeout)
-      splashScreen: 20000,     // 20s - Splash screen appearance (lower than global timeout)
-      navigation: 20000,       // 20s - General navigation (lower than global timeout)
+      waitUntilGlobal: 8000,   // 8s - Global timeout for waitUntil calls (optimized for Phase 3)
+      appLoad: 15000,          // 15s - Application loading (optimized for Phase 3)
+      splashScreen: 12000,     // 12s - Splash screen appearance (optimized for Phase 3)
+      navigation: 12000,       // 12s - General navigation (optimized for Phase 3)
       quickNavigation: 3000,   // 3s - Quick navigation operations (was 2.5s)
       fileProcessing: 5000,    // 5s - File processing operations (was 4s)
       fileValidation: 10000,   // 10s - File validation (was 8s)
       fileError: 3000,         // 3s - File error display (was 2.5s)
-      auth: 20000,             // 20s - Authentication operations (close to global timeout)
-      authNavigation: 10000,   // 10s - Auth-related navigation (was 6s)
-      credentialEntry: 10000,  // 10s - Credential entry and validation (NEW)
-      uiInteraction: 6000,     // 6s - UI interactions (was 4s)
-      dialogClose: 5000,       // 5s - Dialog closing (was 4s)
-      immediate: 3000,         // 3s - Very quick operations (was 2s)
+      auth: 15000,             // 15s - Authentication operations (optimized for Phase 3)
+      authNavigation: 8000,    // 8s - Auth-related navigation (optimized for Phase 3)
+      credentialEntry: 8000,   // 8s - Credential entry and validation (optimized for Phase 3)
+      uiInteraction: 4000,     // 4s - UI interactions (balanced for Phase 3)
+      dialogClose: 4000,       // 4s - Dialog closing (balanced for Phase 3)
+      immediate: 2000,         // 2s - Very quick operations (optimized for Phase 3)
     };
   }
 }
@@ -157,29 +157,29 @@ export const timeoutOptions = {
  */
 export const timeoutMessages = {
   appLoad: (isCI: boolean) => 
-    isCI ? 'Application did not load within 15 seconds' : 'Application did not load within 12 seconds',
+    isCI ? 'Application did not load within 20 seconds' : 'Application did not load within 15 seconds',
   splashScreen: (isCI: boolean) => 
-    isCI ? 'Splash screen did not appear within 3 seconds' : 'Splash screen did not appear within 5 seconds',
+    isCI ? 'Splash screen did not appear within 15 seconds' : 'Splash screen did not appear within 12 seconds',
   navigation: (isCI: boolean) => 
-    isCI ? 'Navigation did not complete within 3 seconds' : 'Navigation did not complete within 5 seconds',
+    isCI ? 'Navigation did not complete within 15 seconds' : 'Navigation did not complete within 12 seconds',
   quickNavigation: (isCI: boolean) => 
-    isCI ? 'Quick navigation did not complete within 2 seconds' : 'Quick navigation did not complete within 2.5 seconds',
+    isCI ? 'Quick navigation did not complete within 3 seconds' : 'Quick navigation did not complete within 3 seconds',
   fileProcessing: (isCI: boolean) => 
     isCI ? 'File processing did not complete within 8 seconds' : 'File processing did not complete within 5 seconds',
   fileValidation: (isCI: boolean) => 
     isCI ? 'File validation did not complete within 10 seconds' : 'File validation did not complete within 10 seconds',
   fileError: (isCI: boolean) => 
-    isCI ? 'File error did not appear within 2 seconds' : 'File error did not appear within 2.5 seconds',
+    isCI ? 'File error did not appear within 3 seconds' : 'File error did not appear within 3 seconds',
   auth: (isCI: boolean) => 
-    isCI ? 'Authentication did not complete within 12 seconds' : 'Authentication did not complete within 8 seconds',
+    isCI ? 'Authentication did not complete within 20 seconds' : 'Authentication did not complete within 15 seconds',
   authNavigation: (isCI: boolean) => 
-    isCI ? 'Authentication navigation did not complete within 10 seconds' : 'Authentication navigation did not complete within 10 seconds',
+    isCI ? 'Authentication navigation did not complete within 8 seconds' : 'Authentication navigation did not complete within 8 seconds',
   credentialEntry: (isCI: boolean) => 
-    isCI ? 'Credential entry did not complete within 15 seconds' : 'Credential entry did not complete within 10 seconds',
+    isCI ? 'Credential entry did not complete within 10 seconds' : 'Credential entry did not complete within 8 seconds',
   uiInteraction: (isCI: boolean) => 
-    isCI ? 'UI interaction did not complete within 10 seconds' : 'UI interaction did not complete within 6 seconds',
+    isCI ? 'UI interaction did not complete within 5 seconds' : 'UI interaction did not complete within 4 seconds',
   dialogClose: (isCI: boolean) => 
-    isCI ? 'Dialog did not close within 3 seconds' : 'Dialog did not close within 4 seconds',
+    isCI ? 'Dialog did not close within 5 seconds' : 'Dialog did not close within 4 seconds',
   immediate: (isCI: boolean) => 
     isCI ? 'Immediate operation did not complete within 2 seconds' : 'Immediate operation did not complete within 2 seconds',
 };

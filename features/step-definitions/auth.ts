@@ -516,14 +516,14 @@ Then('the dialog should explain that the @ symbol is automatically added', async
 
 When('I close the help dialog', async () => {
     await pages.auth.closeHelpDialog();
-    // Wait for dialog to actually close
+    // Wait for dialog to disappear using waitUntil for more reliable dialog closing
     await browser.waitUntil(
         async () => {
-            const isVisible = await pages.auth.isHelpDialogVisible();
-            return !isVisible;
+            const isDialogVisible = await pages.auth.isHelpDialogVisible();
+            return !isDialogVisible;
         },
-        {
-            timeout: timeouts.dialogClose,
+        { 
+            timeout: timeouts.dialogClose, 
             timeoutMsg: timeoutMessages.dialogClose(process.env.CI === 'true')
         }
     );
@@ -531,15 +531,15 @@ When('I close the help dialog', async () => {
 
 When('I close the help dialog with Escape key', async () => {
     await pages.auth.closeHelpDialogWithEscape();
-    // Wait for dialog to actually close
+    // Wait for dialog to disappear using waitUntil for more reliable dialog closing
     await browser.waitUntil(
         async () => {
-            const isVisible = await pages.auth.isHelpDialogVisible();
-            return !isVisible;
+            const isDialogVisible = await pages.auth.isHelpDialogVisible();
+            return !isDialogVisible;
         },
-        {
-            timeout: process.env.CI === 'true' ? 5000 : 3000, // 5s CI, 3s local - drastically reduced
-            timeoutMsg: 'Help dialog did not close with Escape key within 5 seconds'
+        { 
+            timeout: timeouts.dialogClose, 
+            timeoutMsg: 'Help dialog did not close with Escape key within expected time'
         }
     );
 });

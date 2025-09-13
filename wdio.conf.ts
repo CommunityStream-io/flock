@@ -114,16 +114,15 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
   // Define all options that are relevant for the WebdriverIO instance here
   //
   // Level of logging verbosity: trace | debug | info | warn | error | silent
-  logLevel: process.env.DEBUG_TESTS === 'true' ? 'info' : 'error',
+  logLevel: process.env.SHARDED_TESTS === 'true' ? 'error' : (process.env.DEBUG_TESTS === 'true' ? 'info' : 'error'),
 
   // Set specific log levels per logger to reduce noise
   logLevels: {
-    webdriver: process.env.DEBUG_TESTS === 'true' ? 'info' : 'error',
-    webdriverio: process.env.DEBUG_TESTS === 'true' ? 'info' : 'error',
-    '@wdio/local-runner': process.env.DEBUG_TESTS === 'true' ? 'info' : 'error',
-    '@wdio/cli': process.env.DEBUG_TESTS === 'true' ? 'info' : 'error',
-    '@wdio/cucumber-framework':
-      process.env.DEBUG_TESTS === 'true' ? 'info' : 'error',
+    webdriver: process.env.SHARDED_TESTS === 'true' ? 'error' : (process.env.DEBUG_TESTS === 'true' ? 'info' : 'error'),
+    webdriverio: process.env.SHARDED_TESTS === 'true' ? 'error' : (process.env.DEBUG_TESTS === 'true' ? 'info' : 'error'),
+    '@wdio/local-runner': process.env.SHARDED_TESTS === 'true' ? 'error' : (process.env.DEBUG_TESTS === 'true' ? 'info' : 'error'),
+    '@wdio/cli': process.env.SHARDED_TESTS === 'true' ? 'error' : (process.env.DEBUG_TESTS === 'true' ? 'info' : 'error'),
+    '@wdio/cucumber-framework': process.env.SHARDED_TESTS === 'true' ? 'error' : (process.env.DEBUG_TESTS === 'true' ? 'info' : 'error'),
   },
 
   // If you only want to run your tests until a specific amount of tests have failed use
@@ -137,12 +136,13 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
   baseUrl: process.env.BASE_URL || 'http://localhost:4200',
 
   // Default timeout for all waitFor* commands.
-  // Environment-driven timeout configuration
-  waitforTimeout: timeouts.waitUntilGlobal, // Use configurable waitUntil global timeout
+  // Environment-driven timeout configuration - optimized for Phase 3 auto-wait
+  waitforTimeout: timeouts.waitUntilGlobal,  // Use centralized timeout config (8s for Phase 3)
+  waitforInterval: 200,    // Faster polling interval for Phase 3 optimization
 
   // Default timeout in milliseconds for request
   // if browser driver or grid doesn't send response
-  connectionRetryTimeout: process.env.CI === 'true' ? 30000 : 15000, // Keep longer for connection issues
+  connectionRetryTimeout: timeouts.global, // Use centralized timeout config for connection issues
 
   // Default request retries count
   connectionRetryCount: process.env.CI === 'true' ? 3 : 2,
@@ -158,6 +158,7 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
 
   // Test reporter for stdout.
   // Using spec reporter to show scenario names on failure
+  // Using allure reporter conditionally for test result aggregation
   reporters: [
     [
       'spec',
@@ -167,6 +168,17 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
         showTestStatus: true,
       },
     ],
+    // Conditionally include Allure reporter based on environment variable
+    ...(process.env.SKIP_ALLURE_REPORTER !== 'true' ? [
+      [
+        'allure',
+        {
+          outputDir: 'allure-results',
+          disableWebdriverScreenshotsReporting: false,
+          disableWebdriverStepsReporting: false,
+        },
+      ],
+    ] : []),
   ],
 
   //
@@ -183,8 +195,8 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
     tags: process.env.TEST_TAGS || '',
     timeout: timeouts.global, // Global timeout for step execution (25s CI, 20s local)
     ignoreUndefinedDefinitions: true,
-    format: ['pretty'], // Add pretty format for better readability
-    publishQuiet: process.env.DEBUG_TESTS !== 'true', // Reduce noise from cucumber reporting unless debugging
+    format: process.env.SHARDED_TESTS === 'true' ? ['progress'] : ['pretty'], // Minimal format for sharded tests, pretty for debugging
+    publishQuiet: process.env.SHARDED_TESTS === 'true' || process.env.DEBUG_TESTS !== 'true', // Reduce noise from cucumber reporting unless debugging
     retry: process.env.CI === 'true' ? 3 : 1, // Retry failed scenarios in CI
   },
 

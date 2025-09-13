@@ -170,7 +170,7 @@ jobs:
         if: steps.restore-cache.outputs.cache-hit != 'true'
 
       - name: Run e2e tests with Angular dev server
-        run: npx concurrently --kill-others --success first "npx ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0" "wait-on http://localhost:4200 --timeout=60000 && cross-env CI=true HEADLESS=true wdio run wdio.conf.ts --shard=${{ matrix.shard }}/19"
+        run: npx concurrently --kill-others --success first "npx ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0" "wait-on http://localhost:4200 --timeout=60000 && cross-env CI=true HEADLESS=true SHARDED_TESTS=true DEBUG_TESTS=false wdio run wdio.conf.ts --shard=${{ matrix.shard }}/19"
         env:
           CI: true
           NODE_ENV: production
@@ -178,118 +178,47 @@ jobs:
           NG_CLI_ANALYTICS: false
           NG_FORCE_TTY: false
 
-      - name: Ensure allure-results directory exists
-        run: mkdir -p allure-results
-
-      - name: Generate Allure report for shard ${{ matrix.shard }}
-        run: npm run allure:generate
-        if: always()
-
-      - name: Upload Allure report as artifact (shard ${{ matrix.shard }})
-        uses: actions/upload-artifact@v4
-        with:
-          name: allure-report-shard-${{ matrix.shard }}
-          path: allure-report/
-          retention-days: 30
-        if: always()
-
       - name: Upload Allure results as artifact (shard ${{ matrix.shard }})
         uses: actions/upload-artifact@v4
         with:
-          name: allure-results-shard-${{ matrix.shard }}
+          name: allure-results-shard-${{ matrix.shard }}-${{ github.run_number }}
           path: allure-results/
           retention-days: 30
         if: always()
 
-  e2e-report:
-    name: Combine E2E Test Reports
-    runs-on: ubuntu-latest
-    needs: e2e
-    if: always()
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Download all Allure results
-        uses: actions/download-artifact@v4
-        with:
-          pattern: allure-results-shard-*
-          path: combined-allure-results/
-          merge-multiple: true
-        continue-on-error: true
-
-      - name: Create empty Allure results if none exist
-        run: |
-          if [ ! -d "combined-allure-results" ] || [ -z "$(ls -A combined-allure-results 2>/dev/null)" ]; then
-            echo "No Allure results found, creating empty directory"
-            mkdir -p combined-allure-results
-            echo '{"name": "No test results available", "status": "skipped"}' > combined-allure-results/empty-result.json
-          fi
-
-      - name: Upload combined Allure results
-        uses: actions/upload-artifact@v4
-        with:
-          name: allure-results-combined
-          path: combined-allure-results/
-          retention-days: 30
-
   deploy-allure:
     name: Deploy Allure Report to GitHub Pages
     runs-on: ubuntu-latest
-    needs: e2e-report
+    needs: e2e
     if: always()
     permissions:
       contents: write
       pages: write
       id-token: write
     steps:
-      - name: Download combined Allure results
+      - name: Download all Allure results from shards
         uses: actions/download-artifact@v4
         with:
-          name: allure-results-combined
-          path: combined-allure-results/
+          pattern: allure-results-shard-*-${{ github.run_number }}
+          path: allure-results/
+          merge-multiple: true
         continue-on-error: true
 
-      - name: Create fallback if no results
-        run: |
-          if [ ! -d "combined-allure-results" ] || [ -z "$(ls -A combined-allure-results 2>/dev/null)" ]; then
-            echo "No Allure results available, creating fallback page"
-            mkdir -p combined-allure-results
-            cat > combined-allure-results/index.html << 'EOF'
-          <!DOCTYPE html>
-          <html>
-          <head>
-              <title>E2E Test Results - No Data Available</title>
-              <style>
-                  body { font-family: Arial, sans-serif; margin: 40px; }
-                  .container { max-width: 600px; margin: 0 auto; text-align: center; }
-                  .warning { color: #ff6b35; font-size: 24px; margin-bottom: 20px; }
-                  .message { color: #666; font-size: 16px; }
-              </style>
-          </head>
-          <body>
-              <div class="container">
-                  <div class="warning">⚠️ No Test Results Available</div>
-                  <div class="message">
-                      <p>No E2E test results were generated for this run.</p>
-                      <p>This could be due to test failures or configuration issues.</p>
-                  </div>
-              </div>
-          </body>
-          </html>
-          EOF
-          fi
+      - name: Generate Allure Report
+        uses: simple-elf/allure-report-action@v1.9
+        with:
+          allure_results: allure-results
+          allure_report: allure-report
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v4
         with:
-          path: combined-allure-results/
+          path: allure-report
 
       - name: Deploy to GitHub Pages
-        id: deployment
         uses: actions/deploy-pages@v4
 
   build:

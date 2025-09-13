@@ -53,16 +53,14 @@ class AuthPage extends Page {
         return $('.step-description, .auth-description');
     }
 
+    public get helpDialog() {
+        return $('.help-dialog');
+    }
+
     // Methods
     public async open() {
         await super.open('step/auth');
-        await this.waitForPageLoad();
-    }
-
-    public async waitForPageLoad() {
-        await this.authForm.waitForDisplayed({ timeout: timeouts.uiInteraction });
-        await this.usernameField.waitForDisplayed({ timeout: timeouts.uiInteraction });
-        await this.passwordField.waitForDisplayed({ timeout: timeouts.uiInteraction });
+        // WebdriverIO auto-waits for elements to be interactable when we use them
     }
 
     public async enterUsername(username: string) {
@@ -176,9 +174,6 @@ class AuthPage extends Page {
         );
     }
 
-    public async waitForError() {
-        await this.formError.waitForDisplayed({ timeout: timeouts.uiInteraction });
-    }
 
     public async waitForSuccess() {
         await browser.waitUntil(
@@ -198,8 +193,7 @@ class AuthPage extends Page {
 
     public async isHelpDialogVisible() {
         try {
-            const dialog = await $('.help-dialog');
-            return await dialog.isDisplayed();
+            return await this.helpDialog.isDisplayed();
         } catch (error) {
             return false;
         }
@@ -207,8 +201,7 @@ class AuthPage extends Page {
 
     public async getHelpDialogText() {
         try {
-            const dialog = await $('.help-dialog');
-            return await dialog.getText();
+            return await this.helpDialog.getText();
         } catch (error) {
             return '';
         }

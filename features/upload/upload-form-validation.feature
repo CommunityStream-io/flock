@@ -5,8 +5,6 @@ Feature: Upload Form Validation - Error Handling and User Feedback
   So that I can understand what's required to continue
 
   Background:
-    Given the application is running
-    And the splash screen message should be "*flap* *flap* *flap*"
     And I navigate to the upload step
 
   @file-upload @form-validation

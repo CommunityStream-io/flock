@@ -560,7 +560,7 @@ class ConfigStepPage extends Page {
     // Navigation
     public async open() {
         await super.open('step/config');
-        await this.configSection.waitForDisplayed({ timeout: 10000 });
+        // WebdriverIO auto-waits for elements to be interactable when we use them
     }
 }
 

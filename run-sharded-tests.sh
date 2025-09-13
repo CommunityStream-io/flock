@@ -3,6 +3,56 @@
 # Sharded E2E Test Runner
 # Mimics CI workflow with separate log files for each shard
 
+# Set environment variable for sharded tests to reduce logging
+export SHARDED_TESTS=true
+export DEBUG_TESTS=false
+
+# Parse command line arguments
+AUTO_SERVE_ALLURE=false
+SKIP_ALLURE=false
+TRACK_PERFORMANCE=false
+
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --serve-allure)
+            AUTO_SERVE_ALLURE=true
+            shift
+            ;;
+        --skip-allure)
+            SKIP_ALLURE=true
+            shift
+            ;;
+        --track-performance)
+            TRACK_PERFORMANCE=true
+            shift
+            ;;
+        --help|-h)
+            echo "Sharded E2E Test Runner with Allure Integration"
+            echo ""
+            echo "Usage: $0 [options]"
+            echo ""
+            echo "Options:"
+            echo "  --serve-allure        Automatically serve Allure report after completion"
+            echo "  --skip-allure         Skip Allure report generation and serving"
+            echo "  --track-performance   Enable detailed performance timing tracking"
+            echo "  --help, -h            Show this help message"
+            echo ""
+            echo "Examples:"
+            echo "  $0                           # Run tests with interactive Allure options"
+            echo "  $0 --serve-allure            # Run tests and automatically serve report"
+            echo "  $0 --skip-allure             # Run tests without Allure reports"
+            echo "  $0 --track-performance       # Run with detailed performance tracking"
+            echo "  $0 --serve-allure --track-performance  # Full featured run"
+            exit 0
+            ;;
+        *)
+            echo "Unknown option: $1"
+            echo "Use --help for usage information"
+            exit 1
+            ;;
+    esac
+done
+
 echo "=== SHARDED E2E TEST RUNNER ==="
 echo "Starting sharded test execution..."
 
@@ -10,6 +60,24 @@ echo "Starting sharded test execution..."
 mkdir -p logs/servers logs/shards logs/exits
 echo "Cleaning up old logs..."
 rm -f logs/servers/* logs/shards/* logs/exits/*
+
+# Create Allure directories only if not skipping
+if [ "$SKIP_ALLURE" = false ]; then
+    mkdir -p allure-results
+    echo "Cleaning up old Allure results..."
+    rm -rf allure-results/*
+fi
+
+# Initialize performance tracking if enabled
+if [ "$TRACK_PERFORMANCE" = true ]; then
+    mkdir -p logs
+    PERFORMANCE_LOG="logs/performance.log"
+    echo "=== PERFORMANCE TRACKING ENABLED ===" > "$PERFORMANCE_LOG"
+    echo "Start time: $(date)" >> "$PERFORMANCE_LOG"
+    echo "Allure enabled: $([ "$SKIP_ALLURE" = true ] && echo "NO" || echo "YES")" >> "$PERFORMANCE_LOG"
+    echo "Auto serve: $([ "$AUTO_SERVE_ALLURE" = true ] && echo "YES" || echo "NO")" >> "$PERFORMANCE_LOG"
+    OVERALL_START_TIME=$(date +%s)
+fi
 
 # Function to start a server for a specific shard
 start_shard_server() {
@@ -88,7 +156,13 @@ run_shard() {
     # Run the shard with increased timeouts and log to file
     # Update the baseUrl to use the shard-specific port
     # Redirect browser logs to separate file to reduce clutter
-    npx cross-env CI=true HEADLESS=true BASE_URL=http://localhost:${port} wdio run wdio.conf.ts --shard=${shard_num}/${total_shards} > "${log_file}" 2> "logs/shards/shard-${shard_num}.browser.log"
+    # Conditionally disable Allure reporter for faster execution when not needed
+    local allure_env=""
+    if [ "$SKIP_ALLURE" = true ]; then
+        allure_env="SKIP_ALLURE_REPORTER=true"
+    fi
+    
+    npx cross-env CI=true HEADLESS=true BASE_URL=http://localhost:${port} SHARDED_TESTS=true DEBUG_TESTS=false ${allure_env} wdio run wdio.conf.ts --shard=${shard_num}/${total_shards} > "${log_file}" 2> "logs/shards/shard-${shard_num}.browser.log"
     
     local exit_code=$?
     local end_time=$(date +%s)
@@ -98,17 +172,130 @@ run_shard() {
     echo "Shard ${shard_num} completed at: $(date)" >> "${timing_file}"
     echo "Shard ${shard_num} total duration: ${duration}s" >> "${timing_file}"
     echo "${exit_code}" > "${exit_file}"
+    
+    # Allure results are automatically written to allure-results/ by WebdriverIO
+    # No need for nested shard directories - all shards write to the same directory
+    if [ "$SKIP_ALLURE" = false ]; then
+        echo "✅ Shard ${shard_num} Allure results written to allure-results/"
+        if [ "$TRACK_PERFORMANCE" = true ]; then
+            local allure_files=$(find allure-results -type f 2>/dev/null | wc -l)
+            echo "📊 Shard ${shard_num} generated ${allure_files} Allure result files" >> "$PERFORMANCE_LOG"
+        fi
+    fi
+    
     return $exit_code
 }
 
+
+# Function to analyze Allure results from single directory (simplified approach)
+analyze_allure_results() {
+    local total_shards=$1
+    echo "=== ANALYZING ALLURE RESULTS ==="
+    
+    # Check if allure-results directory exists and has content
+    if [ -d "allure-results" ] && [ "$(ls -A allure-results 2>/dev/null)" ]; then
+        local total_files=$(find "allure-results" -type f 2>/dev/null | wc -l)
+        local json_files=$(find "allure-results" -name "*.json" 2>/dev/null | wc -l)
+        local result_files=$(find "allure-results" -name "*-result.json" 2>/dev/null | wc -l)
+        local container_files=$(find "allure-results" -name "*-container.json" 2>/dev/null | wc -l)
+        local attachment_files=$(find "allure-results" -name "*-attachment.*" 2>/dev/null | wc -l)
+        
+        echo "📊 ALLURE RESULTS ANALYSIS:"
+        echo "   📁 Total files: ${total_files}"
+        echo "   📄 JSON files: ${json_files}"
+        echo "   🧪 Test result files: ${result_files}"
+        echo "   📦 Container files: ${container_files}"
+        echo "   📎 Attachment files: ${attachment_files}"
+        echo "   📂 Directory: allure-results/"
+        
+        # Show sample files
+        echo "   📋 Sample files:"
+        find "allure-results" -type f 2>/dev/null | head -5 | while read file; do
+            echo "      - $(basename "$file")"
+        done
+        if [ $total_files -gt 5 ]; then
+            echo "      ... and $((total_files - 5)) more files"
+        fi
+        
+        # Performance tracking
+        if [ "$TRACK_PERFORMANCE" = true ]; then
+            echo "📊 Total Allure files generated: ${total_files}" >> "$PERFORMANCE_LOG"
+            echo "📊 Test results: ${result_files}, Containers: ${container_files}, Attachments: ${attachment_files}" >> "$PERFORMANCE_LOG"
+        fi
+        
+    else
+        echo "⚠️  No Allure results found in allure-results/"
+        echo "   This could mean:"
+        echo "   - Tests didn't run successfully"
+        echo "   - Allure reporter is not configured properly"
+        echo "   - Results are being written to a different directory"
+        
+        # Create fallback for empty results
+        mkdir -p allure-results
+        cat > allure-results/fallback-result.json << 'EOF'
+{
+    "name": "No test results available",
+    "status": "skipped",
+    "start": 0,
+    "stop": 0,
+    "uuid": "fallback-result"
+}
+EOF
+    fi
+}
+
+# Function to generate final Allure report and serve it locally
+serve_allure_report() {
+    echo "=== GENERATING FINAL ALLURE REPORT ==="
+    
+    if ! command -v allure &> /dev/null; then
+        echo "❌ Allure command not found. Install with: npm install -g allure-commandline"
+        echo "📋 To install Allure:"
+        echo "   1. Install Java 8+: https://adoptopenjdk.net/"
+        echo "   2. Run: npm install -g allure-commandline"
+        return 1
+    fi
+    
+    # Generate the final report from single directory
+    echo "Generating final Allure report..."
+    allure generate allure-results -o allure-report-combined --clean
+    
+    if [ $? -eq 0 ]; then
+        echo "✅ Combined Allure report generated successfully!"
+        echo "📊 Report location: allure-report-combined/"
+        
+        # Serve the report locally
+        echo "🌐 Starting Allure report server..."
+        echo "   Access the report at: http://localhost:8080"
+        echo "   Press Ctrl+C to stop the server"
+        echo ""
+        
+        # Try to open the report in the default browser (platform-specific)
+        if command -v xdg-open &> /dev/null; then
+            # Linux
+            xdg-open http://localhost:8080 &
+        elif command -v open &> /dev/null; then
+            # macOS
+            open http://localhost:8080 &
+        elif command -v start &> /dev/null; then
+            # Windows
+            start http://localhost:8080 &
+        fi
+        
+        # Serve the report
+        allure open allure-report-combined --port 8080
+    else
+        echo "❌ Failed to generate combined Allure report"
+        return 1
+    fi
+}
 
 # Function to generate summary
 generate_summary() {
     local total_shards=$1
     echo "=== SHARD EXECUTION SUMMARY ==="
     
-    local passed=0
-    local failed=0
+    # Use global counters for performance tracking
     local total_duration=0
     
     for i in $(seq 1 $total_shards); do
@@ -147,6 +334,10 @@ generate_summary() {
     echo "📁 logs/servers/ - Angular dev server logs"
     echo "📁 logs/shards/  - Test execution logs, timing, and browser logs"
     echo "📁 logs/exits/   - Exit codes for each shard"
+    echo "📁 allure-results/ - Individual shard Allure results"
+    echo "📁 allure-reports/ - Individual shard Allure reports"
+    echo "📁 allure-results-combined/ - Combined Allure results (all shards)"
+    echo "📁 allure-report-combined/ - Final combined Allure report"
 }
 
 # Main execution
@@ -158,6 +349,10 @@ echo "Running ${TOTAL_SHARDS} shards in parallel, each with its own server..."
 echo "Starting all ${TOTAL_SHARDS} shards in parallel (fail-fast)..."
 
 # Start all shards in background
+# Initialize global counters for performance tracking
+passed=0
+failed=0
+
 pids=()
 for i in $(seq 1 $TOTAL_SHARDS); do
     run_shard $i $TOTAL_SHARDS &
@@ -169,7 +364,7 @@ echo "Started ${#pids[@]} shards with PIDs: ${pids[*]}"
 # Wait for any shard to complete and check for failures
 failed_shard=""
 timeout_counter=0
-max_timeout=300  # 5 minutes max wait time
+max_timeout=300  # 5 minutes max wait time per shard
 
 while [ ${#pids[@]} -gt 0 ] && [ $timeout_counter -lt $max_timeout ]; do
     for i in "${!pids[@]}"; do
@@ -224,10 +419,18 @@ stop_all_servers $TOTAL_SHARDS
 # Generate summary (always show, even on failure)
 generate_summary $TOTAL_SHARDS
 
-# If any shard failed, exit with error code
-if [ -n "$failed_shard" ]; then
-    echo "❌ Execution stopped due to shard ${failed_shard} failure (fail-fast)"
-    exit 1
+# Handle Allure report generation based on options
+if [ "$SKIP_ALLURE" = true ]; then
+    echo "⏭️  Skipping Allure report generation (--skip-allure flag)"
+else
+    # Analyze Allure results from single directory (simplified approach)
+    analyze_allure_results $TOTAL_SHARDS
+    
+    # If any shard failed, show error but still try to generate reports
+    if [ -n "$failed_shard" ]; then
+        echo "❌ Execution stopped due to shard ${failed_shard} failure (fail-fast)"
+        echo "⚠️  Some tests may have failed, but attempting to generate reports anyway..."
+    fi
 fi
 
 echo "=== SHARDED TEST EXECUTION COMPLETE ==="
@@ -235,4 +438,60 @@ echo "Check organized logs in logs/ directory for detailed results:"
 echo "  📁 logs/servers/ - Angular dev server logs for each shard"
 echo "  📁 logs/shards/  - Test execution logs, timing metrics, and browser logs"
 echo "  📁 logs/exits/   - Exit codes for each shard"
+if [ "$SKIP_ALLURE" = false ]; then
+    echo "  📁 allure-results/ - Individual shard Allure results"
+    echo "  📁 allure-results-combined/ - Combined Allure results"
+fi
 echo "Each shard ran on its own port: 4201-4219"
+echo ""
+
+# Handle Allure report serving based on options
+if [ "$SKIP_ALLURE" = true ]; then
+    echo "📊 Allure reports skipped (--skip-allure flag)"
+elif [ "$AUTO_SERVE_ALLURE" = true ]; then
+    echo "🚀 Automatically serving Allure report (--serve-allure flag)..."
+    serve_allure_report
+else
+    # Interactive mode - ask user if they want to serve the Allure report
+    echo "🌐 Allure Report Options:"
+    echo "   1. Serve combined report locally (opens browser automatically)"
+    echo "   2. Skip serving report (you can serve manually later)"
+    echo "   3. Generate report only (no serving)"
+    echo ""
+    read -p "Choose option (1-3): " choice
+
+    case $choice in
+        1)
+            serve_allure_report
+            ;;
+        2)
+            echo "📊 To serve the report later, run:"
+            echo "   allure open allure-report-combined --port 8080"
+            ;;
+        3)
+            echo "📊 Report generated at: allure-report-combined/"
+            echo "   To serve later: allure open allure-report-combined --port 8080"
+            ;;
+        *)
+            echo "📊 Invalid choice. Report generated at: allure-report-combined/"
+            echo "   To serve later: allure open allure-report-combined --port 8080"
+            ;;
+    esac
+fi
+
+# Final performance tracking
+if [ "$TRACK_PERFORMANCE" = true ]; then
+    overall_end_time=$(date +%s)
+    overall_duration=$((overall_end_time - OVERALL_START_TIME))
+    echo "=== PERFORMANCE SUMMARY ===" >> "$PERFORMANCE_LOG"
+    echo "Total execution time: ${overall_duration}s" >> "$PERFORMANCE_LOG"
+    echo "End time: $(date)" >> "$PERFORMANCE_LOG"
+    echo "Shards passed: ${passed}" >> "$PERFORMANCE_LOG"
+    echo "Shards failed: ${failed}" >> "$PERFORMANCE_LOG"
+    echo "Performance log saved to: $PERFORMANCE_LOG"
+fi
+
+# Exit with appropriate code
+if [ -n "$failed_shard" ]; then
+    exit 1
+fi
