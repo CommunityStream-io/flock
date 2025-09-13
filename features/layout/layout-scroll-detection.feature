@@ -5,8 +5,6 @@ Feature: Layout Scroll Detection - Prevent Viewport Issues
   So that I can prevent layout problems and ensure fixed viewport across all devices
 
   Background:
-    Given the application is running
-    And the splash screen message should be "*flap* *flap* *flap*"
 
   @layout @scroll-detection @viewport @mobile
   Scenario: Step layout should not have scroll issues on mobile devices

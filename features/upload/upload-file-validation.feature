@@ -5,8 +5,6 @@ Feature: File Validation - Archive File Verification and Error Handling
   So that only valid archives are processed for migration
 
   Background:
-    Given the application is running
-    And the splash screen message should be "*flap* *flap* *flap*"
     And I navigate to the upload step
 
   @file-upload @file-validation 

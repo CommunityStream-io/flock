@@ -5,8 +5,6 @@ Feature: Password Validation - Bluesky Password Requirements
   So that I can provide valid credentials for authentication
 
   Background:
-    Given the application is running
-    And the splash screen message should be "*flap* *flap* *flap*"
     And I navigate to the upload step
     And I select a valid Instagram archive file "valid-archive.zip"
     And I navigate to the auth step

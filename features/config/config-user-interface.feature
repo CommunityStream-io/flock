@@ -5,8 +5,6 @@ Feature: Configuration User Interface - Intuitive Migration Settings
   So that I can easily set up my migration preferences
 
   Background:
-    Given the application is running
-    And the splash screen message should be "*flap* *flap* *flap*"
     And I navigate to the upload step
     And I select a valid Instagram archive file "valid-archive.zip"
     And I navigate to the auth step
