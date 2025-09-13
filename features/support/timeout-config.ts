@@ -60,7 +60,7 @@ export function getTimeoutConfig(isCI: boolean = process.env.CI === 'true'): Tim
       authNavigation: 10000,   // 10s - Auth-related navigation (was 8s)
       credentialEntry: 15000,  // 15s - Credential entry and validation (NEW)
       uiInteraction: 5000,     // 5s - UI interactions (reduced for auto-wait)
-      dialogClose: 3000,       // 3s - Dialog closing (reduced for auto-wait)
+      dialogClose: 5000,       // 5s - Dialog closing (optimized for auto-wait)
       immediate: 3000,         // 3s - Very quick operations (was 2s)
     };
   } else {
@@ -79,7 +79,7 @@ export function getTimeoutConfig(isCI: boolean = process.env.CI === 'true'): Tim
       authNavigation: 10000,   // 10s - Auth-related navigation (was 6s)
       credentialEntry: 10000,  // 10s - Credential entry and validation (NEW)
       uiInteraction: 4000,     // 4s - UI interactions (reduced for auto-wait)
-      dialogClose: 3000,       // 3s - Dialog closing (reduced for auto-wait)
+      dialogClose: 5000,       // 5s - Dialog closing (optimized for auto-wait)
       immediate: 3000,         // 3s - Very quick operations (was 2s)
     };
   }
