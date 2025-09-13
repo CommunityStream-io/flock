@@ -170,21 +170,7 @@ jobs:
         if: steps.restore-cache.outputs.cache-hit != 'true'
 
       - name: Run e2e tests with Angular dev server
-        run: |
-          # Start Angular dev server on shard-specific port
-          PORT=$((4200 + ${{ matrix.shard }}))
-          npx ng serve flock-mirage --configuration=test --port=${PORT} --host=0.0.0.0 &
-          SERVER_PID=$!
-          
-          # Wait for server to be ready
-          echo "Waiting for server on port ${PORT} to be ready..."
-          timeout 60 bash -c "until curl -s http://localhost:${PORT} > /dev/null; do sleep 2; done"
-          
-          # Run tests with shard-specific base URL
-          npx cross-env CI=true HEADLESS=true BASE_URL=http://localhost:${PORT} SHARDED_TESTS=true DEBUG_TESTS=false wdio run wdio.conf.ts --shard=${{ matrix.shard }}/19
-          
-          # Clean up server
-          kill $SERVER_PID 2>/dev/null || true
+        run: npx concurrently --kill-others --success first "npx ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0" "wait-on http://localhost:4200 --timeout=60000 && cross-env CI=true HEADLESS=true SHARDED_TESTS=true DEBUG_TESTS=false wdio run wdio.conf.ts --shard=${{ matrix.shard }}/19"
         env:
           CI: true
           NODE_ENV: production
