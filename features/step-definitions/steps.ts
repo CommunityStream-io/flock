@@ -4,6 +4,7 @@ import { pages } from '../pageobjects';
 import { browser, $ } from '@wdio/globals';
 import { timeouts, timeoutMessages } from '../support/timeout-config';
 import { bddLog } from '../support/logger';
+// Allure API is available via @wdio/allure-reporter global
 
 // Import global setup
 import '../support/global-setup';
@@ -14,6 +15,54 @@ import './auth';
 import './splash-screen';
 import './step-navigation';
 import './file-upload';
+
+// ===== ALLURE DEDUPLICATION HELPERS =====
+
+/**
+ * Generate a consistent AllureId for test deduplication
+ * This prevents duplicate test results across shards
+ */
+function generateAllureId(scenarioTitle: string, featurePath: string): string {
+    // Create a deterministic ID based on feature and scenario
+    const featureName = featurePath.split('/').pop()?.replace('.feature', '') || 'unknown';
+    const scenarioHash = scenarioTitle
+        .toLowerCase()
+        .replace(/[^a-z0-9]/g, '-')
+        .replace(/-+/g, '-')
+        .replace(/^-|-$/g, '');
+    
+    return `${featureName}-${scenarioHash}`;
+}
+
+/**
+ * Set AllureId and labels for current test to enable deduplication and organization
+ */
+Before(async function(scenario) {
+    const allureId = generateAllureId(scenario.pickle.name, scenario.pickle.uri);
+    const featureName = scenario.pickle.uri.split('/').pop()?.replace('.feature', '') || 'unknown';
+    
+    // Set AllureId to prevent duplicates across shards
+    if (global.allure) {
+        global.allure.id = allureId;
+        
+        // Add organizational labels
+        global.allure.label('feature', featureName);
+        global.allure.label('story', scenario.pickle.name);
+        global.allure.label('suite', 'E2E Tests');
+        
+        // Add shard information for debugging
+        if (process.env.SHARDED_TESTS === 'true') {
+            global.allure.label('tag', 'sharded');
+        }
+        
+        // Add environment labels
+        if (process.env.CI === 'true') {
+            global.allure.label('tag', 'ci');
+        } else {
+            global.allure.label('tag', 'local');
+        }
+    }
+});
 
 // ===== URL CHECKS =====
 
