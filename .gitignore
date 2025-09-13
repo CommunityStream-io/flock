@@ -45,6 +45,7 @@ Thumbs.db
 
 # Allure reports and results
 allure-results/
+allure-reports/
 allure-report/
 
 # Logs
