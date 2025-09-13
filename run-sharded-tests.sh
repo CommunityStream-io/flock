@@ -426,6 +426,10 @@ else
     # Analyze Allure results from single directory (simplified approach)
     analyze_allure_results $TOTAL_SHARDS
     
+    # Filter out phantom hook failures
+    echo "🔧 Filtering out phantom hook failures..."
+    node scripts/filter-allure-hooks.js
+    
     # If any shard failed, show error but still try to generate reports
     if [ -n "$failed_shard" ]; then
         echo "❌ Execution stopped due to shard ${failed_shard} failure (fail-fast)"
