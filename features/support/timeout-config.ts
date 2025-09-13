@@ -9,6 +9,7 @@
 export interface TimeoutConfig {
   // Global timeouts
   global: number;
+  waitUntilGlobal: number;  // Global timeout for waitUntil calls
   
   // Application loading timeouts
   appLoad: number;
@@ -47,6 +48,7 @@ export function getTimeoutConfig(isCI: boolean = process.env.CI === 'true'): Tim
     // CI timeouts - increased for sharded test stability
     return {
       global: 120000,          // 120s (2 minutes) - Global timeout (must be higher than all step-specific timeouts)
+      waitUntilGlobal: 30000,  // 30s - Global timeout for waitUntil calls
       appLoad: 25000,          // 25s - Application loading (lower than global timeout)
       splashScreen: 25000,     // 25s - Splash screen appearance (lower than global timeout)
       navigation: 25000,       // 25s - General navigation (lower than global timeout)
@@ -65,6 +67,7 @@ export function getTimeoutConfig(isCI: boolean = process.env.CI === 'true'): Tim
     // Local development timeouts - more generous for debugging
     return {
       global: 120000,          // 120s (2 minutes) - Global timeout (must be higher than all step-specific timeouts)
+      waitUntilGlobal: 30000,  // 30s - Global timeout for waitUntil calls
       appLoad: 20000,          // 20s - Application loading (lower than global timeout)
       splashScreen: 20000,     // 20s - Splash screen appearance (lower than global timeout)
       navigation: 20000,       // 20s - General navigation (lower than global timeout)
