@@ -158,7 +158,7 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
 
   // Test reporter for stdout.
   // Using spec reporter to show scenario names on failure
-  // Using allure reporter for test result aggregation
+  // Using allure reporter conditionally for test result aggregation
   reporters: [
     [
       'spec',
@@ -168,14 +168,17 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
         showTestStatus: true,
       },
     ],
-    [
-      'allure',
-      {
-        outputDir: 'allure-results',
-        disableWebdriverScreenshotsReporting: false,
-        disableWebdriverStepsReporting: false,
-      },
-    ],
+    // Conditionally include Allure reporter based on environment variable
+    ...(process.env.SKIP_ALLURE_REPORTER !== 'true' ? [
+      [
+        'allure',
+        {
+          outputDir: 'allure-results',
+          disableWebdriverScreenshotsReporting: false,
+          disableWebdriverStepsReporting: false,
+        },
+      ],
+    ] : []),
   ],
 
   //

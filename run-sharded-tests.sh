@@ -10,6 +10,7 @@ export DEBUG_TESTS=false
 # Parse command line arguments
 AUTO_SERVE_ALLURE=false
 SKIP_ALLURE=false
+TRACK_PERFORMANCE=false
 
 while [[ $# -gt 0 ]]; do
     case $1 in
@@ -21,20 +22,27 @@ while [[ $# -gt 0 ]]; do
             SKIP_ALLURE=true
             shift
             ;;
+        --track-performance)
+            TRACK_PERFORMANCE=true
+            shift
+            ;;
         --help|-h)
             echo "Sharded E2E Test Runner with Allure Integration"
             echo ""
             echo "Usage: $0 [options]"
             echo ""
             echo "Options:"
-            echo "  --serve-allure    Automatically serve Allure report after completion"
-            echo "  --skip-allure     Skip Allure report generation and serving"
-            echo "  --help, -h        Show this help message"
+            echo "  --serve-allure        Automatically serve Allure report after completion"
+            echo "  --skip-allure         Skip Allure report generation and serving"
+            echo "  --track-performance   Enable detailed performance timing tracking"
+            echo "  --help, -h            Show this help message"
             echo ""
             echo "Examples:"
-            echo "  $0                # Run tests with interactive Allure options"
-            echo "  $0 --serve-allure # Run tests and automatically serve report"
-            echo "  $0 --skip-allure  # Run tests without Allure reports"
+            echo "  $0                           # Run tests with interactive Allure options"
+            echo "  $0 --serve-allure            # Run tests and automatically serve report"
+            echo "  $0 --skip-allure             # Run tests without Allure reports"
+            echo "  $0 --track-performance       # Run with detailed performance tracking"
+            echo "  $0 --serve-allure --track-performance  # Full featured run"
             exit 0
             ;;
         *)
@@ -55,9 +63,20 @@ rm -f logs/servers/* logs/shards/* logs/exits/*
 
 # Create Allure directories only if not skipping
 if [ "$SKIP_ALLURE" = false ]; then
-    mkdir -p allure-results allure-reports
+    mkdir -p allure-results
     echo "Cleaning up old Allure results..."
-    rm -rf allure-results/* allure-reports/*
+    rm -rf allure-results/*
+fi
+
+# Initialize performance tracking if enabled
+if [ "$TRACK_PERFORMANCE" = true ]; then
+    mkdir -p logs
+    PERFORMANCE_LOG="logs/performance.log"
+    echo "=== PERFORMANCE TRACKING ENABLED ===" > "$PERFORMANCE_LOG"
+    echo "Start time: $(date)" >> "$PERFORMANCE_LOG"
+    echo "Allure enabled: $([ "$SKIP_ALLURE" = true ] && echo "NO" || echo "YES")" >> "$PERFORMANCE_LOG"
+    echo "Auto serve: $([ "$AUTO_SERVE_ALLURE" = true ] && echo "YES" || echo "NO")" >> "$PERFORMANCE_LOG"
+    OVERALL_START_TIME=$(date +%s)
 fi
 
 # Function to start a server for a specific shard
@@ -137,7 +156,13 @@ run_shard() {
     # Run the shard with increased timeouts and log to file
     # Update the baseUrl to use the shard-specific port
     # Redirect browser logs to separate file to reduce clutter
-    npx cross-env CI=true HEADLESS=true BASE_URL=http://localhost:${port} SHARDED_TESTS=true DEBUG_TESTS=false wdio run wdio.conf.ts --shard=${shard_num}/${total_shards} > "${log_file}" 2> "logs/shards/shard-${shard_num}.browser.log"
+    # Conditionally disable Allure reporter for faster execution when not needed
+    local allure_env=""
+    if [ "$SKIP_ALLURE" = true ]; then
+        allure_env="SKIP_ALLURE_REPORTER=true"
+    fi
+    
+    npx cross-env CI=true HEADLESS=true BASE_URL=http://localhost:${port} SHARDED_TESTS=true DEBUG_TESTS=false ${allure_env} wdio run wdio.conf.ts --shard=${shard_num}/${total_shards} > "${log_file}" 2> "logs/shards/shard-${shard_num}.browser.log"
     
     local exit_code=$?
     local end_time=$(date +%s)
@@ -148,22 +173,13 @@ run_shard() {
     echo "Shard ${shard_num} total duration: ${duration}s" >> "${timing_file}"
     echo "${exit_code}" > "${exit_file}"
     
-    # Generate Allure report for this shard (similar to CI pipeline) - only if not skipping
+    # Allure results are automatically written to allure-results/ by WebdriverIO
+    # No need for nested shard directories - all shards write to the same directory
     if [ "$SKIP_ALLURE" = false ]; then
-        echo "Generating Allure report for shard ${shard_num}..."
-        if command -v allure &> /dev/null; then
-            # Ensure allure-results directory exists for this shard
-            mkdir -p "allure-results/shard-${shard_num}"
-            
-            # Copy any existing allure results to shard-specific directory
-            if [ -d "allure-results" ] && [ "$(ls -A allure-results 2>/dev/null | grep -v "shard-" | head -1)" ]; then
-                cp -r allure-results/* "allure-results/shard-${shard_num}/" 2>/dev/null || true
-            fi
-            
-            # Generate report for this shard
-            allure generate "allure-results/shard-${shard_num}" -o "allure-reports/shard-${shard_num}" --clean 2>/dev/null || echo "Warning: Failed to generate Allure report for shard ${shard_num}"
-        else
-            echo "Warning: Allure command not found. Install with: npm install -g allure-commandline"
+        echo "✅ Shard ${shard_num} Allure results written to allure-results/"
+        if [ "$TRACK_PERFORMANCE" = true ]; then
+            local allure_files=$(find allure-results -type f 2>/dev/null | wc -l)
+            echo "📊 Shard ${shard_num} generated ${allure_files} Allure result files" >> "$PERFORMANCE_LOG"
         fi
     fi
     
@@ -171,55 +187,52 @@ run_shard() {
 }
 
 
-# Function to combine Allure results from all shards (mimics CI e2e-report job)
-combine_allure_results() {
+# Function to analyze Allure results from single directory (simplified approach)
+analyze_allure_results() {
     local total_shards=$1
-    echo "=== COMBINING ALLURE RESULTS ==="
+    echo "=== ANALYZING ALLURE RESULTS ==="
     
-    # Create combined results directory
-    mkdir -p allure-results-combined
-    
-    # Copy results from each shard with detailed logging
-    local shards_with_results=0
-    local total_test_files=0
-    local total_test_results=0
-    
-    for i in $(seq 1 $total_shards); do
-        if [ -d "allure-results/shard-${i}" ] && [ "$(ls -A allure-results/shard-${i} 2>/dev/null)" ]; then
-            echo "📊 Processing shard ${i} results..."
-            
-            # Count files in shard directory
-            local shard_file_count=$(find "allure-results/shard-${i}" -type f 2>/dev/null | wc -l)
-            local shard_json_count=$(find "allure-results/shard-${i}" -name "*.json" 2>/dev/null | wc -l)
-            
-            echo "   📁 Found ${shard_file_count} files (${shard_json_count} JSON files) in shard ${i}"
-            
-            # List the actual files for debugging
-            if [ $shard_file_count -gt 0 ]; then
-                echo "   📋 Files in shard ${i}:"
-                find "allure-results/shard-${i}" -type f 2>/dev/null | head -10 | while read file; do
-                    echo "      - $(basename "$file")"
-                done
-                if [ $shard_file_count -gt 10 ]; then
-                    echo "      ... and $((shard_file_count - 10)) more files"
-                fi
-            fi
-            
-            # Copy results
-            cp -r allure-results/shard-${i}/* allure-results-combined/ 2>/dev/null || true
-            ((shards_with_results++))
-            ((total_test_files += shard_file_count))
-            ((total_test_results += shard_json_count))
-        else
-            echo "⚠️  No results found for shard ${i}"
+    # Check if allure-results directory exists and has content
+    if [ -d "allure-results" ] && [ "$(ls -A allure-results 2>/dev/null)" ]; then
+        local total_files=$(find "allure-results" -type f 2>/dev/null | wc -l)
+        local json_files=$(find "allure-results" -name "*.json" 2>/dev/null | wc -l)
+        local result_files=$(find "allure-results" -name "*-result.json" 2>/dev/null | wc -l)
+        local container_files=$(find "allure-results" -name "*-container.json" 2>/dev/null | wc -l)
+        local attachment_files=$(find "allure-results" -name "*-attachment.*" 2>/dev/null | wc -l)
+        
+        echo "📊 ALLURE RESULTS ANALYSIS:"
+        echo "   📁 Total files: ${total_files}"
+        echo "   📄 JSON files: ${json_files}"
+        echo "   🧪 Test result files: ${result_files}"
+        echo "   📦 Container files: ${container_files}"
+        echo "   📎 Attachment files: ${attachment_files}"
+        echo "   📂 Directory: allure-results/"
+        
+        # Show sample files
+        echo "   📋 Sample files:"
+        find "allure-results" -type f 2>/dev/null | head -5 | while read file; do
+            echo "      - $(basename "$file")"
+        done
+        if [ $total_files -gt 5 ]; then
+            echo "      ... and $((total_files - 5)) more files"
         fi
-    done
-    
-    # Create fallback if no results found (similar to CI pipeline)
-    if [ $shards_with_results -eq 0 ] || [ ! "$(ls -A allure-results-combined 2>/dev/null)" ]; then
-        echo "No Allure results found, creating fallback..."
-        mkdir -p allure-results-combined
-        cat > allure-results-combined/fallback-result.json << 'EOF'
+        
+        # Performance tracking
+        if [ "$TRACK_PERFORMANCE" = true ]; then
+            echo "📊 Total Allure files generated: ${total_files}" >> "$PERFORMANCE_LOG"
+            echo "📊 Test results: ${result_files}, Containers: ${container_files}, Attachments: ${attachment_files}" >> "$PERFORMANCE_LOG"
+        fi
+        
+    else
+        echo "⚠️  No Allure results found in allure-results/"
+        echo "   This could mean:"
+        echo "   - Tests didn't run successfully"
+        echo "   - Allure reporter is not configured properly"
+        echo "   - Results are being written to a different directory"
+        
+        # Create fallback for empty results
+        mkdir -p allure-results
+        cat > allure-results/fallback-result.json << 'EOF'
 {
     "name": "No test results available",
     "status": "skipped",
@@ -228,31 +241,6 @@ combine_allure_results() {
     "uuid": "fallback-result"
 }
 EOF
-    fi
-    
-    echo ""
-    echo "📈 COMBINATION SUMMARY:"
-    echo "   🎯 Shards with results: ${shards_with_results}/${total_shards}"
-    echo "   📁 Total files processed: ${total_test_files}"
-    echo "   📊 Total JSON test results: ${total_test_results}"
-    echo "   📂 Combined directory: allure-results-combined/"
-    
-    # Show final combined directory contents
-    if [ -d "allure-results-combined" ] && [ "$(ls -A allure-results-combined 2>/dev/null)" ]; then
-        local combined_file_count=$(find "allure-results-combined" -type f 2>/dev/null | wc -l)
-        local combined_json_count=$(find "allure-results-combined" -name "*.json" 2>/dev/null | wc -l)
-        echo "   ✅ Final combined directory contains: ${combined_file_count} files (${combined_json_count} JSON files)"
-        
-        # Show sample of combined files
-        echo "   📋 Sample files in combined directory:"
-        find "allure-results-combined" -type f 2>/dev/null | head -5 | while read file; do
-            echo "      - $(basename "$file")"
-        done
-        if [ $combined_file_count -gt 5 ]; then
-            echo "      ... and $((combined_file_count - 5)) more files"
-        fi
-    else
-        echo "   ⚠️  Combined directory is empty or doesn't exist"
     fi
 }
 
@@ -268,9 +256,9 @@ serve_allure_report() {
         return 1
     fi
     
-    # Generate the combined report
-    echo "Generating combined Allure report..."
-    allure generate allure-results-combined -o allure-report-combined --clean
+    # Generate the final report from single directory
+    echo "Generating final Allure report..."
+    allure generate allure-results -o allure-report-combined --clean
     
     if [ $? -eq 0 ]; then
         echo "✅ Combined Allure report generated successfully!"
@@ -307,8 +295,7 @@ generate_summary() {
     local total_shards=$1
     echo "=== SHARD EXECUTION SUMMARY ==="
     
-    local passed=0
-    local failed=0
+    # Use global counters for performance tracking
     local total_duration=0
     
     for i in $(seq 1 $total_shards); do
@@ -362,6 +349,10 @@ echo "Running ${TOTAL_SHARDS} shards in parallel, each with its own server..."
 echo "Starting all ${TOTAL_SHARDS} shards in parallel (fail-fast)..."
 
 # Start all shards in background
+# Initialize global counters for performance tracking
+passed=0
+failed=0
+
 pids=()
 for i in $(seq 1 $TOTAL_SHARDS); do
     run_shard $i $TOTAL_SHARDS &
@@ -373,7 +364,7 @@ echo "Started ${#pids[@]} shards with PIDs: ${pids[*]}"
 # Wait for any shard to complete and check for failures
 failed_shard=""
 timeout_counter=0
-max_timeout=300  # 5 minutes max wait time
+max_timeout=300  # 5 minutes max wait time per shard
 
 while [ ${#pids[@]} -gt 0 ] && [ $timeout_counter -lt $max_timeout ]; do
     for i in "${!pids[@]}"; do
@@ -432,8 +423,8 @@ generate_summary $TOTAL_SHARDS
 if [ "$SKIP_ALLURE" = true ]; then
     echo "⏭️  Skipping Allure report generation (--skip-allure flag)"
 else
-    # Combine Allure results from all shards (similar to CI e2e-report job)
-    combine_allure_results $TOTAL_SHARDS
+    # Analyze Allure results from single directory (simplified approach)
+    analyze_allure_results $TOTAL_SHARDS
     
     # If any shard failed, show error but still try to generate reports
     if [ -n "$failed_shard" ]; then
@@ -486,6 +477,18 @@ else
             echo "   To serve later: allure open allure-report-combined --port 8080"
             ;;
     esac
+fi
+
+# Final performance tracking
+if [ "$TRACK_PERFORMANCE" = true ]; then
+    overall_end_time=$(date +%s)
+    overall_duration=$((overall_end_time - OVERALL_START_TIME))
+    echo "=== PERFORMANCE SUMMARY ===" >> "$PERFORMANCE_LOG"
+    echo "Total execution time: ${overall_duration}s" >> "$PERFORMANCE_LOG"
+    echo "End time: $(date)" >> "$PERFORMANCE_LOG"
+    echo "Shards passed: ${passed}" >> "$PERFORMANCE_LOG"
+    echo "Shards failed: ${failed}" >> "$PERFORMANCE_LOG"
+    echo "Performance log saved to: $PERFORMANCE_LOG"
 fi
 
 # Exit with appropriate code
