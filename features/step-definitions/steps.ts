@@ -5,8 +5,8 @@ import { browser, $ } from '@wdio/globals';
 import { timeouts, timeoutMessages } from '../support/timeout-config';
 import { bddLog } from '../support/logger';
 
-// Global application state
-let applicationInitialized = false;
+// Import global setup
+import '../support/global-setup';
 
 // Import all step definition modules to register them
 import './landing';
@@ -23,49 +23,6 @@ Then('the URL should contain {string}', async (urlPath: string) => {
 });
 
 // ===== COMMON STEPS =====
-
-// Internal function to initialize application (runs only once)
-async function initializeApplication() {
-    if (applicationInitialized) {
-        bddLog('Application already initialized, skipping setup', 'setup');
-        return;
-    }
-    
-    bddLog('Initializing application', 'setup');
-    await browser.url('/');
-    
-    // Wait for application to be fully ready with a single, comprehensive check
-    await browser.waitUntil(
-        async () => {
-            // Check document ready state
-            const readyState = await browser.execute(() => document.readyState);
-            if (readyState !== 'complete') return false;
-            
-            // Check if app-root exists and has content
-            const hasAppRoot = await $('app-root').isExisting();
-            if (!hasAppRoot) return false;
-            
-            // Check if Angular has rendered content (works in both dev and prod)
-            const hasContent = await browser.execute(() => {
-                const appRoot = document.querySelector('app-root');
-                return appRoot && appRoot.children.length > 0;
-            });
-            
-            return hasContent;
-        },
-        { 
-            timeout: timeouts.appLoad,
-            timeoutMsg: timeoutMessages.appLoad(process.env.CI === 'true')
-        }
-    );
-    
-    applicationInitialized = true;
-    bddLog('Application initialized successfully', 'success');
-}
-
-Given('the application is running', async () => {
-    await initializeApplication();
-});
 
 Given('the splash screen message should be {string}', async (expectedMessage: string) => {
     try {
@@ -90,13 +47,8 @@ Given('the splash screen message should be {string}', async (expectedMessage: st
     }
 });
 
-// Simple navigation step with reliable approach
+// Simple navigation step
 Given('I navigate to the application', async () => {
-    await initializeApplication();
-});
-
-// Global setup hook - runs once per test session
-Before({ tags: '@setup-required' }, async () => {
-    await initializeApplication();
+    await browser.url('/');
 });
 
