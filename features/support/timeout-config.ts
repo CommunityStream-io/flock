@@ -48,7 +48,7 @@ export function getTimeoutConfig(isCI: boolean = process.env.CI === 'true'): Tim
     // CI timeouts - increased for sharded test stability
     return {
       global: 120000,          // 120s (2 minutes) - Global timeout (must be higher than all step-specific timeouts)
-      waitUntilGlobal: 30000,  // 30s - Global timeout for waitUntil calls
+      waitUntilGlobal: 10000,  // 10s - Global timeout for waitUntil calls (reduced for auto-wait)
       appLoad: 25000,          // 25s - Application loading (lower than global timeout)
       splashScreen: 25000,     // 25s - Splash screen appearance (lower than global timeout)
       navigation: 25000,       // 25s - General navigation (lower than global timeout)
@@ -59,15 +59,15 @@ export function getTimeoutConfig(isCI: boolean = process.env.CI === 'true'): Tim
       auth: 25000,             // 25s - Authentication operations (lower than global timeout)
       authNavigation: 10000,   // 10s - Auth-related navigation (was 8s)
       credentialEntry: 15000,  // 15s - Credential entry and validation (NEW)
-      uiInteraction: 10000,    // 10s - UI interactions (was 8s)
-      dialogClose: 5000,       // 5s - Dialog closing (was 3s)
+      uiInteraction: 5000,     // 5s - UI interactions (reduced for auto-wait)
+      dialogClose: 3000,       // 3s - Dialog closing (reduced for auto-wait)
       immediate: 3000,         // 3s - Very quick operations (was 2s)
     };
   } else {
     // Local development timeouts - more generous for debugging
     return {
       global: 120000,          // 120s (2 minutes) - Global timeout (must be higher than all step-specific timeouts)
-      waitUntilGlobal: 30000,  // 30s - Global timeout for waitUntil calls
+      waitUntilGlobal: 10000,  // 10s - Global timeout for waitUntil calls (reduced for auto-wait)
       appLoad: 20000,          // 20s - Application loading (lower than global timeout)
       splashScreen: 20000,     // 20s - Splash screen appearance (lower than global timeout)
       navigation: 20000,       // 20s - General navigation (lower than global timeout)
@@ -78,8 +78,8 @@ export function getTimeoutConfig(isCI: boolean = process.env.CI === 'true'): Tim
       auth: 20000,             // 20s - Authentication operations (close to global timeout)
       authNavigation: 10000,   // 10s - Auth-related navigation (was 6s)
       credentialEntry: 10000,  // 10s - Credential entry and validation (NEW)
-      uiInteraction: 6000,     // 6s - UI interactions (was 4s)
-      dialogClose: 5000,       // 5s - Dialog closing (was 4s)
+      uiInteraction: 4000,     // 4s - UI interactions (reduced for auto-wait)
+      dialogClose: 3000,       // 3s - Dialog closing (reduced for auto-wait)
       immediate: 3000,         // 3s - Very quick operations (was 2s)
     };
   }

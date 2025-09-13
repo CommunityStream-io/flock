@@ -76,18 +76,14 @@ class LandingPage extends Page {
 
     // Methods for dynamic element selection
     public async getStepTitle(stepNumber: number) {
-        // Wait for the process flow container to be visible first
-        await $('.process-flow').waitForDisplayed({ timeout: 5000 });
+        // WebdriverIO auto-waits for elements to be interactable when we use them
         const step = $(`.process-flow .process-step:nth-child(${stepNumber})`);
-        await step.waitForDisplayed({ timeout: 3000 });
         return step.$('mat-card-title');
     }
 
     public async getStepDescription(stepNumber: number) {
-        // Wait for the process flow container to be visible first
-        await $('.process-flow').waitForDisplayed({ timeout: 5000 });
+        // WebdriverIO auto-waits for elements to be interactable when we use them
         const step = $(`.process-flow .process-step:nth-child(${stepNumber})`);
-        await step.waitForDisplayed({ timeout: 3000 });
         return step.$('mat-card-content p');
     }
 
@@ -130,9 +126,7 @@ class LandingPage extends Page {
     // Navigation
     public async open() {
         await super.open('');
-        // Wait for the landing page component to load
-        await this.landingPageContainer.waitForDisplayed({ timeout: 10000 });
-        await this.mainTitle.waitForDisplayed({ timeout: 5000 });
+        // WebdriverIO auto-waits for elements to be interactable when we use them
     }
 }
 

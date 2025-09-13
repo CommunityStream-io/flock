@@ -1,9 +1,9 @@
 import pino from 'pino';
 
-// Create logger instance
+// Create logger instance with different levels for sharded tests
 const logger = pino({
-  level: process.env.LOG_LEVEL || 'info',
-  transport: process.env.NODE_ENV === 'development' ? {
+  level: process.env.SHARDED_TESTS === 'true' ? 'warn' : (process.env.LOG_LEVEL || 'info'),
+  transport: process.env.NODE_ENV === 'development' && process.env.SHARDED_TESTS !== 'true' ? {
     target: 'pino-pretty',
     options: {
       colorize: true,

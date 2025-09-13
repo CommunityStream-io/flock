@@ -32,17 +32,8 @@ Then('the file input should accept {string} files', async (fileType: string) => 
 
 When('I select a valid Instagram archive file {string}', async (filename: string) => {
     await pages.uploadStep.selectFile(filename);
-    // Wait for file to be processed and displayed
-    await browser.waitUntil(
-        async () => {
-            const hasFiles = await pages.uploadStep.hasFiles();
-            return hasFiles;
-        },
-        { 
-            timeout: timeouts.fileProcessing,
-            timeoutMsg: timeoutMessages.fileProcessing(process.env.CI === 'true')
-        }
-    );
+    // Wait for file list to be displayed - WebdriverIO auto-waits for interactable
+    await pages.uploadStep.fileListSection.waitForDisplayed({ timeout: timeouts.fileProcessing });
 });
 
 When('I select an invalid file {string}', async (filename: string) => {
@@ -148,17 +139,8 @@ Then('users cannot accidentally select text files', async () => {
 
 Given('I have selected a valid Instagram archive file {string}', async (filename: string) => {
     await pages.uploadStep.selectFile(filename);
-    // Wait for file to be processed and displayed
-    await browser.waitUntil(
-        async () => {
-            const hasFiles = await pages.uploadStep.hasFiles();
-            return hasFiles;
-        },
-        { 
-            timeout: timeouts.fileValidation,
-            timeoutMsg: timeoutMessages.fileValidation(process.env.CI === 'true')
-        }
-    );
+    // Wait for file list to be displayed - WebdriverIO auto-waits for interactable
+    await pages.uploadStep.fileListSection.waitForDisplayed({ timeout: timeouts.fileValidation });
 });
 
 When('I click the delete button for {string}', async (filename: string) => {

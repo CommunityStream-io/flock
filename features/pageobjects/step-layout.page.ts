@@ -150,19 +150,19 @@ class StepLayoutPage extends Page {
         // Wait for step-specific content to load
         switch (stepName) {
             case 'upload':
-                await $('.upload-section').waitForDisplayed({ timeout: 3000 });
+                // WebdriverIO auto-waits for elements to be interactable when we use them
                 break;
             case 'auth':
-                await this.authForm.waitForDisplayed({ timeout: 3000 });
+                // WebdriverIO auto-waits for elements to be interactable when we use them
                 break;
             case 'config':
-                await this.configOptions.waitForDisplayed({ timeout: 3000 });
+                // WebdriverIO auto-waits for elements to be interactable when we use them
                 break;
             case 'migrate':
-                await this.migrationProgress.waitForDisplayed({ timeout: 3000 });
+                // WebdriverIO auto-waits for elements to be interactable when we use them
                 break;
             case 'complete':
-                await this.completionConfirmation.waitForDisplayed({ timeout: 3000 });
+                // WebdriverIO auto-waits for elements to be interactable when we use them
                 break;
         }
     }
@@ -170,27 +170,27 @@ class StepLayoutPage extends Page {
     // Navigation methods for each step
     public async openUploadStep() {
         await super.open('step/upload');
-        await this.stepLayoutContainer.waitForDisplayed({ timeout: 10000 });
+        // WebdriverIO auto-waits for elements to be interactable when we use them
     }
 
     public async openAuthStep() {
         await super.open('step/auth');
-        await this.stepLayoutContainer.waitForDisplayed({ timeout: 10000 });
+        // WebdriverIO auto-waits for elements to be interactable when we use them
     }
 
     public async openConfigStep() {
         await super.open('step/config');
-        await this.stepLayoutContainer.waitForDisplayed({ timeout: 10000 });
+        // WebdriverIO auto-waits for elements to be interactable when we use them
     }
 
     public async openMigrateStep() {
         await super.open('step/migrate');
-        await this.stepLayoutContainer.waitForDisplayed({ timeout: 10000 });
+        // WebdriverIO auto-waits for elements to be interactable when we use them
     }
 
     public async openCompleteStep() {
         await super.open('step/complete');
-        await this.stepLayoutContainer.waitForDisplayed({ timeout: 10000 });
+        // WebdriverIO auto-waits for elements to be interactable when we use them
     }
 
     // Splash screen methods

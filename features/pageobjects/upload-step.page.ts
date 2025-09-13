@@ -156,7 +156,7 @@ class UploadStepPage extends Page {
     // Navigation
     public async open() {
         await super.open('step/upload');
-        await this.uploadSection.waitForDisplayed({ timeout: 10000 });
+        // WebdriverIO auto-waits for elements to be interactable when we use them
     }
 }
 

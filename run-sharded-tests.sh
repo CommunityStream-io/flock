@@ -3,6 +3,10 @@
 # Sharded E2E Test Runner
 # Mimics CI workflow with separate log files for each shard
 
+# Set environment variable for sharded tests to reduce logging
+export SHARDED_TESTS=true
+export DEBUG_TESTS=false
+
 echo "=== SHARDED E2E TEST RUNNER ==="
 echo "Starting sharded test execution..."
 
@@ -88,7 +92,7 @@ run_shard() {
     # Run the shard with increased timeouts and log to file
     # Update the baseUrl to use the shard-specific port
     # Redirect browser logs to separate file to reduce clutter
-    npx cross-env CI=true HEADLESS=true BASE_URL=http://localhost:${port} wdio run wdio.conf.ts --shard=${shard_num}/${total_shards} > "${log_file}" 2> "logs/shards/shard-${shard_num}.browser.log"
+    npx cross-env CI=true HEADLESS=true BASE_URL=http://localhost:${port} SHARDED_TESTS=true DEBUG_TESTS=false wdio run wdio.conf.ts --shard=${shard_num}/${total_shards} > "${log_file}" 2> "logs/shards/shard-${shard_num}.browser.log"
     
     local exit_code=$?
     local end_time=$(date +%s)

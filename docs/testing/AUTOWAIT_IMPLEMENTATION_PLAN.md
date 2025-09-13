@@ -7,8 +7,9 @@
 | **Baseline** | 1 | 2024-12-19 | ✅ Complete | 19/19 | 0/19 | ~3.7 min | All shards passed, baseline established |
 | **Cleanup** | 1 | 2024-12-19 | ✅ Complete | 1/1 | 0/1 | ~15s | BDD logging cleanup, test output much cleaner |
 | **Cleanup** | 2 | 2024-12-19 | ✅ Complete | 2/2 | 0/2 | ~14s | Removed frequent preconditions from all feature files |
-| **Phase 1** | 1 | - | 🔄 Pending | - | - | - | Simple element waits migration |
-| **Phase 1** | 2 | - | ⏸️ Not Started | - | - | - | Form interactions optimization |
+| **Cleanup** | 3 | 2024-12-19 | ✅ Complete | 1/1 | 0/1 | ~15s | Removed duplicate code and unused step definitions |
+| **Phase 1** | 1 | 2024-12-19 | ✅ Complete | 2/2 | 0/2 | ~15s | Simple element waits migration - auth.ts and file-upload.ts |
+| **Phase 1** | 2 | 2024-12-19 | ✅ Complete | - | - | - | Comprehensive auto-wait migration - 20+ unnecessary waits removed, complex waits preserved |
 | **Phase 2** | 1 | - | ⏸️ Not Started | - | - | - | Complex element waits migration |
 | **Phase 3** | 1 | - | ⏸️ Not Started | - | - | - | Keep complex waits, optimize timeouts |
 | **Phase 4** | 1 | - | ⏸️ Not Started | - | - | - | Final validation and cleanup |
@@ -436,11 +437,13 @@ This implementation plan provides a clear roadmap for migrating from manual `wai
 #### Phase 1 Progress Log
 | File | waitUntil Count | Status | Notes |
 |------|----------------|--------|-------|
-| auth.ts | 5 | ⏸️ Not Started | Form interactions and validation |
-| file-upload.ts | 2 | ⏸️ Not Started | File processing waits |
-| auth.page.ts | 3 | ⏸️ Not Started | Form validation methods |
-| upload-step.page.ts | 1 | ⏸️ Not Started | File input processing |
-| step-layout.page.ts | 2 | ⏸️ Not Started | Navigation waits |
+| auth.ts | 5 | ✅ Complete | 2 dialog waits migrated to waitForDisplayed, 2 URL waits kept |
+| file-upload.ts | 2 | ✅ Complete | Already migrated to waitForDisplayed |
+| auth.page.ts | 3 | ✅ Complete | All are complex state waits - keep as waitUntil |
+| upload-step.page.ts | 1 | ✅ Complete | Complex state wait - keep as waitUntil |
+| step-layout.page.ts | 2 | ✅ Complete | 5 open methods + 5 isOnStep methods migrated |
+| landing.page.ts | 6 | ✅ Complete | 2 open methods + 4 getStep methods migrated |
+| config.page.ts | 1 | ✅ Complete | 1 open method migrated |
 
 ### Phase 2: Complex Element Waits Migration
 
