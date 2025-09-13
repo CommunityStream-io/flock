@@ -188,7 +188,7 @@ jobs:
       - name: Upload Allure report as artifact (shard ${{ matrix.shard }})
         uses: actions/upload-artifact@v4
         with:
-          name: allure-report-shard-${{ matrix.shard }}
+          name: allure-report-shard-${{ matrix.shard }}-${{ github.run_number }}
           path: allure-report/
           retention-days: 30
         if: always()
@@ -196,7 +196,7 @@ jobs:
       - name: Upload Allure results as artifact (shard ${{ matrix.shard }})
         uses: actions/upload-artifact@v4
         with:
-          name: allure-results-shard-${{ matrix.shard }}
+          name: allure-results-shard-${{ matrix.shard }}-${{ github.run_number }}
           path: allure-results/
           retention-days: 30
         if: always()
@@ -213,7 +213,7 @@ jobs:
       - name: Download all Allure results
         uses: actions/download-artifact@v4
         with:
-          pattern: allure-results-shard-*
+          pattern: allure-results-shard-*-${{ github.run_number }}
           path: combined-allure-results/
           merge-multiple: true
         continue-on-error: true
@@ -229,7 +229,7 @@ jobs:
       - name: Upload combined Allure results
         uses: actions/upload-artifact@v4
         with:
-          name: allure-results-combined
+          name: allure-results-combined-${{ github.run_number }}
           path: combined-allure-results/
           retention-days: 30
 
@@ -246,7 +246,7 @@ jobs:
       - name: Download combined Allure results
         uses: actions/download-artifact@v4
         with:
-          name: allure-results-combined
+          name: allure-results-combined-${{ github.run_number }}
           path: combined-allure-results/
         continue-on-error: true
 
@@ -280,17 +280,31 @@ jobs:
           EOF
           fi
 
+      - name: Upload test results with custom name
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results-${{ github.run_number }}-${{ github.sha }}
+          path: combined-allure-results/
+          retention-days: 30
+
+      - name: Download test results
+        uses: actions/download-artifact@v4
+        with:
+          name: allure-results-${{ github.run_number }}-${{ github.sha }}
+          path: pages-content/
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v4
         with:
-          path: combined-allure-results/
+          path: pages-content/
 
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+        timeout-minutes: 5
 
   build:
     name: Add to the flock (Build)
