@@ -138,7 +138,10 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
 
   // Default timeout for all waitFor* commands.
   // Environment-driven timeout configuration
-  waitforTimeout: timeouts.global, // Global wait timeout for waitUntil calls and browser.pause()
+  waitforTimeout: 30000, // 30s - Global wait timeout for waitUntil calls and browser.pause()
+  
+  // Navigation timeout for page loads
+  navigationTimeout: timeouts.global, // Use global timeout for navigation
 
   // Default timeout in milliseconds for request
   // if browser driver or grid doesn't send response
