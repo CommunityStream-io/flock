@@ -109,7 +109,7 @@ The system tracks performance differences between Allure-enabled and disabled ru
 | Shard 10 | 65s | ✅ Completed |
 | Shard 12 | 65s | ✅ Completed |
 | Shard 13 | 69s | ✅ Completed |
-| Shard 5 | - | ❌ Failed |
+| Shard 5 | 4m38s | ❌ Failed |
 
 #### Performance Summary
 - **Total Duration**: 69s (1m 9s)
