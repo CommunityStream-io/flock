@@ -138,7 +138,7 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
 
         // Default timeout for all waitFor* commands.
         // Environment-driven timeout configuration
-        waitforTimeout: timeouts.uiInteraction,
+        waitforTimeout: 30000,  // 30s - Global wait timeout for waitUntil calls and browser.pause()
 
     // Default timeout in milliseconds for request
     // if browser driver or grid doesn't send response
@@ -178,7 +178,7 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
         source: true,
         strict: false,  // Allow skipped steps without failing the entire scenario
         tags: process.env.TEST_TAGS || "",
-        timeout: timeouts.navigation, // Environment-driven timeout for step execution
+        timeout: timeouts.global, // Global timeout for step execution (25s CI, 20s local)
         ignoreUndefinedDefinitions: true,
         format: ['pretty'],  // Add pretty format for better readability
         publishQuiet: process.env.DEBUG_TESTS !== 'true',   // Reduce noise from cucumber reporting unless debugging

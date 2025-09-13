@@ -72,7 +72,13 @@ class AuthPage extends Page {
         await this.usernameField.click();
         await browser.keys('Tab');
         // Wait for validation to complete
-        await browser.pause(300);
+        await browser.waitUntil(
+            async () => {
+                const isFormValid = await this.isFormValid();
+                return isFormValid;
+            },
+            { timeout: timeouts.uiInteraction, timeoutMsg: timeoutMessages.uiInteraction(process.env.CI === 'true') }
+        );
     }
 
     public async enterPassword(password: string) {
@@ -82,7 +88,13 @@ class AuthPage extends Page {
         await this.passwordField.click();
         await browser.keys('Tab');
         // Wait for validation to complete
-        await browser.pause(300);
+        await browser.waitUntil(
+            async () => {
+                const isFormValid = await this.isFormValid();
+                return isFormValid;
+            },
+            { timeout: timeouts.uiInteraction, timeoutMsg: timeoutMessages.uiInteraction(process.env.CI === 'true') }
+        );
     }
 
     public async enterCredentials(username: string, password: string) {
@@ -96,7 +108,13 @@ class AuthPage extends Page {
         await this.usernameField.click();
         await browser.keys('Tab');
         // Wait for validation to complete
-        await browser.pause(300);
+        await browser.waitUntil(
+            async () => {
+                const isFormValid = await this.isFormValid();
+                return isFormValid;
+            },
+            { timeout: timeouts.uiInteraction, timeoutMsg: timeoutMessages.uiInteraction(process.env.CI === 'true') }
+        );
     }
 
     public async clearPasswordField() {
@@ -105,7 +123,13 @@ class AuthPage extends Page {
         await this.passwordField.click();
         await browser.keys('Tab');
         // Wait for validation to complete
-        await browser.pause(300);
+        await browser.waitUntil(
+            async () => {
+                const isFormValid = await this.isFormValid();
+                return isFormValid;
+            },
+            { timeout: timeouts.uiInteraction, timeoutMsg: timeoutMessages.uiInteraction(process.env.CI === 'true') }
+        );
     }
 
     public async submitForm() {

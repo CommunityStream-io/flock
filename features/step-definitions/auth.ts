@@ -40,8 +40,8 @@ When('I navigate back to the upload step', async () => {
             return isOnUploadStep && isUploadSectionVisible;
         },
         { 
-            timeout: process.env.CI === 'true' ? 5000 : 3000, // 5s CI, 3s local - drastically reduced 
-            timeoutMsg: 'Navigation to upload step did not complete within 5 seconds' 
+            timeout: timeouts.navigation,
+            timeoutMsg: timeoutMessages.navigation(process.env.CI === 'true')
         }
     );
 });
@@ -165,7 +165,17 @@ When('I leave the password field empty', async () => {
     await pages.auth.passwordField.click();
     await $('body').click();
     // Wait for validation to complete
-    await browser.pause(300);
+    await browser.waitUntil(
+        async () => {
+            // Check if form validation has completed
+            const isFormValid = await pages.auth.isFormValid();
+            return isFormValid;
+        },
+        { 
+            timeout: timeouts.uiInteraction,
+            timeoutMsg: timeoutMessages.uiInteraction(process.env.CI === 'true')
+        }
+    );
 });
 
 When('I enter a password', async () => {
@@ -292,7 +302,17 @@ Given('I have entered invalid credentials', async () => {
     await pages.auth.open();
     await pages.auth.enterCredentials('invalid.user.name.invalid', 'wrongpassword');
     // Wait for form validation to complete
-    await browser.pause(500);
+    await browser.waitUntil(
+        async () => {
+            // Check if form validation has completed
+            const isFormValid = await pages.auth.isFormValid();
+            return isFormValid;
+        },
+        { 
+            timeout: timeouts.uiInteraction,
+            timeoutMsg: timeoutMessages.uiInteraction(process.env.CI === 'true')
+        }
+    );
 });
 
 Given('I have entered credentials that will cause a network error', async () => {

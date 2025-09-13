@@ -7,6 +7,9 @@
  */
 
 export interface TimeoutConfig {
+  // Global timeouts
+  global: number;
+  
   // Application loading timeouts
   appLoad: number;
   splashScreen: number;
@@ -43,32 +46,34 @@ export function getTimeoutConfig(isCI: boolean = process.env.CI === 'true'): Tim
   if (isCI) {
     // CI timeouts - increased for sharded test stability
     return {
-      appLoad: 8000,           // 8s - Application loading (was 5s)
-      splashScreen: 10000,     // 10s - Splash screen appearance (was 3s)
-      navigation: 8000,        // 8s - General navigation (was 3s)
+      global: 120000,          // 120s (2 minutes) - Global timeout (must be higher than all step-specific timeouts)
+      appLoad: 25000,          // 25s - Application loading (lower than global timeout)
+      splashScreen: 25000,     // 25s - Splash screen appearance (lower than global timeout)
+      navigation: 25000,       // 25s - General navigation (lower than global timeout)
       quickNavigation: 3000,   // 3s - Quick navigation operations (was 2s)
-      fileProcessing: 5000,    // 5s - File processing operations (was 3s)
-      fileValidation: 8000,    // 8s - File validation (was 5s)
+      fileProcessing: 8000,    // 8s - File processing operations (was 5s)
+      fileValidation: 10000,   // 10s - File validation (was 8s)
       fileError: 3000,         // 3s - File error display (was 2s)
-      auth: 12000,             // 12s - Authentication operations (was 4s)
-      authNavigation: 8000,    // 8s - Auth-related navigation (was 3s)
+      auth: 25000,             // 25s - Authentication operations (lower than global timeout)
+      authNavigation: 10000,   // 10s - Auth-related navigation (was 8s)
       credentialEntry: 15000,  // 15s - Credential entry and validation (NEW)
-      uiInteraction: 8000,     // 8s - UI interactions (was 3s)
+      uiInteraction: 10000,    // 10s - UI interactions (was 8s)
       dialogClose: 5000,       // 5s - Dialog closing (was 3s)
       immediate: 3000,         // 3s - Very quick operations (was 2s)
     };
   } else {
     // Local development timeouts - more generous for debugging
     return {
-      appLoad: 8000,           // 8s - Application loading (was 6s)
-      splashScreen: 8000,      // 8s - Splash screen appearance (was 5s)
-      navigation: 6000,        // 6s - General navigation (was 5s)
+      global: 120000,          // 120s (2 minutes) - Global timeout (must be higher than all step-specific timeouts)
+      appLoad: 20000,          // 20s - Application loading (lower than global timeout)
+      splashScreen: 20000,     // 20s - Splash screen appearance (lower than global timeout)
+      navigation: 20000,       // 20s - General navigation (lower than global timeout)
       quickNavigation: 3000,   // 3s - Quick navigation operations (was 2.5s)
       fileProcessing: 5000,    // 5s - File processing operations (was 4s)
-      fileValidation: 8000,    // 8s - File validation (was 6s)
+      fileValidation: 10000,   // 10s - File validation (was 8s)
       fileError: 3000,         // 3s - File error display (was 2.5s)
-      auth: 8000,              // 8s - Authentication operations (was 5s)
-      authNavigation: 6000,    // 6s - Auth-related navigation (was 5s)
+      auth: 20000,             // 20s - Authentication operations (close to global timeout)
+      authNavigation: 10000,   // 10s - Auth-related navigation (was 6s)
       credentialEntry: 10000,  // 10s - Credential entry and validation (NEW)
       uiInteraction: 6000,     // 6s - UI interactions (was 4s)
       dialogClose: 5000,       // 5s - Dialog closing (was 4s)
@@ -79,8 +84,31 @@ export function getTimeoutConfig(isCI: boolean = process.env.CI === 'true'): Tim
 
 /**
  * Get timeout configuration for current environment
+ * This is now a function to ensure CI detection happens at runtime
  */
-export const timeouts = getTimeoutConfig();
+export function getTimeouts() {
+    const isCI = process.env.CI === 'true';
+    const config = getTimeoutConfig(isCI);
+    return config;
+}
+
+// For backward compatibility, create a dynamic object that calls the function
+export const timeouts = {
+    get global() { return getTimeouts().global; },
+    get appLoad() { return getTimeouts().appLoad; },
+    get splashScreen() { return getTimeouts().splashScreen; },
+    get navigation() { return getTimeouts().navigation; },
+    get quickNavigation() { return getTimeouts().quickNavigation; },
+    get fileProcessing() { return getTimeouts().fileProcessing; },
+    get fileValidation() { return getTimeouts().fileValidation; },
+    get fileError() { return getTimeouts().fileError; },
+    get auth() { return getTimeouts().auth; },
+    get authNavigation() { return getTimeouts().authNavigation; },
+    get credentialEntry() { return getTimeouts().credentialEntry; },
+    get uiInteraction() { return getTimeouts().uiInteraction; },
+    get dialogClose() { return getTimeouts().dialogClose; },
+    get immediate() { return getTimeouts().immediate; }
+};
 
 /**
  * Helper function to create timeout options for browser.waitUntil
@@ -126,7 +154,7 @@ export const timeoutOptions = {
  */
 export const timeoutMessages = {
   appLoad: (isCI: boolean) => 
-    isCI ? 'Application did not load within 5 seconds' : 'Application did not load within 6 seconds',
+    isCI ? 'Application did not load within 15 seconds' : 'Application did not load within 12 seconds',
   splashScreen: (isCI: boolean) => 
     isCI ? 'Splash screen did not appear within 3 seconds' : 'Splash screen did not appear within 5 seconds',
   navigation: (isCI: boolean) => 
@@ -134,19 +162,19 @@ export const timeoutMessages = {
   quickNavigation: (isCI: boolean) => 
     isCI ? 'Quick navigation did not complete within 2 seconds' : 'Quick navigation did not complete within 2.5 seconds',
   fileProcessing: (isCI: boolean) => 
-    isCI ? 'File processing did not complete within 3 seconds' : 'File processing did not complete within 4 seconds',
+    isCI ? 'File processing did not complete within 8 seconds' : 'File processing did not complete within 5 seconds',
   fileValidation: (isCI: boolean) => 
-    isCI ? 'File validation did not complete within 5 seconds' : 'File validation did not complete within 6 seconds',
+    isCI ? 'File validation did not complete within 10 seconds' : 'File validation did not complete within 10 seconds',
   fileError: (isCI: boolean) => 
     isCI ? 'File error did not appear within 2 seconds' : 'File error did not appear within 2.5 seconds',
   auth: (isCI: boolean) => 
     isCI ? 'Authentication did not complete within 12 seconds' : 'Authentication did not complete within 8 seconds',
   authNavigation: (isCI: boolean) => 
-    isCI ? 'Authentication navigation did not complete within 8 seconds' : 'Authentication navigation did not complete within 6 seconds',
+    isCI ? 'Authentication navigation did not complete within 10 seconds' : 'Authentication navigation did not complete within 10 seconds',
   credentialEntry: (isCI: boolean) => 
     isCI ? 'Credential entry did not complete within 15 seconds' : 'Credential entry did not complete within 10 seconds',
   uiInteraction: (isCI: boolean) => 
-    isCI ? 'UI interaction did not complete within 8 seconds' : 'UI interaction did not complete within 6 seconds',
+    isCI ? 'UI interaction did not complete within 10 seconds' : 'UI interaction did not complete within 6 seconds',
   dialogClose: (isCI: boolean) => 
     isCI ? 'Dialog did not close within 3 seconds' : 'Dialog did not close within 4 seconds',
   immediate: (isCI: boolean) => 

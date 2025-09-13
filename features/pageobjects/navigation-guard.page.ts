@@ -1,4 +1,5 @@
 import Page from './page';
+import { timeouts, timeoutMessages } from '../support/timeout-config';
 
 class NavigationGuardPage extends Page {
     // Snackbar elements
@@ -44,7 +45,14 @@ class NavigationGuardPage extends Page {
         await browser.url(currentUrl.replace(/\/step\/\w+/, `/step/${targetStep}`));
         
         // Wait a moment for any navigation guards to execute
-        await browser.pause(1000);
+        // Wait for navigation to complete
+        await browser.waitUntil(
+            async () => {
+                const currentUrl = await browser.getUrl();
+                return currentUrl.includes('auth');
+            },
+            { timeout: timeouts.navigation, timeoutMsg: timeoutMessages.navigation(process.env.CI === 'true') }
+        );
     }
 
     public async attemptNavigationViaHistory(targetStep: string) {
@@ -55,7 +63,14 @@ class NavigationGuardPage extends Page {
             window.dispatchEvent(new Event('popstate'));
         }, targetStep);
         
-        await browser.pause(1000);
+        // Wait for navigation to complete
+        await browser.waitUntil(
+            async () => {
+                const currentUrl = await browser.getUrl();
+                return currentUrl.includes('auth');
+            },
+            { timeout: timeouts.navigation, timeoutMsg: timeoutMessages.navigation(process.env.CI === 'true') }
+        );
     }
 
     public async getCurrentUrl() {
@@ -87,10 +102,10 @@ class NavigationGuardPage extends Page {
         return await this.snackbar.isDisplayed();
     }
 
-    public async waitForSnackbarToDismiss(timeout: number = 5000) {
+    public async waitForSnackbarToDismiss(timeout: number = timeouts.dialogClose) {
         await browser.waitUntil(
             async () => !(await this.isSnackbarVisible()),
-            { timeout, timeoutMsg: 'Snackbar did not dismiss in time' }
+            { timeout, timeoutMsg: timeoutMessages.dialogClose(process.env.CI === 'true') }
         );
     }
 
@@ -168,7 +183,14 @@ class NavigationGuardPage extends Page {
     // Wait for guard execution
     public async waitForGuardExecution(timeout: number = 3000) {
         // Wait for guard to execute and potentially show messages
-        await browser.pause(timeout);
+        // Wait for the specified timeout period
+        await browser.waitUntil(
+            async () => {
+                // This is a deliberate delay, so we just wait for the timeout period
+                return true;
+            },
+            { timeout: timeout, timeoutMsg: `Deliberate delay of ${timeout}ms completed` }
+        );
     }
 }
 

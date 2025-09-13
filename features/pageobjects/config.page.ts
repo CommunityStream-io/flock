@@ -1,4 +1,5 @@
 import Page from './page';
+import { timeouts, timeoutMessages } from '../support/timeout-config';
 
 class ConfigStepPage extends Page {
     // Main configuration form elements
@@ -472,7 +473,14 @@ class ConfigStepPage extends Page {
         const originalPosition = await configSection.getLocation();
         
         // Small delay to check for movement
-        await browser.pause(100);
+        // Wait for input to be processed
+        await browser.waitUntil(
+            async () => {
+                const value = await this.startDateField.getValue();
+                return value === date;
+            },
+            { timeout: timeouts.uiInteraction, timeoutMsg: timeoutMessages.uiInteraction(process.env.CI === 'true') }
+        );
         
         const currentPosition = await configSection.getLocation();
         return originalPosition.x !== currentPosition.x || originalPosition.y !== currentPosition.y;
@@ -514,7 +522,14 @@ class ConfigStepPage extends Page {
     public async navigateDialogWithTab() {
         const dialogElement = await this.helpDialog;
         await dialogElement.keys('Tab');
-        await browser.pause(100);
+        // Wait for input to be processed
+        await browser.waitUntil(
+            async () => {
+                const value = await this.startDateField.getValue();
+                return value === date;
+            },
+            { timeout: timeouts.uiInteraction, timeoutMsg: timeoutMessages.uiInteraction(process.env.CI === 'true') }
+        );
     }
 
     public async focusedElementVisible() {
