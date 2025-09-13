@@ -470,7 +470,7 @@ class TestMetricsCollector {
   }
 
   private categorizeError(error: Error): keyof typeof this.errorCounts {
-    const message = error.message.toLowerCase();
+    const message = (error.message || error.toString() || 'unknown error').toLowerCase();
     
     if (message.includes('timeout') || message.includes('timed out')) {
       return 'timeoutErrors';
