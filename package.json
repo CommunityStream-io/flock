@@ -40,6 +40,7 @@
     "allure:serve": "npx allure serve allure-results",
     "allure:filter-hooks": "node scripts/filter-allure-hooks.js",
     "allure:test-filter": "node scripts/test-hook-filter.js",
+    "allure:badge": "node scripts/generate-allure-badge.js",
     "test:e2e:allure": "npm run test:e2e && npm run allure:generate",
     "test:e2e:headless:allure": "npm run test:e2e:headless && npm run allure:generate",
     "test:e2e:ci:full": "concurrently --kill-others --success first \"ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0\" \"wait-on http://localhost:4200 && npm run test:e2e:ci\"",

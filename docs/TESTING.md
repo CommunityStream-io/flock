@@ -1,5 +1,7 @@
 # 🧪 Flock Testing - How Our Flock Stays Healthy and Strong
 
+[![E2E Tests](https://img.shields.io/badge/E2E%20Tests-91%25%20(1211/1325)-green?style=flat-square&logo=allure&logoColor=white)](https://communitystream-io.github.io/flock/)
+
 > *"We count every duckling in our flock—each feature gets a test, so no one gets left behind! Our testing keeps the whole migration waddling along safely and happily."*
 
 ## 🧪 **Testing Philosophy**

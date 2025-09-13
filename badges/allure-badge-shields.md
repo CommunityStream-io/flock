@@ -1,0 +1,1 @@
+[![E2E Tests](https://img.shields.io/badge/E2E%20Tests-91%25%20(1211/1325)-green?style=flat-square&logo=allure&logoColor=white)](https://communitystream-io.github.io/flock/)
