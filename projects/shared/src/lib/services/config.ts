@@ -22,6 +22,21 @@ export class ConfigServiceImpl implements ConfigService {
   private simulateSignal = signal<boolean>(false);
 
   /**
+   * Signal to track test video mode
+   */
+  private testVideoModeSignal = signal<boolean>(false);
+
+  /**
+   * Signal to track start date
+   */
+  private startDateSignal = signal<string>('');
+
+  /**
+   * Signal to track end date
+   */
+  private endDateSignal = signal<string>('');
+
+  /**
    * Signal to track if user is authenticated
    */
   private isAuthenticatedSignal = signal<boolean>(false);
@@ -76,6 +91,48 @@ export class ConfigServiceImpl implements ConfigService {
   }
 
   /**
+   * Get the test video mode
+   */
+  public get testVideoMode(): boolean {
+    return this.testVideoModeSignal();
+  }
+
+  /**
+   * Set the test video mode
+   */
+  public setTestVideoMode(value: boolean): void {
+    this.testVideoModeSignal.set(value);
+  }
+
+  /**
+   * Get the start date
+   */
+  public get startDate(): string {
+    return this.startDateSignal();
+  }
+
+  /**
+   * Set the start date
+   */
+  public setStartDate(value: string): void {
+    this.startDateSignal.set(value);
+  }
+
+  /**
+   * Get the end date
+   */
+  public get endDate(): string {
+    return this.endDateSignal();
+  }
+
+  /**
+   * Set the end date
+   */
+  public setEndDate(value: string): void {
+    this.endDateSignal.set(value);
+  }
+
+  /**
    * Check if user is authenticated
    */
   public isAuthenticated(): boolean {
@@ -110,6 +167,9 @@ export class ConfigServiceImpl implements ConfigService {
     this.archivePathSignal.set('');
     this.blueskyCredentialsSignal.set(null);
     this.simulateSignal.set(false);
+    this.testVideoModeSignal.set(false);
+    this.startDateSignal.set('');
+    this.endDateSignal.set('');
     this.isAuthenticatedSignal.set(false);
   }
 }

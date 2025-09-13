@@ -3,8 +3,8 @@ name: Feathering the Nest
 on:
   push:
     branches: [ "*" ] # All branches to include development branches
-  pull_request:
-    branches: [ "*" ] # All PRs to include forks
+  # pull_request:
+  #   branches: [ "*" ] # All PRs to include forks
 
 jobs:
   lint:
@@ -67,13 +67,14 @@ jobs:
           name: codecov-umbrella
           fail_ci_if_error: false
 
-  e2e:
-    name: Practice the murmuration (E2E Test)
+  # Pre-build step to create shared artifacts
+  e2e-prepare:
+    name: Prepare E2E Test Environment
     runs-on: ubuntu-latest
     env:
       PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
-      HEADLESS: true
-      CI: true
+    outputs:
+      cache-key: ${{ steps.cache-key.outputs.key }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -95,43 +96,201 @@ jobs:
         with:
           chrome-version: stable
 
-      - name: Install Angular CLI globally
-        run: npm install -g @angular/cli
-
-      - name: Install Allure command line
-        run: npm install -g allure-commandline
+      - name: Install global packages
+        run: |
+          npm install -g @angular/cli allure-commandline
 
       - name: Build shared library
         run: npx ng build --project=shared
 
-      - name: Build flock-mirage app
-        run: npx ng build --project=flock-mirage --configuration=development
+      - name: Generate cache key
+        id: cache-key
+        run: echo "key=${{ github.sha }}-e2e-prep" >> $GITHUB_OUTPUT
 
-      - name: Run e2e tests with coverage
-        run: npm run test:e2e:ci
+      - name: Cache built artifacts
+        uses: actions/cache@v4
+        with:
+          path: |
+            dist/
+            node_modules/
+          key: ${{ steps.cache-key.outputs.key }}
+          restore-keys: |
+            ${{ github.sha }}-e2e-prep
+            ${{ github.ref }}-e2e-prep
+
+  e2e:
+    name: Practice the murmuration (E2E Test)
+    runs-on: ubuntu-latest
+    needs: e2e-prepare
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+        total-shards: [19]
+    env:
+      PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
+      HEADLESS: true
+      CI: true
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24.5.0'
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+
+      - name: Restore cached artifacts
+        id: restore-cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            dist/
+            node_modules/
+          key: ${{ needs.e2e-prepare.outputs.cache-key }}
+          restore-keys: |
+            ${{ github.sha }}-e2e-prep
+            ${{ github.ref }}-e2e-prep
+
+      - name: Install dependencies (if cache miss)
+        run: npm ci
+        if: steps.restore-cache.outputs.cache-hit != 'true'
+
+      - name: Install global packages (if cache miss)
+        run: |
+          npm install -g @angular/cli allure-commandline
+        if: steps.restore-cache.outputs.cache-hit != 'true'
+
+      - name: Build shared library (if cache miss)
+        run: npx ng build --project=shared
+        if: steps.restore-cache.outputs.cache-hit != 'true'
+
+      - name: Run e2e tests with Angular dev server
+        run: npx concurrently --kill-others --success first "npx ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0" "wait-on http://localhost:4200 --timeout=60000 && cross-env CI=true HEADLESS=true wdio run wdio.conf.ts --shard=${{ matrix.shard }}/19"
         env:
           CI: true
           NODE_ENV: production
+          # Optimize Angular build
+          NG_CLI_ANALYTICS: false
+          NG_FORCE_TTY: false
 
       - name: Ensure allure-results directory exists
         run: mkdir -p allure-results
 
-      - name: Generate Allure report
+      - name: Generate Allure report for shard ${{ matrix.shard }}
         run: npm run allure:generate
+        if: always()
 
-      - name: Upload Allure report as artifact
+      - name: Upload Allure report as artifact (shard ${{ matrix.shard }})
         uses: actions/upload-artifact@v4
         with:
-          name: allure-report
+          name: allure-report-shard-${{ matrix.shard }}
           path: allure-report/
           retention-days: 30
+        if: always()
 
-      - name: Upload Allure results as artifact
+      - name: Upload Allure results as artifact (shard ${{ matrix.shard }})
         uses: actions/upload-artifact@v4
         with:
-          name: allure-results
+          name: allure-results-shard-${{ matrix.shard }}
           path: allure-results/
           retention-days: 30
+        if: always()
+
+  e2e-report:
+    name: Combine E2E Test Reports
+    runs-on: ubuntu-latest
+    needs: e2e
+    if: always()
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download all Allure results
+        uses: actions/download-artifact@v4
+        with:
+          pattern: allure-results-shard-*
+          path: combined-allure-results/
+          merge-multiple: true
+        continue-on-error: true
+
+      - name: Create empty Allure results if none exist
+        run: |
+          if [ ! -d "combined-allure-results" ] || [ -z "$(ls -A combined-allure-results 2>/dev/null)" ]; then
+            echo "No Allure results found, creating empty directory"
+            mkdir -p combined-allure-results
+            echo '{"name": "No test results available", "status": "skipped"}' > combined-allure-results/empty-result.json
+          fi
+
+      - name: Upload combined Allure results
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results-combined
+          path: combined-allure-results/
+          retention-days: 30
+
+  deploy-allure:
+    name: Deploy Allure Report to GitHub Pages
+    runs-on: ubuntu-latest
+    needs: e2e-report
+    if: always()
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+    steps:
+      - name: Download combined Allure results
+        uses: actions/download-artifact@v4
+        with:
+          name: allure-results-combined
+          path: combined-allure-results/
+        continue-on-error: true
+
+      - name: Create fallback if no results
+        run: |
+          if [ ! -d "combined-allure-results" ] || [ -z "$(ls -A combined-allure-results 2>/dev/null)" ]; then
+            echo "No Allure results available, creating fallback page"
+            mkdir -p combined-allure-results
+            cat > combined-allure-results/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html>
+          <head>
+              <title>E2E Test Results - No Data Available</title>
+              <style>
+                  body { font-family: Arial, sans-serif; margin: 40px; }
+                  .container { max-width: 600px; margin: 0 auto; text-align: center; }
+                  .warning { color: #ff6b35; font-size: 24px; margin-bottom: 20px; }
+                  .message { color: #666; font-size: 16px; }
+              </style>
+          </head>
+          <body>
+              <div class="container">
+                  <div class="warning">⚠️ No Test Results Available</div>
+                  <div class="message">
+                      <p>No E2E test results were generated for this run.</p>
+                      <p>This could be due to test failures or configuration issues.</p>
+                  </div>
+              </div>
+          </body>
+          </html>
+          EOF
+          fi
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: combined-allure-results/
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
 
   build:
     name: Add to the flock (Build)

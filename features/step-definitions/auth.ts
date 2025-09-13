@@ -1,6 +1,7 @@
 import { Given, When, Then, After } from '@wdio/cucumber-framework';
 import { pages } from '../pageobjects';
 import { browser, $ } from '@wdio/globals';
+import { timeouts, timeoutMessages } from '../support/timeout-config';
 
 Given('I am on the auth step page', async () => {
     await pages.auth.open();
@@ -23,8 +24,8 @@ Given('I have navigated to the auth step', async () => {
             return isOnAuthStep && isAuthFormVisible;
         },
         { 
-            timeout: 10000, 
-            timeoutMsg: 'Navigation to auth step did not complete within 10 seconds' 
+            timeout: timeouts.navigation,
+            timeoutMsg: timeoutMessages.navigation(process.env.CI === 'true')
         }
     );
 });
@@ -39,8 +40,8 @@ When('I navigate back to the upload step', async () => {
             return isOnUploadStep && isUploadSectionVisible;
         },
         { 
-            timeout: 10000, 
-            timeoutMsg: 'Navigation to upload step did not complete within 10 seconds' 
+            timeout: timeouts.navigation,
+            timeoutMsg: timeoutMessages.navigation(process.env.CI === 'true')
         }
     );
 });
@@ -164,7 +165,17 @@ When('I leave the password field empty', async () => {
     await pages.auth.passwordField.click();
     await $('body').click();
     // Wait for validation to complete
-    await browser.pause(300);
+    await browser.waitUntil(
+        async () => {
+            // Check if form validation has completed
+            const isFormValid = await pages.auth.isFormValid();
+            return isFormValid;
+        },
+        { 
+            timeout: timeouts.uiInteraction,
+            timeoutMsg: timeoutMessages.uiInteraction(process.env.CI === 'true')
+        }
+    );
 });
 
 When('I enter a password', async () => {
@@ -219,10 +230,27 @@ Then('the "Next" button should be enabled', async () => {
 });
 
 Given('I have entered valid credentials', async () => {
+    console.log('🔧 BDD: Entering valid credentials with proper timeout handling');
+    
     await pages.auth.open();
     await pages.auth.enterCredentials('test.bksy.social', 'testpassword123');
-    // Wait for form validation to complete
-    await browser.pause(500);
+    
+    // Wait for form validation to complete with proper timeout
+    await browser.waitUntil(
+        async () => {
+            // Check if form is valid and ready
+            const isFormValid = await pages.auth.isFormValid();
+            const hasUsername = await pages.auth.usernameField.getValue();
+            const hasPassword = await pages.auth.passwordField.getValue();
+            return isFormValid && hasUsername && hasPassword;
+        },
+        { 
+            timeout: timeouts.credentialEntry,
+            timeoutMsg: timeoutMessages.credentialEntry(process.env.CI === 'true')
+        }
+    );
+    
+    console.log('✅ BDD: Valid credentials entered and form validated successfully');
 });
 
 When('I click the "Next" button', async () => {
@@ -238,7 +266,7 @@ Then('the authentication script should run in the background', async () => {
             const currentUrl = await browser.getUrl();
             return currentUrl.includes('/step/config');
         },
-        { timeout: 10000, timeoutMsg: 'Authentication and navigation to config step did not complete' }
+        { timeout: timeouts.authNavigation, timeoutMsg: timeoutMessages.authNavigation(process.env.CI === 'true') }
     );
 });
 
@@ -248,7 +276,7 @@ Then('I should be navigated to the config step', async () => {
             const currentUrl = await browser.getUrl();
             return currentUrl.includes('/step/config');
         },
-        { timeout: 10000, timeoutMsg: 'Navigation to config step did not occur' }
+        { timeout: timeouts.navigation, timeoutMsg: timeoutMessages.navigation(process.env.CI === 'true') }
     );
 });
 
@@ -274,7 +302,17 @@ Given('I have entered invalid credentials', async () => {
     await pages.auth.open();
     await pages.auth.enterCredentials('invalid.user.name.invalid', 'wrongpassword');
     // Wait for form validation to complete
-    await browser.pause(500);
+    await browser.waitUntil(
+        async () => {
+            // Check if form validation has completed
+            const isFormValid = await pages.auth.isFormValid();
+            return isFormValid;
+        },
+        { 
+            timeout: timeouts.uiInteraction,
+            timeoutMsg: timeoutMessages.uiInteraction(process.env.CI === 'true')
+        }
+    );
 });
 
 Given('I have entered credentials that will cause a network error', async () => {
@@ -485,8 +523,8 @@ When('I close the help dialog', async () => {
             return !isVisible;
         },
         {
-            timeout: 5000,
-            timeoutMsg: 'Help dialog did not close within 5 seconds'
+            timeout: timeouts.dialogClose,
+            timeoutMsg: timeoutMessages.dialogClose(process.env.CI === 'true')
         }
     );
 });
@@ -500,7 +538,7 @@ When('I close the help dialog with Escape key', async () => {
             return !isVisible;
         },
         {
-            timeout: 5000,
+            timeout: process.env.CI === 'true' ? 5000 : 3000, // 5s CI, 3s local - drastically reduced
             timeoutMsg: 'Help dialog did not close with Escape key within 5 seconds'
         }
     );

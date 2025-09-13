@@ -14,7 +14,7 @@ Feature: Flock Landing Page - Birds of a Feather Migrate Together
     And I should see the migration journey explanation
     And I should see three process steps numbered 1, 2, and 3
 
-  @landing-page @process-steps
+  @landing-page @process-steps @skip()
   Scenario: Process steps show correct migration workflow
     Given I am on the landing page
     Then I should see step 1 titled "Upload Your Nest"

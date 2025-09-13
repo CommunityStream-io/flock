@@ -2,6 +2,7 @@
 import { Given, When, Then, After } from '@wdio/cucumber-framework';
 import { pages } from '../pageobjects';
 import { browser, $ } from '@wdio/globals';
+import { timeouts, timeoutMessages } from '../support/timeout-config';
 
 // Import all step definition modules to register them
 import './landing';
@@ -20,68 +21,37 @@ Then('the URL should contain {string}', async (urlPath: string) => {
 // ===== COMMON STEPS =====
 
 Given('the application is running', async () => {
-    // Ensure the application is accessible with retry logic
-    const maxRetries = 2; // Reduced retries for faster failure
-    let retryCount = 0;
+    console.log(`🔧 BDD: Loading application with simple, reliable approach`);
     
-    while (retryCount < maxRetries) {
-        try {
-            console.log(`🔧 BDD: Navigating to application (attempt ${retryCount + 1}/${maxRetries})`);
-            await browser.url('/');
+    // Simple approach: single comprehensive check with generous timeout
+    await browser.url('/');
+    
+    // Wait for application to be fully ready with a single, comprehensive check
+    await browser.waitUntil(
+        async () => {
+            // Check document ready state
+            const readyState = await browser.execute(() => document.readyState);
+            if (readyState !== 'complete') return false;
             
-            // Wait for basic page load first
-            await browser.waitUntil(
-                async () => {
-                    const readyState = await browser.execute(() => document.readyState);
-                    return readyState === 'complete';
-                },
-                { 
-                    timeout: 8000, // Further reduced timeout for faster failure
-                    timeoutMsg: 'Page did not load completely within 8 seconds' 
-                }
-            );
+            // Check if app-root exists and has content
+            const hasAppRoot = await $('app-root').isExisting();
+            if (!hasAppRoot) return false;
             
-            // Wait for Angular to be fully loaded and bootstrapped
-            await browser.waitUntil(
-                async () => {
-                    const isAngularReady = await browser.execute(() => {
-                        return typeof window !== 'undefined' && 
-                               (window as any).ng !== undefined;
-                    });
-                    return isAngularReady;
-                },
-                { 
-                    timeout: 8000, // Further reduced timeout for faster failure
-                    timeoutMsg: 'Angular application did not bootstrap within 8 seconds' 
-                }
-            );
+            // Check if Angular has rendered content (works in both dev and prod)
+            const hasContent = await browser.execute(() => {
+                const appRoot = document.querySelector('app-root');
+                return appRoot && appRoot.children.length > 0;
+            });
             
-            // Additional wait to ensure app-root is fully rendered
-            await browser.waitUntil(
-                async () => {
-                    const hasAppRoot = await $('app-root').isExisting();
-                    return hasAppRoot;
-                },
-                {
-                    timeout: 5000, // Reduced timeout for faster failure
-                    timeoutMsg: 'app-root element not found within 5 seconds'
-                }
-            );
-            
-            console.log(`✅ BDD: Application loaded successfully (attempt ${retryCount + 1})`);
-            return;
-        } catch (error) {
-            retryCount++;
-            console.log(`⚠️ BDD: Application load attempt ${retryCount} failed: ${error.message}`);
-            if (retryCount < maxRetries) {
-                console.log(`🔄 BDD: Retrying application load (${retryCount}/${maxRetries})`);
-                // Short wait before retry
-                await new Promise(resolve => setTimeout(resolve, 1000));
-            } else {
-                throw new Error(`Application failed to load after ${maxRetries} attempts: ${error.message}`);
-            }
+            return hasContent;
+        },
+        { 
+            timeout: timeouts.appLoad,
+            timeoutMsg: timeoutMessages.appLoad(process.env.CI === 'true')
         }
-    }
+    );
+    
+    console.log(`✅ BDD: Application loaded successfully`);
 });
 
 Given('the splash screen message should be {string}', async (expectedMessage: string) => {
@@ -92,8 +62,8 @@ Given('the splash screen message should be {string}', async (expectedMessage: st
         const isSplashVisible = await browser.waitUntil(
             async () => await pages.stepLayout.isSplashScreenVisible(),
             { 
-                timeout: 15000, 
-                timeoutMsg: 'Splash screen did not appear within 15 seconds' 
+                timeout: timeouts.splashScreen,
+                timeoutMsg: timeoutMessages.splashScreen(process.env.CI === 'true')
             }
         );
         
@@ -113,70 +83,38 @@ Given('the splash screen message should be {string}', async (expectedMessage: st
     }
 });
 
-// Add a more robust navigation step that handles CI timeouts
+// Simple navigation step with reliable approach
 Given('I navigate to the application', async () => {
-    console.log(`🔧 BDD: Navigating to application with retry logic`);
+    console.log(`🔧 BDD: Loading application with simple, reliable approach`);
     
-    const maxRetries = 2; // Reduced retries for faster failure
-    let retryCount = 0;
+    // Simple approach: single comprehensive check with generous timeout
+    await browser.url('/');
     
-    while (retryCount < maxRetries) {
-        try {
-            console.log(`🔧 BDD: Navigating to application (attempt ${retryCount + 1}/${maxRetries})`);
-            await browser.url('/');
+    // Wait for application to be fully ready with a single, comprehensive check
+    await browser.waitUntil(
+        async () => {
+            // Check document ready state
+            const readyState = await browser.execute(() => document.readyState);
+            if (readyState !== 'complete') return false;
             
-            // Wait for basic page load first
-            await browser.waitUntil(
-                async () => {
-                    const readyState = await browser.execute(() => document.readyState);
-                    return readyState === 'complete';
-                },
-                { 
-                    timeout: 8000, // Further reduced timeout for faster failure
-                    timeoutMsg: 'Page did not load completely within 8 seconds' 
-                }
-            );
+            // Check if app-root exists and has content
+            const hasAppRoot = await $('app-root').isExisting();
+            if (!hasAppRoot) return false;
             
-            // Wait for Angular to be fully loaded and bootstrapped
-            await browser.waitUntil(
-                async () => {
-                    const isAngularReady = await browser.execute(() => {
-                        return typeof window !== 'undefined' && 
-                               (window as any).ng !== undefined;
-                    });
-                    return isAngularReady;
-                },
-                { 
-                    timeout: 8000, // Further reduced timeout for faster failure
-                    timeoutMsg: 'Angular application did not bootstrap within 8 seconds' 
-                }
-            );
+            // Check if Angular has rendered content (works in both dev and prod)
+            const hasContent = await browser.execute(() => {
+                const appRoot = document.querySelector('app-root');
+                return appRoot && appRoot.children.length > 0;
+            });
             
-            // Additional wait to ensure app-root is fully rendered
-            await browser.waitUntil(
-                async () => {
-                    const hasAppRoot = await $('app-root').isExisting();
-                    return hasAppRoot;
-                },
-                {
-                    timeout: 5000, // Reduced timeout for faster failure
-                    timeoutMsg: 'app-root element not found within 5 seconds'
-                }
-            );
-            
-            console.log(`✅ BDD: Application navigation successful (attempt ${retryCount + 1})`);
-            return;
-        } catch (error) {
-            retryCount++;
-            console.log(`⚠️ BDD: Navigation attempt ${retryCount} failed: ${error.message}`);
-            if (retryCount < maxRetries) {
-                console.log(`🔄 BDD: Retrying navigation (${retryCount}/${maxRetries})`);
-                // Short wait before retry
-                await new Promise(resolve => setTimeout(resolve, 1000));
-            } else {
-                throw new Error(`Navigation failed after ${maxRetries} attempts: ${error.message}`);
-            }
+            return hasContent;
+        },
+        { 
+            timeout: timeouts.appLoad,
+            timeoutMsg: timeoutMessages.appLoad(process.env.CI === 'true')
         }
-    }
+    );
+    
+    console.log(`✅ BDD: Application navigation successful`);
 });
 

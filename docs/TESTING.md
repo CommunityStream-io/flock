@@ -20,6 +20,7 @@ Our testing documentation is organized into focused modules for better navigatio
 - **[BDD Methodology](testing/BDD_METHODOLOGY.md)** - Behavior-Driven Development approach and patterns
 - **[Unit Testing](testing/UNIT_TESTING.md)** - Component and service testing with Angular/Jasmine
 - **[E2E Testing](testing/E2E_TESTING.md)** - Full user journey testing with WebdriverIO
+- **[Modular Feature Structure](testing/MODULAR_FEATURE_STRUCTURE.md)** - Organized BDD testing with modular feature files
 - **[Coverage](testing/COVERAGE.md)** - Test coverage collection, reporting, and Codecov integration
 - **[Allure Reporting](testing/ALLURE_REPORTING.md)** - Beautiful test reports and analysis
 - **[CI Integration](testing/CI_INTEGRATION.md)** - Automated testing pipeline and deployment
@@ -161,14 +162,32 @@ ng test --watch
 
 ## 🧪 **E2E Testing (Full Migration Journey)**
 
-### **Test Structure**
+### **Modular Feature Structure**
 ```
 features/
-├── auth.feature              # Authentication and credential validation
-├── file-upload.feature       # File selection and validation
-├── landing.feature           # Landing page and navigation
-└── navigation-guard.feature  # Route protection and validation
+├── auth/                           # Authentication feature group
+│   ├── auth.feature               # Core authentication (6 scenarios)
+│   ├── auth-username-validation.feature  # Username validation (1 scenario)
+│   ├── auth-password-validation.feature  # Password validation (1 scenario)
+│   ├── auth-navigation-guards.feature    # Navigation guards (7 scenarios)
+│   └── auth-help-dialog.feature          # Help dialog (2 scenarios)
+├── config/                        # Configuration feature group
+│   ├── config.feature             # Core configuration (6 scenarios)
+│   ├── config-date-range.feature  # Date range settings (4 scenarios)
+│   ├── config-testing.feature     # Testing options (3 scenarios)
+│   ├── config-validation.feature  # Validation logic (15 scenarios)
+│   ├── config-user-interface.feature    # UI/UX (20 scenarios)
+│   └── config-overview.feature    # Integration overview (6 scenarios)
+├── upload/                        # File upload feature group
+│   ├── upload.feature             # Core upload (4 scenarios)
+│   ├── upload-file-validation.feature    # File validation (1 scenario)
+│   ├── upload-file-management.feature    # File management (2 scenarios)
+│   └── upload-form-validation.feature    # Form validation (1 scenario)
+├── landing.feature                # Landing page and navigation
+└── navigation-guard.feature       # Route protection and validation
 ```
+
+**📚 See [Modular Feature Structure](testing/MODULAR_FEATURE_STRUCTURE.md) for detailed organization guidelines.**
 
 ### **Modular Step Definitions**
 Our step definitions are organized into focused modules for better maintainability:
@@ -264,9 +283,15 @@ graph TB
 # Full test suite (all features)
 npm run test:e2e:headless
 
-# Test specific features:
-export TEST_SPEC="./features/auth.feature" && npm run test:e2e:headless
-export TEST_SPEC="./features/file-upload.feature" && npm run test:e2e:headless
+# Test specific feature groups:
+export TEST_SPEC="./features/auth/*.feature" && npm run test:e2e:headless
+export TEST_SPEC="./features/config/*.feature" && npm run test:e2e:headless
+export TEST_SPEC="./features/upload/*.feature" && npm run test:e2e:headless
+
+# Test specific feature files:
+export TEST_SPEC="./features/auth/auth.feature" && npm run test:e2e:headless
+export TEST_SPEC="./features/upload/upload.feature" && npm run test:e2e:headless
+export TEST_SPEC="./features/config/config-validation.feature" && npm run test:e2e:headless
 export TEST_SPEC="./features/landing.feature" && npm run test:e2e:headless
 
 # Test with specific tags
@@ -508,10 +533,13 @@ Instead of waiting for all tests to complete, you can target specific test files
 #### **E2E Test Targeting**
 ```bash
 # Run only auth flow tests
-export TEST_SPEC="./features/auth.feature" && npm run test:e2e:headless
+export TEST_SPEC="./features/auth/*.feature" && npm run test:e2e:headless
 
 # Run only file upload tests  
-export TEST_SPEC="./features/file-upload.feature" && npm run test:e2e:headless
+export TEST_SPEC="./features/upload/*.feature" && npm run test:e2e:headless
+
+# Run only configuration tests
+export TEST_SPEC="./features/config/*.feature" && npm run test:e2e:headless
 
 # Run only landing page tests
 export TEST_SPEC="./features/landing.feature" && npm run test:e2e:headless
@@ -560,7 +588,7 @@ ng test --include="**/*auth*.spec.ts"
 #### **When Tests Fail with Missing Step Definitions**
 ```bash
 # Check which steps are missing
-export TEST_SPEC="./features/auth.feature" && npm run test:e2e:headless
+export TEST_SPEC="./features/auth/auth.feature" && npm run test:e2e:headless
 
 # Look for "Step is not defined" errors in output
 # Add missing step definitions to the appropriate module:
@@ -591,12 +619,12 @@ export TEST_SPEC="./features/navigation-guard.feature" && npm run test:e2e:headl
 ### **Quick Test Iteration Workflow**
 ```bash
 # 1. Run specific failing test suite
-export TEST_SPEC="./features/auth.feature" && npm run test:e2e:headless
+export TEST_SPEC="./features/auth/auth.feature" && npm run test:e2e:headless
 
 # 2. Fix issues in code
 
 # 3. Re-run just that suite to verify fix
-export TEST_SPEC="./features/auth.feature" && npm run test:e2e:headless
+export TEST_SPEC="./features/auth/auth.feature" && npm run test:e2e:headless
 
 # 4. Once fixed, run full test suite
 npm run test:e2e:headless
@@ -605,10 +633,11 @@ npm run test:e2e:headless
 ### **Environment Variables for Test Control**
 ```bash
 # Control test execution
-export TEST_SPEC="./features/auth.feature"    # Target specific feature file
-export HEADLESS=true                          # Run in headless mode
-export DEBUG_TESTS=true                       # Enable debug output
-export TEST_TAGS="@auth and @validation"      # Filter by tags
+export TEST_SPEC="./features/auth/auth.feature"    # Target specific feature file
+export TEST_SPEC="./features/auth/*.feature"      # Target feature group
+export HEADLESS=true                              # Run in headless mode
+export DEBUG_TESTS=true                           # Enable debug output
+export TEST_TAGS="@auth and @validation"          # Filter by tags
 ```
 
 ## 🧪 **Test Maintenance**

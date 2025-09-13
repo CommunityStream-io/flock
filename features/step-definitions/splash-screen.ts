@@ -1,6 +1,7 @@
 import { Given, When, Then, After } from '@wdio/cucumber-framework';
 import { pages } from '../pageobjects';
 import { browser } from '@wdio/globals';
+import { timeouts, timeoutMessages } from '../support/timeout-config';
 
 Given('I have not entered any credentials', async () => {
     await pages.auth.open();
@@ -60,7 +61,7 @@ Then('the authentication should succeed', async () => {
             const currentUrl = await browser.getUrl();
             return currentUrl.includes('/step/config');
         },
-        { timeout: 10000, timeoutMsg: 'Authentication did not succeed - not navigated to config step' }
+        { timeout: timeouts.authNavigation, timeoutMsg: timeoutMessages.authNavigation(process.env.CI === 'true') }
     );
 });
 

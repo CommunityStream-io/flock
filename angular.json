@@ -198,6 +198,7 @@
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true,
+              "aot": true,
               "fileReplacements": [
                 {
                   "replace": "projects/flock-mirage/src/environments/environment.ts",
@@ -236,7 +237,9 @@
               "buildTarget": "flock-mirage:build:development"
             },
             "test": {
-              "buildTarget": "flock-mirage:build:test"
+              "buildTarget": "flock-mirage:build:test",
+              "hmr": false,
+              "liveReload": false
             },
             "test-coverage": {
               "buildTarget": "flock-mirage:build:test-coverage"
