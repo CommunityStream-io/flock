@@ -179,13 +179,39 @@ combine_allure_results() {
     # Create combined results directory
     mkdir -p allure-results-combined
     
-    # Copy results from each shard
+    # Copy results from each shard with detailed logging
     local shards_with_results=0
+    local total_test_files=0
+    local total_test_results=0
+    
     for i in $(seq 1 $total_shards); do
         if [ -d "allure-results/shard-${i}" ] && [ "$(ls -A allure-results/shard-${i} 2>/dev/null)" ]; then
-            echo "Copying results from shard ${i}..."
+            echo "📊 Processing shard ${i} results..."
+            
+            # Count files in shard directory
+            local shard_file_count=$(find "allure-results/shard-${i}" -type f 2>/dev/null | wc -l)
+            local shard_json_count=$(find "allure-results/shard-${i}" -name "*.json" 2>/dev/null | wc -l)
+            
+            echo "   📁 Found ${shard_file_count} files (${shard_json_count} JSON files) in shard ${i}"
+            
+            # List the actual files for debugging
+            if [ $shard_file_count -gt 0 ]; then
+                echo "   📋 Files in shard ${i}:"
+                find "allure-results/shard-${i}" -type f 2>/dev/null | head -10 | while read file; do
+                    echo "      - $(basename "$file")"
+                done
+                if [ $shard_file_count -gt 10 ]; then
+                    echo "      ... and $((shard_file_count - 10)) more files"
+                fi
+            fi
+            
+            # Copy results
             cp -r allure-results/shard-${i}/* allure-results-combined/ 2>/dev/null || true
             ((shards_with_results++))
+            ((total_test_files += shard_file_count))
+            ((total_test_results += shard_json_count))
+        else
+            echo "⚠️  No results found for shard ${i}"
         fi
     done
     
@@ -204,7 +230,30 @@ combine_allure_results() {
 EOF
     fi
     
-    echo "Combined results from ${shards_with_results} shards into allure-results-combined/"
+    echo ""
+    echo "📈 COMBINATION SUMMARY:"
+    echo "   🎯 Shards with results: ${shards_with_results}/${total_shards}"
+    echo "   📁 Total files processed: ${total_test_files}"
+    echo "   📊 Total JSON test results: ${total_test_results}"
+    echo "   📂 Combined directory: allure-results-combined/"
+    
+    # Show final combined directory contents
+    if [ -d "allure-results-combined" ] && [ "$(ls -A allure-results-combined 2>/dev/null)" ]; then
+        local combined_file_count=$(find "allure-results-combined" -type f 2>/dev/null | wc -l)
+        local combined_json_count=$(find "allure-results-combined" -name "*.json" 2>/dev/null | wc -l)
+        echo "   ✅ Final combined directory contains: ${combined_file_count} files (${combined_json_count} JSON files)"
+        
+        # Show sample of combined files
+        echo "   📋 Sample files in combined directory:"
+        find "allure-results-combined" -type f 2>/dev/null | head -5 | while read file; do
+            echo "      - $(basename "$file")"
+        done
+        if [ $combined_file_count -gt 5 ]; then
+            echo "      ... and $((combined_file_count - 5)) more files"
+        fi
+    else
+        echo "   ⚠️  Combined directory is empty or doesn't exist"
+    fi
 }
 
 # Function to generate final Allure report and serve it locally
