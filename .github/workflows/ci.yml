@@ -97,6 +97,8 @@ jobs:
           push: false
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          build-args: |
+            PACKAGE_TOKEN=${{ secrets.PACKAGE_TOKEN }}
 
   e2e:
     name: Practice the murmuration (E2E Test)
@@ -122,7 +124,7 @@ jobs:
           echo "Loading Docker image from build step..."
           # The image was built in the e2e-build job and cached
           # We need to rebuild it here since we can't share images between jobs
-          docker build -f Dockerfile.test -t e2e-test-${{ github.sha }} .
+          docker build -f Dockerfile.test -t e2e-test-${{ github.sha }} --build-arg PACKAGE_TOKEN=${{ secrets.PACKAGE_TOKEN }} .
 
       - name: Create logs directory
         run: mkdir -p logs/metrics allure-results
