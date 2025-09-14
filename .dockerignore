@@ -52,7 +52,9 @@ README.md
 
 # Scripts (except essential ones)
 scripts/
+!scripts/docker-startup.sh
 *.sh
+!scripts/docker-startup.sh
 
 # Config files not needed in container
 .env*
