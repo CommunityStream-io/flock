@@ -439,18 +439,41 @@ TOTAL_SHARDS=19  # Use 19 shards - one per feature file
 
 echo "Running ${TOTAL_SHARDS} shards in parallel, each with its own server..."
 
+# Pre-download ChromeDriver to avoid rate limiting during shard startup
+echo "=== PRE-DOWNLOADING CHROMEDRIVER ==="
+echo "Downloading ChromeDriver to avoid rate limiting during shard startup..."
+if command -v npm >/dev/null 2>&1; then
+    npm install chromedriver@latest --no-save
+    if [ $? -eq 0 ]; then
+        echo "✅ ChromeDriver pre-downloaded successfully"
+    else
+        echo "⚠️  ChromeDriver pre-download failed, but continuing..."
+    fi
+else
+    echo "⚠️  npm not found, skipping ChromeDriver pre-download"
+fi
+echo ""
+
 # Run all shards in parallel with fail-fast behavior
 echo "Starting all ${TOTAL_SHARDS} shards in parallel (fail-fast)..."
 
-# Start all shards in background
+# Start all shards in background with staggered startup to avoid ChromeDriver throttling
 # Initialize global counters for performance tracking
 passed=0
 failed=0
 
 pids=()
+echo "Starting shards with 3-second stagger to avoid ChromeDriver rate limiting..."
+
 for i in $(seq 1 $TOTAL_SHARDS); do
     run_shard $i $TOTAL_SHARDS &
     pids+=($!)
+    
+    # Stagger startup to avoid ChromeDriver download throttling
+    if [ $i -lt $TOTAL_SHARDS ]; then
+        echo "Started shard ${i}, waiting 3 seconds before next shard..."
+        sleep 3
+    fi
 done
 
 echo "Started ${#pids[@]} shards with PIDs: ${pids[*]}"
