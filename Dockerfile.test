@@ -36,9 +36,11 @@ WORKDIR /app
 COPY package*.json ./
 COPY angular.json ./
 COPY tsconfig*.json ./
+COPY scripts/docker-startup.sh /usr/local/bin/setup-npm-auth
+RUN chmod +x /usr/local/bin/setup-npm-auth
 
-# Install all dependencies (including dev dependencies for building)
-RUN npm ci
+# Set up npm authentication and install dependencies
+RUN /usr/local/bin/setup-npm-auth && npm ci
 
 # Copy source code
 COPY projects/ ./projects/
@@ -65,9 +67,11 @@ COPY package*.json ./
 COPY projects/ ./projects/
 COPY angular.json ./
 COPY tsconfig*.json ./
+COPY scripts/docker-startup.sh /usr/local/bin/setup-npm-auth
+RUN chmod +x /usr/local/bin/setup-npm-auth
 
-# Install all dependencies (including dev deps for ng serve)
-RUN npm ci
+# Set up npm authentication and install dependencies
+RUN /usr/local/bin/setup-npm-auth && npm ci
 
 # Create directories for logs and results
 RUN mkdir -p logs/servers logs/shards logs/exits allure-results

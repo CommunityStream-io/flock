@@ -143,20 +143,7 @@ jobs:
             -e NODE_ENV=test \
             -e PACKAGE_TOKEN=${{ secrets.PACKAGE_TOKEN }} \
             e2e-test-${{ github.sha }} \
-            sh -c "
-              echo 'Setting up npm authentication...' &&
-              echo '//npm.pkg.github.com/:_authToken='$PACKAGE_TOKEN > ~/.npmrc &&
-              echo '@straiforos:registry=https://npm.pkg.github.com/' >> ~/.npmrc &&
-              echo 'Starting Angular dev server with full source code...' &&
-              npx ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0 &
-              SERVER_PID=\$! &&
-              echo 'Waiting for server to be ready...' &&
-              timeout 60 bash -c 'until curl -f http://localhost:4200; do sleep 2; done' &&
-              echo 'Server ready! Running tests...' &&
-              npx cross-env CI=true HEADLESS=true BASE_URL=http://localhost:4200 SHARDED_TESTS=true TIMEOUT_TELEMETRY=true wdio run wdio.conf.ts --shard=${{ matrix.shard }}/19 &&
-              echo 'Tests completed! Stopping server...' &&
-              kill \$SERVER_PID 2>/dev/null || true
-            "
+            /usr/local/bin/setup-npm-auth
 
       - name: Upload Allure results as artifact (shard ${{ matrix.shard }})
         uses: actions/upload-artifact@v4
