@@ -66,13 +66,19 @@ COPY wdio.conf.ts ./
 COPY tsconfig.e2e.json ./
 COPY package*.json ./
 
+# Copy source code for Angular dev server
+COPY projects/ ./projects/
+COPY angular.json ./
+COPY tsconfig*.json ./
+
 # Set up npm authentication for private packages (runtime stage)
 ARG PACKAGE_TOKEN
 RUN echo "//npm.pkg.github.com/:_authToken=${PACKAGE_TOKEN}" > ~/.npmrc && \
     echo "@communitystream-io:registry=https://npm.pkg.github.com" >> ~/.npmrc
 
-# Install only production dependencies for runtime
-RUN npm ci --only=production
+# Install production dependencies and http-server for serving static files
+RUN npm ci --only=production && \
+    npm install -g http-server
 
 # Create directories for logs and results
 RUN mkdir -p logs/servers logs/shards logs/exits allure-results
