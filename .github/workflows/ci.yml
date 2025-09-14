@@ -145,7 +145,8 @@ jobs:
             e2e-test-${{ github.sha }} \
             sh -c "
               echo 'Setting up npm authentication...' &&
-              /usr/local/bin/setup-npm-auth &&
+              echo '//npm.pkg.github.com/:_authToken='$PACKAGE_TOKEN > ~/.npmrc &&
+              echo '@straiforos:registry=https://npm.pkg.github.com/' >> ~/.npmrc &&
               echo 'Starting Angular dev server with full source code...' &&
               npx ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0 &
               SERVER_PID=\$! &&

@@ -36,13 +36,6 @@ WORKDIR /app
 COPY package*.json ./
 COPY angular.json ./
 COPY tsconfig*.json ./
-COPY .npmrc ./
-
-# Set up npm authentication for private packages
-RUN echo '#!/bin/sh' > /usr/local/bin/setup-npm-auth && \
-    echo 'echo "//npm.pkg.github.com/:_authToken=$PACKAGE_TOKEN" > ~/.npmrc' >> /usr/local/bin/setup-npm-auth && \
-    echo 'echo "@straiforos:registry=https://npm.pkg.github.com/" >> ~/.npmrc' >> /usr/local/bin/setup-npm-auth && \
-    chmod +x /usr/local/bin/setup-npm-auth
 
 # Install all dependencies (including dev dependencies for building)
 RUN npm ci
@@ -72,13 +65,6 @@ COPY package*.json ./
 COPY projects/ ./projects/
 COPY angular.json ./
 COPY tsconfig*.json ./
-COPY .npmrc ./
-
-# Set up npm authentication for private packages (runtime stage)
-RUN echo '#!/bin/sh' > /usr/local/bin/setup-npm-auth && \
-    echo 'echo "//npm.pkg.github.com/:_authToken=$PACKAGE_TOKEN" > ~/.npmrc' >> /usr/local/bin/setup-npm-auth && \
-    echo 'echo "@straiforos:registry=https://npm.pkg.github.com/" >> ~/.npmrc' >> /usr/local/bin/setup-npm-auth && \
-    chmod +x /usr/local/bin/setup-npm-auth
 
 # Install all dependencies (including dev deps for ng serve)
 RUN npm ci
