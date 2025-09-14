@@ -76,9 +76,8 @@ ARG PACKAGE_TOKEN
 RUN echo "//npm.pkg.github.com/:_authToken=${PACKAGE_TOKEN}" > ~/.npmrc && \
     echo "@communitystream-io:registry=https://npm.pkg.github.com" >> ~/.npmrc
 
-# Install production dependencies and serve for SPA routing
-RUN npm ci --only=production && \
-    npm install -g serve
+# Install all dependencies (including dev deps for ng serve)
+RUN npm ci
 
 # Create directories for logs and results
 RUN mkdir -p logs/servers logs/shards logs/exits allure-results
