@@ -36,6 +36,7 @@ WORKDIR /app
 COPY package*.json ./
 COPY angular.json ./
 COPY tsconfig*.json ./
+COPY .npmrc ./
 
 # Set up npm authentication for private packages
 RUN sed "s/\${PACKAGE_TOKEN}/${PACKAGE_TOKEN}/g" .npmrc > ~/.npmrc
@@ -68,6 +69,7 @@ COPY package*.json ./
 COPY projects/ ./projects/
 COPY angular.json ./
 COPY tsconfig*.json ./
+COPY .npmrc ./
 
 # Set up npm authentication for private packages (runtime stage)
 RUN sed "s/\${PACKAGE_TOKEN}/${PACKAGE_TOKEN}/g" .npmrc > ~/.npmrc
