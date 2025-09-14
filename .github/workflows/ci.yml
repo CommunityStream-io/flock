@@ -97,8 +97,6 @@ jobs:
           push: false
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          build-args: |
-            PACKAGE_TOKEN=${{ secrets.PACKAGE_TOKEN }}
 
   e2e:
     name: Practice the murmuration (E2E Test)
