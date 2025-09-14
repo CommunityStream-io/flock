@@ -141,8 +141,11 @@ jobs:
             -e SHARD=${{ matrix.shard }} \
             -e TOTAL_SHARDS=19 \
             -e NODE_ENV=test \
+            -e PACKAGE_TOKEN=${{ secrets.PACKAGE_TOKEN }} \
             e2e-test-${{ github.sha }} \
             sh -c "
+              echo 'Setting up npm authentication...' &&
+              /usr/local/bin/setup-npm-auth &&
               echo 'Starting Angular dev server with full source code...' &&
               npx ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0 &
               SERVER_PID=\$! &&
