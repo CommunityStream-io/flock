@@ -1,32 +1,8 @@
-# Multi-stage Dockerfile for E2E Testing
-# Stage 1: Build Angular application
-FROM node:20-alpine AS builder
+# Optimized Multi-stage Dockerfile for E2E Testing
+# Stage 1: Base environment with Chrome and ChromeDriver
+FROM node:20-slim AS base
 
-WORKDIR /app
-
-# Copy package files
-COPY package*.json ./
-COPY angular.json ./
-COPY tsconfig*.json ./
-
-# Set up npm authentication for private packages
-ARG PACKAGE_TOKEN
-RUN echo "//npm.pkg.github.com/:_authToken=${PACKAGE_TOKEN}" > ~/.npmrc && \
-    echo "@communitystream-io:registry=https://npm.pkg.github.com" >> ~/.npmrc
-
-# Install all dependencies (including dev dependencies for building)
-RUN npm ci
-
-# Copy source code
-COPY projects/ ./projects/
-
-# Build the Angular application
-RUN npx ng build flock-mirage --configuration=test
-
-# Stage 2: Runtime with Chrome and ChromeDriver
-FROM node:20-slim
-
-# Install Chrome dependencies
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     wget \
     gnupg \
@@ -51,6 +27,33 @@ RUN CHROME_VERSION=$(google-chrome --version | cut -d " " -f3 | cut -d "." -f1) 
     && chmod +x /usr/local/bin/chromedriver \
     && rm -rf /tmp/chromedriver.zip /tmp/chromedriver-linux64
 
+# Stage 2: Build Angular application
+FROM node:20-alpine AS builder
+
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+COPY angular.json ./
+COPY tsconfig*.json ./
+
+# Set up npm authentication for private packages
+ARG PACKAGE_TOKEN
+RUN echo "//npm.pkg.github.com/:_authToken=${PACKAGE_TOKEN}" > ~/.npmrc && \
+    echo "@communitystream-io:registry=https://npm.pkg.github.com" >> ~/.npmrc
+
+# Install all dependencies (including dev dependencies for building)
+RUN npm ci
+
+# Copy source code
+COPY projects/ ./projects/
+
+# Build the Angular application
+RUN npx ng build flock-mirage --configuration=test
+
+# Stage 3: Runtime with pre-built artifacts
+FROM base AS runtime
+
 # Set working directory
 WORKDIR /app
 
@@ -68,8 +71,8 @@ ARG PACKAGE_TOKEN
 RUN echo "//npm.pkg.github.com/:_authToken=${PACKAGE_TOKEN}" > ~/.npmrc && \
     echo "@communitystream-io:registry=https://npm.pkg.github.com" >> ~/.npmrc
 
-# Install test dependencies
-RUN npm ci
+# Install only production dependencies for runtime
+RUN npm ci --only=production
 
 # Create directories for logs and results
 RUN mkdir -p logs/servers logs/shards logs/exits allure-results
