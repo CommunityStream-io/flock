@@ -88,6 +88,11 @@ jobs:
         id: image-tag
         run: echo "tag=e2e-test-${{ github.sha }}" >> $GITHUB_OUTPUT
 
+      - name: Create npmrc for Docker build
+        run: |
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.PACKAGE_TOKEN }}" > .npmrc
+          echo "@straiforos:registry=https://npm.pkg.github.com/" >> .npmrc
+
       - name: Build Docker image
         uses: docker/build-push-action@v5
         with:
@@ -97,6 +102,8 @@ jobs:
           push: false
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          secrets: |
+            npmrc=.npmrc
 
   e2e:
     name: Practice the murmuration (E2E Test)

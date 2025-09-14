@@ -63,6 +63,9 @@ scripts/
 .env.test.local
 .env.production.local
 
+# npmrc file (created dynamically in CI)
+.npmrc
+
 # Cache directories
 .cache/
 .parcel-cache/
