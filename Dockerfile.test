@@ -1,0 +1,77 @@
+# Multi-stage Dockerfile for E2E Testing
+# Stage 1: Build Angular application
+FROM node:18-alpine AS builder
+
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+COPY angular.json ./
+COPY tsconfig*.json ./
+
+# Install dependencies
+RUN npm ci --only=production
+
+# Copy source code
+COPY projects/ ./projects/
+COPY src/ ./src/
+
+# Build the Angular application
+RUN npm run build:flock-mirage
+
+# Stage 2: Runtime with Chrome and ChromeDriver
+FROM node:18-slim
+
+# Install Chrome dependencies
+RUN apt-get update && apt-get install -y \
+    wget \
+    gnupg \
+    unzip \
+    curl \
+    xvfb \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Google Chrome
+RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add - \
+    && echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list \
+    && apt-get update \
+    && apt-get install -y google-chrome-stable \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install ChromeDriver
+RUN CHROME_VERSION=$(google-chrome --version | cut -d " " -f3 | cut -d "." -f1) \
+    && CHROMEDRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_VERSION}") \
+    && wget -O /tmp/chromedriver.zip "https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip" \
+    && unzip /tmp/chromedriver.zip -d /usr/local/bin/ \
+    && chmod +x /usr/local/bin/chromedriver \
+    && rm /tmp/chromedriver.zip
+
+# Set working directory
+WORKDIR /app
+
+# Copy built application from builder stage
+COPY --from=builder /app/dist/flock-mirage ./dist/flock-mirage
+
+# Copy test files and configuration
+COPY features/ ./features/
+COPY wdio.conf.ts ./
+COPY tsconfig.e2e.json ./
+COPY package*.json ./
+
+# Install test dependencies
+RUN npm ci
+
+# Create directories for logs and results
+RUN mkdir -p logs/servers logs/shards logs/exits allure-results
+
+# Set environment variables
+ENV NODE_ENV=test
+ENV HEADLESS=true
+ENV CI=true
+ENV TIMEOUT_TELEMETRY=true
+
+# Expose port for Angular dev server
+EXPOSE 4200
+
+# Default command (can be overridden)
+CMD ["npm", "run", "test:e2e"]
