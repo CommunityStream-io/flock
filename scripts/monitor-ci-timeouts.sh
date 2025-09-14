@@ -10,6 +10,34 @@ WORKFLOW_NAME="Feathering the Nest"
 POLL_INTERVAL=30  # seconds
 MAX_WAIT_TIME=1800  # 30 minutes
 ARTIFACTS_DIR="logs/ci-artifacts"
+SKIP_TELEMETRY=false
+FAIL_FAST=false
+
+# Parse command line arguments
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --skip-telemetry)
+            SKIP_TELEMETRY=true
+            shift
+            ;;
+        --fail-fast)
+            FAIL_FAST=true
+            shift
+            ;;
+        -h|--help)
+            echo "Usage: $0 [--skip-telemetry] [--fail-fast]"
+            echo "  --skip-telemetry    Skip telemetry analysis and artifact downloading"
+            echo "  --fail-fast         Exit immediately if Docker build fails"
+            echo "  -h, --help         Show this help message"
+            exit 0
+            ;;
+        *)
+            echo "Unknown option: $1"
+            echo "Use --help for usage information"
+            exit 1
+            ;;
+    esac
+done
 
 # Colors for output
 RED='\033[0;31m'
@@ -57,6 +85,18 @@ get_run_status() {
 get_failed_jobs() {
     local run_id=$1
     gh run view $run_id --json jobs --jq '.jobs[] | select(.conclusion == "failure") | {id: .databaseId, name: .name}'
+}
+
+# Function to check if Docker build failed
+check_docker_build_failed() {
+    local run_id=$1
+    local build_job=$(gh run view $run_id --json jobs --jq '.jobs[] | select(.name == "Build E2E Docker Image") | .conclusion')
+    
+    if [ "$build_job" = "failure" ]; then
+        return 0  # Docker build failed
+    else
+        return 1  # Docker build not failed (yet)
+    fi
 }
 
 # Function to download artifacts from a job
@@ -151,6 +191,15 @@ monitor_workflow() {
         local current_status=$(echo $status | cut -d: -f1)
         local conclusion=$(echo $status | cut -d: -f2)
         
+        # Check for Docker build failure if fail-fast is enabled
+        if [ "$FAIL_FAST" = "true" ]; then
+            if check_docker_build_failed $run_id; then
+                print_status $RED "❌ Docker build failed! Exiting immediately (--fail-fast enabled)"
+                print_status $BLUE "🔗 View build logs: https://github.com/CommunityStream-io/flock/actions/runs/$run_id"
+                exit 1
+            fi
+        fi
+        
         case $current_status in
             "completed")
                 if [ "$conclusion" = "success" ]; then
@@ -199,14 +248,18 @@ handle_failed_workflow() {
         print_status $RED "   - $job_name"
     done
     
-    # Download artifacts from failed jobs
-    echo "$failed_jobs" | jq -r '.id' | while read job_id; do
-        local job_name=$(echo "$failed_jobs" | jq -r --arg id "$job_id" 'select(.id == ($id | tonumber)) | .name')
-        download_job_artifacts $job_id "$job_name"
-    done
-    
-    # Analyze timeout artifacts
-    analyze_timeout_artifacts
+    if [ "$SKIP_TELEMETRY" = "false" ]; then
+        # Download artifacts from failed jobs
+        echo "$failed_jobs" | jq -r '.id' | while read job_id; do
+            local job_name=$(echo "$failed_jobs" | jq -r --arg id "$job_id" 'select(.id == ($id | tonumber)) | .name')
+            download_job_artifacts $job_id "$job_name"
+        done
+        
+        # Analyze timeout artifacts
+        analyze_timeout_artifacts
+    else
+        print_status $YELLOW "⏭️  Skipping telemetry analysis (--skip-telemetry flag set)"
+    fi
 }
 
 # Main execution
