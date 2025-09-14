@@ -48,4 +48,6 @@ npx cross-env CI=true HEADLESS=true BASE_URL=http://localhost:4200 SHARDED_TESTS
 # Clean up
 print_status $BLUE "🧹 Cleaning up..."
 kill $SERVER_PID 2>/dev/null || true
+# Remove npm authentication file for security
+rm -f ~/.npmrc
 print_status $GREEN "✅ Startup script completed successfully"
