@@ -38,9 +38,7 @@ COPY angular.json ./
 COPY tsconfig*.json ./
 
 # Set up npm authentication for private packages
-ARG PACKAGE_TOKEN
-RUN echo "//npm.pkg.github.com/:_authToken=${PACKAGE_TOKEN}" > ~/.npmrc && \
-    echo "@communitystream-io:registry=https://npm.pkg.github.com" >> ~/.npmrc
+COPY .npmrc ~/.npmrc
 
 # Install all dependencies (including dev dependencies for building)
 RUN npm ci
@@ -72,9 +70,8 @@ COPY angular.json ./
 COPY tsconfig*.json ./
 
 # Set up npm authentication for private packages (runtime stage)
-ARG PACKAGE_TOKEN
-RUN echo "//npm.pkg.github.com/:_authToken=${PACKAGE_TOKEN}" > ~/.npmrc && \
-    echo "@communitystream-io:registry=https://npm.pkg.github.com" >> ~/.npmrc
+ENV PACKAGE_TOKEN=${PACKAGE_TOKEN}
+RUN sed "s/\${PACKAGE_TOKEN}/${PACKAGE_TOKEN}/g" .npmrc > ~/.npmrc
 
 # Install all dependencies (including dev deps for ng serve)
 RUN npm ci
