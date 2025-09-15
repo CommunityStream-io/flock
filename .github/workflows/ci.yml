@@ -67,14 +67,42 @@ jobs:
           name: codecov-umbrella
           fail_ci_if_error: false
 
+  e2e-matrix:
+    name: Calculate E2E Matrix
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Count feature files and generate matrix
+        id: set-matrix
+        run: |
+          # Count feature files
+          FEATURE_COUNT=$(find features -name "*.feature" | wc -l)
+          echo "Found $FEATURE_COUNT feature files"
+          
+          # Generate shard array (1 to FEATURE_COUNT)
+          SHARDS=$(seq 1 $FEATURE_COUNT | tr '\n' ',' | sed 's/,$//')
+          echo "Generated shards: $SHARDS"
+          
+          # Create matrix JSON
+          MATRIX="{\"shard\":[$SHARDS],\"total-shards\":[$FEATURE_COUNT]}"
+          echo "Matrix: $MATRIX"
+          
+          # Set output
+          echo "matrix=$MATRIX" >> $GITHUB_OUTPUT
+
   e2e:
     name: Practice the murmuration (E2E Test)
     runs-on: ubuntu-latest
+    needs: e2e-matrix
     strategy:
       fail-fast: false
-      matrix:
-        shard: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
-        total-shards: [19]
+      matrix: ${{ fromJson(needs.e2e-matrix.outputs.matrix) }}
     env:
       PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
       HEADLESS: true
@@ -103,7 +131,7 @@ jobs:
 
       - name: Run E2E tests
         run: |
-          echo "🚀 Running shard ${{ matrix.shard }}/19..."
+          echo "🚀 Running shard ${{ matrix.shard }}/${{ matrix.total-shards }}..."
           SHARD=${{ matrix.shard }} TOTAL_SHARDS=${{ matrix.total-shards }} npm run test:e2e:shard
 
       - name: Upload Allure results as artifact (shard ${{ matrix.shard }})
@@ -133,7 +161,7 @@ jobs:
   timeout-analysis:
     name: Analyze Timeout Patterns
     runs-on: ubuntu-latest
-    needs: [e2e]
+    needs: [e2e-matrix, e2e]
     if: always()
     steps:
       - name: Checkout code
@@ -207,7 +235,7 @@ jobs:
   deploy-allure:
     name: Deploy Allure Report to GitHub Pages
     runs-on: ubuntu-latest
-    needs: [e2e, timeout-analysis]
+    needs: [e2e-matrix, e2e, timeout-analysis]
     if: always()
     permissions:
       contents: write
