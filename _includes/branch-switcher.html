@@ -2,9 +2,15 @@
 <div class="branch-switcher" id="branch-switcher">
   <div class="branch-info">
     <span class="branch-icon">🌿</span>
-    <span class="branch-name" id="current-branch">{{ site.branch_info.name | default: "main" }}</span>
+    <span class="branch-name" id="current-branch">{{ site.branch_info.name | default: site.branch | default: "main" }}</span>
     {% if site.branch_info.is_preview %}
-      <span class="branch-badge preview">{{ site.branch_info.environment | capitalize }}</span>
+      <span class="branch-badge preview">{{ site.branch_info.environment | default: "preview" | capitalize }}</span>
+    {% elsif site.branch == 'develop' %}
+      <span class="branch-badge development">Development</span>
+    {% elsif site.branch == 'staging' %}
+      <span class="branch-badge staging">Staging</span>
+    {% elsif site.branch == 'main' %}
+      <span class="branch-badge production">Production</span>
     {% endif %}
   </div>
   
@@ -54,7 +60,7 @@
               <span class="branch-icon">🌿</span>
               <div class="branch-details">
                 <span class="branch-name">{{ site.branch_info.name }}</span>
-                <span class="branch-desc">{{ site.branch_info.environment | capitalize }} preview</span>
+                <span class="branch-desc">{{ site.branch_info.environment | default: "preview" | capitalize }} preview</span>
               </div>
               <span class="current-indicator">✓</span>
             </div>
@@ -65,34 +71,26 @@
       <div class="branch-section">
         <h4>🔗 Quick Links</h4>
         <div class="branch-links">
-          {% if site.tools.allure.branches %}
-            {% for branch in site.tools.allure.branches %}
-              {% if branch.name == site.branch %}
-                <a href="{{ branch.url }}" target="_blank" class="branch-link tool">
-                  <span class="branch-icon">📊</span>
-                  <div class="branch-details">
-                    <span class="branch-name">Allure Reports</span>
-                    <span class="branch-desc">E2E test results</span>
-                  </div>
-                  <i class="fas fa-external-link-alt"></i>
-                </a>
-              {% endif %}
-            {% endfor %}
+          {% if site.current_branch_tools.allure_current_url %}
+            <a href="{{ site.current_branch_tools.allure_current_url }}" target="_blank" class="branch-link tool">
+              <span class="branch-icon">📊</span>
+              <div class="branch-details">
+                <span class="branch-name">Allure Reports</span>
+                <span class="branch-desc">E2E test results</span>
+              </div>
+              <i class="fas fa-external-link-alt"></i>
+            </a>
           {% endif %}
           
-          {% if site.tools.coverage.branches %}
-            {% for branch in site.tools.coverage.branches %}
-              {% if branch.name == site.branch %}
-                <a href="{{ branch.url }}" target="_blank" class="branch-link tool">
-                  <span class="branch-icon">📈</span>
-                  <div class="branch-details">
-                    <span class="branch-name">Code Coverage</span>
-                    <span class="branch-desc">Coverage analysis</span>
-                  </div>
-                  <i class="fas fa-external-link-alt"></i>
-                </a>
-              {% endif %}
-            {% endfor %}
+          {% if site.current_branch_tools.coverage_current_url %}
+            <a href="{{ site.current_branch_tools.coverage_current_url }}" target="_blank" class="branch-link tool">
+              <span class="branch-icon">📈</span>
+              <div class="branch-details">
+                <span class="branch-name">Code Coverage</span>
+                <span class="branch-desc">Coverage analysis</span>
+              </div>
+              <i class="fas fa-external-link-alt"></i>
+            </a>
           {% endif %}
         </div>
       </div>

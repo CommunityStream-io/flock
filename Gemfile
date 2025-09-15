@@ -44,6 +44,7 @@ gem "http_parser.rb", "~> 0.6.0", :platforms => [:jruby]
 gem "html-proofer", "~> 5.0", group: :test
 gem "kramdown-parser-gfm", "~> 1.1"
 gem "rouge", "~> 4.2"
+gem "faraday-retry", "~> 2.2"
 
 # Note: For the docs migration script, you'll also need:
 # npm install yaml (for Node.js YAML processing)

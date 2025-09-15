@@ -168,32 +168,14 @@ jobs:
             environment: "$ENVIRONMENT"
             is_preview: ${{ needs.detect-branch.outputs.is-main-branch != 'true' }}
           
-          # Update tool URLs for branch
-          tools:
-            allure:
-              name: "Allure Reports"
-              description: "E2E test reporting and analysis"
-              icon: "📊"
-              path: "/tools/allure"
-              branches:
-                - name: "$BRANCH_NAME"
-                  url: "https://communitystream-io.github.io$BASE_PATH/allure/"
-            badges:
-              name: "Test Badges"
-              description: "Real-time test status badges"
-              icon: "🏆"
-              path: "/tools/badges"
-              branches:
-                - name: "$BRANCH_NAME"
-                  url: "https://communitystream-io.github.io$BASE_PATH/badges/"
-            coverage:
-              name: "Code Coverage"  
-              description: "Unit and integration test coverage"
-              icon: "📈"
-              path: "/tools/coverage"
-              branches:
-                - name: "$BRANCH_NAME"
-                  url: "https://codecov.io/github/CommunityStream-io/flock/branch/$BRANCH_NAME"
+          # Override tool URLs for current branch (merge with existing config)
+          current_branch_tools:
+            allure_current_branch: "$BRANCH_NAME"
+            allure_current_url: "https://communitystream-io.github.io$BASE_PATH/allure/"
+            badges_current_branch: "$BRANCH_NAME"
+            badges_current_url: "https://communitystream-io.github.io$BASE_PATH/badges/"
+            coverage_current_branch: "$BRANCH_NAME"
+            coverage_current_url: "https://codecov.io/github/CommunityStream-io/flock/branch/$BRANCH_NAME"
           EOF
           
           echo "📝 Created configuration for branch: $BRANCH_NAME"

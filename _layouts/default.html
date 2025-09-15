@@ -67,16 +67,42 @@
           <div class="nav-item dropdown">
             <a href="#" class="nav-link">🛠️ Tools</a>
             <div class="dropdown-content">
-              {% for tool in site.tools %}
-                <div class="tool-group">
-                  <span class="tool-name">{{ tool[1].icon }} {{ tool[1].name }}</span>
-                  {% for branch in tool[1].branches %}
-                    <a href="{{ branch.url }}" class="dropdown-link branch-link" target="_blank">
-                      {{ branch.name }}
-                    </a>
-                  {% endfor %}
-                </div>
-              {% endfor %}
+              {% if site.tools %}
+                {% if site.tools.allure %}
+                  <div class="tool-group">
+                    <span class="tool-name">📊 Allure Reports</span>
+                    <a href="/tools/allure/" class="dropdown-link">Documentation</a>
+                    {% if site.current_branch_tools.allure_current_url %}
+                      <a href="{{ site.current_branch_tools.allure_current_url }}" class="dropdown-link branch-link" target="_blank">
+                        {{ site.current_branch_tools.allure_current_branch | default: "Current Branch" }}
+                      </a>
+                    {% endif %}
+                  </div>
+                {% endif %}
+                
+                {% if site.tools.badges %}
+                  <div class="tool-group">
+                    <span class="tool-name">🏆 Test Badges</span>
+                    <a href="/tools/badges/" class="dropdown-link">Documentation</a>
+                    {% if site.current_branch_tools.badges_current_url %}
+                      <a href="{{ site.current_branch_tools.badges_current_url }}" class="dropdown-link branch-link" target="_blank">
+                        {{ site.current_branch_tools.badges_current_branch | default: "Current Branch" }}
+                      </a>
+                    {% endif %}
+                  </div>
+                {% endif %}
+                
+                {% if site.tools.coverage %}
+                  <div class="tool-group">
+                    <span class="tool-name">📈 Coverage</span>
+                    {% if site.current_branch_tools.coverage_current_url %}
+                      <a href="{{ site.current_branch_tools.coverage_current_url }}" class="dropdown-link branch-link" target="_blank">
+                        {{ site.current_branch_tools.coverage_current_branch | default: "Current Branch" }}
+                      </a>
+                    {% endif %}
+                  </div>
+                {% endif %}
+              {% endif %}
             </div>
           </div>
         </div>
