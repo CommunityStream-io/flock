@@ -96,6 +96,10 @@ jobs:
       - name: Build Docker image
         run: |
           export DOCKER_BUILDKIT=1
+          echo "🔍 Checking .npmrc file contents:"
+          cat .npmrc
+          echo "🔍 File size: $(wc -c < .npmrc) bytes"
+          echo "🚀 Building Docker image with secrets..."
           docker build \
             --secret id=npmrc,src=.npmrc \
             --tag ${{ steps.image-tag.outputs.tag }} \
