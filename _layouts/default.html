@@ -58,7 +58,12 @@
             </div>
           {% endfor %}
           
-          <!-- Branch/Tool Selector -->
+          <!-- Branch Switcher -->
+          <div class="nav-item">
+            {% include branch-switcher.html %}
+          </div>
+          
+          <!-- Tools Dropdown -->
           <div class="nav-item dropdown">
             <a href="#" class="nav-link">🛠️ Tools</a>
             <div class="dropdown-content">
