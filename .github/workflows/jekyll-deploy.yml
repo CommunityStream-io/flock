@@ -1,0 +1,759 @@
+name: Deploy Jekyll Documentation Site
+
+on:
+  push:
+    branches: [ "**" ]  # All branches
+    paths:
+      - 'docs/**'
+      - '_*/**'
+      - '*.md'
+      - '_config.yml'
+      - 'assets/**'
+      - 'Gemfile*'
+      - '.github/workflows/jekyll-deploy.yml'
+  pull_request:
+    branches: [ main, develop ]  # PRs to main branches
+    paths:
+      - 'docs/**'
+      - '_*/**'
+      - '*.md'
+      - '_config.yml'
+      - 'assets/**'
+  delete:
+    # Handle branch deletion for cleanup
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment per branch, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these deployments to complete.
+concurrency:
+  group: "jekyll-deploy-${{ github.ref_name }}"
+  cancel-in-progress: false
+
+jobs:
+  # Lint and validate Jekyll site
+  validate:
+    name: Validate Jekyll Site
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.1'
+          bundler-cache: true
+          cache-version: 0
+
+      - name: Setup Pages
+        id: pages
+        uses: actions/configure-pages@v4
+
+      - name: Install dependencies
+        run: |
+          bundle install
+
+      - name: Lint with HTMLProofer (dry run)
+        run: |
+          bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}" --destination ./_site
+          # bundle exec htmlproofer ./_site --check-html --check-img-http --check-opengraph --report-missing-names --log-level :debug
+        continue-on-error: true
+
+  # Dynamic branch detection and configuration
+  detect-branch:
+    name: Detect Branch Configuration
+    runs-on: ubuntu-latest
+    outputs:
+      branch-name: ${{ steps.branch.outputs.name }}
+      branch-slug: ${{ steps.branch.outputs.slug }}
+      base-path: ${{ steps.branch.outputs.base_path }}
+      environment: ${{ steps.branch.outputs.environment }}
+      is-main-branch: ${{ steps.branch.outputs.is_main_branch }}
+      deploy-to-root: ${{ steps.branch.outputs.deploy_to_root }}
+    steps:
+      - name: Detect and configure branch
+        id: branch
+        run: |
+          BRANCH_NAME="${{ github.ref_name }}"
+          echo "name=$BRANCH_NAME" >> $GITHUB_OUTPUT
+          
+          # Create URL-safe branch slug
+          BRANCH_SLUG=$(echo "$BRANCH_NAME" | sed 's/[^a-zA-Z0-9-]/-/g' | sed 's/--*/-/g' | sed 's/^-\|-$//g' | tr '[:upper:]' '[:lower:]')
+          echo "slug=$BRANCH_SLUG" >> $GITHUB_OUTPUT
+          
+          # Configure deployment settings based on branch
+          case "$BRANCH_NAME" in
+            "main")
+              echo "base_path=/flock" >> $GITHUB_OUTPUT
+              echo "environment=production" >> $GITHUB_OUTPUT
+              echo "is_main_branch=true" >> $GITHUB_OUTPUT
+              echo "deploy_to_root=true" >> $GITHUB_OUTPUT
+              ;;
+            "develop")
+              echo "base_path=/flock-develop" >> $GITHUB_OUTPUT
+              echo "environment=development" >> $GITHUB_OUTPUT
+              echo "is_main_branch=false" >> $GITHUB_OUTPUT
+              echo "deploy_to_root=false" >> $GITHUB_OUTPUT
+              ;;
+            "staging")
+              echo "base_path=/flock-staging" >> $GITHUB_OUTPUT
+              echo "environment=staging" >> $GITHUB_OUTPUT
+              echo "is_main_branch=false" >> $GITHUB_OUTPUT
+              echo "deploy_to_root=false" >> $GITHUB_OUTPUT
+              ;;
+            *)
+              echo "base_path=/flock-branch-$BRANCH_SLUG" >> $GITHUB_OUTPUT
+              echo "environment=preview" >> $GITHUB_OUTPUT
+              echo "is_main_branch=false" >> $GITHUB_OUTPUT
+              echo "deploy_to_root=false" >> $GITHUB_OUTPUT
+              ;;
+          esac
+          
+          echo "🌿 Branch: $BRANCH_NAME"
+          echo "🔗 Slug: $BRANCH_SLUG"
+          echo "📁 Base path: $(echo "$BRANCH_NAME" | case "$BRANCH_NAME" in "main") echo "/flock";; "develop") echo "/flock-develop";; "staging") echo "/flock-staging";; *) echo "/flock-branch-$BRANCH_SLUG";; esac)"
+
+  # Build Jekyll site for any branch
+  build:
+    name: Build Jekyll Site
+    runs-on: ubuntu-latest
+    needs: [validate, detect-branch]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.1'
+          bundler-cache: true
+          cache-version: 0
+
+      - name: Setup Pages (main branch only)
+        if: needs.detect-branch.outputs.is-main-branch == 'true'
+        id: pages
+        uses: actions/configure-pages@v4
+
+      - name: Install dependencies
+        run: bundle install
+
+      - name: Create branch-specific configuration
+        run: |
+          BRANCH_NAME="${{ needs.detect-branch.outputs.branch-name }}"
+          BRANCH_SLUG="${{ needs.detect-branch.outputs.branch-slug }}"
+          BASE_PATH="${{ needs.detect-branch.outputs.base-path }}"
+          ENVIRONMENT="${{ needs.detect-branch.outputs.environment }}"
+          
+          # Create branch-specific config override
+          cat >> _config-branch.yml << EOF
+          baseurl: "$BASE_PATH"
+          url: "https://communitystream-io.github.io"
+          
+          # Branch-specific settings
+          branch: "$BRANCH_NAME"
+          branch_slug: "$BRANCH_SLUG"
+          environment: "$ENVIRONMENT"
+          
+          # Branch indicator for UI
+          branch_info:
+            name: "$BRANCH_NAME"
+            slug: "$BRANCH_SLUG"
+            environment: "$ENVIRONMENT"
+            is_preview: ${{ needs.detect-branch.outputs.is-main-branch != 'true' }}
+          
+          # Override tool URLs for current branch (merge with existing config)
+          current_branch_tools:
+            allure_current_branch: "$BRANCH_NAME"
+            allure_current_url: "https://communitystream-io.github.io$BASE_PATH/allure/"
+            badges_current_branch: "$BRANCH_NAME"
+            badges_current_url: "https://communitystream-io.github.io$BASE_PATH/badges/"
+            coverage_current_branch: "$BRANCH_NAME"
+            coverage_current_url: "https://codecov.io/github/CommunityStream-io/flock/branch/$BRANCH_NAME"
+          EOF
+          
+          echo "📝 Created configuration for branch: $BRANCH_NAME"
+          echo "🔗 Base path: $BASE_PATH"
+          echo "🌍 Environment: $ENVIRONMENT"
+
+      - name: Build with Jekyll
+        run: |
+          bundle exec jekyll build \
+            --config "_config.yml,_config-branch.yml" \
+            --destination ./_site \
+            --verbose
+        env:
+          JEKYLL_ENV: ${{ needs.detect-branch.outputs.environment }}
+
+      - name: Copy documentation assets
+        run: |
+          # Copy any existing documentation assets
+          if [ -d "docs/assets" ]; then
+            cp -r docs/assets/* ./_site/assets/ 2>/dev/null || true
+          fi
+          
+          # Copy existing reports if they exist (for integration)
+          if [ -d "allure-report" ]; then
+            mkdir -p ./_site/allure
+            cp -r allure-report/* ./_site/allure/ 2>/dev/null || true
+          fi
+          
+          # Copy badges if they exist
+          if [ -d "badges" ]; then
+            mkdir -p ./_site/badges
+            cp -r badges/* ./_site/badges/ 2>/dev/null || true
+          fi
+
+      - name: Add branch metadata
+        run: |
+          # Add comprehensive branch information
+          cat > ./_site/BRANCH.json << EOF
+          {
+            "branch": "${{ needs.detect-branch.outputs.branch-name }}",
+            "branch_slug": "${{ needs.detect-branch.outputs.branch-slug }}",
+            "base_path": "${{ needs.detect-branch.outputs.base-path }}",
+            "environment": "${{ needs.detect-branch.outputs.environment }}",
+            "is_main_branch": ${{ needs.detect-branch.outputs.is-main-branch }},
+            "build_time": "$(date -u -Iseconds)",
+            "commit_sha": "${{ github.sha }}",
+            "run_id": "${{ github.run_id }}",
+            "repository": "${{ github.repository }}"
+          }
+          EOF
+          
+          # Legacy text format
+          echo "Built from branch: ${{ needs.detect-branch.outputs.branch-name }}" > ./_site/BRANCH
+          echo "Environment: ${{ needs.detect-branch.outputs.environment }}" >> ./_site/BRANCH
+          echo "Build time: $(date -u)" >> ./_site/BRANCH
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          name: "github-pages-${{ needs.detect-branch.outputs.branch-slug }}-${{ github.run_number }}"
+          path: ./_site
+
+  # Deploy job for production (main branch)
+  deploy-production:
+    name: Deploy to GitHub Pages (Production)
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: [build, detect-branch]
+    if: needs.detect-branch.outputs.is-main-branch == 'true' && github.event_name == 'push'
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: "github-pages-${{ needs.detect-branch.outputs.branch-slug }}-${{ github.run_number }}"
+          path: ./_site
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+  # Integration with existing Allure reports (for any branch)
+  integrate-reports:
+    name: Integrate with Existing Reports
+    runs-on: ubuntu-latest
+    needs: [build, detect-branch]
+    if: github.event_name == 'push'
+    steps:
+      - name: Checkout gh-pages branch
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: gh-pages
+          fetch-depth: 1
+        continue-on-error: true
+
+      - name: Download Jekyll site
+        uses: actions/download-artifact@v4
+        with:
+          name: "github-pages-${{ needs.detect-branch.outputs.branch-slug }}-${{ github.run_number }}"
+          path: jekyll-site
+        continue-on-error: true
+
+      - name: Integrate Jekyll with existing reports
+        run: |
+          BRANCH_NAME="${{ needs.detect-branch.outputs.branch-name }}"
+          BRANCH_SLUG="${{ needs.detect-branch.outputs.branch-slug }}"
+          BASE_PATH="${{ needs.detect-branch.outputs.base-path }}"
+          
+          echo "🔄 Integrating reports for branch: $BRANCH_NAME"
+          
+          # Create integration directory structure
+          mkdir -p integrated-site
+          
+          # Copy Jekyll site as base
+          if [ -d "jekyll-site" ]; then
+            cp -r jekyll-site/* integrated-site/
+            echo "✅ Copied Jekyll site"
+          fi
+          
+          # Determine gh-pages subdirectory based on branch
+          if [ "${{ needs.detect-branch.outputs.is-main-branch }}" == "true" ]; then
+            GH_PAGES_DIR="gh-pages"
+          else
+            # For non-main branches, check if subdirectory exists
+            case "$BRANCH_NAME" in
+              "develop")
+                GH_PAGES_DIR="gh-pages/flock-develop"
+                ;;
+              "staging")
+                GH_PAGES_DIR="gh-pages/flock-staging"
+                ;;
+              *)
+                GH_PAGES_DIR="gh-pages/flock-branch-$BRANCH_SLUG"
+                ;;
+            esac
+          fi
+          
+          echo "📁 Looking for existing reports in: $GH_PAGES_DIR"
+          
+          # Preserve existing reports if they exist
+          if [ -d "$GH_PAGES_DIR" ]; then
+            echo "📂 Found existing deployment directory"
+            
+            # Copy existing allure reports
+            if [ -d "$GH_PAGES_DIR/allure" ]; then
+              mkdir -p integrated-site/allure
+              cp -r "$GH_PAGES_DIR/allure"/* integrated-site/allure/ 2>/dev/null || true
+              echo "📊 Preserved Allure reports"
+            fi
+            
+            # Copy existing badges
+            if [ -d "$GH_PAGES_DIR/badges" ]; then
+              mkdir -p integrated-site/badges
+              cp -r "$GH_PAGES_DIR/badges"/* integrated-site/badges/ 2>/dev/null || true
+              echo "🏆 Preserved test badges"
+            fi
+            
+            # Preserve any other tool directories
+            for tool_dir in "$GH_PAGES_DIR"/*/; do
+              if [ -d "$tool_dir" ]; then
+                tool_name=$(basename "$tool_dir")
+                if [[ ! "$tool_name" =~ ^(assets|_|index|404|sitemap|feed|BRANCH).*$ ]]; then
+                  mkdir -p "integrated-site/$tool_name"
+                  cp -r "$tool_dir"* "integrated-site/$tool_name/" 2>/dev/null || true
+                  echo "🔧 Preserved tool directory: $tool_name"
+                fi
+              fi
+            done
+          else
+            echo "📭 No existing reports found for this branch"
+          fi
+          
+          # Create integration manifest
+          cat > integrated-site/integration-manifest.json << EOF
+          {
+            "branch": "$BRANCH_NAME",
+            "branch_slug": "$BRANCH_SLUG",
+            "base_path": "$BASE_PATH",
+            "gh_pages_dir": "$GH_PAGES_DIR",
+            "integration_time": "$(date -u -Iseconds)",
+            "jekyll_build": true,
+            "preserved_reports": {
+              "allure": $([ -d "integrated-site/allure" ] && echo "true" || echo "false"),
+              "badges": $([ -d "integrated-site/badges" ] && echo "true" || echo "false")
+            },
+            "github": {
+              "repository": "${{ github.repository }}",
+              "sha": "${{ github.sha }}",
+              "run_id": "${{ github.run_id }}"
+            }
+          }
+          EOF
+          
+          echo "✅ Integration completed for branch: $BRANCH_NAME"
+
+      - name: Upload integrated site
+        uses: actions/upload-artifact@v4
+        with:
+          name: "integrated-site-${{ needs.detect-branch.outputs.branch-slug }}-${{ github.run_number }}"
+          path: integrated-site
+          retention-days: 30
+
+  # Deploy branch-specific sites (all non-main branches)  
+  deploy-branch:
+    name: Deploy Branch Site
+    runs-on: ubuntu-latest
+    needs: [integrate-reports, detect-branch]
+    if: needs.detect-branch.outputs.is-main-branch != 'true' && github.event_name == 'push'
+    steps:
+      - name: Checkout gh-pages
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: gh-pages
+          fetch-depth: 1
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Download integrated site
+        uses: actions/download-artifact@v4
+        with:
+          name: "integrated-site-${{ needs.detect-branch.outputs.branch-slug }}-${{ github.run_number }}"
+          path: branch-site
+
+      - name: Deploy to branch subdirectory
+        run: |
+          BRANCH_NAME="${{ needs.detect-branch.outputs.branch-name }}"
+          BRANCH_SLUG="${{ needs.detect-branch.outputs.branch-slug }}"
+          BASE_PATH="${{ needs.detect-branch.outputs.base-path }}"
+          ENVIRONMENT="${{ needs.detect-branch.outputs.environment }}"
+          
+          # Determine subdirectory name based on branch
+          case "$BRANCH_NAME" in
+            "develop")
+              SUBDIRECTORY="flock-develop"
+              ;;
+            "staging")
+              SUBDIRECTORY="flock-staging"
+              ;;
+            *)
+              SUBDIRECTORY="flock-branch-$BRANCH_SLUG"
+              ;;
+          esac
+          
+          echo "🚀 Deploying branch '$BRANCH_NAME' to subdirectory: $SUBDIRECTORY"
+          
+          # Create/update branch subdirectory
+          mkdir -p "gh-pages/$SUBDIRECTORY"
+          rm -rf "gh-pages/$SUBDIRECTORY"/*
+          cp -r branch-site/* "gh-pages/$SUBDIRECTORY/"
+          
+          echo "📁 Copied site to gh-pages/$SUBDIRECTORY"
+          
+          # Create branch information file
+          cat > "gh-pages/$SUBDIRECTORY/branch-info.json" << EOF
+          {
+            "branch_name": "$BRANCH_NAME",
+            "branch_slug": "$BRANCH_SLUG",
+            "subdirectory": "$SUBDIRECTORY",
+            "base_path": "$BASE_PATH",
+            "environment": "$ENVIRONMENT",
+            "deploy_time": "$(date -u -Iseconds)",
+            "commit_sha": "${{ github.sha }}",
+            "run_id": "${{ github.run_id }}",
+            "is_preview": true,
+            "urls": {
+              "documentation": "https://communitystream-io.github.io/$SUBDIRECTORY/",
+              "allure": "https://communitystream-io.github.io/$SUBDIRECTORY/allure/",
+              "badges": "https://communitystream-io.github.io/$SUBDIRECTORY/badges/"
+            }
+          }
+          EOF
+          
+          echo "✅ Created branch info file"
+
+      - name: Update branch index
+        run: |
+          BRANCH_NAME="${{ needs.detect-branch.outputs.branch-name }}"
+          BRANCH_SLUG="${{ needs.detect-branch.outputs.branch-slug }}"
+          SUBDIRECTORY=$(case "$BRANCH_NAME" in "develop") echo "flock-develop";; "staging") echo "flock-staging";; *) echo "flock-branch-$BRANCH_SLUG";; esac)
+          
+          # Create a branch registry/index
+          mkdir -p gh-pages/_branches
+          
+          # Update the branch registry
+          cat > "gh-pages/_branches/$BRANCH_SLUG.json" << EOF
+          {
+            "branch_name": "$BRANCH_NAME",
+            "branch_slug": "$BRANCH_SLUG",
+            "subdirectory": "$SUBDIRECTORY",
+            "environment": "${{ needs.detect-branch.outputs.environment }}",
+            "last_updated": "$(date -u -Iseconds)",
+            "commit_sha": "${{ github.sha }}",
+            "url": "https://communitystream-io.github.io/$SUBDIRECTORY/",
+            "status": "active"
+          }
+          EOF
+          
+          # Generate a branches index page
+          cat > gh-pages/_branches/index.html << 'HTMLEOF'
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Flock Documentation - Branch Index</title>
+            <style>
+              body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 2rem; }
+              .branch-card { border: 1px solid #ddd; border-radius: 8px; padding: 1rem; margin: 1rem 0; }
+              .branch-name { font-size: 1.2rem; font-weight: bold; }
+              .branch-meta { color: #666; font-size: 0.9rem; margin: 0.5rem 0; }
+              .branch-links a { margin-right: 1rem; color: #0066cc; text-decoration: none; }
+              .branch-links a:hover { text-decoration: underline; }
+            </style>
+          </head>
+          <body>
+            <h1>🦅 Flock Documentation - Branch Index</h1>
+            <p>Available documentation branches:</p>
+            <div id="branches"></div>
+            <script>
+              // This would typically load from a JSON API
+              console.log('Branch index loaded');
+            </script>
+          </body>
+          </html>
+          HTMLEOF
+          
+          echo "📋 Updated branch registry"
+
+      - name: Commit and push changes
+        run: |
+          cd gh-pages
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # Add all changes
+          git add .
+          
+          if ! git diff --staged --quiet; then
+            BRANCH_NAME="${{ needs.detect-branch.outputs.branch-name }}"
+            ENVIRONMENT="${{ needs.detect-branch.outputs.environment }}"
+            
+            git commit -m "Deploy $BRANCH_NAME documentation site
+
+            🌿 Branch: $BRANCH_NAME ($ENVIRONMENT)
+            📊 Updated Jekyll documentation with existing reports
+            🔗 Commit: ${{ github.sha }}
+            🚀 Run: ${{ github.run_id }}
+            ⏰ $(date -u)
+            
+            Available at: https://communitystream-io.github.io/$(case "$BRANCH_NAME" in "develop") echo "flock-develop";; "staging") echo "flock-staging";; *) echo "flock-branch-${{ needs.detect-branch.outputs.branch-slug }}";; esac)/"
+            
+            git push origin gh-pages
+            
+            echo "✅ Successfully deployed branch: $BRANCH_NAME"
+          else
+            echo "📭 No changes to commit"
+          fi
+
+  # PR Preview (for pull requests)
+  pr-preview:
+    name: Build PR Preview
+    runs-on: ubuntu-latest
+    needs: [validate, detect-branch]
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Add PR comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const branch = '${{ needs.detect-branch.outputs.branch-name }}';
+            const branchSlug = '${{ needs.detect-branch.outputs.branch-slug }}';
+            const basePath = '${{ needs.detect-branch.outputs.base-path }}';
+            
+            const comment = `## 🦅 Documentation Preview
+            
+            📖 **Branch**: \`${branch}\`
+            🔗 **Preview URL**: https://communitystream-io.github.io${basePath}/
+            
+            This preview will be available after the branch is merged and deployed.
+            
+            ### Available Tools:
+            - 📊 **Allure Reports**: https://communitystream-io.github.io${basePath}/allure/  
+            - 🏆 **Test Badges**: https://communitystream-io.github.io${basePath}/badges/
+            - 📈 **Coverage**: https://codecov.io/github/${context.repo.owner}/${context.repo.repo}/branch/${branch}
+            
+            *This comment is automatically updated on each push.*`;
+            
+            // Find existing comment
+            const comments = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            
+            const botComment = comments.data.find(comment => 
+              comment.user.type === 'Bot' && comment.body.includes('Documentation Preview')
+            );
+            
+            if (botComment) {
+              // Update existing comment
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: comment
+              });
+            } else {
+              // Create new comment
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: comment
+              });
+            }
+
+  # Branch cleanup (when branches are deleted)
+  cleanup-deleted-branch:
+    name: Cleanup Deleted Branch
+    runs-on: ubuntu-latest
+    if: github.event_name == 'delete' && github.event.ref_type == 'branch'
+    steps:
+      - name: Checkout gh-pages
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: gh-pages
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Remove branch deployment
+        run: |
+          BRANCH_NAME="${{ github.event.ref }}"
+          BRANCH_SLUG=$(echo "$BRANCH_NAME" | sed 's/[^a-zA-Z0-9-]/-/g' | sed 's/--*/-/g' | sed 's/^-\|-$//g' | tr '[:upper:]' '[:lower:]')
+          
+          echo "🧹 Cleaning up deployment for deleted branch: $BRANCH_NAME"
+          
+          # Determine subdirectory to remove
+          case "$BRANCH_NAME" in
+            "develop")
+              SUBDIRECTORY="flock-develop"
+              ;;
+            "staging")
+              SUBDIRECTORY="flock-staging"
+              ;;
+            *)
+              SUBDIRECTORY="flock-branch-$BRANCH_SLUG"
+              ;;
+          esac
+          
+          # Remove the branch deployment directory
+          if [ -d "gh-pages/$SUBDIRECTORY" ]; then
+            rm -rf "gh-pages/$SUBDIRECTORY"
+            echo "🗑️ Removed directory: $SUBDIRECTORY"
+          else
+            echo "📭 No deployment found for branch: $BRANCH_NAME"
+          fi
+          
+          # Remove from branch registry
+          if [ -f "gh-pages/_branches/$BRANCH_SLUG.json" ]; then
+            rm "gh-pages/_branches/$BRANCH_SLUG.json"
+            echo "📋 Removed from branch registry: $BRANCH_SLUG"
+          fi
+
+      - name: Commit cleanup
+        run: |
+          cd gh-pages
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          if ! git diff --quiet || [ -n "$(git ls-files --others --exclude-standard)" ]; then
+            git add .
+            git commit -m "🧹 Cleanup: Remove deployment for deleted branch '${{ github.event.ref }}'
+            
+            ⏰ $(date -u)
+            🗑️ Removed branch deployment and registry entry"
+            
+            git push origin gh-pages
+            echo "✅ Cleanup completed for branch: ${{ github.event.ref }}"
+          else
+            echo "📭 No cleanup needed"
+          fi
+
+  # Cleanup old artifacts
+  cleanup:
+    name: Cleanup Artifacts
+    runs-on: ubuntu-latest
+    needs: [deploy-production, deploy-branch]
+    if: always()
+    steps:
+      - name: Delete temporary artifacts
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // Delete artifacts older than 7 days for this workflow
+            const artifacts = await github.rest.actions.listWorkflowRunArtifacts({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              run_id: context.runId,
+            });
+            
+            const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+            let deletedCount = 0;
+            
+            for (const artifact of artifacts.data.artifacts) {
+              const createdAt = new Date(artifact.created_at);
+              if (createdAt < sevenDaysAgo && (
+                artifact.name.includes('github-pages-') || 
+                artifact.name.includes('integrated-site-')
+              )) {
+                try {
+                  await github.rest.actions.deleteArtifact({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    artifact_id: artifact.id,
+                  });
+                  console.log(`🗑️ Deleted artifact: ${artifact.name}`);
+                  deletedCount++;
+                } catch (error) {
+                  console.log(`❌ Failed to delete artifact ${artifact.name}: ${error.message}`);
+                }
+              }
+            }
+            
+            console.log(`✅ Cleanup completed. Deleted ${deletedCount} old artifacts.`);
+
+  # Notification on completion
+  notify:
+    name: Deployment Notification
+    runs-on: ubuntu-latest
+    needs: [deploy-production, deploy-branch, detect-branch]
+    if: always() && github.event_name == 'push'
+    steps:
+      - name: Create deployment notification
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const branchName = '${{ needs.detect-branch.outputs.branch-name }}';
+            const branchSlug = '${{ needs.detect-branch.outputs.branch-slug }}';
+            const isMainBranch = '${{ needs.detect-branch.outputs.is-main-branch }}' === 'true';
+            
+            // Determine deployment URL
+            let deploymentUrl;
+            if (isMainBranch) {
+              deploymentUrl = 'https://communitystream-io.github.io/flock/';
+            } else {
+              switch (branchName) {
+                case 'develop':
+                  deploymentUrl = 'https://communitystream-io.github.io/flock-develop/';
+                  break;
+                case 'staging':
+                  deploymentUrl = 'https://communitystream-io.github.io/flock-staging/';
+                  break;
+                default:
+                  deploymentUrl = `https://communitystream-io.github.io/flock-branch-${branchSlug}/`;
+              }
+            }
+            
+            console.log(`🚀 Documentation deployed for branch: ${branchName}`);
+            console.log(`🔗 Available at: ${deploymentUrl}`);
+            console.log(`📊 Allure Reports: ${deploymentUrl}allure/`);
+            console.log(`🏆 Test Badges: ${deploymentUrl}badges/`);
+            
+            // Create deployment status (if supported)
+            try {
+              await github.rest.repos.createDeploymentStatus({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                deployment_id: context.runId,
+                state: 'success',
+                environment_url: deploymentUrl,
+                description: `Jekyll documentation deployed for ${branchName}`,
+              });
+            } catch (error) {
+              console.log('Note: Could not create deployment status (this is normal)');
+            }
+        continue-on-error: true

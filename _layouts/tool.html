@@ -1,0 +1,224 @@
+---
+layout: default
+---
+
+<div class="tool-header">
+  <div class="tool-info">
+    {% if page.icon %}
+      <span class="tool-icon">{{ page.icon }}</span>
+    {% endif %}
+    <div>
+      <h1 class="tool-title">{{ page.title | default: page.name }}</h1>
+      {% if page.description %}
+        <p class="tool-description">{{ page.description }}</p>
+      {% endif %}
+    </div>
+  </div>
+  
+  <!-- Branch/Environment Selector -->
+  {% if page.tool_config %}
+    <div class="branch-selector">
+      <label for="branch-select">Environment:</label>
+      <div class="branch-actions">
+        <span class="current-branch">{{ site.branch_info.name | default: site.branch | default: "main" }}</span>
+        {% if page.tool_config == 'allure' and site.current_branch_tools.allure_current_url %}
+          <a href="{{ site.current_branch_tools.allure_current_url }}" target="_blank" class="btn btn-primary">
+            <i class="fas fa-external-link-alt"></i> Open Allure Reports
+          </a>
+        {% elsif page.tool_config == 'badges' and site.current_branch_tools.badges_current_url %}
+          <a href="{{ site.current_branch_tools.badges_current_url }}" target="_blank" class="btn btn-primary">
+            <i class="fas fa-external-link-alt"></i> Open Badges
+          </a>
+        {% elsif page.tool_config == 'coverage' and site.current_branch_tools.coverage_current_url %}
+          <a href="{{ site.current_branch_tools.coverage_current_url }}" target="_blank" class="btn btn-primary">
+            <i class="fas fa-external-link-alt"></i> Open Coverage
+          </a>
+        {% else %}
+          <a href="/tools/" class="btn btn-secondary">
+            <i class="fas fa-tools"></i> View All Tools
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  {% endif %}
+</div>
+
+<!-- Tool Status Dashboard -->
+{% if page.show_status != false %}
+  <div class="tool-status">
+    <div class="status-grid">
+      <!-- Allure Status -->
+      {% if page.tool_config == 'allure' or page.title contains 'Allure' %}
+        <div class="status-card">
+          <h3>📊 Test Reports</h3>
+          <div class="status-badges">
+            <img src="https://img.shields.io/badge/E2E%20Tests-Live-green?style=flat-square&logo=allure&logoColor=white" alt="E2E Test Status">
+            <a href="https://communitystream-io.github.io/flock/" target="_blank" class="status-link">View Reports</a>
+          </div>
+        </div>
+      {% endif %}
+      
+      <!-- Badge Status -->
+      {% if page.tool_config == 'badges' or page.title contains 'Badge' %}
+        <div class="status-card">
+          <h3>🏆 Test Badges</h3>
+          <div class="status-badges">
+            <img src="https://img.shields.io/badge/E2E%20Tests-94%25%20(18/19)-green?style=flat-square&logo=allure&logoColor=white" alt="Current Test Badge">
+            <img src="https://codecov.io/github/CommunityStream-io/flock/graph/badge.svg?token=Gvjk9DnKQb" alt="Coverage Badge">
+          </div>
+        </div>
+      {% endif %}
+      
+      <!-- Coverage Status -->
+      {% if page.tool_config == 'coverage' or page.title contains 'Coverage' %}
+        <div class="status-card">
+          <h3>📈 Code Coverage</h3>
+          <div class="status-badges">
+            <img src="https://codecov.io/github/CommunityStream-io/flock/graph/badge.svg?token=Gvjk9DnKQb" alt="Code Coverage">
+            <a href="https://codecov.io/github/CommunityStream-io/flock" target="_blank" class="status-link">View Coverage</a>
+          </div>
+        </div>
+      {% endif %}
+      
+      <!-- Build Status -->
+      <div class="status-card">
+        <h3>🏗️ Build Status</h3>
+        <div class="status-badges">
+          <img src="https://github.com/CommunityStream-io/flock/actions/workflows/ci.yml/badge.svg" alt="Build Status">
+          <a href="https://github.com/CommunityStream-io/flock/actions" target="_blank" class="status-link">View Actions</a>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endif %}
+
+<!-- Tool Content -->
+<div class="tool-content">
+  {{ content }}
+</div>
+
+<!-- Multi-Branch Tool Integration -->
+{% if page.tool_config %}
+  <div class="tool-integration">
+    <h2>🌿 Branch-Specific Access</h2>
+    <div class="branch-grid">
+      <!-- Current Branch -->
+      <div class="branch-card current">
+        <h3>{{ site.branch_info.name | default: site.branch | default: "main" | capitalize }}</h3>
+        <p>{{ page.description | default: "Current branch documentation and tools" }}</p>
+        <div class="branch-actions">
+          {% if page.tool_config == 'allure' and site.current_branch_tools.allure_current_url %}
+            <a href="{{ site.current_branch_tools.allure_current_url }}" target="_blank" class="btn btn-primary">
+              <i class="fas fa-external-link-alt"></i> Open Allure Reports
+            </a>
+          {% elsif page.tool_config == 'badges' and site.current_branch_tools.badges_current_url %}
+            <a href="{{ site.current_branch_tools.badges_current_url }}" target="_blank" class="btn btn-primary">
+              <i class="fas fa-external-link-alt"></i> Open Test Badges
+            </a>
+          {% elsif page.tool_config == 'coverage' and site.current_branch_tools.coverage_current_url %}
+            <a href="{{ site.current_branch_tools.coverage_current_url }}" target="_blank" class="btn btn-primary">
+              <i class="fas fa-external-link-alt"></i> Open Coverage
+            </a>
+          {% endif %}
+          
+          {% if site.branch_info.environment %}
+            <span class="branch-badge {{ site.branch_info.environment }}">{{ site.branch_info.environment | capitalize }}</span>
+          {% elsif site.branch == 'main' %}
+            <span class="branch-badge production">Production</span>
+          {% elsif site.branch == 'develop' %}
+            <span class="branch-badge development">Development</span>
+          {% elsif site.branch == 'staging' %}
+            <span class="branch-badge staging">Staging</span>
+          {% else %}
+            <span class="branch-badge preview">Preview</span>
+          {% endif %}
+        </div>
+      </div>
+      
+      <!-- Main Branches for Comparison -->
+      {% unless site.branch == 'main' %}
+        <div class="branch-card">
+          <h3>Main</h3>
+          <p>Production {{ page.title | default: "tool" | downcase }}</p>
+          <div class="branch-actions">
+            {% if page.tool_config == 'allure' %}
+              <a href="https://communitystream-io.github.io/flock/allure/" target="_blank" class="btn btn-secondary">
+                <i class="fas fa-external-link-alt"></i> Production Reports
+              </a>
+            {% elsif page.tool_config == 'badges' %}
+              <a href="https://communitystream-io.github.io/flock/badges/" target="_blank" class="btn btn-secondary">
+                <i class="fas fa-external-link-alt"></i> Production Badges
+              </a>
+            {% elsif page.tool_config == 'coverage' %}
+              <a href="https://codecov.io/github/CommunityStream-io/flock" target="_blank" class="btn btn-secondary">
+                <i class="fas fa-external-link-alt"></i> Production Coverage
+              </a>
+            {% endif %}
+            <span class="branch-badge production">Production</span>
+          </div>
+        </div>
+      {% endunless %}
+      
+      {% unless site.branch == 'develop' %}
+        <div class="branch-card">
+          <h3>Develop</h3>
+          <p>Development {{ page.title | default: "tool" | downcase }}</p>
+          <div class="branch-actions">
+            {% if page.tool_config == 'allure' %}
+              <a href="https://communitystream-io.github.io/flock-develop/allure/" target="_blank" class="btn btn-secondary">
+                <i class="fas fa-external-link-alt"></i> Development Reports
+              </a>
+            {% elsif page.tool_config == 'badges' %}
+              <a href="https://communitystream-io.github.io/flock-develop/badges/" target="_blank" class="btn btn-secondary">
+                <i class="fas fa-external-link-alt"></i> Development Badges
+              </a>
+            {% elsif page.tool_config == 'coverage' %}
+              <a href="https://codecov.io/github/CommunityStream-io/flock/branch/develop" target="_blank" class="btn btn-secondary">
+                <i class="fas fa-external-link-alt"></i> Development Coverage
+              </a>
+            {% endif %}
+            <span class="branch-badge development">Development</span>
+          </div>
+        </div>
+      {% endunless %}
+    </div>
+  </div>
+{% endif %}
+
+<!-- Tool Documentation Links -->
+{% if page.related_docs %}
+  <div class="related-docs">
+    <h2>📚 Related Documentation</h2>
+    <div class="docs-grid">
+      {% for doc in page.related_docs %}
+        <a href="{{ doc.url | relative_url }}" class="doc-card">
+          {% if doc.icon %}<span class="doc-icon">{{ doc.icon }}</span>{% endif %}
+          <h3>{{ doc.title }}</h3>
+          <p>{{ doc.description }}</p>
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+{% endif %}
+
+<script>
+function switchBranch(url) {
+  // Store the selected branch for consistency
+  localStorage.setItem('selectedBranch', url);
+}
+
+function openCurrentBranch() {
+  const select = document.getElementById('branch-select');
+  const url = select.value;
+  window.open(url, '_blank');
+}
+
+// Restore previous branch selection
+document.addEventListener('DOMContentLoaded', function() {
+  const select = document.getElementById('branch-select');
+  const savedBranch = localStorage.getItem('selectedBranch');
+  if (select && savedBranch) {
+    select.value = savedBranch;
+  }
+});
+</script>

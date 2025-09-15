@@ -1,3 +1,24 @@
+---
+layout: doc
+title: "🧪 Testing Guide"
+description: "How our flock stays healthy and strong - comprehensive testing strategies, methodologies, and tools"
+permalink: /testing/
+nav_order: 4
+icon: "🧪"
+tags: ["testing", "bdd", "e2e", "unit", "allure"]
+related_pages:
+  - title: "📊 Allure Reports"
+    url: "/tools/allure/"
+    description: "E2E test reporting and analysis"
+  - title: "🏆 Test Badges"
+    url: "/tools/badges/"
+    description: "Real-time test status badges"
+  - title: "🎭 BDD Methodology"
+    url: "/docs/testing/BDD_METHODOLOGY/"
+    description: "Behavior-driven development approach"
+toc: true
+---
+
 # 🧪 Flock Testing - How Our Flock Stays Healthy and Strong
 
 [![E2E Tests](https://img.shields.io/badge/E2E%20Tests-91%25%20(1211/1325)-green?style=flat-square&logo=allure&logoColor=white)](https://communitystream-io.github.io/flock/)

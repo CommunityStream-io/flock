@@ -1,3 +1,25 @@
+---
+layout: doc
+title: "📊 Allure Reporting System"
+description: "E2E test reporting and analysis with historical trends and comprehensive failure tracking"
+permalink: /docs/testing/allure-reporting/
+parent: "testing"
+nav_order: 1
+icon: "📊"
+tags: ["testing", "e2e", "reporting", "allure", "ci-cd"]
+related_pages:
+  - title: "🛠️ Allure Tool Page"
+    url: "/tools/allure/"
+    description: "Interactive Allure tool dashboard with branch switching"
+  - title: "🧪 E2E Testing Guide"
+    url: "/docs/testing/E2E_TESTING/"
+    description: "Learn how to write and run E2E tests"
+  - title: "📋 BDD Methodology"
+    url: "/docs/testing/BDD_METHODOLOGY/"
+    description: "Understanding our behavior-driven development approach"
+toc: true
+---
+
 # Allure Reporting System
 
 ## Overview

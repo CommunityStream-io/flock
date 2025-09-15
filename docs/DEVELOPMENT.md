@@ -1,3 +1,24 @@
+---
+layout: doc
+title: "🚀 Development Guide"
+description: "Getting your wings and taking flight - comprehensive development setup and workflow guide for the Flock project"
+permalink: /development/
+nav_order: 3
+icon: "🚀"
+tags: ["development", "setup", "workflow", "angular", "cli"]
+related_pages:
+  - title: "🏗️ Architecture Overview"
+    url: "/docs/ARCHITECTURE/"
+    description: "Understanding the flock's structure and design patterns"
+  - title: "🧪 Testing Guide"
+    url: "/docs/TESTING/"
+    description: "Comprehensive testing strategies and methodologies"
+  - title: "🎨 Styling Guide"
+    url: "/docs/STYLING/"
+    description: "Material Design 3 theming and component styling"
+toc: true
+---
+
 # 🚀 Flock Development - Getting Your Wings and Taking Flight
 
 > *"Every bird starts as an egg. This guide will help you hatch into a full-fledged Flock developer and soar with our migration flock!"*
