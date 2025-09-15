@@ -1,5 +1,6 @@
 import { browser } from '@wdio/globals';
 import { pages } from '../pageobjects';
+import { timeouts, timeoutMessages, createTimeoutOptions } from './timeout-config';
 
 /**
  * Test setup utilities for E2E tests
@@ -22,10 +23,7 @@ export async function setupValidFileUpload(filename: string = 'test-archive.zip'
       const isUploadPageLoaded = await pages.uploadStep.uploadSection.isDisplayed();
       return isUploadPageLoaded;
     },
-    { 
-      timeout: 10000,
-      timeoutMsg: 'Upload page did not load within timeout'
-    }
+    createTimeoutOptions('appLoad', 'Upload page did not load within expected time')
   );
   
   // Select a valid file
@@ -101,10 +99,7 @@ export async function setupAuthState(): Promise<void> {
       const isAuthFormVisible = await pages.auth.authForm.isDisplayed();
       return isAuthFormVisible;
     },
-    { 
-      timeout: 10000,
-      timeoutMsg: 'Auth form did not appear within timeout'
-    }
+    createTimeoutOptions('authNavigation', 'Auth form did not appear within expected time')
   );
   
   console.log('✅ BDD: Authentication state established');

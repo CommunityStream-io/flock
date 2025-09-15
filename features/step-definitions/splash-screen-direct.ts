@@ -1,6 +1,7 @@
 import { Given, When, Then } from '@wdio/cucumber-framework';
 import { pages } from '../pageobjects';
 import { browser } from '@wdio/globals';
+import { createTimeoutOptions } from '../support/timeout-config';
 
 Given('I am on the auth page with valid file state', async () => {
   console.log('🔧 BDD: Setting up auth page with valid file state');
@@ -33,10 +34,7 @@ Given('I am on the auth page with valid file state', async () => {
       const isAuthFormVisible = await pages.auth.authForm.isDisplayed();
       return isAuthFormVisible;
     },
-    { 
-      timeout: 10000,
-      timeoutMsg: 'Auth form did not appear within timeout'
-    }
+    createTimeoutOptions('authNavigation', 'Auth form did not appear within expected time')
   );
   
   console.log('✅ BDD: Auth page with valid file state established');
