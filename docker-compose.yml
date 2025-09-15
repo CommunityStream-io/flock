@@ -7,6 +7,8 @@ services:
       context: .
       dockerfile: Dockerfile.test
       target: base
+      args:
+        - PACKAGE_TOKEN=${PACKAGE_TOKEN}
     image: flock-e2e-base:latest
 
   # Angular application server
@@ -15,6 +17,8 @@ services:
       context: .
       dockerfile: Dockerfile.test
       target: runtime
+      args:
+        - PACKAGE_TOKEN=${PACKAGE_TOKEN}
     depends_on:
       - e2e-base
     ports:
@@ -39,6 +43,8 @@ services:
       context: .
       dockerfile: Dockerfile.test
       target: runtime
+      args:
+        - PACKAGE_TOKEN=${PACKAGE_TOKEN}
     depends_on:
       app-server:
         condition: service_healthy
@@ -61,6 +67,8 @@ services:
       context: .
       dockerfile: Dockerfile.test
       target: runtime
+      args:
+        - PACKAGE_TOKEN=${PACKAGE_TOKEN}
     depends_on:
       - test-runner
     volumes:
