@@ -94,19 +94,16 @@ jobs:
           echo "@straiforos:registry=https://npm.pkg.github.com/" >> .npmrc
 
       - name: Build Docker image
-        run: |
-          export DOCKER_BUILDKIT=1
-          echo "🔍 Checking .npmrc file contents:"
-          cat .npmrc
-          echo "🔍 File size: $(wc -c < .npmrc) bytes"
-          echo "🚀 Building Docker image with secrets..."
-          docker build \
-            --secret id=npmrc,src=.npmrc \
-            --tag ${{ steps.image-tag.outputs.tag }} \
-            --file ./Dockerfile.test \
-            --cache-from type=gha \
-            --cache-to type=gha,mode=max \
-            .
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile.test
+          tags: ${{ steps.image-tag.outputs.tag }}
+          push: false
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          secrets: |
+            npmrc=.npmrc
 
   e2e:
     name: Practice the murmuration (E2E Test)
