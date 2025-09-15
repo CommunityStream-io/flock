@@ -13,6 +13,7 @@ import '../support/global-setup';
 import './landing';
 import './auth';
 import './splash-screen';
+import './splash-screen-direct';
 import './step-navigation';
 import './file-upload';
 
