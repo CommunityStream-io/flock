@@ -32,15 +32,22 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
+# Accept build argument for package token
+ARG PACKAGE_TOKEN
+
+# Set environment variable for npm authentication
+ENV PACKAGE_TOKEN=$PACKAGE_TOKEN
+
 # Copy package files
 COPY package*.json ./
 COPY angular.json ./
 COPY tsconfig*.json ./
 
-# Create a build-only package.json without private packages
-RUN npm pkg delete dependencies.@straiforos/instagramtobluesky
+# Create .npmrc with token from environment variable
+RUN echo "//npm.pkg.github.com/:_authToken=$PACKAGE_TOKEN" > ~/.npmrc && \
+    echo "@straiforos:registry=https://npm.pkg.github.com/" >> ~/.npmrc
 
-# Install only public dependencies (no private packages needed for build)
+# Install dependencies
 RUN npm ci
 
 # Copy source code
@@ -51,6 +58,12 @@ RUN npx ng build flock-mirage --configuration=test
 
 # Stage 3: Runtime with pre-built artifacts
 FROM base AS runtime
+
+# Accept build argument for package token
+ARG PACKAGE_TOKEN
+
+# Set environment variable for npm authentication
+ENV PACKAGE_TOKEN=$PACKAGE_TOKEN
 
 # Set working directory
 WORKDIR /app
@@ -71,10 +84,11 @@ COPY tsconfig*.json ./
 COPY scripts/docker-startup.sh /usr/local/bin/setup-npm-auth
 RUN chmod +x /usr/local/bin/setup-npm-auth
 
-# Remove private package from runtime package.json as well
-RUN npm pkg delete dependencies.@straiforos/instagramtobluesky
+# Create .npmrc with token from environment variable
+RUN echo "//npm.pkg.github.com/:_authToken=$PACKAGE_TOKEN" > ~/.npmrc && \
+    echo "@straiforos:registry=https://npm.pkg.github.com/" >> ~/.npmrc
 
-# Install only public dependencies (private packages installed at runtime)
+# Install dependencies
 RUN npm ci
 
 # Create directories for logs and results

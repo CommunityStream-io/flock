@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { MediaProcessResult } from '../types/instagramtobluesky';
+import { MediaProcessResult } from '@straiforos/instagramtobluesky';
 import { InstagramService, ValidationResult } from '../services';
 
 @Injectable({
