@@ -1,5 +1,5 @@
 
-import { PostRecordImpl } from '@straiforos/instagramtobluesky';
+import { PostRecordImpl } from '../../types/instagramtobluesky';
 
 export interface Credentials {
   username: string;
