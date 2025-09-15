@@ -50,6 +50,14 @@ export async function setupValidFileUpload(filename: string = 'test-archive.zip'
     }
   });
   
+  // Also set the state in localStorage to persist across navigations
+  await browser.execute(() => {
+    // Store file state in localStorage as a backup
+    localStorage.setItem('test-file-uploaded', 'true');
+    localStorage.setItem('test-file-name', 'test-archive.zip');
+    console.log('✅ BDD: File state stored in localStorage');
+  });
+  
   console.log('✅ BDD: Valid file upload state established');
 }
 
@@ -63,8 +71,29 @@ export async function setupAuthState(): Promise<void> {
   // First set up valid file upload
   await setupValidFileUpload();
   
-  // Navigate to auth step
+  // Navigate to auth step - this should now work because we have valid file state
   await browser.url('/step/auth');
+  
+  // Restore file service state after navigation
+  await browser.execute(() => {
+    // Check if we have file state in localStorage
+    const hasFileState = localStorage.getItem('test-file-uploaded') === 'true';
+    if (hasFileState) {
+      // Restore the file service state
+      const appElement = document.querySelector('app-root');
+      if (appElement && (appElement as any).__ngContext__) {
+        const context = (appElement as any).__ngContext__;
+        for (let i = 0; i < context.length; i++) {
+          const service = context[i];
+          if (service && service.archivedFile !== undefined) {
+            service.archivedFile = new File(['mock content'], 'test-archive.zip', { type: 'application/zip' });
+            console.log('✅ BDD: File service state restored after navigation');
+            break;
+          }
+        }
+      }
+    }
+  });
   
   // Wait for auth form to be visible
   await browser.waitUntil(
