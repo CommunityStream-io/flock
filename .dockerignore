@@ -63,8 +63,8 @@ scripts/
 .env.test.local
 .env.production.local
 
-# npmrc file (created dynamically in CI)
-.npmrc
+# npmrc file (needed for Docker build)
+# .npmrc
 
 # Cache directories
 .cache/

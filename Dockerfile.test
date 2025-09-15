@@ -38,14 +38,11 @@ ARG PACKAGE_TOKEN
 # Set environment variable for npm authentication
 ENV PACKAGE_TOKEN=$PACKAGE_TOKEN
 
-# Copy package files
+# Copy package files and npmrc
 COPY package*.json ./
 COPY angular.json ./
 COPY tsconfig*.json ./
-
-# Create .npmrc with token from environment variable
-RUN echo "//npm.pkg.github.com/:_authToken=$PACKAGE_TOKEN" > ~/.npmrc && \
-    echo "@straiforos:registry=https://npm.pkg.github.com/" >> ~/.npmrc
+COPY .npmrc ./
 
 # Install dependencies
 RUN npm ci
@@ -76,6 +73,7 @@ COPY features/ ./features/
 COPY wdio.conf.ts ./
 COPY tsconfig.e2e.json ./
 COPY package*.json ./
+COPY .npmrc ./
 
 # Copy source code for Angular dev server
 COPY projects/ ./projects/
@@ -83,10 +81,6 @@ COPY angular.json ./
 COPY tsconfig*.json ./
 COPY scripts/docker-startup.sh /usr/local/bin/setup-npm-auth
 RUN chmod +x /usr/local/bin/setup-npm-auth
-
-# Create .npmrc with token from environment variable
-RUN echo "//npm.pkg.github.com/:_authToken=$PACKAGE_TOKEN" > ~/.npmrc && \
-    echo "@straiforos:registry=https://npm.pkg.github.com/" >> ~/.npmrc
 
 # Install dependencies
 RUN npm ci
