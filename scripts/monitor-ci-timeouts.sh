@@ -10,7 +10,7 @@ WORKFLOW_NAME="Feathering the Nest"
 POLL_INTERVAL=15  # seconds
 MAX_WAIT_TIME=1800  # 30 minutes
 ARTIFACTS_DIR="logs/ci-artifacts"
-SKIP_TELEMETRY=false
+SKIP_TELEMETRY=true  # Skip telemetry by default until fewer failures
 FAIL_FAST=false
 
 # Parse command line arguments
@@ -20,13 +20,18 @@ while [[ $# -gt 0 ]]; do
             SKIP_TELEMETRY=true
             shift
             ;;
+        --enable-telemetry)
+            SKIP_TELEMETRY=false
+            shift
+            ;;
         --fail-fast)
             FAIL_FAST=true
             shift
             ;;
         -h|--help)
-            echo "Usage: $0 [--skip-telemetry] [--fail-fast]"
-            echo "  --skip-telemetry    Skip telemetry analysis and artifact downloading"
+            echo "Usage: $0 [--skip-telemetry] [--enable-telemetry] [--fail-fast]"
+            echo "  --skip-telemetry    Skip telemetry analysis and artifact downloading (default)"
+            echo "  --enable-telemetry  Enable telemetry analysis and artifact downloading"
             echo "  --fail-fast         Exit immediately if Docker build fails"
             echo "  -h, --help         Show this help message"
             exit 0
