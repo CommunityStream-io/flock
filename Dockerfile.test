@@ -71,6 +71,9 @@ COPY tsconfig*.json ./
 COPY scripts/docker-startup.sh /usr/local/bin/setup-npm-auth
 RUN chmod +x /usr/local/bin/setup-npm-auth
 
+# Remove private package from runtime package.json as well
+RUN npm pkg delete dependencies.@straiforos/instagramtobluesky
+
 # Install only public dependencies (private packages installed at runtime)
 RUN npm ci
 
