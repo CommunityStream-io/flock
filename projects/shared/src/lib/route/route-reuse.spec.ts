@@ -5,7 +5,7 @@
  * following the project's testing standards for route strategy logic.
  */
 import { TestBed } from '@angular/core/testing';
-import { ActivatedRouteSnapshot, DetachedRouteHandle } from '@angular/router';
+import { ActivatedRouteSnapshot, DetachedRouteHandle, UrlSegment } from '@angular/router';
 
 import { StepReuseStrategy } from './route-reuse';
 import { Logger, LOGGER } from '../services';
@@ -18,7 +18,7 @@ describe('Feature: Step Route Reuse Strategy (BDD-Style)', () => {
 
   beforeEach(async () => {
     mockLogger = jasmine.createSpyObj('Logger', ['workflow', 'log']);
-    mockRoute = jasmine.createSpyObj('ActivatedRouteSnapshot', [], {
+    mockRoute = jasmine.createSpyObj('ActivatedRouteSnapshot', ['toString'], {
       routeConfig: { path: 'test-route' },
       url: [{ path: 'test-segment', parameters: {} }],
       params: {},
@@ -36,7 +36,7 @@ describe('Feature: Step Route Reuse Strategy (BDD-Style)', () => {
       queryParamMap: {} as any,
       title: undefined
     });
-    mockHandle = jasmine.createSpyObj('DetachedRouteHandle', []);
+    mockHandle = jasmine.createSpyObj('DetachedRouteHandle', ['toString']);
 
     await TestBed.configureTestingModule({
       providers: [
@@ -243,8 +243,11 @@ describe('Feature: Step Route Reuse Strategy (BDD-Style)', () => {
       console.log('🔧 BDD: Setting up route without routeConfig for key generation');
       const routeWithoutConfig = { 
         routeConfig: null, 
-        url: [{ path: 'url', parameters: {} }, { path: 'segments', parameters: {} }] 
-      } as any;
+        url: [
+          new UrlSegment('url', {}), 
+          new UrlSegment('segments', {})
+        ] 
+      } as ActivatedRouteSnapshot;
       
       // When: Getting route key for route without config
       console.log('⚙️ BDD: Getting route key for route without routeConfig');
@@ -252,8 +255,8 @@ describe('Feature: Step Route Reuse Strategy (BDD-Style)', () => {
       
       // Then: URL segments should be used as key
       console.log('✅ BDD: Verifying route key generation from URL segments');
-      expect(mockLogger.log).toHaveBeenCalledWith('Route key: url,segments');
-      expect(mockLogger.log).toHaveBeenCalledWith('Stored route: url,segments', mockHandle);
+      expect(mockLogger.log).toHaveBeenCalledWith('Route key: url/segments');
+      expect(mockLogger.log).toHaveBeenCalledWith('Stored route: url/segments', mockHandle);
     });
   });
 
@@ -271,7 +274,7 @@ describe('Feature: Step Route Reuse Strategy (BDD-Style)', () => {
       
       // Then: All operations should be properly logged
       console.log('✅ BDD: Verifying comprehensive operation logging');
-      expect(mockLogger.log).toHaveBeenCalledTimes(6); // detach, key, store, attach, key, retrieve
+      expect(mockLogger.log).toHaveBeenCalledTimes(7); // detach, key, store, attach, key, retrieve, key
       expect(shouldDetach).toBe(true);
       expect(shouldAttach).toBe(true);
       expect(retrieved).toBe(mockHandle);
