@@ -121,9 +121,8 @@ ENV PACKAGE_TOKEN=$PACKAGE_TOKEN
 # Copy only package files first for optimal layer caching
 COPY package*.json ./
 
-# Copy .npmrc template and create .npmrc if needed
-COPY .npmrc.template ./
-RUN if [ ! -f .npmrc ]; then cp .npmrc.template .npmrc; fi
+# Copy .npmrc with environment variable placeholder
+COPY .npmrc ./
 
 # Install dependencies with npm ci for faster, reliable installs
 # Use --legacy-peer-deps to handle dependency conflicts
@@ -140,9 +139,8 @@ ENV PACKAGE_TOKEN=$PACKAGE_TOKEN
 # Copy package files and npmrc
 COPY package*.json ./
 
-# Copy .npmrc template and create .npmrc if needed
-COPY .npmrc.template ./
-RUN if [ ! -f .npmrc ]; then cp .npmrc.template .npmrc; fi
+# Copy .npmrc with environment variable placeholder
+COPY .npmrc ./
 
 # Install all dependencies (including devDependencies for build)
 # Use --legacy-peer-deps to handle dependency conflicts
@@ -181,9 +179,8 @@ COPY wdio.conf.ts ./
 COPY tsconfig.e2e.json ./
 COPY package.json ./
 
-# Copy .npmrc template and create .npmrc if needed
-COPY .npmrc.template ./
-RUN if [ ! -f .npmrc ]; then cp .npmrc.template .npmrc; fi
+# Copy .npmrc with environment variable placeholder
+COPY .npmrc ./
 
 # Copy only the minimal source code needed for Angular dev server
 COPY projects/flock-mirage/src/ ./projects/flock-mirage/src/
@@ -447,6 +444,108 @@ npm run ci:monitor:full
 - **Exclude Sensitive Files**: .env, credentials, etc.
 - **Template-Based Config**: Secure configuration management
 
+### 3. .npmrc Security Best Practices
+
+#### ❌ **NEVER Create Static .npmrc Files**
+
+**Security Risks:**
+- Credentials exposed in version control
+- Tokens visible in Docker image layers
+- Potential token leakage in logs
+- Security vulnerability in CI/CD pipelines
+
+**What NOT to do:**
+```dockerfile
+# ❌ NEVER do this - creates security vulnerability
+COPY .npmrc ./
+# or
+RUN echo "//npm.pkg.github.com/:_authToken=ghp_xxxxx" > .npmrc
+```
+
+#### ✅ **ALWAYS Use Environment Variables**
+
+**Secure Approach:**
+```dockerfile
+# ✅ Secure approach - use environment variables
+ARG PACKAGE_TOKEN
+ENV PACKAGE_TOKEN=$PACKAGE_TOKEN
+
+# Copy .npmrc with environment variable placeholder
+COPY .npmrc ./
+```
+
+**Static .npmrc File:**
+```npmrc
+# NPM configuration for private packages
+# PACKAGE_TOKEN environment variable will be substituted at runtime
+
+# Default registry
+registry=https://registry.npmjs.org/
+
+# GitHub Packages configuration for @straiforos scope
+@straiforos:registry=https://npm.pkg.github.com/
+//npm.pkg.github.com/:_authToken=${PACKAGE_TOKEN}
+```
+
+**Key Benefits:**
+- .npmrc is present in all Docker layers
+- Environment variable substitution happens at runtime
+- No dynamic file creation needed
+- Works seamlessly with `npm ci` commands
+- GitHub Actions passes PACKAGE_TOKEN as build argument
+
+#### **Environment Variable Security**
+
+**Required Environment Variables:**
+- `PACKAGE_TOKEN`: GitHub Packages authentication token
+- `NODE_ENV`: Environment context (test, production, etc.)
+
+**Token Management:**
+- Use GitHub Personal Access Tokens (PAT)
+- Set appropriate scopes (read:packages)
+- Rotate tokens regularly
+- Never commit tokens to version control
+
+**CI/CD Integration:**
+```yaml
+# GitHub Actions example
+- name: Build Docker image
+  run: |
+    docker build \
+      --build-arg PACKAGE_TOKEN=${{ secrets.PACKAGE_TOKEN }} \
+      -f Dockerfile.test \
+      -t flock-e2e-runtime .
+  env:
+    PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
+```
+
+**How it works:**
+1. GitHub Actions passes PACKAGE_TOKEN as build argument
+2. Dockerfile sets PACKAGE_TOKEN as environment variable
+3. .npmrc contains ${PACKAGE_TOKEN} placeholder
+4. npm ci automatically substitutes environment variable
+5. Authentication works seamlessly in all Docker layers
+
+**Docker Build with Environment:**
+```bash
+# Local development
+docker build --build-arg PACKAGE_TOKEN=$PACKAGE_TOKEN -f Dockerfile.test .
+
+# CI/CD pipeline
+docker build --build-arg PACKAGE_TOKEN=$PACKAGE_TOKEN -f Dockerfile.test .
+```
+
+#### **Security Validation Checklist**
+
+- [ ] .npmrc uses environment variable placeholders (${PACKAGE_TOKEN})
+- [ ] PACKAGE_TOKEN passed as build argument from GitHub Actions
+- [ ] No hardcoded tokens in .npmrc file
+- [ ] .npmrc is present in all Docker layers
+- [ ] Environment variable substitution works at runtime
+- [ ] CI/CD uses secure token management
+- [ ] No hardcoded credentials in Dockerfile
+- [ ] .npmrc works in all environments with proper token
+
 ## Troubleshooting Guide
 
 ### Common Issues and Solutions
@@ -483,6 +582,28 @@ npm run ci:monitor:full
 - Ensure GitHub Packages access
 - Use --legacy-peer-deps flag
 
+#### 5. .npmrc Security Issues
+**Problem**: Hardcoded token in .npmrc file
+**Solutions**:
+- Use environment variable placeholder (${PACKAGE_TOKEN})
+- Never commit .npmrc with actual tokens
+- Verify .npmrc uses ${PACKAGE_TOKEN} format
+- Check no hardcoded credentials in file
+
+**Problem**: Token not working in CI/CD
+**Solutions**:
+- Check PACKAGE_TOKEN is set in CI environment
+- Verify token has correct scopes (read:packages)
+- Ensure token is passed as build argument
+- Check .npmrc is copied to all Docker layers
+
+**Problem**: "401 Unauthorized" errors
+**Solutions**:
+- Verify PACKAGE_TOKEN is valid and not expired
+- Check token has access to @straiforos packages
+- Ensure .npmrc.template is properly configured
+- Verify GitHub Packages registry URL is correct
+
 ### Debug Commands
 
 ```bash
@@ -500,6 +621,21 @@ docker build --no-cache -f Dockerfile.test --target base -t debug .
 
 # Check npm configuration
 docker run --rm -it flock-e2e-runtime:latest cat .npmrc
+
+# Check .npmrc file
+cat .npmrc
+
+# Verify environment variable is set
+echo $PACKAGE_TOKEN
+
+# Test npm authentication
+docker run --rm -it -e PACKAGE_TOKEN=$PACKAGE_TOKEN flock-e2e-runtime:latest npm whoami --registry=https://npm.pkg.github.com/
+
+# Check if .npmrc exists in container
+docker run --rm -it flock-e2e-runtime:latest ls -la .npmrc*
+
+# Verify token format in .npmrc
+docker run --rm -it flock-e2e-runtime:latest grep -o 'PACKAGE_TOKEN' .npmrc
 ```
 
 ## Best Practices
