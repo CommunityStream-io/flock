@@ -1,4 +1,4 @@
-import { MediaProcessResult } from "@straiforos/instagramtobluesky";
+import { MediaProcessResult } from '@straiforos/instagramtobluesky';
 import { ValidationResult } from "./file";
 
 export interface InstagramService {

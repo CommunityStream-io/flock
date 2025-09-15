@@ -36,31 +36,37 @@ function generateAllureId(scenarioTitle: string, featurePath: string): string {
 
 /**
  * Set AllureId and labels for current test to enable deduplication and organization
+ * Only run this hook for scenarios, not individual steps
  */
-Before(async function(scenario) {
-    const allureId = generateAllureId(scenario.pickle.name, scenario.pickle.uri);
-    const featureName = scenario.pickle.uri.split('/').pop()?.replace('.feature', '') || 'unknown';
-    
-    // Set AllureId to prevent duplicates across shards
-    if (global.allure) {
-        global.allure.id = allureId;
+Before({ tags: '@scenario' }, async function(scenario) {
+    try {
+        const allureId = generateAllureId(scenario.pickle.name, scenario.pickle.uri);
+        const featureName = scenario.pickle.uri.split('/').pop()?.replace('.feature', '') || 'unknown';
         
-        // Add organizational labels
-        global.allure.label('feature', featureName);
-        global.allure.label('story', scenario.pickle.name);
-        global.allure.label('suite', 'E2E Tests');
-        
-        // Add shard information for debugging
-        if (process.env.SHARDED_TESTS === 'true') {
-            global.allure.label('tag', 'sharded');
+        // Set AllureId to prevent duplicates across shards
+        if (global.allure) {
+            global.allure.id = allureId;
+            
+            // Add organizational labels
+            global.allure.label('feature', featureName);
+            global.allure.label('story', scenario.pickle.name);
+            global.allure.label('suite', 'E2E Tests');
+            
+            // Add shard information for debugging
+            if (process.env.SHARDED_TESTS === 'true') {
+                global.allure.label('tag', 'sharded');
+            }
+            
+            // Add environment labels
+            if (process.env.CI === 'true') {
+                global.allure.label('tag', 'ci');
+            } else {
+                global.allure.label('tag', 'local');
+            }
         }
-        
-        // Add environment labels
-        if (process.env.CI === 'true') {
-            global.allure.label('tag', 'ci');
-        } else {
-            global.allure.label('tag', 'local');
-        }
+    } catch (error) {
+        // Log the error but don't fail the test
+        console.warn('Allure setup failed:', error.message);
     }
 });
 

@@ -1,5 +1,7 @@
 # 🧪 Flock Testing - How Our Flock Stays Healthy and Strong
 
+[![E2E Tests](https://img.shields.io/badge/E2E%20Tests-91%25%20(1211/1325)-green?style=flat-square&logo=allure&logoColor=white)](https://communitystream-io.github.io/flock/)
+
 > *"We count every duckling in our flock—each feature gets a test, so no one gets left behind! Our testing keeps the whole migration waddling along safely and happily."*
 
 ## 🧪 **Testing Philosophy**
@@ -525,6 +527,99 @@ import './file-upload';
 - **Reactive Forms** - Test real Angular reactive forms validation
 - **Material Components** - Integrate with Angular Material components
 
+## 📊 **Test Metrics & Telemetry**
+
+### **Automatic Metrics Collection**
+Our E2E tests automatically collect comprehensive metrics and telemetry data to help identify performance issues, browser problems, and test reliability patterns.
+
+#### **What We Track**
+- **Test Performance** - Duration, page load times, navigation speeds
+- **Browser Health** - Memory usage, resource consumption, error rates
+- **User Interactions** - Clicks, inputs, waits, and their success rates
+- **Error Patterns** - Timeout errors, element not found, navigation failures
+- **Resource Usage** - Network requests, data transfer, response times
+
+#### **Metrics Files Location**
+All metrics are automatically saved to the `logs/metrics/` directory:
+```
+logs/
+├── metrics/
+│   ├── test-metrics-2025-09-13T13-27-44-410Z.json
+│   ├── test-metrics-2025-09-13T13-27-47-216Z.json
+│   └── ...
+├── shards/
+├── exits/
+└── performance.log
+```
+
+#### **Analyzing Test Metrics**
+```bash
+# Analyze the most recent metrics file
+npm run analyze:metrics
+
+# Analyze a specific metrics file
+npm run analyze:metrics logs/metrics/test-metrics-2025-09-13T13-32-33-198Z.json
+
+# Analyze latest metrics (Linux/Mac)
+npm run analyze:metrics:latest
+```
+
+#### **Metrics Analysis Output**
+The analysis provides insights into:
+- **Test Results Summary** - Pass/fail/skip rates
+- **Performance Analysis** - Slowest tests, average durations
+- **Error Analysis** - Error types and patterns
+- **Browser Analysis** - Browser-specific performance data
+- **Memory Analysis** - Memory usage patterns
+- **Recommendations** - Actionable insights for optimization
+
+#### **Real-time Monitoring**
+During test execution, metrics are logged to `logs/performance.log` with structured data:
+```json
+{
+  "level": "info",
+  "time": 1757770088202,
+  "testId": "c1a0a193-48f4-476a-b0db-682d5788bf03",
+  "testName": "Configuration form has clear visual hierarchy",
+  "type": "scenario-start"
+}
+```
+
+#### **Debugging with Metrics**
+When tests fail or perform poorly:
+
+1. **Check Performance Logs**
+   ```bash
+   tail -f logs/performance.log
+   ```
+
+2. **Analyze Specific Test**
+   ```bash
+   # Find metrics for a specific test
+   grep "Configuration form" logs/metrics/test-metrics-*.json
+   ```
+
+3. **Compare Test Runs**
+   ```bash
+   # Compare two metrics files
+   node scripts/analyze-test-metrics.js logs/metrics/test-metrics-file1.json
+   node scripts/analyze-test-metrics.js logs/metrics/test-metrics-file2.json
+   ```
+
+4. **Identify Patterns**
+   - Look for high timeout error rates
+   - Check for memory leaks in browser analysis
+   - Identify slow navigation patterns
+   - Find error-prone test scenarios
+
+#### **Metrics-Driven Optimization**
+Use collected data to:
+- **Increase Timeouts** - When timeout errors are high
+- **Optimize Selectors** - When element not found errors are frequent
+- **Improve Navigation** - When navigation errors are common
+- **Fix Memory Leaks** - When memory usage is consistently high
+- **Parallelize Tests** - When individual test durations are long
+
 ## 🧪 **Test Debugging & Targeted Execution**
 
 ### **Running Specific Test Suites**
@@ -672,6 +767,7 @@ export TEST_TAGS="@auth and @validation"          # Filter by tags
 - **Angular Testing Utilities** - TestBed, ComponentFixture, etc.
 - **WebDriverIO** - E2E testing with Cucumber integration
 - **Allure Reporting** - Comprehensive test reporting and CI integration
+- **Test Metrics & Telemetry** - Performance monitoring and debugging insights
 
 ### **CI/CD Integration**
 ```mermaid

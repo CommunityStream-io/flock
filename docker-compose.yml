@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  # Base image for E2E testing
+  e2e-base:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+      target: base
+    image: flock-e2e-base:latest
+
+  # Angular application server
+  app-server:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+      target: runtime
+    depends_on:
+      - e2e-base
+    ports:
+      - "4200:4200"
+    command: ["npx", "ng", "serve", "flock-mirage", "--configuration=test", "--port=4200", "--host=0.0.0.0"]
+    environment:
+      - NODE_ENV=test
+      - CI=true
+    volumes:
+      - ./logs:/app/logs
+      - ./allure-results:/app/allure-results
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4200"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # Test runner for a specific shard
+  test-runner:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+      target: runtime
+    depends_on:
+      app-server:
+        condition: service_healthy
+    environment:
+      - NODE_ENV=test
+      - CI=true
+      - HEADLESS=true
+      - BASE_URL=http://app-server:4200
+      - TIMEOUT_TELEMETRY=true
+      - SHARD=1
+      - TOTAL_SHARDS=19
+    volumes:
+      - ./logs:/app/logs
+      - ./allure-results:/app/allure-results
+    command: ["npx", "cross-env", "CI=true", "HEADLESS=true", "BASE_URL=http://app-server:4200", "SHARDED_TESTS=true", "TIMEOUT_TELEMETRY=true", "wdio", "run", "wdio.conf.ts", "--shard=1/19"]
+
+  # Allure report generator
+  allure-report:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+      target: runtime
+    depends_on:
+      - test-runner
+    volumes:
+      - ./allure-results:/app/allure-results
+      - ./allure-report:/app/allure-report
+    ports:
+      - "8080:8080"
+    command: ["npx", "allure", "generate", "allure-results", "-o", "allure-report", "--clean", "&&", "npx", "allure", "open", "allure-report", "--port", "8080"]
