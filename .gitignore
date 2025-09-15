@@ -41,8 +41,6 @@ testem.log
 .DS_Store
 Thumbs.db
 
-.npmrc
-
 # Allure reports and results
 allure-results/
 allure-reports/
