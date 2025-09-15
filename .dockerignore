@@ -141,7 +141,7 @@ docker-compose*.yml
 
 # Test configuration files not needed in container
 karma.conf.js
-tsconfig.e2e.json
+# tsconfig.e2e.json - needed for E2E testing
 
 # Exclude other projects not needed for E2E testing
 projects/flock-native/
