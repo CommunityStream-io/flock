@@ -43,7 +43,8 @@ COPY package*.json ./
 COPY .npmrc ./
 
 # Install dependencies with npm ci for faster, reliable installs
-RUN npm ci --only=production --no-audit --no-fund
+# Use --legacy-peer-deps to handle dependency conflicts
+RUN npm ci --only=production --no-audit --no-fund --legacy-peer-deps
 
 # Stage 3: Build Angular application
 FROM node:20-alpine AS builder
@@ -58,7 +59,8 @@ COPY package*.json ./
 COPY .npmrc ./
 
 # Install all dependencies (including devDependencies for build)
-RUN npm ci --no-audit --no-fund
+# Use --legacy-peer-deps to handle dependency conflicts
+RUN npm ci --no-audit --no-fund --legacy-peer-deps
 
 # Copy only necessary configuration files
 COPY angular.json ./

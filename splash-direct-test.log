@@ -1,0 +1,58 @@
+
+Execution of 1 workers started at 2025-09-15T02:07:12.004Z
+
+[0-0] RUNNING in chrome - file:///C:/Users/trifo/Documents/flock/features/splash-screen/splash-screen.feature
+[0-0] {"level":"info","time":1757902037956,"pid":77740,"hostname":"DESKTOP-0Q6ENF6","specCount":1,"capabilities":{"maxInstances":1,"browserName":"chrome","acceptInsecureCerts":true,"goog:chromeOptions":{"args":["--enable-chrome-browser-cloud-management","--disable-web-security","--disable-features=VizDisplayCompositor","--no-sandbox","--disable-dev-shm-usage","--disable-gpu","--window-size=1920,1080","--disable-background-timer-throttling","--disable-backgrounding-occluded-windows","--disable-renderer-backgrounding","--disable-extensions","--disable-plugins","--disable-default-apps","--disable-sync","--disable-translate","--disable-background-networking","--disable-client-side-phishing-detection","--disable-component-extensions-with-background-pages","--disable-hang-monitor","--disable-prompt-on-repost","--disable-domain-reliability","--disable-features=TranslateUI","--disable-ipc-flooding-protection","--no-first-run","--no-default-browser-check","--disable-logging","--disable-permissions-api","--disable-popup-blocking","--disable-prompt-on-repost","--disable-web-resources","--disable-xss-auditor","--disable-features=VizDisplayCompositor","--force-color-profile=srgb","--memory-pressure-off","--max_old_space_size=4096","--log-level=3","--silent","--disable-gpu-logging"],"prefs":{"logging":{"level":"OFF"}}}},"type":"test-suite-start","msg":"Starting test suite with 1 spec files"}
+[0-0] {"level":"info","time":1757902038261,"pid":77740,"hostname":"DESKTOP-0Q6ENF6","featureName":"Splash Screen Display","featureUri":"C:\\Users\\trifo\\Documents\\flock\\features\\splash-screen\\splash-screen.feature","type":"feature-start","msg":"Starting feature: Splash Screen Display"}
+[0-0] {"level":"info","time":1757902038286,"pid":77740,"hostname":"DESKTOP-0Q6ENF6","scenarioName":"Splash screen displays during authentication","scenarioId":"f8357a29-3a48-41e7-a386-6830f7454985","type":"scenario-start","msg":"Starting scenario: Splash screen displays during authentication"}
+[0-0] {"level":"info","time":1757902038286,"pid":77740,"hostname":"DESKTOP-0Q6ENF6","type":"timeout-telemetry-start","msg":"Timeout telemetry collection started"}
+[0-0] {"level":"info","time":1757902038286,"pid":77740,"hostname":"DESKTOP-0Q6ENF6","type":"performance-monitoring-start","msg":"Performance monitoring started"}
+[0-0] {"level":"info","time":1757902038287,"pid":77740,"hostname":"DESKTOP-0Q6ENF6","testId":"f8357a29-3a48-41e7-a386-6830f7454985","testName":"Splash screen displays during authentication","type":"metrics-start","msg":"Started metrics collection for test: Splash screen displays during authentication"}
+[0-0] {"level":"error","time":1757902039484,"pid":77740,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: Given  I am on the auth step page"}
+[0-0] {"level":"error","time":1757902039865,"pid":77740,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: And  I have entered a valid username"}
+[0-0] {"level":"error","time":1757902040214,"pid":77740,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: And  I have entered a valid password"}
+[0-0] {"level":"info","time":1757902040244,"pid":77740,"hostname":"DESKTOP-0Q6ENF6","scenarioName":"Splash screen displays during authentication","status":"passed","resultType":"object","resultKeys":["attach","log","link","parameters"],"type":"scenario-complete","msg":"Scenario completed: Splash screen displays during authentication (passed)"}
+[0-0] {"level":"info","time":1757902040244,"pid":77740,"hostname":"DESKTOP-0Q6ENF6","type":"timeout-telemetry-stop","totalEvents":0,"msg":"Timeout telemetry collection stopped"}
+[0-0] {"level":"info","time":1757902040244,"pid":77740,"hostname":"DESKTOP-0Q6ENF6","type":"performance-monitoring-stop","msg":"Performance monitoring stopped"}
+[0-0] {"level":"info","time":1757902040244,"pid":77740,"hostname":"DESKTOP-0Q6ENF6","testId":"f8357a29-3a48-41e7-a386-6830f7454985","testName":"Splash screen displays during authentication","status":"passed","duration":1958,"type":"metrics-complete","msg":"Completed metrics collection for test: Splash screen displays during authentication (passed)"}
+[0-0] {"level":"info","time":1757902040244,"pid":77740,"hostname":"DESKTOP-0Q6ENF6","testId":"f8357a29-3a48-41e7-a386-6830f7454985","duration":1958,"navigations":0,"interactions":0,"errors":0,"type":"test-metrics-summary","msg":"Test Metrics Summary"}
+[0-0] {"level":"info","time":1757902040249,"pid":77740,"hostname":"DESKTOP-0Q6ENF6","featureName":"Splash Screen Display","featureUri":"C:\\Users\\trifo\\Documents\\flock\\features\\splash-screen\\splash-screen.feature","type":"feature-complete","msg":"Completed feature: Splash Screen Display"}
+[0-0] {"level":"info","time":1757902040252,"pid":77740,"hostname":"DESKTOP-0Q6ENF6","exitCode":0,"specCount":1,"type":"test-suite-complete","msg":"Test suite completed with exit code: 0"}
+[0-0] {"level":"info","time":1757902040252,"pid":77740,"hostname":"DESKTOP-0Q6ENF6","type":"test-suite-summary","msg":"📊 Test Metrics Summary Report\n===============================\nTotal Tests: 1\n✅ Passed: 1 (100.0%)\n❌ Failed: 0 (0.0%)\n⏭️ Skipped: 0 (0.0%)\n\n⏱️ Performance Metrics\n----------------------\nTotal Duration: 1958ms (2.0s)\nAverage Test Duration: 1958ms\nAverage Navigation Time: 0ms\nAverage Wait Time: 0ms\n\n🚨 Error Summary\n----------------\nTotal Errors: 3\nTimeout Errors: 0\nElement Not Found: 0\nNavigation Errors: 0\nScript Errors: 0\nNetwork Errors: 0\nOther Errors: 3"}
+[0-0] {"level":"info","time":1757902040256,"pid":77740,"hostname":"DESKTOP-0Q6ENF6","filename":"test-metrics-2025-09-15T02-07-20-252Z.json","filepath":"logs\\metrics\\test-metrics-2025-09-15T02-07-20-252Z.json","metricsCount":1,"type":"metrics-export","msg":"Metrics exported to logs\\metrics\\test-metrics-2025-09-15T02-07-20-252Z.json"}
+[0-0] {"level":"info","time":1757902040260,"pid":77740,"hostname":"DESKTOP-0Q6ENF6","filename":"timeout-telemetry-2025-09-15T02-07-20-257Z.json","filepath":"logs\\metrics\\timeout-telemetry-2025-09-15T02-07-20-257Z.json","eventCount":0,"type":"timeout-telemetry-export","msg":"Timeout telemetry exported to logs\\metrics\\timeout-telemetry-2025-09-15T02-07-20-257Z.json"}
+[0-0] {"level":"info","time":1757902040260,"pid":77740,"hostname":"DESKTOP-0Q6ENF6","metricsCount":1,"type":"metrics-collection-complete","msg":"Collected metrics for 1 tests"}
+[0-0] {"level":"info","time":1757902040260,"pid":77740,"hostname":"DESKTOP-0Q6ENF6","type":"timeout-telemetry-summary","msg":"🔍 Timeout Telemetry Analysis Report\n=====================================\n\n📊 Summary\n----------\nTotal Timeout Events: 0\nOverall Timeout Rate: 0.00%\n\n🚨 Critical Issues\n------------------\nNo critical issues detected\n\n📈 Top Timeout Patterns\n-----------------------\n\n\n💡 Recommendations\n------------------\nNo specific recommendations at this time\n\n🌍 Environmental Factors\n------------------------\nShard Distribution: No shard data\n\nBrowser Distribution: No browser data\n\nTime Distribution: No time data"}
+[0-0] {"level":"info","time":1757902040261,"pid":77740,"hostname":"DESKTOP-0Q6ENF6","slowestTests":[{"rank":1,"testName":"Splash screen displays during authentication","duration":1958}],"type":"performance-slowest-tests","msg":"Slowest Tests Analysis"}
+[0-0] {"level":"info","time":1757902040261,"pid":77740,"hostname":"DESKTOP-0Q6ENF6","errorProneTests":[{"rank":1,"testName":"Splash screen displays during authentication","totalErrors":3}],"type":"performance-error-prone-tests","msg":"Most Error-Prone Tests Analysis"}
+[0-0] {"level":"info","time":1757902040261,"pid":77740,"hostname":"DESKTOP-0Q6ENF6","averageNavigationTime":0,"warning":false,"recommendation":null,"type":"performance-navigation-insights","msg":"Navigation Performance Analysis"}
+[0-0] {"level":"info","time":1757902040261,"pid":77740,"hostname":"DESKTOP-0Q6ENF6","totalTimeoutErrors":0,"totalElementErrors":0,"totalNavigationErrors":0,"timeoutErrorRate":0,"elementErrorRate":0,"navigationErrorRate":0,"warnings":[],"type":"performance-error-patterns","msg":"Error Pattern Analysis"}
+[0-0] PASSED in chrome - file:///C:/Users/trifo/Documents/flock/features/splash-screen/splash-screen.feature
+
+ "spec" Reporter:
+------------------------------------------------------------------
+[chrome 140.0.7339.128 windows #0-0] Running: chrome (v140.0.7339.128) on windows
+[chrome 140.0.7339.128 windows #0-0] Session ID: 19341d9a63aa8c8c78d574893e047575
+[chrome 140.0.7339.128 windows #0-0]
+[chrome 140.0.7339.128 windows #0-0] » features\splash-screen\splash-screen.feature
+[chrome 140.0.7339.128 windows #0-0] Splash Screen Display
+[chrome 140.0.7339.128 windows #0-0] As a user
+[chrome 140.0.7339.128 windows #0-0] I want to see a splash screen during authentication
+[chrome 140.0.7339.128 windows #0-0] So that I know the system is processing my request
+[chrome 140.0.7339.128 windows #0-0]
+[chrome 140.0.7339.128 windows #0-0] Splash screen displays during authentication
+[chrome 140.0.7339.128 windows #0-0]    ✓ Given I am on the auth step page
+[chrome 140.0.7339.128 windows #0-0]    ✓ And I have entered a valid username
+[chrome 140.0.7339.128 windows #0-0]    ✓ And I have entered a valid password
+[chrome 140.0.7339.128 windows #0-0]    - When I click the "Next" button
+[chrome 140.0.7339.128 windows #0-0]    - Then I should see the splash screen
+[chrome 140.0.7339.128 windows #0-0]    - And the splash screen should display "Authenticating with bsky.social"
+[chrome 140.0.7339.128 windows #0-0]    - And the authentication should process in the background
+[chrome 140.0.7339.128 windows #0-0]    - And I should be navigated to the config step
+[chrome 140.0.7339.128 windows #0-0]
+[chrome 140.0.7339.128 windows #0-0] 3 passing (2.3s)
+[chrome 140.0.7339.128 windows #0-0] 5 skipped
+
+
+Spec Files:	 1 passed, 1 total (100% completed) in 00:00:08  
+

@@ -4,7 +4,32 @@ import { browser, $ } from '@wdio/globals';
 import { timeouts, timeoutMessages } from '../support/timeout-config';
 
 Given('I am on the auth step page', async () => {
-    await pages.auth.open();
+    // Navigate to home first, then to auth to bypass guards
+    await browser.url('/');
+    
+    // Wait for app to load
+    await browser.waitUntil(
+        async () => {
+            const readyState = await browser.execute(() => document.readyState);
+            return readyState === 'complete';
+        },
+        { timeout: 10000, timeoutMsg: 'App did not load' }
+    );
+    
+    // Navigate to auth step
+    await browser.url('/step/auth');
+    
+    // Wait for the auth form to be visible
+    await browser.waitUntil(
+        async () => {
+            const isAuthFormVisible = await pages.auth.authForm.isDisplayed();
+            return isAuthFormVisible;
+        },
+        { 
+            timeout: 10000,
+            timeoutMsg: 'Auth form did not appear within timeout'
+        }
+    );
 });
 
 Given('I am on the auth step page without valid credentials', async () => {
@@ -293,7 +318,28 @@ Given('I have entered valid credentials', async () => {
 
 When('I click the "Next" button', async () => {
     console.log('🔍 BDD: Step definition matched - clicking Next button');
-    await pages.stepLayout.clickNextStep();
+    
+    // Check if the Next button exists and is enabled
+    const nextButton = await pages.stepLayout.nextButton;
+    const isExisting = await nextButton.isExisting();
+    const isDisplayed = await nextButton.isDisplayed();
+    const isEnabled = await nextButton.isEnabled();
+    
+    console.log(`🔍 BDD: Next button - exists: ${isExisting}, displayed: ${isDisplayed}, enabled: ${isEnabled}`);
+    
+    if (!isExisting) {
+        throw new Error('Next button does not exist');
+    }
+    
+    if (!isDisplayed) {
+        throw new Error('Next button is not displayed');
+    }
+    
+    if (!isEnabled) {
+        throw new Error('Next button is not enabled');
+    }
+    
+    await nextButton.click();
     console.log('🔍 BDD: Next button clicked successfully');
 });
 

@@ -1,0 +1,83 @@
+
+Execution of 1 workers started at 2025-09-15T02:07:34.350Z
+
+2025-09-15T02:07:34.397Z INFO @wdio/xvfb: XvfbManager.init() called
+2025-09-15T02:07:34.397Z INFO @wdio/xvfb: Xvfb not needed on current platform
+2025-09-15T02:07:34.518Z INFO @wdio/xvfb:ProcessFactory: xvfb-run not found, falling back to regular fork
+2025-09-15T02:07:34.518Z INFO @wdio/xvfb:ProcessFactory: ProcessFactory: shouldRun=false, isAvailable=false
+2025-09-15T02:07:34.518Z INFO @wdio/xvfb:ProcessFactory: Creating worker process with regular fork
+[0-0] 2025-09-15T02:07:36.493Z INFO @wdio/local-runner: Run worker command: run
+[0-0] 2025-09-15T02:07:36.523Z DEBUG @wdio/runner: init remote session
+[0-0] RUNNING in chrome - file:///C:/Users/trifo/Documents/flock/features/splash-screen/splash-screen.feature
+[0-0] 2025-09-15T02:07:37.811Z DEBUG @wdio/runner: init remote session
+[0-0] 2025-09-15T02:07:38.382Z INFO chromedriver: Starting ChromeDriver 140.0.7339.82 (bc93617e21c39ed4afa6ce1c08554e5aa76d132d-refs/branch-heads/7339_41@{#5}) on port 61952
+[0-0] 2025-09-15T02:07:38.383Z INFO chromedriver: Remote connections are allowed by an allowlist (0.0.0.0).
+[0-0] 2025-09-15T02:07:38.383Z INFO chromedriver: Please see https://chromedriver.chromium.org/security-considerations for suggestions on keeping ChromeDriver safe.
+[0-0] 2025-09-15T02:07:38.390Z INFO chromedriver: ChromeDriver was started successfully on port 61952.
+[0-0] 2025-09-15T02:07:38.486Z INFO @wdio/utils: Started Chromedriver v140.0.7339.128 with params --port=61952 --allowed-origins=* --allowed-ips=0.0.0.0 in 152ms on port 61952
+[0-0] {"level":"info","time":1757902059510,"pid":50452,"hostname":"DESKTOP-0Q6ENF6","specCount":1,"capabilities":{"maxInstances":1,"browserName":"chrome","acceptInsecureCerts":true,"goog:chromeOptions":{"args":["--enable-chrome-browser-cloud-management","--disable-web-security","--disable-features=VizDisplayCompositor","--no-sandbox","--disable-dev-shm-usage","--disable-gpu","--window-size=1920,1080","--disable-background-timer-throttling","--disable-backgrounding-occluded-windows","--disable-renderer-backgrounding","--disable-extensions","--disable-plugins","--disable-default-apps","--disable-sync","--disable-translate","--disable-background-networking","--disable-client-side-phishing-detection","--disable-component-extensions-with-background-pages","--disable-hang-monitor","--disable-prompt-on-repost","--disable-domain-reliability","--disable-features=TranslateUI","--disable-ipc-flooding-protection","--no-first-run","--no-default-browser-check","--disable-logging","--disable-permissions-api","--disable-popup-blocking","--disable-prompt-on-repost","--disable-web-resources","--disable-xss-auditor","--disable-features=VizDisplayCompositor","--force-color-profile=srgb","--memory-pressure-off","--max_old_space_size=4096","--log-level=3","--silent","--disable-gpu-logging"],"prefs":{"logging":{"level":"OFF"}}}},"type":"test-suite-start","msg":"Starting test suite with 1 spec files"}
+[0-0] 2025-09-15T02:07:39.511Z DEBUG @wdio/utils:shim: Finished to run "before" hook in 79ms
+[0-0] {"level":"info","time":1757902059650,"pid":50452,"hostname":"DESKTOP-0Q6ENF6","featureName":"Splash Screen Display","featureUri":"C:\\Users\\trifo\\Documents\\flock\\features\\splash-screen\\splash-screen.feature","type":"feature-start","msg":"Starting feature: Splash Screen Display"}
+[0-0] 2025-09-15T02:07:39.651Z DEBUG @wdio/utils:shim: Finished to run "beforeFeature" hook in 1ms
+[0-0] {"level":"info","time":1757902059672,"pid":50452,"hostname":"DESKTOP-0Q6ENF6","scenarioName":"Splash screen displays during authentication","scenarioId":"ca89d80f-b251-404e-a598-4f36eb2380f2","type":"scenario-start","msg":"Starting scenario: Splash screen displays during authentication"}
+[0-0] {"level":"info","time":1757902059672,"pid":50452,"hostname":"DESKTOP-0Q6ENF6","type":"timeout-telemetry-start","msg":"Timeout telemetry collection started"}
+[0-0] {"level":"info","time":1757902059672,"pid":50452,"hostname":"DESKTOP-0Q6ENF6","type":"performance-monitoring-start","msg":"Performance monitoring started"}
+[0-0] {"level":"info","time":1757902059673,"pid":50452,"hostname":"DESKTOP-0Q6ENF6","testId":"ca89d80f-b251-404e-a598-4f36eb2380f2","testName":"Splash screen displays during authentication","type":"metrics-start","msg":"Started metrics collection for test: Splash screen displays during authentication"}
+[0-0] 2025-09-15T02:07:39.677Z DEBUG @wdio/utils:shim: Finished to run "beforeScenario" hook in 6ms
+[0-0] 2025-09-15T02:07:39.683Z DEBUG @wdio/utils:shim: Finished to run "beforeStep" hook in 1ms
+[0-0] {"level":"error","time":1757902060830,"pid":50452,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: Given  I am on the auth step page"}
+[0-0] 2025-09-15T02:07:40.830Z DEBUG @wdio/utils:shim: Finished to run "afterStep" hook in 1ms
+[0-0] 2025-09-15T02:07:40.838Z DEBUG @wdio/utils:shim: Finished to run "beforeStep" hook in 1ms
+[0-0] {"level":"error","time":1757902061118,"pid":50452,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: And  I have entered a valid username"}
+[0-0] 2025-09-15T02:07:41.118Z DEBUG @wdio/utils:shim: Finished to run "afterStep" hook in 1ms
+[0-0] 2025-09-15T02:07:41.123Z DEBUG @wdio/utils:shim: Finished to run "beforeStep" hook in 1ms
+[0-0] {"level":"error","time":1757902061401,"pid":50452,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: And  I have entered a valid password"}
+[0-0] 2025-09-15T02:07:41.401Z DEBUG @wdio/utils:shim: Finished to run "afterStep" hook in 1ms
+[0-0] {"level":"info","time":1757902061445,"pid":50452,"hostname":"DESKTOP-0Q6ENF6","scenarioName":"Splash screen displays during authentication","status":"passed","resultType":"object","resultKeys":["attach","log","link","parameters"],"type":"scenario-complete","msg":"Scenario completed: Splash screen displays during authentication (passed)"}
+[0-0] 2025-09-15T02:07:41.445Z DEBUG @wdio/utils:shim: Finished to run "afterScenario" hook in 1ms
+[0-0] {"level":"info","time":1757902061445,"pid":50452,"hostname":"DESKTOP-0Q6ENF6","type":"timeout-telemetry-stop","totalEvents":0,"msg":"Timeout telemetry collection stopped"}
+[0-0] {"level":"info","time":1757902061445,"pid":50452,"hostname":"DESKTOP-0Q6ENF6","type":"performance-monitoring-stop","msg":"Performance monitoring stopped"}
+[0-0] {"level":"info","time":1757902061445,"pid":50452,"hostname":"DESKTOP-0Q6ENF6","testId":"ca89d80f-b251-404e-a598-4f36eb2380f2","testName":"Splash screen displays during authentication","status":"passed","duration":1772,"type":"metrics-complete","msg":"Completed metrics collection for test: Splash screen displays during authentication (passed)"}
+[0-0] {"level":"info","time":1757902061445,"pid":50452,"hostname":"DESKTOP-0Q6ENF6","testId":"ca89d80f-b251-404e-a598-4f36eb2380f2","duration":1772,"navigations":0,"interactions":0,"errors":0,"type":"test-metrics-summary","msg":"Test Metrics Summary"}
+[0-0] {"level":"info","time":1757902061451,"pid":50452,"hostname":"DESKTOP-0Q6ENF6","featureName":"Splash Screen Display","featureUri":"C:\\Users\\trifo\\Documents\\flock\\features\\splash-screen\\splash-screen.feature","type":"feature-complete","msg":"Completed feature: Splash Screen Display"}
+[0-0] 2025-09-15T02:07:41.451Z DEBUG @wdio/utils:shim: Finished to run "afterFeature" hook in 1ms
+[0-0] {"level":"info","time":1757902061456,"pid":50452,"hostname":"DESKTOP-0Q6ENF6","exitCode":0,"specCount":1,"type":"test-suite-complete","msg":"Test suite completed with exit code: 0"}
+[0-0] {"level":"info","time":1757902061456,"pid":50452,"hostname":"DESKTOP-0Q6ENF6","type":"test-suite-summary","msg":"📊 Test Metrics Summary Report\n===============================\nTotal Tests: 1\n✅ Passed: 1 (100.0%)\n❌ Failed: 0 (0.0%)\n⏭️ Skipped: 0 (0.0%)\n\n⏱️ Performance Metrics\n----------------------\nTotal Duration: 1772ms (1.8s)\nAverage Test Duration: 1772ms\nAverage Navigation Time: 0ms\nAverage Wait Time: 0ms\n\n🚨 Error Summary\n----------------\nTotal Errors: 3\nTimeout Errors: 0\nElement Not Found: 0\nNavigation Errors: 0\nScript Errors: 0\nNetwork Errors: 0\nOther Errors: 3"}
+[0-0] {"level":"info","time":1757902061461,"pid":50452,"hostname":"DESKTOP-0Q6ENF6","filename":"test-metrics-2025-09-15T02-07-41-456Z.json","filepath":"logs\\metrics\\test-metrics-2025-09-15T02-07-41-456Z.json","metricsCount":1,"type":"metrics-export","msg":"Metrics exported to logs\\metrics\\test-metrics-2025-09-15T02-07-41-456Z.json"}
+[0-0] {"level":"info","time":1757902061464,"pid":50452,"hostname":"DESKTOP-0Q6ENF6","filename":"timeout-telemetry-2025-09-15T02-07-41-462Z.json","filepath":"logs\\metrics\\timeout-telemetry-2025-09-15T02-07-41-462Z.json","eventCount":0,"type":"timeout-telemetry-export","msg":"Timeout telemetry exported to logs\\metrics\\timeout-telemetry-2025-09-15T02-07-41-462Z.json"}
+[0-0] 2025-09-15T02:07:41.465Z DEBUG @wdio/utils:shim: Finished to run "after" hook in 10ms
+[0-0] {"level":"info","time":1757902061465,"pid":50452,"hostname":"DESKTOP-0Q6ENF6","metricsCount":1,"type":"metrics-collection-complete","msg":"Collected metrics for 1 tests"}
+[0-0] {"level":"info","time":1757902061465,"pid":50452,"hostname":"DESKTOP-0Q6ENF6","type":"timeout-telemetry-summary","msg":"🔍 Timeout Telemetry Analysis Report\n=====================================\n\n📊 Summary\n----------\nTotal Timeout Events: 0\nOverall Timeout Rate: 0.00%\n\n🚨 Critical Issues\n------------------\nNo critical issues detected\n\n📈 Top Timeout Patterns\n-----------------------\n\n\n💡 Recommendations\n------------------\nNo specific recommendations at this time\n\n🌍 Environmental Factors\n------------------------\nShard Distribution: No shard data\n\nBrowser Distribution: No browser data\n\nTime Distribution: No time data"}
+[0-0] {"level":"info","time":1757902061465,"pid":50452,"hostname":"DESKTOP-0Q6ENF6","slowestTests":[{"rank":1,"testName":"Splash screen displays during authentication","duration":1772}],"type":"performance-slowest-tests","msg":"Slowest Tests Analysis"}
+[0-0] {"level":"info","time":1757902061465,"pid":50452,"hostname":"DESKTOP-0Q6ENF6","errorProneTests":[{"rank":1,"testName":"Splash screen displays during authentication","totalErrors":3}],"type":"performance-error-prone-tests","msg":"Most Error-Prone Tests Analysis"}
+[0-0] {"level":"info","time":1757902061465,"pid":50452,"hostname":"DESKTOP-0Q6ENF6","averageNavigationTime":0,"warning":false,"recommendation":null,"type":"performance-navigation-insights","msg":"Navigation Performance Analysis"}
+[0-0] {"level":"info","time":1757902061465,"pid":50452,"hostname":"DESKTOP-0Q6ENF6","totalTimeoutErrors":0,"totalElementErrors":0,"totalNavigationErrors":0,"timeoutErrorRate":0,"elementErrorRate":0,"navigationErrorRate":0,"warnings":[],"type":"performance-error-patterns","msg":"Error Pattern Analysis"}
+[0-0] PASSED in chrome - file:///C:/Users/trifo/Documents/flock/features/splash-screen/splash-screen.feature
+
+ "spec" Reporter:
+------------------------------------------------------------------
+[chrome 140.0.7339.128 windows #0-0] Running: chrome (v140.0.7339.128) on windows
+[chrome 140.0.7339.128 windows #0-0] Session ID: ab5ce4174ad284527de96a11a30a2b59
+[chrome 140.0.7339.128 windows #0-0]
+[chrome 140.0.7339.128 windows #0-0] » features\splash-screen\splash-screen.feature
+[chrome 140.0.7339.128 windows #0-0] Splash Screen Display
+[chrome 140.0.7339.128 windows #0-0] As a user
+[chrome 140.0.7339.128 windows #0-0] I want to see a splash screen during authentication
+[chrome 140.0.7339.128 windows #0-0] So that I know the system is processing my request
+[chrome 140.0.7339.128 windows #0-0]
+[chrome 140.0.7339.128 windows #0-0] Splash screen displays during authentication
+[chrome 140.0.7339.128 windows #0-0]    ✓ Given I am on the auth step page
+[chrome 140.0.7339.128 windows #0-0]    ✓ And I have entered a valid username
+[chrome 140.0.7339.128 windows #0-0]    ✓ And I have entered a valid password
+[chrome 140.0.7339.128 windows #0-0]    - When I click the "Next" button
+[chrome 140.0.7339.128 windows #0-0]    - Then I should see the splash screen
+[chrome 140.0.7339.128 windows #0-0]    - And the splash screen should display "Authenticating with bsky.social"
+[chrome 140.0.7339.128 windows #0-0]    - And the authentication should process in the background
+[chrome 140.0.7339.128 windows #0-0]    - And I should be navigated to the config step
+[chrome 140.0.7339.128 windows #0-0]
+[chrome 140.0.7339.128 windows #0-0] 3 passing (2s)
+[chrome 140.0.7339.128 windows #0-0] 5 skipped
+
+
+Spec Files:	 1 passed, 1 total (100% completed) in 00:00:07  
+

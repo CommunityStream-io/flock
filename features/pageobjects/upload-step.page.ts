@@ -62,7 +62,7 @@ class UploadStepPage extends Page {
         
         // Simulate file selection by triggering the file input change event
         await browser.execute((inputSelector, fileName) => {
-            const fileInput = document.querySelector(inputSelector);
+            const fileInput = document.querySelector(inputSelector) as HTMLInputElement;
             if (fileInput) {
                 // Create a mock file object
                 const mockFile = new File(['mock content'], fileName, { type: 'application/zip' });
@@ -77,15 +77,19 @@ class UploadStepPage extends Page {
                     }
                 };
                 
-                // Trigger the change event with our mock file
+                // Set the files property
                 Object.defineProperty(fileInput, 'files', {
                     value: mockFileList,
                     writable: false
                 });
                 
-                // Dispatch the change event
+                // Dispatch the change event to trigger the Angular form control
                 const changeEvent = new Event('change', { bubbles: true });
                 fileInput.dispatchEvent(changeEvent);
+                
+                // Also trigger input event for better compatibility
+                const inputEvent = new Event('input', { bubbles: true });
+                fileInput.dispatchEvent(inputEvent);
             }
         }, 'input[type="file"]', filename);
         
