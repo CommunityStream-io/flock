@@ -83,15 +83,15 @@ jobs:
             base_path: "/flock-staging"
             site_url: "https://communitystream-io.github.io"  
             environment: "staging"
-    # Only run for the current branch
-    if: github.ref_name == matrix.branch
     steps:
       - name: Checkout
+        if: github.ref_name == matrix.branch
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Setup Ruby
+        if: github.ref_name == matrix.branch
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.1'
@@ -99,13 +99,16 @@ jobs:
           cache-version: 0
 
       - name: Setup Pages
+        if: github.ref_name == matrix.branch
         id: pages
         uses: actions/configure-pages@v4
 
       - name: Install dependencies
+        if: github.ref_name == matrix.branch
         run: bundle install
 
       - name: Update config for branch-specific deployment
+        if: github.ref_name == matrix.branch
         run: |
           # Create branch-specific config override
           cat >> _config-${{ matrix.branch }}.yml << EOF
@@ -145,6 +148,7 @@ jobs:
           EOF
 
       - name: Build with Jekyll
+        if: github.ref_name == matrix.branch
         run: |
           bundle exec jekyll build \
             --config "_config.yml,_config-${{ matrix.branch }}.yml" \
@@ -154,6 +158,7 @@ jobs:
           JEKYLL_ENV: ${{ matrix.environment }}
 
       - name: Copy documentation assets
+        if: github.ref_name == matrix.branch
         run: |
           # Copy any existing documentation assets
           if [ -d "docs/assets" ]; then
@@ -173,6 +178,7 @@ jobs:
           fi
 
       - name: Add branch indicator
+        if: github.ref_name == matrix.branch
         run: |
           # Add a branch indicator to the built site
           echo "Built from branch: ${{ matrix.branch }}" > ./_site/BRANCH
@@ -180,6 +186,7 @@ jobs:
           echo "Build time: $(date -u)" >> ./_site/BRANCH
 
       - name: Upload Pages artifact
+        if: github.ref_name == matrix.branch
         uses: actions/upload-pages-artifact@v3
         with:
           name: "github-pages-${{ matrix.branch }}-${{ github.run_number }}"
@@ -217,10 +224,9 @@ jobs:
     strategy:
       matrix:
         branch: [main, develop, staging]
-    # Only run for the current branch
-    if: github.ref_name == matrix.branch
     steps:
       - name: Checkout gh-pages branch
+        if: github.ref_name == matrix.branch
         uses: actions/checkout@v4
         with:
           ref: gh-pages
@@ -229,6 +235,7 @@ jobs:
         continue-on-error: true
 
       - name: Download Jekyll site
+        if: github.ref_name == matrix.branch
         uses: actions/download-artifact@v4
         with:
           name: "github-pages-${{ matrix.branch }}-${{ github.run_number }}"
@@ -236,6 +243,7 @@ jobs:
         continue-on-error: true
 
       - name: Integrate Jekyll with existing reports
+        if: github.ref_name == matrix.branch
         run: |
           # Create integration directory structure
           mkdir -p integrated-site
@@ -288,6 +296,7 @@ jobs:
           EOF
 
       - name: Upload integrated site
+        if: github.ref_name == matrix.branch
         uses: actions/upload-artifact@v4
         with:
           name: "integrated-site-${{ matrix.branch }}-${{ github.run_number }}"
@@ -308,10 +317,9 @@ jobs:
             subdirectory: "flock-develop"
           - branch: staging  
             subdirectory: "flock-staging"
-    # Only run for the current branch
-    if: github.ref_name == matrix.branch
     steps:
       - name: Checkout gh-pages
+        if: github.ref_name == matrix.branch
         uses: actions/checkout@v4
         with:
           ref: gh-pages
@@ -320,12 +328,14 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Download integrated site
+        if: github.ref_name == matrix.branch
         uses: actions/download-artifact@v4
         with:
           name: "integrated-site-${{ matrix.branch }}-${{ github.run_number }}"
           path: branch-site
 
       - name: Deploy to subdirectory
+        if: github.ref_name == matrix.branch
         run: |
           # Create/update branch subdirectory
           mkdir -p "gh-pages/${{ matrix.subdirectory }}"
@@ -349,6 +359,7 @@ jobs:
           EOF
 
       - name: Commit and push changes
+        if: github.ref_name == matrix.branch
         run: |
           cd gh-pages
           git config user.name "github-actions[bot]"
