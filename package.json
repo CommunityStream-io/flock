@@ -60,7 +60,10 @@
     "lint:flock-native": "ng lint flock-native",
     "lint:flock-mirage": "ng lint flock-mirage",
     "lint:flock-murmur": "ng lint flock-murmur",
-    "lint:all": "npm run lint:shared && npm run lint:flock-native && npm run lint:flock-mirage && npm run lint:flock-murmur"
+    "lint:all": "npm run lint:shared && npm run lint:flock-native && npm run lint:flock-mirage && npm run lint:flock-murmur",
+    "agent:build": "docker build -f Dockerfile.background-agent -t cursor-background-agent:latest .",
+    "agent:run": "docker run --rm -it -v $PWD:/workspace cursor-background-agent:latest",
+    "agent:run:auth": "docker run --rm -it -e GH_TOKEN=$GH_TOKEN -v $PWD:/workspace cursor-background-agent:latest bash -lc 'gh auth status && gh repo view --json nameWithOwner,visibility'"
   },
   "prettier": {
     "overrides": [
