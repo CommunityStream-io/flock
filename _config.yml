@@ -1,0 +1,171 @@
+# Flock Documentation Site
+title: "🦅 Flock - Bluesky Social Migrator"
+description: "A flock of Angular applications soaring through the social media migration skies! Documentation hub for architecture, development, testing, and deployment guides."
+baseurl: "/flock"
+url: "https://communitystream-io.github.io"
+
+# Repository information
+repository: "CommunityStream-io/flock"
+github:
+  owner_name: "CommunityStream-io"
+  owner_url: "https://github.com/CommunityStream-io"
+
+# Theme and plugins
+theme: minima
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+  - jekyll-seo-tag
+  - jekyll-relative-links
+  - jekyll-optional-front-matter
+  - jekyll-readme-index
+  - jekyll-titles-from-headings
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+kramdown:
+  syntax_highlighter_opts:
+    block:
+      line_numbers: true
+
+# Collections for different content types
+collections:
+  docs:
+    output: true
+    permalink: /:collection/:name/
+  architecture:
+    output: true
+    permalink: /:collection/:path/
+  testing:
+    output: true
+    permalink: /:collection/:name/
+  tools:
+    output: true
+    permalink: /tools/:name/
+
+# Default layouts and settings
+defaults:
+  - scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: "default"
+      nav: true
+  - scope:
+      path: ""
+      type: "docs"
+    values:
+      layout: "doc"
+      nav: true
+  - scope:
+      path: ""
+      type: "architecture"
+    values:
+      layout: "doc"
+      nav: true
+  - scope:
+      path: ""
+      type: "testing"
+    values:
+      layout: "doc"
+      nav: true
+  - scope:
+      path: ""
+      type: "tools"
+    values:
+      layout: "tool"
+      nav: true
+
+# Site navigation structure
+nav_sections:
+  - title: "🏠 Home"
+    url: "/"
+  - title: "🏗️ Architecture"
+    url: "/architecture/"
+    subsections:
+      - title: "Overview"
+        url: "/architecture/overview/"
+      - title: "🎭 Mirage"
+        url: "/architecture/flock-mirage/"
+      - title: "🌊 Murmur"
+        url: "/architecture/flock-murmur/"
+      - title: "🦅 Native"
+        url: "/architecture/flock-native/"
+      - title: "🧩 Shared"
+        url: "/architecture/shared/"
+  - title: "🚀 Development"
+    url: "/development/"
+  - title: "🧪 Testing"
+    url: "/testing/"
+    subsections:
+      - title: "Overview"
+        url: "/testing/overview/"
+      - title: "Unit Testing"
+        url: "/testing/unit-testing/"
+      - title: "E2E Testing"
+        url: "/testing/e2e-testing/"
+      - title: "BDD Methodology"
+        url: "/testing/bdd-methodology/"
+      - title: "Coverage"
+        url: "/testing/coverage/"
+  - title: "🛠️ Tools"
+    url: "/tools/"
+    subsections:
+      - title: "Allure Reports"
+        url: "/tools/allure/"
+      - title: "CI Integration"
+        url: "/tools/ci/"
+      - title: "Performance"
+        url: "/tools/performance/"
+  - title: "🎨 Styling"
+    url: "/styling/"
+
+# Tool configurations for multi-branch support
+tools:
+  allure:
+    name: "Allure Reports"
+    description: "E2E test reporting and analysis"
+    icon: "📊"
+    path: "/tools/allure"
+    branches:
+      - name: "main"
+        url: "https://communitystream-io.github.io/flock/"
+      - name: "develop"
+        url: "https://communitystream-io.github.io/flock-develop/"
+      - name: "staging"
+        url: "https://communitystream-io.github.io/flock-staging/"
+  badges:
+    name: "Test Badges"
+    description: "Real-time test status badges"
+    icon: "🏆"
+    path: "/tools/badges"
+    branches:
+      - name: "main"
+        url: "/badges/main/"
+      - name: "develop"
+        url: "/badges/develop/"
+      - name: "staging"
+        url: "/badges/staging/"
+  coverage:
+    name: "Code Coverage"
+    description: "Unit and integration test coverage"
+    icon: "📈"
+    path: "/tools/coverage"
+    branches:
+      - name: "main"
+        url: "https://codecov.io/github/CommunityStream-io/flock"
+      - name: "develop"
+        url: "https://codecov.io/github/CommunityStream-io/flock/branch/develop"
+
+# Exclude files from build
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor/bundle/
+  - vendor/cache/
+  - vendor/gems/
+  - vendor/ruby/
+  - README-Jekyll.md
+  - scripts/

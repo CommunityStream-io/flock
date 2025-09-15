@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="{{ page.lang | default: site.lang | default: "en" }}">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <title>{% if page.title %}{{ page.title | escape }} - {% endif %}{{ site.title | escape }}</title>
+  <meta name="description" content="{% if page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}">
+  
+  <!-- Favicon -->
+  <link rel="apple-touch-icon" sizes="180x180" href="{{ '/assets/favicon/apple-touch-icon.png' | relative_url }}">
+  <link rel="icon" type="image/png" sizes="32x32" href="{{ '/assets/favicon/favicon-32x32.png' | relative_url }}">
+  <link rel="icon" type="image/png" sizes="16x16" href="{{ '/assets/favicon/favicon-16x16.png' | relative_url }}">
+  
+  <!-- CSS -->
+  <link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- SEO -->
+  {% seo %}
+  
+  <!-- Feed -->
+  {% feed_meta %}
+</head>
+
+<body class="flock-theme">
+  <!-- Navigation Header -->
+  <header class="site-header">
+    <nav class="navbar">
+      <div class="nav-container">
+        <div class="nav-brand">
+          <a href="{{ '/' | relative_url }}" class="brand-link">
+            <span class="brand-icon">🦅</span>
+            <span class="brand-text">{{ site.title }}</span>
+          </a>
+        </div>
+        
+        <!-- Mobile menu button -->
+        <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        
+        <!-- Main Navigation -->
+        <div class="nav-menu" id="nav-menu">
+          {% for section in site.nav_sections %}
+            <div class="nav-item {% if section.subsections %}dropdown{% endif %}">
+              <a href="{{ section.url | relative_url }}" class="nav-link">{{ section.title }}</a>
+              {% if section.subsections %}
+                <div class="dropdown-content">
+                  {% for subsection in section.subsections %}
+                    <a href="{{ subsection.url | relative_url }}" class="dropdown-link">{{ subsection.title }}</a>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            </div>
+          {% endfor %}
+          
+          <!-- Branch/Tool Selector -->
+          <div class="nav-item dropdown">
+            <a href="#" class="nav-link">🛠️ Tools</a>
+            <div class="dropdown-content">
+              {% for tool in site.tools %}
+                <div class="tool-group">
+                  <span class="tool-name">{{ tool[1].icon }} {{ tool[1].name }}</span>
+                  {% for branch in tool[1].branches %}
+                    <a href="{{ branch.url }}" class="dropdown-link branch-link" target="_blank">
+                      {{ branch.name }}
+                    </a>
+                  {% endfor %}
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main class="site-main">
+    <div class="main-container">
+      <!-- Sidebar Navigation (for docs) -->
+      {% if page.layout == 'doc' or page.layout == 'tool' %}
+        <aside class="sidebar">
+          {% include sidebar.html %}
+        </aside>
+      {% endif %}
+      
+      <!-- Content Area -->
+      <div class="content-area {% if page.layout == 'doc' or page.layout == 'tool' %}with-sidebar{% endif %}">
+        <!-- Breadcrumbs -->
+        {% if page.breadcrumbs != false %}
+          <nav class="breadcrumbs" aria-label="Breadcrumb">
+            {% include breadcrumbs.html %}
+          </nav>
+        {% endif %}
+        
+        <!-- Page Content -->
+        <article class="page-content">
+          {{ content }}
+        </article>
+        
+        <!-- Page Footer -->
+        {% if page.layout == 'doc' or page.layout == 'tool' %}
+          <footer class="page-footer">
+            {% include page-footer.html %}
+          </footer>
+        {% endif %}
+      </div>
+    </div>
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="footer-container">
+      <div class="footer-section">
+        <h3>🦅 Flock Project</h3>
+        <p>{{ site.description }}</p>
+        <div class="social-links">
+          <a href="https://github.com/{{ site.repository }}" target="_blank" aria-label="GitHub">
+            <i class="fab fa-github"></i>
+          </a>
+        </div>
+      </div>
+      
+      <div class="footer-section">
+        <h4>📚 Documentation</h4>
+        <ul>
+          <li><a href="{{ '/architecture/' | relative_url }}">Architecture</a></li>
+          <li><a href="{{ '/development/' | relative_url }}">Development</a></li>
+          <li><a href="{{ '/testing/' | relative_url }}">Testing</a></li>
+          <li><a href="{{ '/styling/' | relative_url }}">Styling</a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-section">
+        <h4>🛠️ Tools</h4>
+        <ul>
+          {% for tool in site.tools %}
+            <li><a href="{{ tool[1].branches[0].url }}" target="_blank">{{ tool[1].icon }} {{ tool[1].name }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+      
+      <div class="footer-section">
+        <h4>🦜 Meet the Flock</h4>
+        <ul>
+          <li><a href="{{ '/architecture/flock-mirage/' | relative_url }}">🎭 Mirage</a></li>
+          <li><a href="{{ '/architecture/flock-murmur/' | relative_url }}">🌊 Murmur</a></li>
+          <li><a href="{{ '/architecture/flock-native/' | relative_url }}">🦅 Native</a></li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <p>&copy; {{ 'now' | date: "%Y" }} Flock Project. Built with Angular 20.1.5 and Jekyll.</p>
+      <p>🏗️ Architecture-first design | 🦜 Multi-bird support | 🎨 Shared M3 Material design</p>
+    </div>
+  </footer>
+
+  <!-- JavaScript -->
+  <script src="{{ '/assets/js/main.js' | relative_url }}"></script>
+</body>
+</html>

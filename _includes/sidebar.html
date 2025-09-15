@@ -1,0 +1,131 @@
+<!-- Dynamic Sidebar Navigation -->
+<nav class="sidebar-nav">
+  <!-- Architecture Section -->
+  {% if page.url contains '/architecture/' %}
+    <div class="nav-section">
+      <h3 class="nav-section-title">🏗️ Architecture</h3>
+      <ul class="nav-list">
+        <li class="nav-item">
+          <a href="{{ '/architecture/' | relative_url }}" class="nav-link {% if page.url == '/architecture/' %}active{% endif %}">
+            Overview
+          </a>
+        </li>
+        
+        <!-- Flock Apps -->
+        <li class="nav-group">
+          <span class="nav-group-title">🦜 Flock Apps</span>
+          <ul class="nav-sublist">
+            <li><a href="{{ '/architecture/flock-mirage/' | relative_url }}" class="nav-link {% if page.url contains 'flock-mirage' %}active{% endif %}">🎭 Mirage</a></li>
+            <li><a href="{{ '/architecture/flock-murmur/' | relative_url }}" class="nav-link {% if page.url contains 'flock-murmur' %}active{% endif %}">🌊 Murmur</a></li>
+            <li><a href="{{ '/architecture/flock-native/' | relative_url }}" class="nav-link {% if page.url contains 'flock-native' %}active{% endif %}">🦅 Native</a></li>
+          </ul>
+        </li>
+        
+        <!-- Shared Components -->
+        <li class="nav-group">
+          <span class="nav-group-title">🧩 Shared</span>
+          <ul class="nav-sublist">
+            <li><a href="{{ '/architecture/shared/overview/' | relative_url }}" class="nav-link {% if page.url contains 'shared/overview' %}active{% endif %}">Overview</a></li>
+            <li><a href="{{ '/architecture/shared/components/' | relative_url }}" class="nav-link {% if page.url contains 'shared/components' %}active{% endif %}">Components</a></li>
+            <li><a href="{{ '/architecture/shared/services/' | relative_url }}" class="nav-link {% if page.url contains 'shared/services' %}active{% endif %}">Services</a></li>
+            <li><a href="{{ '/architecture/shared/theming/' | relative_url }}" class="nav-link {% if page.url contains 'shared/theming' %}active{% endif %}">Theming</a></li>
+            <li><a href="{{ '/architecture/shared/routing/' | relative_url }}" class="nav-link {% if page.url contains 'shared/routing' %}active{% endif %}">Routing</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  {% endif %}
+
+  <!-- Testing Section -->
+  {% if page.url contains '/testing/' %}
+    <div class="nav-section">
+      <h3 class="nav-section-title">🧪 Testing</h3>
+      <ul class="nav-list">
+        <li class="nav-item">
+          <a href="{{ '/testing/' | relative_url }}" class="nav-link {% if page.url == '/testing/' %}active{% endif %}">
+            Overview
+          </a>
+        </li>
+        
+        <!-- Testing Types -->
+        <li class="nav-group">
+          <span class="nav-group-title">📝 Test Types</span>
+          <ul class="nav-sublist">
+            <li><a href="{{ '/testing/unit-testing/' | relative_url }}" class="nav-link {% if page.url contains 'unit-testing' %}active{% endif %}">Unit Testing</a></li>
+            <li><a href="{{ '/testing/e2e-testing/' | relative_url }}" class="nav-link {% if page.url contains 'e2e-testing' %}active{% endif %}">E2E Testing</a></li>
+            <li><a href="{{ '/testing/bdd-methodology/' | relative_url }}" class="nav-link {% if page.url contains 'bdd-methodology' %}active{% endif %}">BDD Methodology</a></li>
+          </ul>
+        </li>
+        
+        <!-- Testing Tools -->
+        <li class="nav-group">
+          <span class="nav-group-title">🛠️ Tools & Reports</span>
+          <ul class="nav-sublist">
+            <li><a href="{{ '/testing/coverage/' | relative_url }}" class="nav-link {% if page.url contains 'coverage' %}active{% endif %}">Coverage</a></li>
+            <li><a href="{{ '/testing/allure-reporting/' | relative_url }}" class="nav-link {% if page.url contains 'allure-reporting' %}active{% endif %}">Allure Reporting</a></li>
+            <li><a href="{{ '/testing/ci-integration/' | relative_url }}" class="nav-link {% if page.url contains 'ci-integration' %}active{% endif %}">CI Integration</a></li>
+            <li><a href="{{ '/testing/ci-optimization/' | relative_url }}" class="nav-link {% if page.url contains 'ci-optimization' %}active{% endif %}">CI Optimization</a></li>
+          </ul>
+        </li>
+        
+        <!-- Advanced Topics -->
+        <li class="nav-group">
+          <span class="nav-group-title">🔬 Advanced</span>
+          <ul class="nav-sublist">
+            <li><a href="{{ '/testing/waituntil-analysis/' | relative_url }}" class="nav-link {% if page.url contains 'waituntil-analysis' %}active{% endif %}">WaitUntil Analysis</a></li>
+            <li><a href="{{ '/testing/modular-feature-structure/' | relative_url }}" class="nav-link {% if page.url contains 'modular-feature' %}active{% endif %}">Feature Structure</a></li>
+            <li><a href="{{ '/testing/autowait-implementation-plan/' | relative_url }}" class="nav-link {% if page.url contains 'autowait' %}active{% endif %}">AutoWait Plan</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  {% endif %}
+
+  <!-- Tools Section -->
+  {% if page.url contains '/tools/' %}
+    <div class="nav-section">
+      <h3 class="nav-section-title">🛠️ Tools</h3>
+      <ul class="nav-list">
+        <li class="nav-item">
+          <a href="{{ '/tools/' | relative_url }}" class="nav-link {% if page.url == '/tools/' %}active{% endif %}">
+            Overview
+          </a>
+        </li>
+        
+        <!-- Individual Tools -->
+        {% for tool in site.tools %}
+          <li class="nav-group">
+            <span class="nav-group-title">{{ tool[1].icon }} {{ tool[1].name }}</span>
+            <ul class="nav-sublist">
+              <li><a href="{{ tool[1].path | relative_url }}" class="nav-link {% if page.url contains tool[0] %}active{% endif %}">Documentation</a></li>
+              {% for branch in tool[1].branches %}
+                <li>
+                  <a href="{{ branch.url }}" target="_blank" class="nav-link external">
+                    {{ branch.name | capitalize }} 
+                    <i class="fas fa-external-link-alt"></i>
+                  </a>
+                </li>
+              {% endfor %}
+            </ul>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+</nav>
+
+<!-- Quick Links -->
+<div class="sidebar-footer">
+  <h4>🔗 Quick Links</h4>
+  <div class="quick-links">
+    <a href="https://github.com/{{ site.repository }}" target="_blank" class="quick-link">
+      <i class="fab fa-github"></i> Repository
+    </a>
+    <a href="https://communitystream-io.github.io/flock/" target="_blank" class="quick-link">
+      <i class="fas fa-chart-bar"></i> Allure Reports
+    </a>
+    <a href="https://codecov.io/github/{{ site.repository }}" target="_blank" class="quick-link">
+      <i class="fas fa-chart-line"></i> Coverage
+    </a>
+  </div>
+</div>

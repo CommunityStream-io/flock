@@ -1,0 +1,158 @@
+---
+layout: default
+---
+
+<div class="tool-header">
+  <div class="tool-info">
+    {% if page.icon %}
+      <span class="tool-icon">{{ page.icon }}</span>
+    {% endif %}
+    <div>
+      <h1 class="tool-title">{{ page.title | default: page.name }}</h1>
+      {% if page.description %}
+        <p class="tool-description">{{ page.description }}</p>
+      {% endif %}
+    </div>
+  </div>
+  
+  <!-- Branch/Environment Selector -->
+  {% if page.tool_config %}
+    {% assign tool_config = site.tools[page.tool_config] %}
+    {% if tool_config.branches %}
+      <div class="branch-selector">
+        <label for="branch-select">Environment:</label>
+        <select id="branch-select" onchange="switchBranch(this.value)">
+          {% for branch in tool_config.branches %}
+            <option value="{{ branch.url }}" {% if branch.name == 'main' %}selected{% endif %}>
+              {{ branch.name | capitalize }}
+            </option>
+          {% endfor %}
+        </select>
+        <button onclick="openCurrentBranch()" class="btn btn-primary">
+          <i class="fas fa-external-link-alt"></i> Open Tool
+        </button>
+      </div>
+    {% endif %}
+  {% endif %}
+</div>
+
+<!-- Tool Status Dashboard -->
+{% if page.show_status != false %}
+  <div class="tool-status">
+    <div class="status-grid">
+      <!-- Allure Status -->
+      {% if page.tool_config == 'allure' or page.title contains 'Allure' %}
+        <div class="status-card">
+          <h3>📊 Test Reports</h3>
+          <div class="status-badges">
+            <img src="https://img.shields.io/badge/E2E%20Tests-Live-green?style=flat-square&logo=allure&logoColor=white" alt="E2E Test Status">
+            <a href="https://communitystream-io.github.io/flock/" target="_blank" class="status-link">View Reports</a>
+          </div>
+        </div>
+      {% endif %}
+      
+      <!-- Badge Status -->
+      {% if page.tool_config == 'badges' or page.title contains 'Badge' %}
+        <div class="status-card">
+          <h3>🏆 Test Badges</h3>
+          <div class="status-badges">
+            <img src="https://img.shields.io/badge/E2E%20Tests-94%25%20(18/19)-green?style=flat-square&logo=allure&logoColor=white" alt="Current Test Badge">
+            <img src="https://codecov.io/github/CommunityStream-io/flock/graph/badge.svg?token=Gvjk9DnKQb" alt="Coverage Badge">
+          </div>
+        </div>
+      {% endif %}
+      
+      <!-- Coverage Status -->
+      {% if page.tool_config == 'coverage' or page.title contains 'Coverage' %}
+        <div class="status-card">
+          <h3>📈 Code Coverage</h3>
+          <div class="status-badges">
+            <img src="https://codecov.io/github/CommunityStream-io/flock/graph/badge.svg?token=Gvjk9DnKQb" alt="Code Coverage">
+            <a href="https://codecov.io/github/CommunityStream-io/flock" target="_blank" class="status-link">View Coverage</a>
+          </div>
+        </div>
+      {% endif %}
+      
+      <!-- Build Status -->
+      <div class="status-card">
+        <h3>🏗️ Build Status</h3>
+        <div class="status-badges">
+          <img src="https://github.com/CommunityStream-io/flock/actions/workflows/ci.yml/badge.svg" alt="Build Status">
+          <a href="https://github.com/CommunityStream-io/flock/actions" target="_blank" class="status-link">View Actions</a>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endif %}
+
+<!-- Tool Content -->
+<div class="tool-content">
+  {{ content }}
+</div>
+
+<!-- Multi-Branch Tool Integration -->
+{% if page.tool_config %}
+  {% assign tool_config = site.tools[page.tool_config] %}
+  <div class="tool-integration">
+    <h2>🌿 Branch-Specific Access</h2>
+    <div class="branch-grid">
+      {% for branch in tool_config.branches %}
+        <div class="branch-card">
+          <h3>{{ branch.name | capitalize }}</h3>
+          <p>{{ tool_config.description }}</p>
+          <div class="branch-actions">
+            <a href="{{ branch.url }}" target="_blank" class="btn btn-primary">
+              <i class="fas fa-external-link-alt"></i> 
+              Open {{ tool_config.name }}
+            </a>
+            {% if branch.name == 'main' %}
+              <span class="branch-badge production">Production</span>
+            {% elsif branch.name == 'develop' %}
+              <span class="branch-badge development">Development</span>
+            {% elsif branch.name == 'staging' %}
+              <span class="branch-badge staging">Staging</span>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endif %}
+
+<!-- Tool Documentation Links -->
+{% if page.related_docs %}
+  <div class="related-docs">
+    <h2>📚 Related Documentation</h2>
+    <div class="docs-grid">
+      {% for doc in page.related_docs %}
+        <a href="{{ doc.url | relative_url }}" class="doc-card">
+          {% if doc.icon %}<span class="doc-icon">{{ doc.icon }}</span>{% endif %}
+          <h3>{{ doc.title }}</h3>
+          <p>{{ doc.description }}</p>
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+{% endif %}
+
+<script>
+function switchBranch(url) {
+  // Store the selected branch for consistency
+  localStorage.setItem('selectedBranch', url);
+}
+
+function openCurrentBranch() {
+  const select = document.getElementById('branch-select');
+  const url = select.value;
+  window.open(url, '_blank');
+}
+
+// Restore previous branch selection
+document.addEventListener('DOMContentLoaded', function() {
+  const select = document.getElementById('branch-select');
+  const savedBranch = localStorage.getItem('selectedBranch');
+  if (select && savedBranch) {
+    select.value = savedBranch;
+  }
+});
+</script>

@@ -1,0 +1,57 @@
+<!-- Breadcrumb Navigation -->
+<ol class="breadcrumb-list">
+  <li class="breadcrumb-item">
+    <a href="{{ '/' | relative_url }}">
+      <i class="fas fa-home"></i> Home
+    </a>
+  </li>
+  
+  {% assign url_parts = page.url | split: '/' %}
+  {% assign breadcrumb_url = '' %}
+  
+  {% for part in url_parts %}
+    {% if part != '' and part != 'index.html' %}
+      {% assign breadcrumb_url = breadcrumb_url | append: '/' | append: part %}
+      {% assign part_title = part | replace: '-', ' ' | capitalize %}
+      
+      <!-- Special cases for better breadcrumb names -->
+      {% if part == 'flock-mirage' %}
+        {% assign part_title = '🎭 Mirage' %}
+      {% elsif part == 'flock-murmur' %}
+        {% assign part_title = '🌊 Murmur' %}
+      {% elsif part == 'flock-native' %}
+        {% assign part_title = '🦅 Native' %}
+      {% elsif part == 'architecture' %}
+        {% assign part_title = '🏗️ Architecture' %}
+      {% elsif part == 'testing' %}
+        {% assign part_title = '🧪 Testing' %}
+      {% elsif part == 'tools' %}
+        {% assign part_title = '🛠️ Tools' %}
+      {% elsif part == 'shared' %}
+        {% assign part_title = '🧩 Shared' %}
+      {% elsif part == 'unit-testing' %}
+        {% assign part_title = 'Unit Testing' %}
+      {% elsif part == 'e2e-testing' %}
+        {% assign part_title = 'E2E Testing' %}
+      {% elsif part == 'bdd-methodology' %}
+        {% assign part_title = 'BDD Methodology' %}
+      {% elsif part == 'allure-reporting' %}
+        {% assign part_title = '📊 Allure Reports' %}
+      {% elsif part == 'allure' %}
+        {% assign part_title = '📊 Allure' %}
+      {% elsif part == 'badges' %}
+        {% assign part_title = '🏆 Badges' %}
+      {% elsif part == 'coverage' %}
+        {% assign part_title = '📈 Coverage' %}
+      {% endif %}
+      
+      <li class="breadcrumb-item">
+        {% if forloop.last %}
+          <span class="breadcrumb-current">{{ part_title }}</span>
+        {% else %}
+          <a href="{{ breadcrumb_url | relative_url }}">{{ part_title }}</a>
+        {% endif %}
+      </li>
+    {% endif %}
+  {% endfor %}
+</ol>

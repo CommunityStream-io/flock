@@ -1,0 +1,101 @@
+<!-- Page Footer with Edit Links and Meta Info -->
+<div class="page-meta">
+  <div class="page-actions">
+    <!-- Edit on GitHub -->
+    {% if page.path %}
+      <a href="https://github.com/{{ site.repository }}/edit/main/{{ page.path }}" 
+         target="_blank" 
+         class="action-link edit-link"
+         title="Edit this page on GitHub">
+        <i class="fab fa-github"></i> Edit on GitHub
+      </a>
+    {% endif %}
+    
+    <!-- View Source -->
+    {% if page.path %}
+      <a href="https://github.com/{{ site.repository }}/blob/main/{{ page.path }}" 
+         target="_blank" 
+         class="action-link source-link"
+         title="View source on GitHub">
+        <i class="fas fa-code"></i> View Source
+      </a>
+    {% endif %}
+    
+    <!-- Print Page -->
+    <button onclick="window.print()" class="action-link print-link" title="Print this page">
+      <i class="fas fa-print"></i> Print
+    </button>
+  </div>
+  
+  <!-- Page Info -->
+  <div class="page-info">
+    {% if page.last_modified_at %}
+      <div class="page-date">
+        <i class="fas fa-clock"></i>
+        Last updated: {{ page.last_modified_at | date: "%B %d, %Y" }}
+      </div>
+    {% endif %}
+    
+    {% if page.author %}
+      <div class="page-author">
+        <i class="fas fa-user"></i>
+        Author: {{ page.author }}
+      </div>
+    {% endif %}
+    
+    {% if page.contributors %}
+      <div class="page-contributors">
+        <i class="fas fa-users"></i>
+        Contributors: {{ page.contributors | join: ', ' }}
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Tags -->
+{% if page.tags %}
+  <div class="page-tags">
+    <span class="tags-label"><i class="fas fa-tags"></i> Tags:</span>
+    {% for tag in page.tags %}
+      <span class="tag">{{ tag }}</span>
+    {% endfor %}
+  </div>
+{% endif %}
+
+<!-- Related Pages -->
+{% if page.related_pages %}
+  <div class="related-pages">
+    <h4><i class="fas fa-link"></i> Related Pages</h4>
+    <ul class="related-list">
+      {% for related in page.related_pages %}
+        <li>
+          <a href="{{ related.url | relative_url }}">
+            {% if related.icon %}<span class="related-icon">{{ related.icon }}</span>{% endif %}
+            {{ related.title }}
+          </a>
+          {% if related.description %}
+            <p class="related-description">{{ related.description }}</p>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endif %}
+
+<!-- Feedback -->
+<div class="page-feedback">
+  <h4><i class="fas fa-comment"></i> Feedback</h4>
+  <p>Help us improve this documentation:</p>
+  <div class="feedback-actions">
+    <a href="https://github.com/{{ site.repository }}/issues/new?title=Documentation%20feedback:%20{{ page.title | url_encode }}&body=Page:%20{{ site.url }}{{ site.baseurl }}{{ page.url }}%0A%0AFeedback:" 
+       target="_blank" 
+       class="btn btn-secondary">
+      <i class="fas fa-bug"></i> Report Issue
+    </a>
+    <a href="https://github.com/{{ site.repository }}/discussions" 
+       target="_blank" 
+       class="btn btn-secondary">
+      <i class="fas fa-comments"></i> Start Discussion
+    </a>
+  </div>
+</div>
