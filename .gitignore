@@ -54,4 +54,4 @@ allure-report-new/
 
 
 # Logs
-logs/
+logs/.env

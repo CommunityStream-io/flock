@@ -1,6 +1,19 @@
 version: '3.8'
 
 services:
+  # Cursor background agent with GitHub CLI for testing
+  cursor-agent:
+    build:
+      context: .
+      dockerfile: Dockerfile.background-agent
+    image: cursor-background-agent:latest
+    environment:
+      - GH_TOKEN=${GH_TOKEN}
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+    volumes:
+      - ./:/workspace
+    command: ["bash", "-lc", "gh auth status && sleep infinity"]
+
   # Base image for E2E testing
   e2e-base:
     build:
