@@ -1,7 +1,7 @@
 import { Before, After } from '@wdio/cucumber-framework';
 import { browser } from '@wdio/globals';
 import { bddLog } from './logger';
-import { timeouts, timeoutMessages } from './timeout-config';
+import { timeouts, timeoutMessages, timeoutOptions } from './timeout-config';
 
 // Global application state
 let applicationInitialized = false;
@@ -32,10 +32,7 @@ async function initializeApplication() {
             
             return hasContent;
         },
-        { 
-            timeout: timeouts.appLoad,
-            timeoutMsg: timeoutMessages.appLoad(process.env.CI === 'true')
-        }
+        timeoutOptions.appLoad
     );
     
     applicationInitialized = true;

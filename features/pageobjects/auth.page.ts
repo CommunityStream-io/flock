@@ -1,7 +1,7 @@
 import Page from './page';
 import StepLayoutPage from './step-layout.page';
 import { browser, $ } from '@wdio/globals';
-import { timeouts, timeoutMessages } from '../support/timeout-config';
+import { timeouts, timeoutMessages, timeoutOptions } from '../support/timeout-config';
 
 class AuthPage extends Page {
     // Form elements
@@ -75,7 +75,7 @@ class AuthPage extends Page {
                 const isFormValid = await this.isFormValid();
                 return isFormValid;
             },
-            { timeout: timeouts.uiInteraction, timeoutMsg: timeoutMessages.uiInteraction(process.env.CI === 'true') }
+            timeoutOptions.uiInteraction
         );
     }
 
@@ -91,7 +91,7 @@ class AuthPage extends Page {
                 const isFormValid = await this.isFormValid();
                 return isFormValid;
             },
-            { timeout: timeouts.uiInteraction, timeoutMsg: timeoutMessages.uiInteraction(process.env.CI === 'true') }
+            timeoutOptions.uiInteraction
         );
     }
 
@@ -111,7 +111,7 @@ class AuthPage extends Page {
                 const isFormValid = await this.isFormValid();
                 return isFormValid;
             },
-            { timeout: timeouts.uiInteraction, timeoutMsg: timeoutMessages.uiInteraction(process.env.CI === 'true') }
+            timeoutOptions.uiInteraction
         );
     }
 
@@ -126,7 +126,7 @@ class AuthPage extends Page {
                 const isFormValid = await this.isFormValid();
                 return isFormValid;
             },
-            { timeout: timeouts.uiInteraction, timeoutMsg: timeoutMessages.uiInteraction(process.env.CI === 'true') }
+            timeoutOptions.uiInteraction
         );
     }
 
@@ -170,7 +170,7 @@ class AuthPage extends Page {
                 const hasError = await this.formError.isDisplayed().catch(() => false);
                 return currentUrl.includes('/step/config') || hasError;
             },
-            { timeout: timeouts.auth, timeoutMsg: timeoutMessages.auth(process.env.CI === 'true') }
+            timeoutOptions.auth
         );
     }
 
@@ -181,7 +181,7 @@ class AuthPage extends Page {
                 const currentUrl = await browser.getUrl();
                 return currentUrl.includes('/step/config');
             },
-            { timeout: timeouts.navigation, timeoutMsg: timeoutMessages.navigation(process.env.CI === 'true') }
+            timeoutOptions.navigation
         );
     }
 

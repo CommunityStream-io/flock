@@ -1,5 +1,5 @@
 import Page from './page';
-import { timeouts, timeoutMessages } from '../support/timeout-config';
+import { timeouts, timeoutMessages, timeoutOptions } from '../support/timeout-config';
 
 class UploadStepPage extends Page {
     // Upload section elements
@@ -97,7 +97,7 @@ class UploadStepPage extends Page {
                 const value = await this.fileInput.getValue();
                 return value !== null && value !== undefined;
             },
-            { timeout: timeouts.fileProcessing, timeoutMsg: timeoutMessages.fileProcessing(process.env.CI === 'true') }
+            timeoutOptions.fileProcessing
         );
         console.log(`Simulated file selection: ${filename}`);
     }
