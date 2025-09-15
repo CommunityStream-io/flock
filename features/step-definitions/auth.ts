@@ -1,7 +1,7 @@
 import { Given, When, Then, After } from '@wdio/cucumber-framework';
 import { pages } from '../pageobjects';
 import { browser, $ } from '@wdio/globals';
-import { timeouts, timeoutMessages } from '../support/timeout-config';
+import { timeouts, timeoutMessages, timeoutOptions } from '../support/timeout-config';
 
 Given('I am on the auth step page', async () => {
     await pages.auth.open();
@@ -23,10 +23,7 @@ Given('I have navigated to the auth step', async () => {
             const isAuthFormVisible = await pages.auth.authForm.isDisplayed();
             return isOnAuthStep && isAuthFormVisible;
         },
-        { 
-            timeout: timeouts.navigation,
-            timeoutMsg: timeoutMessages.navigation(process.env.CI === 'true')
-        }
+        timeoutOptions.navigation
     );
 });
 
@@ -209,10 +206,7 @@ When('I leave the password field empty', async () => {
             const isFormValid = await pages.auth.isFormValid();
             return isFormValid;
         },
-        { 
-            timeout: timeouts.uiInteraction,
-            timeoutMsg: timeoutMessages.uiInteraction(process.env.CI === 'true')
-        }
+        timeoutOptions.uiInteraction
     );
 });
 
@@ -282,10 +276,7 @@ Given('I have entered valid credentials', async () => {
             const hasPassword = await pages.auth.passwordField.getValue();
             return isFormValid && hasUsername && hasPassword;
         },
-        { 
-            timeout: timeouts.credentialEntry,
-            timeoutMsg: timeoutMessages.credentialEntry(process.env.CI === 'true')
-        }
+        timeoutOptions.credentialEntry
     );
     
     console.log('✅ BDD: Valid credentials entered and form validated successfully');
@@ -304,7 +295,7 @@ Then('the authentication script should run in the background', async () => {
             const currentUrl = await browser.getUrl();
             return currentUrl.includes('/step/config');
         },
-        { timeout: timeouts.authNavigation, timeoutMsg: timeoutMessages.authNavigation(process.env.CI === 'true') }
+        timeoutOptions.authNavigation
     );
 });
 
@@ -314,7 +305,7 @@ Then('I should be navigated to the config step', async () => {
             const currentUrl = await browser.getUrl();
             return currentUrl.includes('/step/config');
         },
-        { timeout: timeouts.navigation, timeoutMsg: timeoutMessages.navigation(process.env.CI === 'true') }
+            timeoutOptions.navigation
     );
 });
 
@@ -346,10 +337,7 @@ Given('I have entered invalid credentials', async () => {
             const isFormValid = await pages.auth.isFormValid();
             return isFormValid;
         },
-        { 
-            timeout: timeouts.uiInteraction,
-            timeoutMsg: timeoutMessages.uiInteraction(process.env.CI === 'true')
-        }
+        timeoutOptions.uiInteraction
     );
 });
 
