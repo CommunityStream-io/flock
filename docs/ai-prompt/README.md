@@ -18,6 +18,16 @@ Complete guide for optimizing Docker build process for E2E testing:
 - Security-first approach with dynamic .npmrc configuration
 - Maintain compatibility with existing docker-compose.yml
 
+### [GitHub CLI Setup for Cursor Background Agents](./github-cli-setup.md)
+Complete setup guide for enabling GitHub CLI access in Cursor background agents:
+- Pre-check existing access configuration before making changes
+- GitHub CLI installation and authentication
+- Environment variable configuration
+- Cursor integration methods
+- Security best practices and token management
+- Comprehensive troubleshooting guide
+- Verification steps and success criteria
+
 ## Usage
 
 These prompts are designed to be given to AI agents (like ChatGPT, Claude, etc.) to help with specific debugging tasks. Each prompt includes:
