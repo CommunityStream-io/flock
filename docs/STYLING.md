@@ -1,3 +1,24 @@
+---
+layout: doc
+title: "🎨 Styling Guide"
+description: "The flock's beautiful plumage - comprehensive Material Design 3 theming system that ensures visual consistency across all applications"
+permalink: /styling/
+nav_order: 5
+icon: "🎨"
+tags: ["styling", "theming", "material-design", "css", "ui"]
+related_pages:
+  - title: "🏗️ Architecture Overview"
+    url: "/architecture/"
+    description: "Understanding the overall system architecture"
+  - title: "🧩 Shared Components"
+    url: "/docs/architecture/shared/OVERVIEW/"
+    description: "Reusable UI components with consistent styling"
+  - title: "🚀 Development Guide"
+    url: "/development/"
+    description: "Development workflow and component creation"
+toc: true
+---
+
 # 🎨 Flock Styling - The Flock's Beautiful Plumage
 
 > *"Every bird in our flock shares the same beautiful plumage. Our Material Design system ensures that whether you're soaring with the eagle or dancing with the murmuration bird, you'll always look your best."*

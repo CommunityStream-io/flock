@@ -1,3 +1,24 @@
+---
+layout: doc
+title: "🏗️ Architecture Overview"
+description: "The bird's eye view of our flock's nest - comprehensive architectural design and patterns that keep our applications flying in formation"
+permalink: /architecture/
+nav_order: 2
+icon: "🏗️"
+tags: ["architecture", "design", "patterns", "angular", "structure"]
+related_pages:
+  - title: "🚀 Development Guide"
+    url: "/development/"
+    description: "Getting started with development workflow and setup"
+  - title: "🧩 Shared Components"
+    url: "/docs/architecture/shared/OVERVIEW/"
+    description: "Common components used across all flock applications"
+  - title: "🎨 Theming System"
+    url: "/docs/STYLING/"
+    description: "Material Design 3 theming and styling approach"
+toc: true
+---
+
 # 🦅 Flock Architecture - The Bird's Eye View
 
 > *"From high above, our flock soars in perfect formation. Each bird has its own flight pattern, but we all share the same nest of components and services."*

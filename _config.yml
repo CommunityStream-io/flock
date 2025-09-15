@@ -44,8 +44,33 @@ collections:
     output: true
     permalink: /tools/:name/
 
+# Include existing docs directory
+include:
+  - docs/
+
 # Default layouts and settings
 defaults:
+  # Existing docs directory integration
+  - scope:
+      path: "docs"
+      type: "pages"
+    values:
+      layout: "doc"
+      nav: true
+  - scope:
+      path: "docs/architecture"
+      type: "pages"  
+    values:
+      layout: "doc"
+      parent: "architecture"
+      nav: true
+  - scope:
+      path: "docs/testing"
+      type: "pages"
+    values:
+      layout: "doc"
+      parent: "testing"
+      nav: true
   - scope:
       path: ""
       type: "pages"
