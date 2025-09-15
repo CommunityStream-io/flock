@@ -54,7 +54,8 @@ Feature: Bluesky Authentication - User credential validation and authentication
 
   @bluesky-auth @authentication @splash-screen-test
   Scenario: Valid credentials trigger authentication splash screen
-    Given I am on the auth step page
+    Given I have set up valid file upload state
+    And I am on the auth step page
     And I have entered a valid username
     And I have entered a valid password
     When I click the "Next" button

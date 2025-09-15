@@ -1,0 +1,9 @@
+# NPM configuration template for private packages
+# Copy this to .npmrc and set PACKAGE_TOKEN environment variable
+
+# Default registry
+registry=https://registry.npmjs.org/
+
+# GitHub Packages configuration for @straiforos scope
+@straiforos:registry=https://npm.pkg.github.com/
+//npm.pkg.github.com/:_authToken=${PACKAGE_TOKEN}

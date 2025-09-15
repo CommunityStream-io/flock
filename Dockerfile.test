@@ -40,7 +40,10 @@ ENV PACKAGE_TOKEN=$PACKAGE_TOKEN
 
 # Copy only package files first for optimal layer caching
 COPY package*.json ./
-COPY .npmrc ./
+
+# Copy .npmrc template and create .npmrc if needed
+COPY .npmrc.template ./
+RUN if [ ! -f .npmrc ]; then cp .npmrc.template .npmrc; fi
 
 # Install dependencies with npm ci for faster, reliable installs
 # Use --legacy-peer-deps to handle dependency conflicts
@@ -56,7 +59,10 @@ ENV PACKAGE_TOKEN=$PACKAGE_TOKEN
 
 # Copy package files and npmrc
 COPY package*.json ./
-COPY .npmrc ./
+
+# Copy .npmrc template and create .npmrc if needed
+COPY .npmrc.template ./
+RUN if [ ! -f .npmrc ]; then cp .npmrc.template .npmrc; fi
 
 # Install all dependencies (including devDependencies for build)
 # Use --legacy-peer-deps to handle dependency conflicts
@@ -94,7 +100,9 @@ COPY features/ ./features/
 COPY wdio.conf.ts ./
 COPY tsconfig.e2e.json ./
 COPY package.json ./
-COPY .npmrc ./
+
+# Copy .npmrc only if it exists (for CI/CD environments)
+COPY .npmrc* ./
 
 # Copy only the minimal source code needed for Angular dev server
 COPY projects/flock-mirage/src/ ./projects/flock-mirage/src/

@@ -81,9 +81,38 @@ export async function afterScenario(world: any, context: any, result: any) {
       const hasFailures = result.steps.some((step: any) => step.status === 'failed');
       status = hasFailures ? 'failed' : 'passed';
     }
-    // Default to passed if we have a result object but no clear failure indicators
+    // Check for Cucumber-specific result structure
+    else if (result.result && typeof result.result === 'object') {
+      // Cucumber often wraps the actual result in a 'result' property
+      const actualResult = result.result;
+      if (actualResult.status) {
+        switch (actualResult.status.toUpperCase()) {
+          case 'PASSED':
+            status = 'passed';
+            break;
+          case 'FAILED':
+            status = 'failed';
+            break;
+          case 'SKIPPED':
+          case 'PENDING':
+            status = 'skipped';
+            break;
+          default:
+            status = 'skipped';
+        }
+      } else if (typeof actualResult.passed === 'boolean') {
+        status = actualResult.passed ? 'passed' : 'failed';
+      } else if (actualResult.error) {
+        status = 'failed';
+      } else {
+        // If we can't determine status from Cucumber result, default to failed for strict mode
+        status = 'failed';
+      }
+    }
+    // Default to failed if we have a result object but no clear success indicators
+    // This ensures strict mode works properly
     else {
-      status = 'passed';
+      status = 'failed';
     }
   }
   

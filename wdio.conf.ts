@@ -191,7 +191,7 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
     failFast: false,
     snippets: true,
     source: true,
-    strict: false, // Allow skipped steps without failing the entire scenario
+    strict: true, // Fail scenarios when steps fail or are undefined
     tags: process.env.TEST_TAGS || '',
     timeout: timeouts.global, // Global timeout for step execution (25s CI, 20s local)
     ignoreUndefinedDefinitions: true,

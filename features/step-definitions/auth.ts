@@ -2,34 +2,15 @@ import { Given, When, Then, After } from '@wdio/cucumber-framework';
 import { pages } from '../pageobjects';
 import { browser, $ } from '@wdio/globals';
 import { timeouts, timeoutMessages } from '../support/timeout-config';
+import { setupValidFileUpload, setupAuthState, setupSplashScreenTestState } from '../support/test-setup';
+
+Given('I have set up valid file upload state', async () => {
+    await setupValidFileUpload();
+});
 
 Given('I am on the auth step page', async () => {
-    // Navigate to home first, then to auth to bypass guards
-    await browser.url('/');
-    
-    // Wait for app to load
-    await browser.waitUntil(
-        async () => {
-            const readyState = await browser.execute(() => document.readyState);
-            return readyState === 'complete';
-        },
-        { timeout: 10000, timeoutMsg: 'App did not load' }
-    );
-    
-    // Navigate to auth step
-    await browser.url('/step/auth');
-    
-    // Wait for the auth form to be visible
-    await browser.waitUntil(
-        async () => {
-            const isAuthFormVisible = await pages.auth.authForm.isDisplayed();
-            return isAuthFormVisible;
-        },
-        { 
-            timeout: 10000,
-            timeoutMsg: 'Auth form did not appear within timeout'
-        }
-    );
+    // Use the proper setup that bypasses guards
+    await setupAuthState();
 });
 
 Given('I am on the auth step page without valid credentials', async () => {

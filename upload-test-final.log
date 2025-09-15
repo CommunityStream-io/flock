@@ -1,0 +1,132 @@
+
+Execution of 1 workers started at 2025-09-15T02:20:32.885Z
+
+[0-0] RUNNING in chrome - file:///C:/Users/trifo/Documents/flock/features/upload/upload.feature
+[0-0] {"level":"info","time":1757902838223,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","specCount":1,"capabilities":{"maxInstances":1,"browserName":"chrome","acceptInsecureCerts":true,"goog:chromeOptions":{"args":["--enable-chrome-browser-cloud-management","--disable-web-security","--disable-features=VizDisplayCompositor","--no-sandbox","--disable-dev-shm-usage","--disable-gpu","--window-size=1920,1080","--disable-background-timer-throttling","--disable-backgrounding-occluded-windows","--disable-renderer-backgrounding","--disable-extensions","--disable-plugins","--disable-default-apps","--disable-sync","--disable-translate","--disable-background-networking","--disable-client-side-phishing-detection","--disable-component-extensions-with-background-pages","--disable-hang-monitor","--disable-prompt-on-repost","--disable-domain-reliability","--disable-features=TranslateUI","--disable-ipc-flooding-protection","--no-first-run","--no-default-browser-check","--disable-logging","--disable-permissions-api","--disable-popup-blocking","--disable-prompt-on-repost","--disable-web-resources","--disable-xss-auditor","--disable-features=VizDisplayCompositor","--force-color-profile=srgb","--memory-pressure-off","--max_old_space_size=4096","--log-level=3","--silent","--disable-gpu-logging"],"prefs":{"logging":{"level":"OFF"}}}},"type":"test-suite-start","msg":"Starting test suite with 1 spec files"}
+[0-0] {"level":"info","time":1757902838373,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","featureName":"File Upload and Validation - Instagram Archive Processing","featureUri":"C:\\Users\\trifo\\Documents\\flock\\features\\upload\\upload.feature","type":"feature-start","msg":"Starting feature: File Upload and Validation - Instagram Archive Processing"}
+[0-0] {"level":"info","time":1757902838442,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","scenarioName":"Upload interface displays correctly","scenarioId":"f71ad247-2db9-47c3-adb8-b16fbca4ed3b","type":"scenario-start","msg":"Starting scenario: Upload interface displays correctly"}
+[0-0] {"level":"info","time":1757902838442,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","type":"timeout-telemetry-start","msg":"Timeout telemetry collection started"}
+[0-0] {"level":"info","time":1757902838442,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","type":"performance-monitoring-start","msg":"Performance monitoring started"}
+[0-0] {"level":"info","time":1757902838442,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","testId":"f71ad247-2db9-47c3-adb8-b16fbca4ed3b","testName":"Upload interface displays correctly","type":"metrics-start","msg":"Started metrics collection for test: Upload interface displays correctly"}
+[0-0] {"level":"error","time":1757902839191,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: And  I navigate to the upload step"}
+[0-0] {"level":"error","time":1757902839304,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: Then  I should see the upload section"}
+[0-0] {"level":"error","time":1757902839358,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: And  I should see the heading \"Upload Your Files\""}
+[0-0] {"level":"error","time":1757902839395,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: And  I should see the description \"Upload instagram archive\""}
+[0-0] {"level":"error","time":1757902839493,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: And  I should see a \"Choose Files\" button with upload icon"}
+[0-0] {"level":"error","time":1757902839526,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: And  the file input should accept \".zip\" files"}
+[0-0] {"level":"info","time":1757902839533,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","scenarioName":"Upload interface displays correctly","status":"passed","resultType":"object","resultKeys":["attach","log","link","parameters"],"type":"scenario-complete","msg":"Scenario completed: Upload interface displays correctly (passed)"}
+[0-0] {"level":"info","time":1757902839533,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","type":"timeout-telemetry-stop","totalEvents":0,"msg":"Timeout telemetry collection stopped"}
+[0-0] {"level":"info","time":1757902839533,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","type":"performance-monitoring-stop","msg":"Performance monitoring stopped"}
+[0-0] {"level":"info","time":1757902839534,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","testId":"f71ad247-2db9-47c3-adb8-b16fbca4ed3b","testName":"Upload interface displays correctly","status":"passed","duration":1091,"type":"metrics-complete","msg":"Completed metrics collection for test: Upload interface displays correctly (passed)"}
+[0-0] {"level":"info","time":1757902839534,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","testId":"f71ad247-2db9-47c3-adb8-b16fbca4ed3b","duration":1091,"navigations":0,"interactions":0,"errors":0,"type":"test-metrics-summary","msg":"Test Metrics Summary"}
+[0-0] {"level":"info","time":1757902839543,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","scenarioName":"Valid file selection displays correctly","scenarioId":"6ec9cb0e-8060-4343-b6dd-63d8400939f3","type":"scenario-start","msg":"Starting scenario: Valid file selection displays correctly"}
+[0-0] {"level":"info","time":1757902839543,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","type":"timeout-telemetry-start","msg":"Timeout telemetry collection started"}
+[0-0] {"level":"info","time":1757902839544,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","type":"performance-monitoring-start","msg":"Performance monitoring started"}
+[0-0] {"level":"info","time":1757902839544,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","testId":"6ec9cb0e-8060-4343-b6dd-63d8400939f3","testName":"Valid file selection displays correctly","type":"metrics-start","msg":"Started metrics collection for test: Valid file selection displays correctly"}
+[0-0] {"level":"error","time":1757902839742,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: And  I navigate to the upload step"}
+[0-0] Simulated file selection: instagram-export.zip
+[0-0] {"level":"error","time":1757902839936,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: When  I select a valid Instagram archive file \"instagram-export.zip\""}
+[0-0] {"level":"error","time":1757902839975,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: Then  the file should be selected in the file input"}
+[0-0] {"level":"error","time":1757902840014,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: And  I should see the selected files section"}
+[0-0] {"level":"error","time":1757902840078,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: And  I should see \"Selected Files:\" heading"}
+[0-0] {"level":"error","time":1757902840108,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: And  I should see \"instagram-export.zip\" in the file list"}
+[0-0] {"level":"error","time":1757902840165,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: And  I should see a delete button for the selected file"}
+[0-0] {"level":"error","time":1757902840185,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: And  the \"Choose Files\" button should be hidden"}
+[0-0] {"level":"info","time":1757902840199,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","scenarioName":"Valid file selection displays correctly","status":"passed","resultType":"object","resultKeys":["attach","log","link","parameters"],"type":"scenario-complete","msg":"Scenario completed: Valid file selection displays correctly (passed)"}
+[0-0] {"level":"info","time":1757902840199,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","type":"timeout-telemetry-stop","totalEvents":0,"msg":"Timeout telemetry collection stopped"}
+[0-0] {"level":"info","time":1757902840199,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","type":"performance-monitoring-stop","msg":"Performance monitoring stopped"}
+[0-0] {"level":"info","time":1757902840199,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","testId":"6ec9cb0e-8060-4343-b6dd-63d8400939f3","testName":"Valid file selection displays correctly","status":"passed","duration":655,"type":"metrics-complete","msg":"Completed metrics collection for test: Valid file selection displays correctly (passed)"}
+[0-0] {"level":"info","time":1757902840199,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","testId":"6ec9cb0e-8060-4343-b6dd-63d8400939f3","duration":655,"navigations":0,"interactions":0,"errors":0,"type":"test-metrics-summary","msg":"Test Metrics Summary"}
+[0-0] {"level":"info","time":1757902840208,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","scenarioName":"Form state updates correctly with file operations","scenarioId":"576882ea-3ad6-45cf-8520-2a11419262c1","type":"scenario-start","msg":"Starting scenario: Form state updates correctly with file operations"}
+[0-0] {"level":"info","time":1757902840208,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","type":"timeout-telemetry-start","msg":"Timeout telemetry collection started"}
+[0-0] {"level":"info","time":1757902840208,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","type":"performance-monitoring-start","msg":"Performance monitoring started"}
+[0-0] {"level":"info","time":1757902840208,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","testId":"576882ea-3ad6-45cf-8520-2a11419262c1","testName":"Form state updates correctly with file operations","type":"metrics-start","msg":"Started metrics collection for test: Form state updates correctly with file operations"}
+[0-0] {"level":"error","time":1757902840418,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: And  I navigate to the upload step"}
+[0-0] {"level":"error","time":1757902840638,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: When  I try to proceed without a file"}
+[0-0] ✅ BDD: Error message displayed: "Please upload a valid archive
+[0-0] Close"
+[0-0] {"level":"error","time":1757902840762,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: Then  I should see an error message"}
+[0-0] Simulated file selection: archive.zip
+[0-0] {"level":"error","time":1757902841986,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: When  I select a valid Instagram archive file \"archive.zip\""}
+[0-0] {"level":"error","time":1757902842511,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: Then  I should be able to proceed to the next step"}
+[0-0] {"level":"info","time":1757902842518,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","scenarioName":"Form state updates correctly with file operations","status":"passed","resultType":"object","resultKeys":["attach","log","link","parameters"],"type":"scenario-complete","msg":"Scenario completed: Form state updates correctly with file operations (passed)"}
+[0-0] {"level":"info","time":1757902842518,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","type":"timeout-telemetry-stop","totalEvents":0,"msg":"Timeout telemetry collection stopped"}
+[0-0] {"level":"info","time":1757902842518,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","type":"performance-monitoring-stop","msg":"Performance monitoring stopped"}
+[0-0] {"level":"info","time":1757902842519,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","testId":"576882ea-3ad6-45cf-8520-2a11419262c1","testName":"Form state updates correctly with file operations","status":"passed","duration":2310,"type":"metrics-complete","msg":"Completed metrics collection for test: Form state updates correctly with file operations (passed)"}
+[0-0] {"level":"info","time":1757902842519,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","testId":"576882ea-3ad6-45cf-8520-2a11419262c1","duration":2310,"navigations":0,"interactions":0,"errors":0,"type":"test-metrics-summary","msg":"Test Metrics Summary"}
+[0-0] {"level":"info","time":1757902842525,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","scenarioName":"Navigation back to upload step resets splash screen message","scenarioId":"468f2cdd-de70-4c5b-94b1-b07f50fcb27a","type":"scenario-start","msg":"Starting scenario: Navigation back to upload step resets splash screen message"}
+[0-0] {"level":"info","time":1757902842525,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","type":"timeout-telemetry-start","msg":"Timeout telemetry collection started"}
+[0-0] {"level":"info","time":1757902842525,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","type":"performance-monitoring-start","msg":"Performance monitoring started"}
+[0-0] {"level":"info","time":1757902842525,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","testId":"468f2cdd-de70-4c5b-94b1-b07f50fcb27a","testName":"Navigation back to upload step resets splash screen message","type":"metrics-start","msg":"Started metrics collection for test: Navigation back to upload step resets splash screen message"}
+[0-0] {"level":"error","time":1757902843382,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: And  I navigate to the upload step"}
+[0-0] Simulated file selection: test-archive.zip
+[0-0] {"level":"error","time":1757902843571,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: Given  I have selected a valid Instagram archive file \"test-archive.zip\""}
+[0-0] {"level":"error","time":1757902844057,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: And  I have navigated to the auth step"}
+[0-0] {"level":"error","time":1757902844462,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: When  I navigate back to the upload step"}
+[0-0] {"level":"error","time":1757902844561,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: Then  the splash screen message should be \"*flap* *flap* *flap*\""}
+[0-0] {"level":"info","time":1757902844567,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","scenarioName":"Navigation back to upload step resets splash screen message","status":"passed","resultType":"object","resultKeys":["attach","log","link","parameters"],"type":"scenario-complete","msg":"Scenario completed: Navigation back to upload step resets splash screen message (passed)"}
+[0-0] {"level":"info","time":1757902844568,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","type":"timeout-telemetry-stop","totalEvents":0,"msg":"Timeout telemetry collection stopped"}
+[0-0] {"level":"info","time":1757902844568,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","type":"performance-monitoring-stop","msg":"Performance monitoring stopped"}
+[0-0] {"level":"info","time":1757902844568,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","testId":"468f2cdd-de70-4c5b-94b1-b07f50fcb27a","testName":"Navigation back to upload step resets splash screen message","status":"passed","duration":2043,"type":"metrics-complete","msg":"Completed metrics collection for test: Navigation back to upload step resets splash screen message (passed)"}
+[0-0] {"level":"info","time":1757902844568,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","testId":"468f2cdd-de70-4c5b-94b1-b07f50fcb27a","duration":2043,"navigations":0,"interactions":0,"errors":0,"type":"test-metrics-summary","msg":"Test Metrics Summary"}
+[0-0] {"level":"info","time":1757902844577,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","featureName":"File Upload and Validation - Instagram Archive Processing","featureUri":"C:\\Users\\trifo\\Documents\\flock\\features\\upload\\upload.feature","type":"feature-complete","msg":"Completed feature: File Upload and Validation - Instagram Archive Processing"}
+[0-0] {"level":"info","time":1757902844583,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","exitCode":0,"specCount":1,"type":"test-suite-complete","msg":"Test suite completed with exit code: 0"}
+[0-0] {"level":"info","time":1757902844584,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","type":"test-suite-summary","msg":"📊 Test Metrics Summary Report\n===============================\nTotal Tests: 4\n✅ Passed: 4 (100.0%)\n❌ Failed: 0 (0.0%)\n⏭️ Skipped: 0 (0.0%)\n\n⏱️ Performance Metrics\n----------------------\nTotal Duration: 6099ms (6.1s)\nAverage Test Duration: 1525ms\nAverage Navigation Time: 0ms\nAverage Wait Time: 0ms\n\n🚨 Error Summary\n----------------\nTotal Errors: 24\nTimeout Errors: 0\nElement Not Found: 0\nNavigation Errors: 0\nScript Errors: 0\nNetwork Errors: 0\nOther Errors: 24"}
+[0-0] {"level":"info","time":1757902844593,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","filename":"test-metrics-2025-09-15T02-20-44-584Z.json","filepath":"logs\\metrics\\test-metrics-2025-09-15T02-20-44-584Z.json","metricsCount":4,"type":"metrics-export","msg":"Metrics exported to logs\\metrics\\test-metrics-2025-09-15T02-20-44-584Z.json"}
+[0-0] {"level":"info","time":1757902844596,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","filename":"timeout-telemetry-2025-09-15T02-20-44-593Z.json","filepath":"logs\\metrics\\timeout-telemetry-2025-09-15T02-20-44-593Z.json","eventCount":0,"type":"timeout-telemetry-export","msg":"Timeout telemetry exported to logs\\metrics\\timeout-telemetry-2025-09-15T02-20-44-593Z.json"}
+[0-0] {"level":"info","time":1757902844596,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","metricsCount":4,"type":"metrics-collection-complete","msg":"Collected metrics for 4 tests"}
+[0-0] {"level":"info","time":1757902844596,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","type":"timeout-telemetry-summary","msg":"🔍 Timeout Telemetry Analysis Report\n=====================================\n\n📊 Summary\n----------\nTotal Timeout Events: 0\nOverall Timeout Rate: 0.00%\n\n🚨 Critical Issues\n------------------\nNo critical issues detected\n\n📈 Top Timeout Patterns\n-----------------------\n\n\n💡 Recommendations\n------------------\nNo specific recommendations at this time\n\n🌍 Environmental Factors\n------------------------\nShard Distribution: No shard data\n\nBrowser Distribution: No browser data\n\nTime Distribution: No time data"}
+[0-0] {"level":"info","time":1757902844596,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","slowestTests":[{"rank":1,"testName":"Form state updates correctly with file operations","duration":2310},{"rank":2,"testName":"Navigation back to upload step resets splash screen message","duration":2043},{"rank":3,"testName":"Upload interface displays correctly","duration":1091}],"type":"performance-slowest-tests","msg":"Slowest Tests Analysis"}
+[0-0] {"level":"info","time":1757902844596,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","errorProneTests":[{"rank":1,"testName":"Valid file selection displays correctly","totalErrors":8},{"rank":2,"testName":"Upload interface displays correctly","totalErrors":6},{"rank":3,"testName":"Form state updates correctly with file operations","totalErrors":5}],"type":"performance-error-prone-tests","msg":"Most Error-Prone Tests Analysis"}
+[0-0] {"level":"info","time":1757902844596,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","averageNavigationTime":0,"warning":false,"recommendation":null,"type":"performance-navigation-insights","msg":"Navigation Performance Analysis"}
+[0-0] {"level":"info","time":1757902844597,"pid":17040,"hostname":"DESKTOP-0Q6ENF6","totalTimeoutErrors":0,"totalElementErrors":0,"totalNavigationErrors":0,"timeoutErrorRate":0,"elementErrorRate":0,"navigationErrorRate":0,"warnings":[],"type":"performance-error-patterns","msg":"Error Pattern Analysis"}
+[0-0] PASSED in chrome - file:///C:/Users/trifo/Documents/flock/features/upload/upload.feature
+
+ "spec" Reporter:
+------------------------------------------------------------------
+[chrome 140.0.7339.128 windows #0-0] Running: chrome (v140.0.7339.128) on windows
+[chrome 140.0.7339.128 windows #0-0] Session ID: febb2573484aa13ee84eb9897de14771
+[chrome 140.0.7339.128 windows #0-0]
+[chrome 140.0.7339.128 windows #0-0] » features\upload\upload.feature
+[chrome 140.0.7339.128 windows #0-0] File Upload and Validation - Instagram Archive Processing
+[chrome 140.0.7339.128 windows #0-0] As a user migrating from Instagram to Bluesky
+[chrome 140.0.7339.128 windows #0-0] I want to upload and validate my Instagram archive
+[chrome 140.0.7339.128 windows #0-0] So that my data can be processed for migration
+[chrome 140.0.7339.128 windows #0-0]
+[chrome 140.0.7339.128 windows #0-0] Upload interface displays correctly
+[chrome 140.0.7339.128 windows #0-0]    ✓ And I navigate to the upload step
+[chrome 140.0.7339.128 windows #0-0]    ✓ Then I should see the upload section
+[chrome 140.0.7339.128 windows #0-0]    ✓ And I should see the heading "Upload Your Files"
+[chrome 140.0.7339.128 windows #0-0]    ✓ And I should see the description "Upload instagram archive"
+[chrome 140.0.7339.128 windows #0-0]    ✓ And I should see a "Choose Files" button with upload icon
+[chrome 140.0.7339.128 windows #0-0]    ✓ And the file input should accept ".zip" files
+[chrome 140.0.7339.128 windows #0-0]
+[chrome 140.0.7339.128 windows #0-0] Valid file selection displays correctly
+[chrome 140.0.7339.128 windows #0-0]    ✓ And I navigate to the upload step
+[chrome 140.0.7339.128 windows #0-0]    ✓ When I select a valid Instagram archive file "instagram-export.zip"
+[chrome 140.0.7339.128 windows #0-0]    ✓ Then the file should be selected in the file input
+[chrome 140.0.7339.128 windows #0-0]    ✓ And I should see the selected files section
+[chrome 140.0.7339.128 windows #0-0]    ✓ And I should see "Selected Files:" heading
+[chrome 140.0.7339.128 windows #0-0]    ✓ And I should see "instagram-export.zip" in the file list
+[chrome 140.0.7339.128 windows #0-0]    ✓ And I should see a delete button for the selected file
+[chrome 140.0.7339.128 windows #0-0]    ✓ And the "Choose Files" button should be hidden
+[chrome 140.0.7339.128 windows #0-0]
+[chrome 140.0.7339.128 windows #0-0] Form state updates correctly with file operations
+[chrome 140.0.7339.128 windows #0-0]    ✓ And I navigate to the upload step
+[chrome 140.0.7339.128 windows #0-0]    ✓ When I try to proceed without a file
+[chrome 140.0.7339.128 windows #0-0]    ✓ Then I should see an error message
+[chrome 140.0.7339.128 windows #0-0]    ✓ When I select a valid Instagram archive file "archive.zip"
+[chrome 140.0.7339.128 windows #0-0]    ✓ Then I should be able to proceed to the next step
+[chrome 140.0.7339.128 windows #0-0]
+[chrome 140.0.7339.128 windows #0-0] Navigation back to upload step resets splash screen message
+[chrome 140.0.7339.128 windows #0-0]    ✓ And I navigate to the upload step
+[chrome 140.0.7339.128 windows #0-0]    ✓ Given I have selected a valid Instagram archive file "test-archive.zip"
+[chrome 140.0.7339.128 windows #0-0]    ✓ And I have navigated to the auth step
+[chrome 140.0.7339.128 windows #0-0]    ✓ When I navigate back to the upload step
+[chrome 140.0.7339.128 windows #0-0]    ✓ Then the splash screen message should be "*flap* *flap* *flap*"
+[chrome 140.0.7339.128 windows #0-0]
+[chrome 140.0.7339.128 windows #0-0] 24 passing (6.4s)
+
+
+Spec Files:	 1 passed, 1 total (100% completed) in 00:00:11  
+

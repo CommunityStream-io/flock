@@ -1,0 +1,246 @@
+
+Execution of 1 workers started at 2025-09-15T02:24:37.682Z
+
+[0-0] RUNNING in chrome - file:///C:/Users/trifo/Documents/flock/features/auth/auth.feature
+[0-0] {"level":"info","time":1757903084009,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","specCount":1,"capabilities":{"maxInstances":1,"browserName":"chrome","acceptInsecureCerts":true,"goog:chromeOptions":{"args":["--enable-chrome-browser-cloud-management","--disable-web-security","--disable-features=VizDisplayCompositor","--no-sandbox","--disable-dev-shm-usage","--disable-gpu","--window-size=1920,1080","--disable-background-timer-throttling","--disable-backgrounding-occluded-windows","--disable-renderer-backgrounding","--disable-extensions","--disable-plugins","--disable-default-apps","--disable-sync","--disable-translate","--disable-background-networking","--disable-client-side-phishing-detection","--disable-component-extensions-with-background-pages","--disable-hang-monitor","--disable-prompt-on-repost","--disable-domain-reliability","--disable-features=TranslateUI","--disable-ipc-flooding-protection","--no-first-run","--no-default-browser-check","--disable-logging","--disable-permissions-api","--disable-popup-blocking","--disable-prompt-on-repost","--disable-web-resources","--disable-xss-auditor","--disable-features=VizDisplayCompositor","--force-color-profile=srgb","--memory-pressure-off","--max_old_space_size=4096","--log-level=3","--silent","--disable-gpu-logging"],"prefs":{"logging":{"level":"OFF"}}}},"type":"test-suite-start","msg":"Starting test suite with 1 spec files"}
+[0-0] {"level":"info","time":1757903084166,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","featureName":"Bluesky Authentication - User credential validation and authentication","featureUri":"C:\\Users\\trifo\\Documents\\flock\\features\\auth\\auth.feature","type":"feature-start","msg":"Starting feature: Bluesky Authentication - User credential validation and authentication"}
+[0-0] {"level":"info","time":1757903084204,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","scenarioName":"Authentication form displays correctly","scenarioId":"ec773be4-25c4-4bf5-a484-38c58be9d7b0","type":"scenario-start","msg":"Starting scenario: Authentication form displays correctly"}
+[0-0] {"level":"info","time":1757903084204,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","type":"timeout-telemetry-start","msg":"Timeout telemetry collection started"}
+[0-0] {"level":"info","time":1757903084204,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","type":"performance-monitoring-start","msg":"Performance monitoring started"}
+[0-0] {"level":"info","time":1757903084205,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","testId":"ec773be4-25c4-4bf5-a484-38c58be9d7b0","testName":"Authentication form displays correctly","type":"metrics-start","msg":"Started metrics collection for test: Authentication form displays correctly"}
+[0-0] {"level":"error","time":1757903085105,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: And  I navigate to the upload step"}
+[0-0] Simulated file selection: valid-archive.zip
+[0-0] {"level":"error","time":1757903085515,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: And  I select a valid Instagram archive file \"valid-archive.zip\""}
+[0-0] {"level":"error","time":1757903085713,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: And  I navigate to the auth step"}
+[0-0] {"level":"info","time":1757903085742,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","scenarioName":"Authentication form displays correctly","status":"failed","resultType":"object","resultKeys":["attach","log","link","parameters"],"type":"scenario-complete","msg":"Scenario completed: Authentication form displays correctly (failed)"}
+[0-0] {"level":"info","time":1757903085742,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","type":"timeout-telemetry-stop","totalEvents":0,"msg":"Timeout telemetry collection stopped"}
+[0-0] {"level":"info","time":1757903085742,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","type":"performance-monitoring-stop","msg":"Performance monitoring stopped"}
+[0-0] {"level":"info","time":1757903085742,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","testId":"ec773be4-25c4-4bf5-a484-38c58be9d7b0","testName":"Authentication form displays correctly","status":"failed","duration":1537,"type":"metrics-complete","msg":"Completed metrics collection for test: Authentication form displays correctly (failed)"}
+[0-0] {"level":"info","time":1757903085742,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","testId":"ec773be4-25c4-4bf5-a484-38c58be9d7b0","duration":1537,"navigations":0,"interactions":0,"errors":0,"type":"test-metrics-summary","msg":"Test Metrics Summary"}
+[0-0] {"level":"info","time":1757903085748,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","scenarioName":"Form validation requires both fields to be valid","scenarioId":"e2391421-872c-4b4f-8c44-bab936d53135","type":"scenario-start","msg":"Starting scenario: Form validation requires both fields to be valid"}
+[0-0] {"level":"info","time":1757903085748,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","type":"timeout-telemetry-start","msg":"Timeout telemetry collection started"}
+[0-0] {"level":"info","time":1757903085748,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","type":"performance-monitoring-start","msg":"Performance monitoring started"}
+[0-0] {"level":"info","time":1757903085749,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","testId":"e2391421-872c-4b4f-8c44-bab936d53135","testName":"Form validation requires both fields to be valid","type":"metrics-start","msg":"Started metrics collection for test: Form validation requires both fields to be valid"}
+[0-0] {"level":"error","time":1757903085946,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: And  I navigate to the upload step"}
+[0-0] Simulated file selection: valid-archive.zip
+[0-0] {"level":"error","time":1757903086280,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: And  I select a valid Instagram archive file \"valid-archive.zip\""}
+[0-0] {"level":"error","time":1757903086422,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: And  I navigate to the auth step"}
+[0-0] {"level":"error","time":1757903086981,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: Given  I have entered a valid username"}
+[0-0] {"level":"error","time":1757903087323,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: When  I enter a valid password"}
+[0-0] {"level":"info","time":1757903087344,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","scenarioName":"Form validation requires both fields to be valid","status":"failed","resultType":"object","resultKeys":["attach","log","link","parameters"],"type":"scenario-complete","msg":"Scenario completed: Form validation requires both fields to be valid (failed)"}
+[0-0] {"level":"info","time":1757903087344,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","type":"timeout-telemetry-stop","totalEvents":0,"msg":"Timeout telemetry collection stopped"}
+[0-0] {"level":"info","time":1757903087344,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","type":"performance-monitoring-stop","msg":"Performance monitoring stopped"}
+[0-0] {"level":"info","time":1757903087344,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","testId":"e2391421-872c-4b4f-8c44-bab936d53135","testName":"Form validation requires both fields to be valid","status":"failed","duration":1596,"type":"metrics-complete","msg":"Completed metrics collection for test: Form validation requires both fields to be valid (failed)"}
+[0-0] {"level":"info","time":1757903087344,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","testId":"e2391421-872c-4b4f-8c44-bab936d53135","duration":1596,"navigations":0,"interactions":0,"errors":0,"type":"test-metrics-summary","msg":"Test Metrics Summary"}
+[0-0] {"level":"info","time":1757903087348,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","scenarioName":"Successful authentication allows progression","scenarioId":"e08adeb1-6221-4a70-bc6c-3e5d32f4e9e5","type":"scenario-start","msg":"Starting scenario: Successful authentication allows progression"}
+[0-0] {"level":"info","time":1757903087348,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","type":"timeout-telemetry-start","msg":"Timeout telemetry collection started"}
+[0-0] {"level":"info","time":1757903087348,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","type":"performance-monitoring-start","msg":"Performance monitoring started"}
+[0-0] {"level":"info","time":1757903087349,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","testId":"e08adeb1-6221-4a70-bc6c-3e5d32f4e9e5","testName":"Successful authentication allows progression","type":"metrics-start","msg":"Started metrics collection for test: Successful authentication allows progression"}
+[0-0] {"level":"error","time":1757903087565,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: And  I navigate to the upload step"}
+[0-0] Simulated file selection: valid-archive.zip
+[0-0] {"level":"error","time":1757903087789,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: And  I select a valid Instagram archive file \"valid-archive.zip\""}
+[0-0] {"level":"error","time":1757903087936,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: And  I navigate to the auth step"}
+[0-0] 🔧 BDD: Entering valid credentials with proper timeout handling
+[0-0] ✅ BDD: Valid credentials entered and form validated successfully
+[0-0] {"level":"error","time":1757903088752,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: And  I have entered valid credentials"}
+[0-0] {"level":"info","time":1757903088765,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","scenarioName":"Successful authentication allows progression","status":"failed","resultType":"object","resultKeys":["attach","log","link","parameters"],"type":"scenario-complete","msg":"Scenario completed: Successful authentication allows progression (failed)"}
+[0-0] {"level":"info","time":1757903088765,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","type":"timeout-telemetry-stop","totalEvents":0,"msg":"Timeout telemetry collection stopped"}
+[0-0] {"level":"info","time":1757903088765,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","type":"performance-monitoring-stop","msg":"Performance monitoring stopped"}
+[0-0] {"level":"info","time":1757903088765,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","testId":"e08adeb1-6221-4a70-bc6c-3e5d32f4e9e5","testName":"Successful authentication allows progression","status":"failed","duration":1417,"type":"metrics-complete","msg":"Completed metrics collection for test: Successful authentication allows progression (failed)"}
+[0-0] {"level":"info","time":1757903088765,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","testId":"e08adeb1-6221-4a70-bc6c-3e5d32f4e9e5","duration":1417,"navigations":0,"interactions":0,"errors":0,"type":"test-metrics-summary","msg":"Test Metrics Summary"}
+[0-0] {"level":"info","time":1757903088771,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","scenarioName":"Failed authentication shows appropriate error","scenarioId":"b16067a6-1a60-4421-92d6-dcde945c1440","type":"scenario-start","msg":"Starting scenario: Failed authentication shows appropriate error"}
+[0-0] {"level":"info","time":1757903088771,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","type":"timeout-telemetry-start","msg":"Timeout telemetry collection started"}
+[0-0] {"level":"info","time":1757903088771,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","type":"performance-monitoring-start","msg":"Performance monitoring started"}
+[0-0] {"level":"info","time":1757903088771,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","testId":"b16067a6-1a60-4421-92d6-dcde945c1440","testName":"Failed authentication shows appropriate error","type":"metrics-start","msg":"Started metrics collection for test: Failed authentication shows appropriate error"}
+[0-0] {"level":"error","time":1757903088923,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: And  I navigate to the upload step"}
+[0-0] Simulated file selection: valid-archive.zip
+[0-0] {"level":"error","time":1757903089260,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: And  I select a valid Instagram archive file \"valid-archive.zip\""}
+[0-0] {"level":"error","time":1757903089380,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: And  I navigate to the auth step"}
+[0-0] {"level":"error","time":1757903090284,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: And  I have entered invalid credentials"}
+[0-0] {"level":"info","time":1757903090306,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","scenarioName":"Failed authentication shows appropriate error","status":"failed","resultType":"object","resultKeys":["attach","log","link","parameters"],"type":"scenario-complete","msg":"Scenario completed: Failed authentication shows appropriate error (failed)"}
+[0-0] {"level":"info","time":1757903090306,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","type":"timeout-telemetry-stop","totalEvents":0,"msg":"Timeout telemetry collection stopped"}
+[0-0] {"level":"info","time":1757903090306,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","type":"performance-monitoring-stop","msg":"Performance monitoring stopped"}
+[0-0] {"level":"info","time":1757903090306,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","testId":"b16067a6-1a60-4421-92d6-dcde945c1440","testName":"Failed authentication shows appropriate error","status":"failed","duration":1535,"type":"metrics-complete","msg":"Completed metrics collection for test: Failed authentication shows appropriate error (failed)"}
+[0-0] {"level":"info","time":1757903090307,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","testId":"b16067a6-1a60-4421-92d6-dcde945c1440","duration":1535,"navigations":0,"interactions":0,"errors":0,"type":"test-metrics-summary","msg":"Test Metrics Summary"}
+[0-0] {"level":"info","time":1757903090311,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","scenarioName":"Valid credentials allow navigation to next step","scenarioId":"3a8c77e3-fb17-435e-9bca-6cab64cb86e9","type":"scenario-start","msg":"Starting scenario: Valid credentials allow navigation to next step"}
+[0-0] {"level":"info","time":1757903090311,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","type":"timeout-telemetry-start","msg":"Timeout telemetry collection started"}
+[0-0] {"level":"info","time":1757903090311,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","type":"performance-monitoring-start","msg":"Performance monitoring started"}
+[0-0] {"level":"info","time":1757903090311,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","testId":"3a8c77e3-fb17-435e-9bca-6cab64cb86e9","testName":"Valid credentials allow navigation to next step","type":"metrics-start","msg":"Started metrics collection for test: Valid credentials allow navigation to next step"}
+[0-0] {"level":"error","time":1757903090464,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: And  I navigate to the upload step"}
+[0-0] Simulated file selection: valid-archive.zip
+[0-0] {"level":"error","time":1757903090798,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: And  I select a valid Instagram archive file \"valid-archive.zip\""}
+[0-0] {"level":"error","time":1757903090916,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: And  I navigate to the auth step"}
+[0-0] 🔧 BDD: Entering valid credentials with proper timeout handling
+[0-0] ✅ BDD: Valid credentials entered and form validated successfully
+[0-0] {"level":"error","time":1757903091737,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: And  I have entered valid credentials"}
+[0-0] {"level":"error","time":1757903092132,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: When  I attempt to navigate away from the auth step"}
+[0-0] {"level":"error","time":1757903092143,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: Then  the system should validate my credentials"}
+[0-0] {"level":"error","time":1757903092148,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: And  I should proceed to the next step"}
+[0-0] {"level":"info","time":1757903092155,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","scenarioName":"Valid credentials allow navigation to next step","status":"failed","resultType":"object","resultKeys":["attach","log","link","parameters"],"type":"scenario-complete","msg":"Scenario completed: Valid credentials allow navigation to next step (failed)"}
+[0-0] {"level":"info","time":1757903092156,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","type":"timeout-telemetry-stop","totalEvents":0,"msg":"Timeout telemetry collection stopped"}
+[0-0] {"level":"info","time":1757903092156,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","type":"performance-monitoring-stop","msg":"Performance monitoring stopped"}
+[0-0] {"level":"info","time":1757903092156,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","testId":"3a8c77e3-fb17-435e-9bca-6cab64cb86e9","testName":"Valid credentials allow navigation to next step","status":"failed","duration":1845,"type":"metrics-complete","msg":"Completed metrics collection for test: Valid credentials allow navigation to next step (failed)"}
+[0-0] {"level":"info","time":1757903092156,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","testId":"3a8c77e3-fb17-435e-9bca-6cab64cb86e9","duration":1845,"navigations":0,"interactions":0,"errors":0,"type":"test-metrics-summary","msg":"Test Metrics Summary"}
+[0-0] {"level":"info","time":1757903092161,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","scenarioName":"Valid credentials trigger authentication splash screen","scenarioId":"b58689d3-b8cf-4bef-b422-2dd348601d33","type":"scenario-start","msg":"Starting scenario: Valid credentials trigger authentication splash screen"}
+[0-0] {"level":"info","time":1757903092161,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","type":"timeout-telemetry-start","msg":"Timeout telemetry collection started"}
+[0-0] {"level":"info","time":1757903092161,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","type":"performance-monitoring-start","msg":"Performance monitoring started"}
+[0-0] {"level":"info","time":1757903092161,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","testId":"b58689d3-b8cf-4bef-b422-2dd348601d33","testName":"Valid credentials trigger authentication splash screen","type":"metrics-start","msg":"Started metrics collection for test: Valid credentials trigger authentication splash screen"}
+[0-0] {"level":"error","time":1757903093241,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: And  I navigate to the upload step"}
+[0-0] Simulated file selection: valid-archive.zip
+[0-0] {"level":"error","time":1757903093600,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: And  I select a valid Instagram archive file \"valid-archive.zip\""}
+[0-0] {"level":"error","time":1757903093744,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: And  I navigate to the auth step"}
+[0-0] {"level":"error","time":1757903104194,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: Given  I am on the auth step page"}
+[0-0] Error in "5: Given I am on the auth step page"
+Error: Auth form did not appear within timeout
+    at <anonymous> (C:\Users\trifo\Documents\flock\node_modules\webdriverio\build\node.js:5741:15)
+    at async Browser.wrapCommandFn (C:\Users\trifo\Documents\flock\node_modules\@wdio\utils\build\index.js:978:23)
+    at async World.<anonymous> (C:\Users\trifo\Documents\flock\features\step-definitions\auth.ts:23:5)
+    at async wrapPromiseWithTimeout (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\time.ts:55:10)
+    at async Object.run (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\user_code_runner.ts:86:16)
+    at async Object.run (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\runtime\step_runner.ts:51:20)
+    at async TestCaseRunner.invokeStep (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\runtime\test_case_runner.ts:144:12)
+    at async TestCaseRunner.runStep (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\runtime\test_case_runner.ts:344:20)
+    at async <anonymous> (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\runtime\test_case_runner.ts:250:34)
+    at async TestCaseRunner.aroundTestStep (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\runtime\test_case_runner.ts:177:28)
+[0-0] {"level":"info","time":1757903104219,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","scenarioName":"Valid credentials trigger authentication splash screen","status":"failed","resultType":"object","resultKeys":["attach","log","link","parameters"],"type":"scenario-complete","msg":"Scenario completed: Valid credentials trigger authentication splash screen (failed)"}
+[0-0] {"level":"info","time":1757903104220,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","type":"timeout-telemetry-stop","totalEvents":0,"msg":"Timeout telemetry collection stopped"}
+[0-0] {"level":"info","time":1757903104220,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","type":"performance-monitoring-stop","msg":"Performance monitoring stopped"}
+[0-0] {"level":"info","time":1757903104220,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","testId":"b58689d3-b8cf-4bef-b422-2dd348601d33","testName":"Valid credentials trigger authentication splash screen","status":"failed","duration":12059,"type":"metrics-complete","msg":"Completed metrics collection for test: Valid credentials trigger authentication splash screen (failed)"}
+[0-0] {"level":"info","time":1757903104220,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","testId":"b58689d3-b8cf-4bef-b422-2dd348601d33","duration":12059,"navigations":0,"interactions":0,"errors":0,"type":"test-metrics-summary","msg":"Test Metrics Summary"}
+[0-0] {"level":"info","time":1757903104223,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","scenarioName":"Valid credentials trigger authentication splash screen","scenarioId":"b58689d3-b8cf-4bef-b422-2dd348601d33","type":"scenario-start","msg":"Starting scenario: Valid credentials trigger authentication splash screen"}
+[0-0] {"level":"info","time":1757903104223,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","type":"timeout-telemetry-start","msg":"Timeout telemetry collection started"}
+[0-0] {"level":"info","time":1757903104223,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","type":"performance-monitoring-start","msg":"Performance monitoring started"}
+[0-0] {"level":"info","time":1757903104223,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","testId":"b58689d3-b8cf-4bef-b422-2dd348601d33","testName":"Valid credentials trigger authentication splash screen","type":"metrics-start","msg":"Started metrics collection for test: Valid credentials trigger authentication splash screen"}
+[0-0] {"level":"error","time":1757903104392,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: And  I navigate to the upload step"}
+[0-0] Simulated file selection: valid-archive.zip
+[0-0] {"level":"error","time":1757903104745,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: And  I select a valid Instagram archive file \"valid-archive.zip\""}
+[0-0] {"level":"error","time":1757903104872,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: And  I navigate to the auth step"}
+[0-0] {"level":"error","time":1757903115147,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: Given  I am on the auth step page"}
+[0-0] Error in "5: Given I am on the auth step page"
+Error: Auth form did not appear within timeout
+    at <anonymous> (C:\Users\trifo\Documents\flock\node_modules\webdriverio\build\node.js:5741:15)
+    at async Browser.wrapCommandFn (C:\Users\trifo\Documents\flock\node_modules\@wdio\utils\build\index.js:978:23)
+    at async World.<anonymous> (C:\Users\trifo\Documents\flock\features\step-definitions\auth.ts:23:5)
+    at async wrapPromiseWithTimeout (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\time.ts:55:10)
+    at async Object.run (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\user_code_runner.ts:86:16)
+    at async Object.run (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\runtime\step_runner.ts:51:20)
+    at async TestCaseRunner.invokeStep (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\runtime\test_case_runner.ts:144:12)
+    at async TestCaseRunner.runStep (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\runtime\test_case_runner.ts:344:20)
+    at async <anonymous> (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\runtime\test_case_runner.ts:250:34)
+    at async TestCaseRunner.aroundTestStep (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\runtime\test_case_runner.ts:177:28)
+[0-0] {"level":"info","time":1757903115187,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","scenarioName":"Valid credentials trigger authentication splash screen","status":"failed","resultType":"object","resultKeys":["attach","log","link","parameters"],"type":"scenario-complete","msg":"Scenario completed: Valid credentials trigger authentication splash screen (failed)"}
+[0-0] {"level":"info","time":1757903115187,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","type":"timeout-telemetry-stop","totalEvents":0,"msg":"Timeout telemetry collection stopped"}
+[0-0] {"level":"info","time":1757903115187,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","type":"performance-monitoring-stop","msg":"Performance monitoring stopped"}
+[0-0] {"level":"info","time":1757903115187,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","testId":"b58689d3-b8cf-4bef-b422-2dd348601d33","testName":"Valid credentials trigger authentication splash screen","status":"failed","duration":10964,"type":"metrics-complete","msg":"Completed metrics collection for test: Valid credentials trigger authentication splash screen (failed)"}
+[0-0] {"level":"info","time":1757903115187,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","testId":"b58689d3-b8cf-4bef-b422-2dd348601d33","duration":10964,"navigations":0,"interactions":0,"errors":0,"type":"test-metrics-summary","msg":"Test Metrics Summary"}
+[0-0] {"level":"info","time":1757903115195,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","featureName":"Bluesky Authentication - User credential validation and authentication","featureUri":"C:\\Users\\trifo\\Documents\\flock\\features\\auth\\auth.feature","type":"feature-complete","msg":"Completed feature: Bluesky Authentication - User credential validation and authentication"}
+[0-0] {"level":"info","time":1757903115199,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","exitCode":2,"specCount":1,"type":"test-suite-complete","msg":"Test suite completed with exit code: 2"}
+[0-0] {"level":"info","time":1757903115199,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","type":"test-suite-summary","msg":"📊 Test Metrics Summary Report\n===============================\nTotal Tests: 7\n✅ Passed: 0 (0.0%)\n❌ Failed: 7 (100.0%)\n⏭️ Skipped: 0 (0.0%)\n\n⏱️ Performance Metrics\n----------------------\nTotal Duration: 30953ms (31.0s)\nAverage Test Duration: 4422ms\nAverage Navigation Time: 0ms\nAverage Wait Time: 0ms\n\n🚨 Error Summary\n----------------\nTotal Errors: 31\nTimeout Errors: 0\nElement Not Found: 0\nNavigation Errors: 0\nScript Errors: 0\nNetwork Errors: 0\nOther Errors: 31"}
+[0-0] {"level":"info","time":1757903115205,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","filename":"test-metrics-2025-09-15T02-25-15-199Z.json","filepath":"logs\\metrics\\test-metrics-2025-09-15T02-25-15-199Z.json","metricsCount":7,"type":"metrics-export","msg":"Metrics exported to logs\\metrics\\test-metrics-2025-09-15T02-25-15-199Z.json"}
+[0-0] {"level":"info","time":1757903115208,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","filename":"timeout-telemetry-2025-09-15T02-25-15-205Z.json","filepath":"logs\\metrics\\timeout-telemetry-2025-09-15T02-25-15-205Z.json","eventCount":0,"type":"timeout-telemetry-export","msg":"Timeout telemetry exported to logs\\metrics\\timeout-telemetry-2025-09-15T02-25-15-205Z.json"}
+[0-0] {"level":"info","time":1757903115208,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","metricsCount":7,"type":"metrics-collection-complete","msg":"Collected metrics for 7 tests"}
+[0-0] {"level":"info","time":1757903115209,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","type":"timeout-telemetry-summary","msg":"🔍 Timeout Telemetry Analysis Report\n=====================================\n\n📊 Summary\n----------\nTotal Timeout Events: 0\nOverall Timeout Rate: 0.00%\n\n🚨 Critical Issues\n------------------\nNo critical issues detected\n\n📈 Top Timeout Patterns\n-----------------------\n\n\n💡 Recommendations\n------------------\nNo specific recommendations at this time\n\n🌍 Environmental Factors\n------------------------\nShard Distribution: No shard data\n\nBrowser Distribution: No browser data\n\nTime Distribution: No time data"}
+[0-0] {"level":"info","time":1757903115209,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","slowestTests":[{"rank":1,"testName":"Valid credentials trigger authentication splash screen","duration":12059},{"rank":2,"testName":"Valid credentials trigger authentication splash screen","duration":10964},{"rank":3,"testName":"Valid credentials allow navigation to next step","duration":1845}],"type":"performance-slowest-tests","msg":"Slowest Tests Analysis"}
+[0-0] {"level":"info","time":1757903115209,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","errorProneTests":[{"rank":1,"testName":"Valid credentials allow navigation to next step","totalErrors":7},{"rank":2,"testName":"Form validation requires both fields to be valid","totalErrors":5},{"rank":3,"testName":"Valid credentials trigger authentication splash screen","totalErrors":4}],"type":"performance-error-prone-tests","msg":"Most Error-Prone Tests Analysis"}
+[0-0] {"level":"info","time":1757903115209,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","averageNavigationTime":0,"warning":false,"recommendation":null,"type":"performance-navigation-insights","msg":"Navigation Performance Analysis"}
+[0-0] {"level":"info","time":1757903115209,"pid":42696,"hostname":"DESKTOP-0Q6ENF6","totalTimeoutErrors":0,"totalElementErrors":0,"totalNavigationErrors":0,"timeoutErrorRate":0,"elementErrorRate":0,"navigationErrorRate":0,"warnings":[],"type":"performance-error-patterns","msg":"Error Pattern Analysis"}
+[0-0] FAILED in chrome - file:///C:/Users/trifo/Documents/flock/features/auth/auth.feature
+
+ "spec" Reporter:
+------------------------------------------------------------------
+[chrome 140.0.7339.128 windows #0-0] Running: chrome (v140.0.7339.128) on windows
+[chrome 140.0.7339.128 windows #0-0] Session ID: 871a0449b60a6fc582dec8d328099486
+[chrome 140.0.7339.128 windows #0-0]
+[chrome 140.0.7339.128 windows #0-0] » features\auth\auth.feature
+[chrome 140.0.7339.128 windows #0-0] Bluesky Authentication - User credential validation and authentication
+[chrome 140.0.7339.128 windows #0-0] As a user migrating from Instagram to Bluesky
+[chrome 140.0.7339.128 windows #0-0] I want to authenticate with my Bluesky credentials
+[chrome 140.0.7339.128 windows #0-0] So that I can proceed with the migration process
+[chrome 140.0.7339.128 windows #0-0]
+[chrome 140.0.7339.128 windows #0-0] Authentication form displays correctly
+[chrome 140.0.7339.128 windows #0-0]    ✓ And I navigate to the upload step
+[chrome 140.0.7339.128 windows #0-0]    ✓ And I select a valid Instagram archive file "valid-archive.zip"
+[chrome 140.0.7339.128 windows #0-0]    ✓ And I navigate to the auth step
+[chrome 140.0.7339.128 windows #0-0]    - Then I should see the Bluesky authentication form
+[chrome 140.0.7339.128 windows #0-0]    - And I should see a username input field with @ prefix
+[chrome 140.0.7339.128 windows #0-0]    - And I should see a password input field
+[chrome 140.0.7339.128 windows #0-0]    - And the form should be initially invalid
+[chrome 140.0.7339.128 windows #0-0]
+[chrome 140.0.7339.128 windows #0-0] Form validation requires both fields to be valid
+[chrome 140.0.7339.128 windows #0-0]    ✓ And I navigate to the upload step
+[chrome 140.0.7339.128 windows #0-0]    ✓ And I select a valid Instagram archive file "valid-archive.zip"
+[chrome 140.0.7339.128 windows #0-0]    ✓ And I navigate to the auth step
+[chrome 140.0.7339.128 windows #0-0]    ✓ Given I have entered a valid username
+[chrome 140.0.7339.128 windows #0-0]    ✓ When I enter a valid password
+[chrome 140.0.7339.128 windows #0-0]    - Then the form should be valid
+[chrome 140.0.7339.128 windows #0-0]    - And the "Next" button should be enabled
+[chrome 140.0.7339.128 windows #0-0]    - Given I have entered a valid password
+[chrome 140.0.7339.128 windows #0-0]    - When I enter a valid username
+[chrome 140.0.7339.128 windows #0-0]    - Then the form should be valid
+[chrome 140.0.7339.128 windows #0-0]    - And the "Next" button should be enabled
+[chrome 140.0.7339.128 windows #0-0]
+[chrome 140.0.7339.128 windows #0-0] Successful authentication allows progression
+[chrome 140.0.7339.128 windows #0-0]    ✓ And I navigate to the upload step
+[chrome 140.0.7339.128 windows #0-0]    ✓ And I select a valid Instagram archive file "valid-archive.zip"
+[chrome 140.0.7339.128 windows #0-0]    ✓ And I navigate to the auth step
+[chrome 140.0.7339.128 windows #0-0]    ✓ And I have entered valid credentials
+[chrome 140.0.7339.128 windows #0-0]    - When I click the "Next" button
+[chrome 140.0.7339.128 windows #0-0]    - Then the authentication script should run in the background
+[chrome 140.0.7339.128 windows #0-0]    - And I should be navigated to the config step
+[chrome 140.0.7339.128 windows #0-0]
+[chrome 140.0.7339.128 windows #0-0] Failed authentication shows appropriate error
+[chrome 140.0.7339.128 windows #0-0]    ✓ And I navigate to the upload step
+[chrome 140.0.7339.128 windows #0-0]    ✓ And I select a valid Instagram archive file "valid-archive.zip"
+[chrome 140.0.7339.128 windows #0-0]    ✓ And I navigate to the auth step
+[chrome 140.0.7339.128 windows #0-0]    ✓ And I have entered invalid credentials
+[chrome 140.0.7339.128 windows #0-0]    - When I click the "Next" button
+[chrome 140.0.7339.128 windows #0-0]    - Then the authentication should fail
+[chrome 140.0.7339.128 windows #0-0]    - And I should see a snackbar error message
+[chrome 140.0.7339.128 windows #0-0]    - And the error should indicate "Invalid Bluesky credentials"
+[chrome 140.0.7339.128 windows #0-0]    - And I should remain on the auth step
+[chrome 140.0.7339.128 windows #0-0]    - And the form should remain invalid
+[chrome 140.0.7339.128 windows #0-0]
+[chrome 140.0.7339.128 windows #0-0] Valid credentials allow navigation to next step
+[chrome 140.0.7339.128 windows #0-0]    ✓ And I navigate to the upload step
+[chrome 140.0.7339.128 windows #0-0]    ✓ And I select a valid Instagram archive file "valid-archive.zip"
+[chrome 140.0.7339.128 windows #0-0]    ✓ And I navigate to the auth step
+[chrome 140.0.7339.128 windows #0-0]    ✓ And I have entered valid credentials
+[chrome 140.0.7339.128 windows #0-0]    ✓ When I attempt to navigate away from the auth step
+[chrome 140.0.7339.128 windows #0-0]    ✓ Then the system should validate my credentials
+[chrome 140.0.7339.128 windows #0-0]    ✓ And I should proceed to the next step
+[chrome 140.0.7339.128 windows #0-0]
+[chrome 140.0.7339.128 windows #0-0] Valid credentials trigger authentication splash screen (1x retries)
+[chrome 140.0.7339.128 windows #0-0]    ✓ And I navigate to the upload step
+[chrome 140.0.7339.128 windows #0-0]    ✓ And I select a valid Instagram archive file "valid-archive.zip"
+[chrome 140.0.7339.128 windows #0-0]    ✓ And I navigate to the auth step
+[chrome 140.0.7339.128 windows #0-0]    ✖ Given I am on the auth step page
+[chrome 140.0.7339.128 windows #0-0]    - And I have entered a valid username
+[chrome 140.0.7339.128 windows #0-0]    - And I have entered a valid password
+[chrome 140.0.7339.128 windows #0-0]    - When I click the "Next" button
+[chrome 140.0.7339.128 windows #0-0]    - Then I should see the splash screen
+[chrome 140.0.7339.128 windows #0-0]    - And the splash screen should display "Authenticating with bsky.social"
+[chrome 140.0.7339.128 windows #0-0]    - And the authentication should process in the background
+[chrome 140.0.7339.128 windows #0-0]    - And I should be navigated to the config step
+[chrome 140.0.7339.128 windows #0-0]
+[chrome 140.0.7339.128 windows #0-0] 26 passing (31.2s)
+[chrome 140.0.7339.128 windows #0-0] 1 failing
+[chrome 140.0.7339.128 windows #0-0] 33 skipped
+[chrome 140.0.7339.128 windows #0-0] 1 retried
+[chrome 140.0.7339.128 windows #0-0]
+[chrome 140.0.7339.128 windows #0-0] 1) Valid credentials trigger authentication splash screen Given I am on the auth step page
+[chrome 140.0.7339.128 windows #0-0] Error: Auth form did not appear within timeout
+[chrome 140.0.7339.128 windows #0-0] Error: Auth form did not appear within timeout
+[chrome 140.0.7339.128 windows #0-0]     at <anonymous> (C:\Users\trifo\Documents\flock\node_modules\webdriverio\build\node.js:5741:15)
+[chrome 140.0.7339.128 windows #0-0]     at async Browser.wrapCommandFn (C:\Users\trifo\Documents\flock\node_modules\@wdio\utils\build\index.js:978:23)
+[chrome 140.0.7339.128 windows #0-0]     at async World.<anonymous> (C:\Users\trifo\Documents\flock\features\step-definitions\auth.ts:23:5)
+[chrome 140.0.7339.128 windows #0-0]     at async wrapPromiseWithTimeout (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\time.ts:55:10)
+[chrome 140.0.7339.128 windows #0-0]     at async Object.run (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\user_code_runner.ts:86:16)
+[chrome 140.0.7339.128 windows #0-0]     at async Object.run (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\runtime\step_runner.ts:51:20)
+[chrome 140.0.7339.128 windows #0-0]     at async TestCaseRunner.invokeStep (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\runtime\test_case_runner.ts:144:12)
+[chrome 140.0.7339.128 windows #0-0]     at async TestCaseRunner.runStep (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\runtime\test_case_runner.ts:344:20)
+[chrome 140.0.7339.128 windows #0-0]     at async <anonymous> (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\runtime\test_case_runner.ts:250:34)
+[chrome 140.0.7339.128 windows #0-0]     at async TestCaseRunner.aroundTestStep (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\runtime\test_case_runner.ts:177:28)
+
+
+Spec Files:	 0 passed, 1 failed, 1 total (100% completed) in 00:00:37  
+
