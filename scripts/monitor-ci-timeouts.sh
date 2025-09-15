@@ -7,7 +7,7 @@ set -e
 
 # Configuration
 WORKFLOW_NAME="Feathering the Nest"
-POLL_INTERVAL=30  # seconds
+POLL_INTERVAL=15  # seconds
 MAX_WAIT_TIME=1800  # 30 minutes
 ARTIFACTS_DIR="logs/ci-artifacts"
 SKIP_TELEMETRY=false
