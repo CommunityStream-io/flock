@@ -49,7 +49,7 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
       maxInstances: 1, // Only one browser instance at a time
       browserName: 'chrome',
       acceptInsecureCerts: true,
-      // Enable Chrome DevTools Protocol for network simulation
+      // Use local ChromeDriver
       'goog:chromeOptions': {
         args: [
           // Network simulation and CDP support

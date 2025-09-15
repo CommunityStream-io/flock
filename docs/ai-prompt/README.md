@@ -9,6 +9,13 @@ Comprehensive prompt for fixing the two disabled E2E tests that were causing pip
 - Authentication splash screen test (infinite loop issue)
 - Upload navigation test (timeout issue)
 
+### [Docker Build Optimization](./docker-optimization.md)
+Complete guide for optimizing Docker build process for E2E testing:
+- Reduce build time from 2.5min to under 1.5min
+- Reduce image size by 30-40%
+- Improve layer caching efficiency to 80%+ reuse
+- Maintain compatibility with existing docker-compose.yml
+
 ## Usage
 
 These prompts are designed to be given to AI agents (like ChatGPT, Claude, etc.) to help with specific debugging tasks. Each prompt includes:

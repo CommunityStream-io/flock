@@ -1,0 +1,748 @@
+
+Execution of 1 workers started at 2025-09-15T01:56:17.657Z
+
+2025-09-15T01:56:17.717Z INFO @wdio/cli:launcher: Run onPrepare hook
+2025-09-15T01:56:17.719Z INFO @wdio/cli:launcher: Run onWorkerStart hook
+2025-09-15T01:56:17.719Z INFO @wdio/xvfb: XvfbManager.init() called
+2025-09-15T01:56:17.719Z INFO @wdio/xvfb: Xvfb not needed on current platform
+2025-09-15T01:56:17.720Z INFO @wdio/local-runner: Start worker 0-0 with arg: run wdio.conf.ts --spec=features/auth/auth.feature --grep=Valid credentials trigger authentication splash screen --headless
+2025-09-15T01:56:17.902Z INFO @wdio/xvfb:ProcessFactory: xvfb-run not found, falling back to regular fork
+2025-09-15T01:56:17.902Z INFO @wdio/xvfb:ProcessFactory: ProcessFactory: shouldRun=false, isAvailable=false
+2025-09-15T01:56:17.903Z INFO @wdio/xvfb:ProcessFactory: Creating worker process with regular fork
+[0-0] 2025-09-15T01:56:19.848Z INFO @wdio/local-runner: Run worker command: run
+[0-0] RUNNING in chrome - file:///C:/Users/trifo/Documents/flock/features/auth/auth.feature
+[0-0] 2025-09-15T01:56:21.145Z INFO webdriver: Initiate new session using the WebDriver protocol
+[0-0] 2025-09-15T01:56:21.669Z INFO chromedriver: Starting ChromeDriver 140.0.7339.82 (bc93617e21c39ed4afa6ce1c08554e5aa76d132d-refs/branch-heads/7339_41@{#5}) on port 60670
+[0-0] 2025-09-15T01:56:21.670Z INFO chromedriver: Remote connections are allowed by an allowlist (0.0.0.0).
+[0-0] 2025-09-15T01:56:21.670Z INFO chromedriver: Please see https://chromedriver.chromium.org/security-considerations for suggestions on keeping ChromeDriver safe.
+[0-0] 2025-09-15T01:56:21.677Z INFO chromedriver: ChromeDriver was started successfully on port 60670.
+[0-0] 2025-09-15T01:56:21.774Z INFO @wdio/utils: Started Chromedriver v140.0.7339.128 with params --port=60670 --allowed-origins=* --allowed-ips=0.0.0.0 in 157ms on port 60670
+[0-0] 2025-09-15T01:56:21.776Z INFO webdriver: [POST] http://localhost:60670/session
+[0-0] 2025-09-15T01:56:22.560Z INFO webdriver: Register BiDi handler for session with id 6609cae04ae9ff1208f089bf1472d08c
+[0-0] 2025-09-15T01:56:22.560Z INFO webdriver: Connecting to webSocketUrl ws://127.0.0.1:60670/session/6609cae04ae9ff1208f089bf1472d08c
+[0-0] 2025-09-15T01:56:22.572Z INFO webdriver: Connected to Bidi protocol at ws://127.0.0.1:60670/session/6609cae04ae9ff1208f089bf1472d08c
+[0-0] 2025-09-15T01:56:22.572Z INFO webdriver: Connected to WebDriver Bidi interface at ws://127.0.0.1:60670/session/6609cae04ae9ff1208f089bf1472d08c
+[0-0] 2025-09-15T01:56:22.573Z INFO webdriver: BIDI COMMAND session.subscribe {"events":["browsingContext.contextCreated"]}
+[0-0] 2025-09-15T01:56:22.574Z INFO webdriver: BIDI COMMAND session.subscribe {"events":["log.entryAdded","browsingContext.navigationStarted"]}
+[0-0] 2025-09-15T01:56:22.574Z INFO webdriver: BIDI COMMAND script.addPreloadScript { functionDeclaration: <PreloadScript[1319 bytes]>, contexts: undefined }
+[0-0] 2025-09-15T01:56:22.575Z INFO webdriver: BIDI COMMAND session.subscribe {"events":["browsingContext.navigationStarted","browsingContext.fragmentNavigated","network.responseCompleted","network.beforeRequestSent","network.fetchError"]}
+[0-0] 2025-09-15T01:56:22.575Z INFO webdriver: BIDI COMMAND session.subscribe {"events":["browsingContext.userPromptOpened"]}
+[0-0] 2025-09-15T01:56:22.575Z INFO webdriver: BIDI COMMAND session.subscribe {"events":["browsingContext.navigationStarted"]}
+[0-0] 2025-09-15T01:56:22.576Z INFO webdriver: COMMAND getWindowHandle()
+[0-0] 2025-09-15T01:56:22.576Z INFO webdriver: BIDI COMMAND browsingContext.getTree {}
+[0-0] 2025-09-15T01:56:22.576Z INFO webdriver: [GET] http://localhost:60670/session/6609cae04ae9ff1208f089bf1472d08c/window
+[0-0] 2025-09-15T01:56:22.582Z INFO webdriver: RESULT B7930696D6A27FB525DD325340D8266F
+[0-0] 2025-09-15T01:56:22.585Z INFO webdriverio:PolyfillManager: Adding polyfill script to context with id B7930696D6A27FB525DD325340D8266F
+[0-0] 2025-09-15T01:56:22.586Z INFO webdriver: BIDI COMMAND script.callFunction {"functionDeclaration":"<Function[443 bytes] webdriverioPolyfill>","target":{"children":null,"clientWindow":"235941227","context":"B7930696D6A27FB525DD325340D8266F","originalOpener":null,"parent":null,"url":"about:blank","userContext":"default"},"awaitPromise":false}
+[0-0] 2025-09-15T01:56:22.586Z INFO webdriver: BIDI COMMAND script.addPreloadScript { functionDeclaration: <PreloadScript[443 bytes]>, contexts: ["B7930696D6A27FB525DD325340D8266F"] }
+[0-0] 2025-09-15T01:56:22.587Z INFO webdriver: BIDI RESULT {"id":1,"result":{"subscription":"b93f6b48-6a74-4a3f-aa33-f53cb8e4496c"},"type":"success"}
+[0-0] 2025-09-15T01:56:22.588Z INFO webdriver: BIDI RESULT {"id":2,"result":{"subscription":"38633b77-069f-4ef3-a700-103b8829eb33"},"type":"success"}
+[0-0] 2025-09-15T01:56:22.589Z INFO webdriver: BIDI RESULT {"id":4,"result":{"subscription":"7432c920-f1e7-4920-95aa-380c2e6eb143"},"type":"success"}
+[0-0] 2025-09-15T01:56:22.589Z INFO webdriver: BIDI RESULT {"id":3,"result":{"script":"b085a565-123f-47cc-93e0-8dbb87582a91"},"type":"success"}
+[0-0] 2025-09-15T01:56:22.589Z INFO webdriver: BIDI RESULT {"id":5,"result":{"subscription":"f2cd1624-d255-4beb-9dac-4508db45d2b5"},"type":"success"}
+[0-0] 2025-09-15T01:56:22.589Z INFO webdriver: BIDI RESULT {"id":6,"result":{"subscription":"de289c0d-a905-44ac-b0bc-d38767775a4b"},"type":"success"}
+[0-0] 2025-09-15T01:56:22.590Z INFO webdriver: BIDI RESULT {"id":7,"result":{"contexts":[{"children":[],"clientWindow":"235941227","context":"B7930696D6A27FB525DD325340D8266F","originalOpener":null,"parent":null,"url":"about:blank","userContext":"default"}]},"type":"success"}
+[0-0] 2025-09-15T01:56:22.592Z INFO webdriver: BIDI RESULT {"id":8,"result":{"realm":"-5604646791106018869.-1666642699267431732","result":{"type":"undefined"},"type":"success"},"type":"success"}
+[0-0] 2025-09-15T01:56:22.593Z INFO webdriver: BIDI RESULT {"id":9,"result":{"script":"2f9c7c31-1932-44a9-adef-ead064cc04af"},"type":"success"}
+[0-0] {"level":"info","time":1757901382668,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","specCount":1,"capabilities":{"maxInstances":1,"browserName":"chrome","acceptInsecureCerts":true,"goog:chromeOptions":{"args":["--enable-chrome-browser-cloud-management","--disable-web-security","--disable-features=VizDisplayCompositor","--no-sandbox","--disable-dev-shm-usage","--disable-gpu","--window-size=1920,1080","--disable-background-timer-throttling","--disable-backgrounding-occluded-windows","--disable-renderer-backgrounding","--disable-extensions","--disable-plugins","--disable-default-apps","--disable-sync","--disable-translate","--disable-background-networking","--disable-client-side-phishing-detection","--disable-component-extensions-with-background-pages","--disable-hang-monitor","--disable-prompt-on-repost","--disable-domain-reliability","--disable-features=TranslateUI","--disable-ipc-flooding-protection","--no-first-run","--no-default-browser-check","--disable-logging","--disable-permissions-api","--disable-popup-blocking","--disable-prompt-on-repost","--disable-web-resources","--disable-xss-auditor","--disable-features=VizDisplayCompositor","--force-color-profile=srgb","--memory-pressure-off","--max_old_space_size=4096","--log-level=3","--silent","--disable-gpu-logging"],"prefs":{"logging":{"level":"OFF"}}}},"type":"test-suite-start","msg":"Starting test suite with 1 spec files"}
+[0-0] {"level":"info","time":1757901382808,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","featureName":"Bluesky Authentication - User credential validation and authentication","featureUri":"C:\\Users\\trifo\\Documents\\flock\\features\\auth\\auth.feature","type":"feature-start","msg":"Starting feature: Bluesky Authentication - User credential validation and authentication"}
+[0-0] {"level":"info","time":1757901382844,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","scenarioName":"Authentication form displays correctly","scenarioId":"fedac987-7d44-4a9e-b465-f8352dd6a7d5","type":"scenario-start","msg":"Starting scenario: Authentication form displays correctly"}
+[0-0] 2025-09-15T01:56:22.845Z INFO webdriver: BIDI COMMAND script.callFunction {"functionDeclaration":"<Function[128 bytes] anonymous>","awaitPromise":true,"arguments":[],"target":{"context":"B7930696D6A27FB525DD325340D8266F"}}
+[0-0] {"level":"info","time":1757901382844,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","type":"timeout-telemetry-start","msg":"Timeout telemetry collection started"}
+[0-0] {"level":"info","time":1757901382844,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","type":"performance-monitoring-start","msg":"Performance monitoring started"}
+[0-0] {"level":"info","time":1757901382845,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","testId":"fedac987-7d44-4a9e-b465-f8352dd6a7d5","testName":"Authentication form displays correctly","type":"metrics-start","msg":"Started metrics collection for test: Authentication form displays correctly"}
+[0-0] 2025-09-15T01:56:22.849Z INFO webdriver: BIDI RESULT {"id":10,"result":{"realm":"-5604646791106018869.-1666642699267431732","result":{"type":"string","value":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"},"type":"success"},"type":"success"}
+[0-0] 2025-09-15T01:56:22.855Z INFO webdriver: BIDI COMMAND browsingContext.navigate {"context":"B7930696D6A27FB525DD325340D8266F","url":"http://localhost:4200/step/upload","wait":"complete"}
+[0-0] 2025-09-15T01:56:25.236Z INFO webdriver: BIDI RESULT {"error":"unknown error","id":11,"message":"net::ERR_CONNECTION_REFUSED","stacktrace":"Error\n    at new UnknownErrorException (\u003Canonymous>:65:5328)\n    at BrowsingContextImpl.navigate (\u003Canonymous>:680:15151)\n    at async #processCommand (\u003Canonymous>:485:5579)\n    at async CommandProcessor.processCommand (\u003Canonymous>:485:11702)","type":"error"}
+[0-0] 2025-09-15T01:56:25.291Z INFO webdriver: COMMAND navigateTo("http://localhost:4200/step/upload")
+[0-0] 2025-09-15T01:56:25.292Z INFO webdriver: [POST] http://localhost:60670/session/6609cae04ae9ff1208f089bf1472d08c/url
+[0-0] 2025-09-15T01:56:25.292Z INFO webdriver: DATA { url: 'http://localhost:4200/step/upload' }
+[0-0] 2025-09-15T01:56:27.889Z WARN webdriver: WebDriverError: unknown error: net::ERR_CONNECTION_REFUSED
+[0-0]   (Session info: chrome=140.0.7339.128) when running "url" with method "POST" and args "{"url":"http://localhost:4200/step/upload"}"
+[0-0] 2025-09-15T01:56:27.889Z INFO webdriver: Retrying 1/2
+[0-0] 2025-09-15T01:56:27.889Z INFO webdriver: [POST] http://localhost:60670/session/6609cae04ae9ff1208f089bf1472d08c/url
+[0-0] 2025-09-15T01:56:27.889Z INFO webdriver: DATA { url: 'http://localhost:4200/step/upload' }
+[0-0] 2025-09-15T01:56:33.016Z WARN webdriver: WebDriverError: unknown error: net::ERR_CONNECTION_REFUSED
+[0-0]   (Session info: chrome=140.0.7339.128) when running "url" with method "POST" and args "{"url":"http://localhost:4200/step/upload"}"
+[0-0] 2025-09-15T01:56:33.017Z INFO webdriver: Retrying 2/2
+[0-0] 2025-09-15T01:56:33.017Z INFO webdriver: [POST] http://localhost:60670/session/6609cae04ae9ff1208f089bf1472d08c/url
+[0-0] 2025-09-15T01:56:33.017Z INFO webdriver: DATA { url: 'http://localhost:4200/step/upload' }
+[0-0] 2025-09-15T01:56:37.809Z ERROR webdriver: WebDriverError: unknown error: net::ERR_CONNECTION_REFUSED
+[0-0]   (Session info: chrome=140.0.7339.128) when running "url" with method "POST" and args "{"url":"http://localhost:4200/step/upload"}"
+[0-0] {"level":"error","time":1757901397815,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: And  I navigate to the upload step"}
+[0-0] Error in "0: And I navigate to the upload step"
+unknown error: WebDriverError: unknown error: net::ERR_CONNECTION_REFUSED
+  (Session info: chrome=140.0.7339.128) when running "url" with method "POST" and args "{"url":"http://localhost:4200/step/upload"}"
+    at FetchRequest._request (file:///C:/Users/trifo/Documents/flock/node_modules/webdriver/build/node.js:1951:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async Browser.wrapCommandFn (C:\Users\trifo\Documents\flock\node_modules\@wdio\utils\build\index.js:978:23)
+    at async Browser.url (C:\Users\trifo\Documents\flock\node_modules\webdriverio\build\node.js:5661:24)
+    at async Browser.wrapCommandFn (C:\Users\trifo\Documents\flock\node_modules\@wdio\utils\build\index.js:978:23)
+    at async StepLayoutPage.openUploadStep (C:\Users\trifo\Documents\flock\features\pageobjects\step-layout.page.ts:172:9)
+    at async World.<anonymous> (C:\Users\trifo\Documents\flock\features\step-definitions\step-navigation.ts:6:5)
+    at async wrapPromiseWithTimeout (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\time.ts:55:10)
+    at async Object.run (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\user_code_runner.ts:86:16)
+    at async Object.run (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\runtime\step_runner.ts:51:20)
+[0-0] {"level":"info","time":1757901397848,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","scenarioName":"Authentication form displays correctly","status":"passed","resultType":"object","resultKeys":["attach","log","link","parameters"],"type":"scenario-complete","msg":"Scenario completed: Authentication form displays correctly (passed)"}
+[0-0] {"level":"info","time":1757901397848,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","type":"timeout-telemetry-stop","totalEvents":0,"msg":"Timeout telemetry collection stopped"}
+[0-0] {"level":"info","time":1757901397848,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","type":"performance-monitoring-stop","msg":"Performance monitoring stopped"}
+[0-0] {"level":"info","time":1757901397848,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","testId":"fedac987-7d44-4a9e-b465-f8352dd6a7d5","testName":"Authentication form displays correctly","status":"passed","duration":15003,"type":"metrics-complete","msg":"Completed metrics collection for test: Authentication form displays correctly (passed)"}
+[0-0] {"level":"info","time":1757901397848,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","testId":"fedac987-7d44-4a9e-b465-f8352dd6a7d5","duration":15003,"navigations":0,"interactions":0,"errors":0,"type":"test-metrics-summary","msg":"Test Metrics Summary"}
+[0-0] {"level":"info","time":1757901397852,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","scenarioName":"Authentication form displays correctly","scenarioId":"fedac987-7d44-4a9e-b465-f8352dd6a7d5","type":"scenario-start","msg":"Starting scenario: Authentication form displays correctly"}
+[0-0] 2025-09-15T01:56:37.853Z INFO webdriver: BIDI COMMAND script.callFunction {"functionDeclaration":"<Function[128 bytes] anonymous>","awaitPromise":true,"arguments":[],"target":{"context":"B7930696D6A27FB525DD325340D8266F"}}
+[0-0] {"level":"info","time":1757901397852,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","type":"timeout-telemetry-start","msg":"Timeout telemetry collection started"}
+[0-0] {"level":"info","time":1757901397852,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","type":"performance-monitoring-start","msg":"Performance monitoring started"}
+[0-0] {"level":"info","time":1757901397852,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","testId":"fedac987-7d44-4a9e-b465-f8352dd6a7d5","testName":"Authentication form displays correctly","type":"metrics-start","msg":"Started metrics collection for test: Authentication form displays correctly"}
+[0-0] 2025-09-15T01:56:37.856Z INFO webdriver: BIDI RESULT {"id":12,"result":{"realm":"172287624615925487.-4665887616621322220","result":{"type":"string","value":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"},"type":"success"},"type":"success"}
+[0-0] 2025-09-15T01:56:37.859Z INFO webdriver: BIDI COMMAND browsingContext.navigate {"context":"B7930696D6A27FB525DD325340D8266F","url":"http://localhost:4200/step/upload","wait":"complete"}
+[0-0] 2025-09-15T01:56:38.021Z INFO webdriver: BIDI RESULT {"error":"unknown error","id":13,"message":"net::ERR_CONNECTION_REFUSED","stacktrace":"Error\n    at new UnknownErrorException (\u003Canonymous>:65:5328)\n    at BrowsingContextImpl.navigate (\u003Canonymous>:680:15151)\n    at async #processCommand (\u003Canonymous>:485:5579)\n    at async CommandProcessor.processCommand (\u003Canonymous>:485:11702)","type":"error"}
+[0-0] 2025-09-15T01:56:38.024Z INFO webdriver: COMMAND navigateTo("http://localhost:4200/step/upload")
+[0-0] 2025-09-15T01:56:38.024Z INFO webdriver: [POST] http://localhost:60670/session/6609cae04ae9ff1208f089bf1472d08c/url
+[0-0] 2025-09-15T01:56:38.024Z INFO webdriver: DATA { url: 'http://localhost:4200/step/upload' }
+[0-0] 2025-09-15T01:56:40.275Z WARN webdriver: WebDriverError: unknown error: net::ERR_CONNECTION_REFUSED
+[0-0]   (Session info: chrome=140.0.7339.128) when running "url" with method "POST" and args "{"url":"http://localhost:4200/step/upload"}"
+[0-0] 2025-09-15T01:56:40.275Z INFO webdriver: Retrying 1/2
+[0-0] 2025-09-15T01:56:40.275Z INFO webdriver: [POST] http://localhost:60670/session/6609cae04ae9ff1208f089bf1472d08c/url
+[0-0] 2025-09-15T01:56:40.275Z INFO webdriver: DATA { url: 'http://localhost:4200/step/upload' }
+[0-0] 2025-09-15T01:56:43.352Z WARN webdriver: WebDriverError: unknown error: net::ERR_CONNECTION_REFUSED
+[0-0]   (Session info: chrome=140.0.7339.128) when running "url" with method "POST" and args "{"url":"http://localhost:4200/step/upload"}"
+[0-0] 2025-09-15T01:56:43.352Z INFO webdriver: Retrying 2/2
+[0-0] 2025-09-15T01:56:43.353Z INFO webdriver: [POST] http://localhost:60670/session/6609cae04ae9ff1208f089bf1472d08c/url
+[0-0] 2025-09-15T01:56:43.353Z INFO webdriver: DATA { url: 'http://localhost:4200/step/upload' }
+[0-0] 2025-09-15T01:56:45.766Z ERROR webdriver: WebDriverError: unknown error: net::ERR_CONNECTION_REFUSED
+[0-0]   (Session info: chrome=140.0.7339.128) when running "url" with method "POST" and args "{"url":"http://localhost:4200/step/upload"}"
+[0-0] {"level":"error","time":1757901405771,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: And  I navigate to the upload step"}
+[0-0] Error in "0: And I navigate to the upload step"
+unknown error: WebDriverError: unknown error: net::ERR_CONNECTION_REFUSED
+  (Session info: chrome=140.0.7339.128) when running "url" with method "POST" and args "{"url":"http://localhost:4200/step/upload"}"
+    at FetchRequest._request (file:///C:/Users/trifo/Documents/flock/node_modules/webdriver/build/node.js:1951:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async Browser.wrapCommandFn (C:\Users\trifo\Documents\flock\node_modules\@wdio\utils\build\index.js:978:23)
+    at async Browser.url (C:\Users\trifo\Documents\flock\node_modules\webdriverio\build\node.js:5661:24)
+    at async Browser.wrapCommandFn (C:\Users\trifo\Documents\flock\node_modules\@wdio\utils\build\index.js:978:23)
+    at async StepLayoutPage.openUploadStep (C:\Users\trifo\Documents\flock\features\pageobjects\step-layout.page.ts:172:9)
+    at async World.<anonymous> (C:\Users\trifo\Documents\flock\features\step-definitions\step-navigation.ts:6:5)
+    at async wrapPromiseWithTimeout (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\time.ts:55:10)
+    at async Object.run (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\user_code_runner.ts:86:16)
+    at async Object.run (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\runtime\step_runner.ts:51:20)
+[0-0] {"level":"info","time":1757901405795,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","scenarioName":"Authentication form displays correctly","status":"passed","resultType":"object","resultKeys":["attach","log","link","parameters"],"type":"scenario-complete","msg":"Scenario completed: Authentication form displays correctly (passed)"}
+[0-0] {"level":"info","time":1757901405795,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","type":"timeout-telemetry-stop","totalEvents":0,"msg":"Timeout telemetry collection stopped"}
+[0-0] {"level":"info","time":1757901405795,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","type":"performance-monitoring-stop","msg":"Performance monitoring stopped"}
+[0-0] {"level":"info","time":1757901405795,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","testId":"fedac987-7d44-4a9e-b465-f8352dd6a7d5","testName":"Authentication form displays correctly","status":"passed","duration":7943,"type":"metrics-complete","msg":"Completed metrics collection for test: Authentication form displays correctly (passed)"}
+[0-0] {"level":"info","time":1757901405795,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","testId":"fedac987-7d44-4a9e-b465-f8352dd6a7d5","duration":7943,"navigations":0,"interactions":0,"errors":0,"type":"test-metrics-summary","msg":"Test Metrics Summary"}
+[0-0] {"level":"info","time":1757901405807,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","scenarioName":"Form validation requires both fields to be valid","scenarioId":"b02e6e96-6b0c-4069-9384-6c5dd4c2a577","type":"scenario-start","msg":"Starting scenario: Form validation requires both fields to be valid"}
+[0-0] 2025-09-15T01:56:45.807Z INFO webdriver: BIDI COMMAND script.callFunction {"functionDeclaration":"<Function[128 bytes] anonymous>","awaitPromise":true,"arguments":[],"target":{"context":"B7930696D6A27FB525DD325340D8266F"}}
+[0-0] {"level":"info","time":1757901405807,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","type":"timeout-telemetry-start","msg":"Timeout telemetry collection started"}
+[0-0] {"level":"info","time":1757901405807,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","type":"performance-monitoring-start","msg":"Performance monitoring started"}
+[0-0] {"level":"info","time":1757901405807,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","testId":"b02e6e96-6b0c-4069-9384-6c5dd4c2a577","testName":"Form validation requires both fields to be valid","type":"metrics-start","msg":"Started metrics collection for test: Form validation requires both fields to be valid"}
+[0-0] 2025-09-15T01:56:45.811Z INFO webdriver: BIDI RESULT {"id":14,"result":{"realm":"1985447783736871998.8220779593857155223","result":{"type":"string","value":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"},"type":"success"},"type":"success"}
+[0-0] 2025-09-15T01:56:45.815Z INFO webdriver: BIDI COMMAND browsingContext.navigate {"context":"B7930696D6A27FB525DD325340D8266F","url":"http://localhost:4200/step/upload","wait":"complete"}
+[0-0] 2025-09-15T01:56:47.460Z INFO webdriver: BIDI RESULT {"error":"unknown error","id":15,"message":"net::ERR_CONNECTION_REFUSED","stacktrace":"Error\n    at new UnknownErrorException (\u003Canonymous>:65:5328)\n    at BrowsingContextImpl.navigate (\u003Canonymous>:680:15151)\n    at async #processCommand (\u003Canonymous>:485:5579)\n    at async CommandProcessor.processCommand (\u003Canonymous>:485:11702)","type":"error"}
+[0-0] 2025-09-15T01:56:47.464Z INFO webdriver: COMMAND navigateTo("http://localhost:4200/step/upload")
+[0-0] 2025-09-15T01:56:47.464Z INFO webdriver: [POST] http://localhost:60670/session/6609cae04ae9ff1208f089bf1472d08c/url
+[0-0] 2025-09-15T01:56:47.464Z INFO webdriver: DATA { url: 'http://localhost:4200/step/upload' }
+[0-0] 2025-09-15T01:56:49.871Z WARN webdriver: WebDriverError: unknown error: net::ERR_CONNECTION_REFUSED
+[0-0]   (Session info: chrome=140.0.7339.128) when running "url" with method "POST" and args "{"url":"http://localhost:4200/step/upload"}"
+[0-0] 2025-09-15T01:56:49.871Z INFO webdriver: Retrying 1/2
+[0-0] 2025-09-15T01:56:49.871Z INFO webdriver: [POST] http://localhost:60670/session/6609cae04ae9ff1208f089bf1472d08c/url
+[0-0] 2025-09-15T01:56:49.871Z INFO webdriver: DATA { url: 'http://localhost:4200/step/upload' }
+[0-0] 2025-09-15T01:56:53.491Z WARN webdriver: WebDriverError: unknown error: net::ERR_CONNECTION_REFUSED
+[0-0]   (Session info: chrome=140.0.7339.128) when running "url" with method "POST" and args "{"url":"http://localhost:4200/step/upload"}"
+[0-0] 2025-09-15T01:56:53.491Z INFO webdriver: Retrying 2/2
+[0-0] 2025-09-15T01:56:53.492Z INFO webdriver: [POST] http://localhost:60670/session/6609cae04ae9ff1208f089bf1472d08c/url
+[0-0] 2025-09-15T01:56:53.492Z INFO webdriver: DATA { url: 'http://localhost:4200/step/upload' }
+[0-0] 2025-09-15T01:56:57.038Z ERROR webdriver: WebDriverError: unknown error: net::ERR_CONNECTION_REFUSED
+[0-0]   (Session info: chrome=140.0.7339.128) when running "url" with method "POST" and args "{"url":"http://localhost:4200/step/upload"}"
+[0-0] {"level":"error","time":1757901417042,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: And  I navigate to the upload step"}
+[0-0] Error in "1: And I navigate to the upload step"
+unknown error: WebDriverError: unknown error: net::ERR_CONNECTION_REFUSED
+  (Session info: chrome=140.0.7339.128) when running "url" with method "POST" and args "{"url":"http://localhost:4200/step/upload"}"
+    at FetchRequest._request (file:///C:/Users/trifo/Documents/flock/node_modules/webdriver/build/node.js:1951:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async Browser.wrapCommandFn (C:\Users\trifo\Documents\flock\node_modules\@wdio\utils\build\index.js:978:23)
+    at async Browser.url (C:\Users\trifo\Documents\flock\node_modules\webdriverio\build\node.js:5661:24)
+    at async Browser.wrapCommandFn (C:\Users\trifo\Documents\flock\node_modules\@wdio\utils\build\index.js:978:23)
+    at async StepLayoutPage.openUploadStep (C:\Users\trifo\Documents\flock\features\pageobjects\step-layout.page.ts:172:9)
+    at async World.<anonymous> (C:\Users\trifo\Documents\flock\features\step-definitions\step-navigation.ts:6:5)
+    at async wrapPromiseWithTimeout (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\time.ts:55:10)
+    at async Object.run (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\user_code_runner.ts:86:16)
+    at async Object.run (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\runtime\step_runner.ts:51:20)
+[0-0] {"level":"info","time":1757901417068,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","scenarioName":"Form validation requires both fields to be valid","status":"passed","resultType":"object","resultKeys":["attach","log","link","parameters"],"type":"scenario-complete","msg":"Scenario completed: Form validation requires both fields to be valid (passed)"}
+[0-0] {"level":"info","time":1757901417069,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","type":"timeout-telemetry-stop","totalEvents":0,"msg":"Timeout telemetry collection stopped"}
+[0-0] {"level":"info","time":1757901417069,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","type":"performance-monitoring-stop","msg":"Performance monitoring stopped"}
+[0-0] {"level":"info","time":1757901417069,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","testId":"b02e6e96-6b0c-4069-9384-6c5dd4c2a577","testName":"Form validation requires both fields to be valid","status":"passed","duration":11262,"type":"metrics-complete","msg":"Completed metrics collection for test: Form validation requires both fields to be valid (passed)"}
+[0-0] {"level":"info","time":1757901417069,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","testId":"b02e6e96-6b0c-4069-9384-6c5dd4c2a577","duration":11262,"navigations":0,"interactions":0,"errors":0,"type":"test-metrics-summary","msg":"Test Metrics Summary"}
+[0-0] {"level":"info","time":1757901417071,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","scenarioName":"Form validation requires both fields to be valid","scenarioId":"b02e6e96-6b0c-4069-9384-6c5dd4c2a577","type":"scenario-start","msg":"Starting scenario: Form validation requires both fields to be valid"}
+[0-0] 2025-09-15T01:56:57.072Z INFO webdriver: BIDI COMMAND script.callFunction {"functionDeclaration":"<Function[128 bytes] anonymous>","awaitPromise":true,"arguments":[],"target":{"context":"B7930696D6A27FB525DD325340D8266F"}}
+[0-0] {"level":"info","time":1757901417071,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","type":"timeout-telemetry-start","msg":"Timeout telemetry collection started"}
+[0-0] {"level":"info","time":1757901417071,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","type":"performance-monitoring-start","msg":"Performance monitoring started"}
+[0-0] {"level":"info","time":1757901417071,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","testId":"b02e6e96-6b0c-4069-9384-6c5dd4c2a577","testName":"Form validation requires both fields to be valid","type":"metrics-start","msg":"Started metrics collection for test: Form validation requires both fields to be valid"}
+[0-0] 2025-09-15T01:56:57.076Z INFO webdriver: BIDI RESULT {"id":16,"result":{"realm":"-434954689855596558.2157866282866349677","result":{"type":"string","value":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"},"type":"success"},"type":"success"}
+[0-0] 2025-09-15T01:56:57.080Z INFO webdriver: BIDI COMMAND browsingContext.navigate {"context":"B7930696D6A27FB525DD325340D8266F","url":"http://localhost:4200/step/upload","wait":"complete"}
+[0-0] 2025-09-15T01:56:58.252Z INFO webdriver: BIDI RESULT {"error":"unknown error","id":17,"message":"net::ERR_CONNECTION_REFUSED","stacktrace":"Error\n    at new UnknownErrorException (\u003Canonymous>:65:5328)\n    at BrowsingContextImpl.navigate (\u003Canonymous>:680:15151)\n    at async #processCommand (\u003Canonymous>:485:5579)\n    at async CommandProcessor.processCommand (\u003Canonymous>:485:11702)","type":"error"}
+[0-0] 2025-09-15T01:56:58.254Z INFO webdriver: COMMAND navigateTo("http://localhost:4200/step/upload")
+[0-0] 2025-09-15T01:56:58.254Z INFO webdriver: [POST] http://localhost:60670/session/6609cae04ae9ff1208f089bf1472d08c/url
+[0-0] 2025-09-15T01:56:58.254Z INFO webdriver: DATA { url: 'http://localhost:4200/step/upload' }
+[0-0] 2025-09-15T01:57:00.659Z WARN webdriver: WebDriverError: unknown error: net::ERR_CONNECTION_REFUSED
+[0-0]   (Session info: chrome=140.0.7339.128) when running "url" with method "POST" and args "{"url":"http://localhost:4200/step/upload"}"
+[0-0] 2025-09-15T01:57:00.659Z INFO webdriver: Retrying 1/2
+[0-0] 2025-09-15T01:57:00.659Z INFO webdriver: [POST] http://localhost:60670/session/6609cae04ae9ff1208f089bf1472d08c/url
+[0-0] 2025-09-15T01:57:00.659Z INFO webdriver: DATA { url: 'http://localhost:4200/step/upload' }
+[0-0] 2025-09-15T01:57:04.742Z WARN webdriver: WebDriverError: unknown error: net::ERR_CONNECTION_REFUSED
+[0-0]   (Session info: chrome=140.0.7339.128) when running "url" with method "POST" and args "{"url":"http://localhost:4200/step/upload"}"
+[0-0] 2025-09-15T01:57:04.742Z INFO webdriver: Retrying 2/2
+[0-0] 2025-09-15T01:57:04.742Z INFO webdriver: [POST] http://localhost:60670/session/6609cae04ae9ff1208f089bf1472d08c/url
+[0-0] 2025-09-15T01:57:04.742Z INFO webdriver: DATA { url: 'http://localhost:4200/step/upload' }
+[0-0] 2025-09-15T01:57:05.430Z ERROR webdriver: WebDriverError: unknown error: net::ERR_CONNECTION_REFUSED
+[0-0]   (Session info: chrome=140.0.7339.128) when running "url" with method "POST" and args "{"url":"http://localhost:4200/step/upload"}"
+[0-0] {"level":"error","time":1757901425434,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: And  I navigate to the upload step"}
+[0-0] Error in "1: And I navigate to the upload step"
+unknown error: WebDriverError: unknown error: net::ERR_CONNECTION_REFUSED
+  (Session info: chrome=140.0.7339.128) when running "url" with method "POST" and args "{"url":"http://localhost:4200/step/upload"}"
+    at FetchRequest._request (file:///C:/Users/trifo/Documents/flock/node_modules/webdriver/build/node.js:1951:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async Browser.wrapCommandFn (C:\Users\trifo\Documents\flock\node_modules\@wdio\utils\build\index.js:978:23)
+    at async Browser.url (C:\Users\trifo\Documents\flock\node_modules\webdriverio\build\node.js:5661:24)
+    at async Browser.wrapCommandFn (C:\Users\trifo\Documents\flock\node_modules\@wdio\utils\build\index.js:978:23)
+    at async StepLayoutPage.openUploadStep (C:\Users\trifo\Documents\flock\features\pageobjects\step-layout.page.ts:172:9)
+    at async World.<anonymous> (C:\Users\trifo\Documents\flock\features\step-definitions\step-navigation.ts:6:5)
+    at async wrapPromiseWithTimeout (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\time.ts:55:10)
+    at async Object.run (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\user_code_runner.ts:86:16)
+    at async Object.run (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\runtime\step_runner.ts:51:20)
+[0-0] {"level":"info","time":1757901425464,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","scenarioName":"Form validation requires both fields to be valid","status":"passed","resultType":"object","resultKeys":["attach","log","link","parameters"],"type":"scenario-complete","msg":"Scenario completed: Form validation requires both fields to be valid (passed)"}
+[0-0] {"level":"info","time":1757901425464,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","type":"timeout-telemetry-stop","totalEvents":0,"msg":"Timeout telemetry collection stopped"}
+[0-0] {"level":"info","time":1757901425464,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","type":"performance-monitoring-stop","msg":"Performance monitoring stopped"}
+[0-0] {"level":"info","time":1757901425464,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","testId":"b02e6e96-6b0c-4069-9384-6c5dd4c2a577","testName":"Form validation requires both fields to be valid","status":"passed","duration":8393,"type":"metrics-complete","msg":"Completed metrics collection for test: Form validation requires both fields to be valid (passed)"}
+[0-0] {"level":"info","time":1757901425464,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","testId":"b02e6e96-6b0c-4069-9384-6c5dd4c2a577","duration":8393,"navigations":0,"interactions":0,"errors":0,"type":"test-metrics-summary","msg":"Test Metrics Summary"}
+[0-0] {"level":"info","time":1757901425469,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","scenarioName":"Successful authentication allows progression","scenarioId":"e91ba9cd-73ba-433a-9950-bff36172eb5f","type":"scenario-start","msg":"Starting scenario: Successful authentication allows progression"}
+[0-0] 2025-09-15T01:57:05.469Z INFO webdriver: BIDI COMMAND script.callFunction {"functionDeclaration":"<Function[128 bytes] anonymous>","awaitPromise":true,"arguments":[],"target":{"context":"B7930696D6A27FB525DD325340D8266F"}}
+[0-0] {"level":"info","time":1757901425469,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","type":"timeout-telemetry-start","msg":"Timeout telemetry collection started"}
+[0-0] {"level":"info","time":1757901425469,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","type":"performance-monitoring-start","msg":"Performance monitoring started"}
+[0-0] {"level":"info","time":1757901425469,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","testId":"e91ba9cd-73ba-433a-9950-bff36172eb5f","testName":"Successful authentication allows progression","type":"metrics-start","msg":"Started metrics collection for test: Successful authentication allows progression"}
+[0-0] 2025-09-15T01:57:05.473Z INFO webdriver: BIDI RESULT {"id":18,"result":{"realm":"8113899633716803243.-4869972506389912550","result":{"type":"string","value":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"},"type":"success"},"type":"success"}
+[0-0] 2025-09-15T01:57:05.477Z INFO webdriver: BIDI COMMAND browsingContext.navigate {"context":"B7930696D6A27FB525DD325340D8266F","url":"http://localhost:4200/step/upload","wait":"complete"}
+[0-0] 2025-09-15T01:57:07.114Z INFO webdriver: BIDI RESULT {"error":"unknown error","id":19,"message":"net::ERR_CONNECTION_REFUSED","stacktrace":"Error\n    at new UnknownErrorException (\u003Canonymous>:65:5328)\n    at BrowsingContextImpl.navigate (\u003Canonymous>:680:15151)\n    at async #processCommand (\u003Canonymous>:485:5579)\n    at async CommandProcessor.processCommand (\u003Canonymous>:485:11702)","type":"error"}
+[0-0] 2025-09-15T01:57:07.117Z INFO webdriver: COMMAND navigateTo("http://localhost:4200/step/upload")
+[0-0] 2025-09-15T01:57:07.118Z INFO webdriver: [POST] http://localhost:60670/session/6609cae04ae9ff1208f089bf1472d08c/url
+[0-0] 2025-09-15T01:57:07.118Z INFO webdriver: DATA { url: 'http://localhost:4200/step/upload' }
+[0-0] 2025-09-15T01:57:10.256Z WARN webdriver: WebDriverError: unknown error: net::ERR_CONNECTION_REFUSED
+[0-0]   (Session info: chrome=140.0.7339.128) when running "url" with method "POST" and args "{"url":"http://localhost:4200/step/upload"}"
+[0-0] 2025-09-15T01:57:10.256Z INFO webdriver: Retrying 1/2
+[0-0] 2025-09-15T01:57:10.256Z INFO webdriver: [POST] http://localhost:60670/session/6609cae04ae9ff1208f089bf1472d08c/url
+[0-0] 2025-09-15T01:57:10.256Z INFO webdriver: DATA { url: 'http://localhost:4200/step/upload' }
+[0-0] 2025-09-15T01:57:14.800Z WARN webdriver: WebDriverError: unknown error: net::ERR_CONNECTION_REFUSED
+[0-0]   (Session info: chrome=140.0.7339.128) when running "url" with method "POST" and args "{"url":"http://localhost:4200/step/upload"}"
+[0-0] 2025-09-15T01:57:14.800Z INFO webdriver: Retrying 2/2
+[0-0] 2025-09-15T01:57:14.801Z INFO webdriver: [POST] http://localhost:60670/session/6609cae04ae9ff1208f089bf1472d08c/url
+[0-0] 2025-09-15T01:57:14.801Z INFO webdriver: DATA { url: 'http://localhost:4200/step/upload' }
+[0-0] 2025-09-15T01:57:17.516Z ERROR webdriver: WebDriverError: unknown error: net::ERR_CONNECTION_REFUSED
+[0-0]   (Session info: chrome=140.0.7339.128) when running "url" with method "POST" and args "{"url":"http://localhost:4200/step/upload"}"
+[0-0] {"level":"error","time":1757901437524,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: And  I navigate to the upload step"}
+[0-0] Error in "2: And I navigate to the upload step"
+unknown error: WebDriverError: unknown error: net::ERR_CONNECTION_REFUSED
+  (Session info: chrome=140.0.7339.128) when running "url" with method "POST" and args "{"url":"http://localhost:4200/step/upload"}"
+    at FetchRequest._request (file:///C:/Users/trifo/Documents/flock/node_modules/webdriver/build/node.js:1951:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async Browser.wrapCommandFn (C:\Users\trifo\Documents\flock\node_modules\@wdio\utils\build\index.js:978:23)
+    at async Browser.url (C:\Users\trifo\Documents\flock\node_modules\webdriverio\build\node.js:5661:24)
+    at async Browser.wrapCommandFn (C:\Users\trifo\Documents\flock\node_modules\@wdio\utils\build\index.js:978:23)
+    at async StepLayoutPage.openUploadStep (C:\Users\trifo\Documents\flock\features\pageobjects\step-layout.page.ts:172:9)
+    at async World.<anonymous> (C:\Users\trifo\Documents\flock\features\step-definitions\step-navigation.ts:6:5)
+    at async wrapPromiseWithTimeout (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\time.ts:55:10)
+    at async Object.run (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\user_code_runner.ts:86:16)
+    at async Object.run (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\runtime\step_runner.ts:51:20)
+[0-0] {"level":"info","time":1757901437560,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","scenarioName":"Successful authentication allows progression","status":"passed","resultType":"object","resultKeys":["attach","log","link","parameters"],"type":"scenario-complete","msg":"Scenario completed: Successful authentication allows progression (passed)"}
+[0-0] {"level":"info","time":1757901437560,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","type":"timeout-telemetry-stop","totalEvents":0,"msg":"Timeout telemetry collection stopped"}
+[0-0] {"level":"info","time":1757901437561,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","type":"performance-monitoring-stop","msg":"Performance monitoring stopped"}
+[0-0] {"level":"info","time":1757901437561,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","testId":"e91ba9cd-73ba-433a-9950-bff36172eb5f","testName":"Successful authentication allows progression","status":"passed","duration":12092,"type":"metrics-complete","msg":"Completed metrics collection for test: Successful authentication allows progression (passed)"}
+[0-0] {"level":"info","time":1757901437561,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","testId":"e91ba9cd-73ba-433a-9950-bff36172eb5f","duration":12092,"navigations":0,"interactions":0,"errors":0,"type":"test-metrics-summary","msg":"Test Metrics Summary"}
+[0-0] {"level":"info","time":1757901437566,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","scenarioName":"Successful authentication allows progression","scenarioId":"e91ba9cd-73ba-433a-9950-bff36172eb5f","type":"scenario-start","msg":"Starting scenario: Successful authentication allows progression"}
+[0-0] 2025-09-15T01:57:17.567Z INFO webdriver: BIDI COMMAND script.callFunction {"functionDeclaration":"<Function[128 bytes] anonymous>","awaitPromise":true,"arguments":[],"target":{"context":"B7930696D6A27FB525DD325340D8266F"}}
+[0-0] {"level":"info","time":1757901437566,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","type":"timeout-telemetry-start","msg":"Timeout telemetry collection started"}
+[0-0] {"level":"info","time":1757901437566,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","type":"performance-monitoring-start","msg":"Performance monitoring started"}
+[0-0] {"level":"info","time":1757901437566,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","testId":"e91ba9cd-73ba-433a-9950-bff36172eb5f","testName":"Successful authentication allows progression","type":"metrics-start","msg":"Started metrics collection for test: Successful authentication allows progression"}
+[0-0] 2025-09-15T01:57:17.571Z INFO webdriver: BIDI RESULT {"id":20,"result":{"realm":"-2669919950798308065.-6294875134469933018","result":{"type":"string","value":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"},"type":"success"},"type":"success"}
+[0-0] 2025-09-15T01:57:17.576Z INFO webdriver: BIDI COMMAND browsingContext.navigate {"context":"B7930696D6A27FB525DD325340D8266F","url":"http://localhost:4200/step/upload","wait":"complete"}
+[0-0] 2025-09-15T01:57:19.552Z INFO webdriver: BIDI RESULT {"error":"unknown error","id":21,"message":"net::ERR_CONNECTION_REFUSED","stacktrace":"Error\n    at new UnknownErrorException (\u003Canonymous>:65:5328)\n    at BrowsingContextImpl.navigate (\u003Canonymous>:680:15151)\n    at async #processCommand (\u003Canonymous>:485:5579)\n    at async CommandProcessor.processCommand (\u003Canonymous>:485:11702)","type":"error"}
+[0-0] 2025-09-15T01:57:19.555Z INFO webdriver: COMMAND navigateTo("http://localhost:4200/step/upload")
+[0-0] 2025-09-15T01:57:19.556Z INFO webdriver: [POST] http://localhost:60670/session/6609cae04ae9ff1208f089bf1472d08c/url
+[0-0] 2025-09-15T01:57:19.557Z INFO webdriver: DATA { url: 'http://localhost:4200/step/upload' }
+[0-0] 2025-09-15T01:57:22.359Z WARN webdriver: WebDriverError: unknown error: net::ERR_CONNECTION_REFUSED
+[0-0]   (Session info: chrome=140.0.7339.128) when running "url" with method "POST" and args "{"url":"http://localhost:4200/step/upload"}"
+[0-0] 2025-09-15T01:57:22.360Z INFO webdriver: Retrying 1/2
+[0-0] 2025-09-15T01:57:22.360Z INFO webdriver: [POST] http://localhost:60670/session/6609cae04ae9ff1208f089bf1472d08c/url
+[0-0] 2025-09-15T01:57:22.360Z INFO webdriver: DATA { url: 'http://localhost:4200/step/upload' }
+[0-0] 2025-09-15T01:57:27.245Z WARN webdriver: WebDriverError: unknown error: net::ERR_CONNECTION_REFUSED
+[0-0]   (Session info: chrome=140.0.7339.128) when running "url" with method "POST" and args "{"url":"http://localhost:4200/step/upload"}"
+[0-0] 2025-09-15T01:57:27.245Z INFO webdriver: Retrying 2/2
+[0-0] 2025-09-15T01:57:27.245Z INFO webdriver: [POST] http://localhost:60670/session/6609cae04ae9ff1208f089bf1472d08c/url
+[0-0] 2025-09-15T01:57:27.245Z INFO webdriver: DATA { url: 'http://localhost:4200/step/upload' }
+[0-0] 2025-09-15T01:57:32.014Z ERROR webdriver: WebDriverError: unknown error: net::ERR_CONNECTION_REFUSED
+[0-0]   (Session info: chrome=140.0.7339.128) when running "url" with method "POST" and args "{"url":"http://localhost:4200/step/upload"}"
+[0-0] {"level":"error","time":1757901452019,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: And  I navigate to the upload step"}
+[0-0] Error in "2: And I navigate to the upload step"
+unknown error: WebDriverError: unknown error: net::ERR_CONNECTION_REFUSED
+  (Session info: chrome=140.0.7339.128) when running "url" with method "POST" and args "{"url":"http://localhost:4200/step/upload"}"
+    at FetchRequest._request (file:///C:/Users/trifo/Documents/flock/node_modules/webdriver/build/node.js:1951:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async Browser.wrapCommandFn (C:\Users\trifo\Documents\flock\node_modules\@wdio\utils\build\index.js:978:23)
+    at async Browser.url (C:\Users\trifo\Documents\flock\node_modules\webdriverio\build\node.js:5661:24)
+    at async Browser.wrapCommandFn (C:\Users\trifo\Documents\flock\node_modules\@wdio\utils\build\index.js:978:23)
+    at async StepLayoutPage.openUploadStep (C:\Users\trifo\Documents\flock\features\pageobjects\step-layout.page.ts:172:9)
+    at async World.<anonymous> (C:\Users\trifo\Documents\flock\features\step-definitions\step-navigation.ts:6:5)
+    at async wrapPromiseWithTimeout (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\time.ts:55:10)
+    at async Object.run (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\user_code_runner.ts:86:16)
+    at async Object.run (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\runtime\step_runner.ts:51:20)
+[0-0] {"level":"info","time":1757901452045,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","scenarioName":"Successful authentication allows progression","status":"passed","resultType":"object","resultKeys":["attach","log","link","parameters"],"type":"scenario-complete","msg":"Scenario completed: Successful authentication allows progression (passed)"}
+[0-0] {"level":"info","time":1757901452046,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","type":"timeout-telemetry-stop","totalEvents":0,"msg":"Timeout telemetry collection stopped"}
+[0-0] {"level":"info","time":1757901452046,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","type":"performance-monitoring-stop","msg":"Performance monitoring stopped"}
+[0-0] {"level":"info","time":1757901452046,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","testId":"e91ba9cd-73ba-433a-9950-bff36172eb5f","testName":"Successful authentication allows progression","status":"passed","duration":14480,"type":"metrics-complete","msg":"Completed metrics collection for test: Successful authentication allows progression (passed)"}
+[0-0] {"level":"info","time":1757901452046,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","testId":"e91ba9cd-73ba-433a-9950-bff36172eb5f","duration":14480,"navigations":0,"interactions":0,"errors":0,"type":"test-metrics-summary","msg":"Test Metrics Summary"}
+[0-0] {"level":"info","time":1757901452053,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","scenarioName":"Failed authentication shows appropriate error","scenarioId":"949496ae-1248-4a24-9810-3dbf55056c60","type":"scenario-start","msg":"Starting scenario: Failed authentication shows appropriate error"}
+[0-0] 2025-09-15T01:57:32.054Z INFO webdriver: BIDI COMMAND script.callFunction {"functionDeclaration":"<Function[128 bytes] anonymous>","awaitPromise":true,"arguments":[],"target":{"context":"B7930696D6A27FB525DD325340D8266F"}}
+[0-0] {"level":"info","time":1757901452054,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","type":"timeout-telemetry-start","msg":"Timeout telemetry collection started"}
+[0-0] {"level":"info","time":1757901452054,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","type":"performance-monitoring-start","msg":"Performance monitoring started"}
+[0-0] {"level":"info","time":1757901452054,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","testId":"949496ae-1248-4a24-9810-3dbf55056c60","testName":"Failed authentication shows appropriate error","type":"metrics-start","msg":"Started metrics collection for test: Failed authentication shows appropriate error"}
+[0-0] 2025-09-15T01:57:32.058Z INFO webdriver: BIDI RESULT {"id":22,"result":{"realm":"-4466013067170602504.-1108265748896957694","result":{"type":"string","value":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"},"type":"success"},"type":"success"}
+[0-0] 2025-09-15T01:57:32.061Z INFO webdriver: BIDI COMMAND browsingContext.navigate {"context":"B7930696D6A27FB525DD325340D8266F","url":"http://localhost:4200/step/upload","wait":"complete"}
+[0-0] 2025-09-15T01:57:32.265Z INFO webdriver: BIDI RESULT {"error":"unknown error","id":23,"message":"net::ERR_CONNECTION_REFUSED","stacktrace":"Error\n    at new UnknownErrorException (\u003Canonymous>:65:5328)\n    at BrowsingContextImpl.navigate (\u003Canonymous>:680:15151)\n    at async #processCommand (\u003Canonymous>:485:5579)\n    at async CommandProcessor.processCommand (\u003Canonymous>:485:11702)","type":"error"}
+[0-0] 2025-09-15T01:57:32.267Z INFO webdriver: COMMAND navigateTo("http://localhost:4200/step/upload")
+[0-0] 2025-09-15T01:57:32.268Z INFO webdriver: [POST] http://localhost:60670/session/6609cae04ae9ff1208f089bf1472d08c/url
+[0-0] 2025-09-15T01:57:32.268Z INFO webdriver: DATA { url: 'http://localhost:4200/step/upload' }
+[0-0] 2025-09-15T01:57:34.678Z WARN webdriver: WebDriverError: unknown error: net::ERR_CONNECTION_REFUSED
+[0-0]   (Session info: chrome=140.0.7339.128) when running "url" with method "POST" and args "{"url":"http://localhost:4200/step/upload"}"
+[0-0] 2025-09-15T01:57:34.678Z INFO webdriver: Retrying 1/2
+[0-0] 2025-09-15T01:57:34.678Z INFO webdriver: [POST] http://localhost:60670/session/6609cae04ae9ff1208f089bf1472d08c/url
+[0-0] 2025-09-15T01:57:34.678Z INFO webdriver: DATA { url: 'http://localhost:4200/step/upload' }
+[0-0] 2025-09-15T01:57:37.357Z WARN webdriver: WebDriverError: unknown error: net::ERR_CONNECTION_REFUSED
+[0-0]   (Session info: chrome=140.0.7339.128) when running "url" with method "POST" and args "{"url":"http://localhost:4200/step/upload"}"
+[0-0] 2025-09-15T01:57:37.357Z INFO webdriver: Retrying 2/2
+[0-0] 2025-09-15T01:57:37.357Z INFO webdriver: [POST] http://localhost:60670/session/6609cae04ae9ff1208f089bf1472d08c/url
+[0-0] 2025-09-15T01:57:37.357Z INFO webdriver: DATA { url: 'http://localhost:4200/step/upload' }
+[0-0] 2025-09-15T01:57:39.766Z ERROR webdriver: WebDriverError: unknown error: net::ERR_CONNECTION_REFUSED
+[0-0]   (Session info: chrome=140.0.7339.128) when running "url" with method "POST" and args "{"url":"http://localhost:4200/step/upload"}"
+[0-0] {"level":"error","time":1757901459770,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: And  I navigate to the upload step"}
+[0-0] Error in "3: And I navigate to the upload step"
+unknown error: WebDriverError: unknown error: net::ERR_CONNECTION_REFUSED
+  (Session info: chrome=140.0.7339.128) when running "url" with method "POST" and args "{"url":"http://localhost:4200/step/upload"}"
+    at FetchRequest._request (file:///C:/Users/trifo/Documents/flock/node_modules/webdriver/build/node.js:1951:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async Browser.wrapCommandFn (C:\Users\trifo\Documents\flock\node_modules\@wdio\utils\build\index.js:978:23)
+    at async Browser.url (C:\Users\trifo\Documents\flock\node_modules\webdriverio\build\node.js:5661:24)
+    at async Browser.wrapCommandFn (C:\Users\trifo\Documents\flock\node_modules\@wdio\utils\build\index.js:978:23)
+    at async StepLayoutPage.openUploadStep (C:\Users\trifo\Documents\flock\features\pageobjects\step-layout.page.ts:172:9)
+    at async World.<anonymous> (C:\Users\trifo\Documents\flock\features\step-definitions\step-navigation.ts:6:5)
+    at async wrapPromiseWithTimeout (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\time.ts:55:10)
+    at async Object.run (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\user_code_runner.ts:86:16)
+    at async Object.run (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\runtime\step_runner.ts:51:20)
+[0-0] {"level":"info","time":1757901459804,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","scenarioName":"Failed authentication shows appropriate error","status":"passed","resultType":"object","resultKeys":["attach","log","link","parameters"],"type":"scenario-complete","msg":"Scenario completed: Failed authentication shows appropriate error (passed)"}
+[0-0] {"level":"info","time":1757901459804,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","type":"timeout-telemetry-stop","totalEvents":0,"msg":"Timeout telemetry collection stopped"}
+[0-0] {"level":"info","time":1757901459804,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","type":"performance-monitoring-stop","msg":"Performance monitoring stopped"}
+[0-0] {"level":"info","time":1757901459804,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","testId":"949496ae-1248-4a24-9810-3dbf55056c60","testName":"Failed authentication shows appropriate error","status":"passed","duration":7750,"type":"metrics-complete","msg":"Completed metrics collection for test: Failed authentication shows appropriate error (passed)"}
+[0-0] {"level":"info","time":1757901459804,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","testId":"949496ae-1248-4a24-9810-3dbf55056c60","duration":7750,"navigations":0,"interactions":0,"errors":0,"type":"test-metrics-summary","msg":"Test Metrics Summary"}
+[0-0] {"level":"info","time":1757901459808,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","scenarioName":"Failed authentication shows appropriate error","scenarioId":"949496ae-1248-4a24-9810-3dbf55056c60","type":"scenario-start","msg":"Starting scenario: Failed authentication shows appropriate error"}
+[0-0] 2025-09-15T01:57:39.808Z INFO webdriver: BIDI COMMAND script.callFunction {"functionDeclaration":"<Function[128 bytes] anonymous>","awaitPromise":true,"arguments":[],"target":{"context":"B7930696D6A27FB525DD325340D8266F"}}
+[0-0] {"level":"info","time":1757901459808,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","type":"timeout-telemetry-start","msg":"Timeout telemetry collection started"}
+[0-0] {"level":"info","time":1757901459808,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","type":"performance-monitoring-start","msg":"Performance monitoring started"}
+[0-0] {"level":"info","time":1757901459808,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","testId":"949496ae-1248-4a24-9810-3dbf55056c60","testName":"Failed authentication shows appropriate error","type":"metrics-start","msg":"Started metrics collection for test: Failed authentication shows appropriate error"}
+[0-0] 2025-09-15T01:57:39.813Z INFO webdriver: BIDI RESULT {"id":24,"result":{"realm":"-623088268880853940.-2081151883987921746","result":{"type":"string","value":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"},"type":"success"},"type":"success"}
+[0-0] 2025-09-15T01:57:39.817Z INFO webdriver: BIDI COMMAND browsingContext.navigate {"context":"B7930696D6A27FB525DD325340D8266F","url":"http://localhost:4200/step/upload","wait":"complete"}
+[0-0] 2025-09-15T01:57:39.981Z INFO webdriver: BIDI RESULT {"error":"unknown error","id":25,"message":"net::ERR_CONNECTION_REFUSED","stacktrace":"Error\n    at new UnknownErrorException (\u003Canonymous>:65:5328)\n    at BrowsingContextImpl.navigate (\u003Canonymous>:680:15151)\n    at async #processCommand (\u003Canonymous>:485:5579)\n    at async CommandProcessor.processCommand (\u003Canonymous>:485:11702)","type":"error"}
+[0-0] 2025-09-15T01:57:39.984Z INFO webdriver: COMMAND navigateTo("http://localhost:4200/step/upload")
+[0-0] 2025-09-15T01:57:39.984Z INFO webdriver: [POST] http://localhost:60670/session/6609cae04ae9ff1208f089bf1472d08c/url
+[0-0] 2025-09-15T01:57:39.985Z INFO webdriver: DATA { url: 'http://localhost:4200/step/upload' }
+[0-0] 2025-09-15T01:57:42.196Z WARN webdriver: WebDriverError: unknown error: cannot determine loading status
+[0-0] from unknown error: net::ERR_CONNECTION_REFUSED
+[0-0]   (Session info: chrome=140.0.7339.128) when running "url" with method "POST" and args "{"url":"http://localhost:4200/step/upload"}"
+[0-0] 2025-09-15T01:57:42.196Z INFO webdriver: Retrying 1/2
+[0-0] 2025-09-15T01:57:42.196Z INFO webdriver: [POST] http://localhost:60670/session/6609cae04ae9ff1208f089bf1472d08c/url
+[0-0] 2025-09-15T01:57:42.196Z INFO webdriver: DATA { url: 'http://localhost:4200/step/upload' }
+[0-0] 2025-09-15T01:57:42.902Z WARN webdriver: WebDriverError: unknown error: net::ERR_CONNECTION_REFUSED
+[0-0]   (Session info: chrome=140.0.7339.128) when running "url" with method "POST" and args "{"url":"http://localhost:4200/step/upload"}"
+[0-0] 2025-09-15T01:57:42.902Z INFO webdriver: Retrying 2/2
+[0-0] 2025-09-15T01:57:42.903Z INFO webdriver: [POST] http://localhost:60670/session/6609cae04ae9ff1208f089bf1472d08c/url
+[0-0] 2025-09-15T01:57:42.903Z INFO webdriver: DATA { url: 'http://localhost:4200/step/upload' }
+[0-0] 2025-09-15T01:57:44.611Z ERROR webdriver: WebDriverError: unknown error: net::ERR_CONNECTION_REFUSED
+[0-0]   (Session info: chrome=140.0.7339.128) when running "url" with method "POST" and args "{"url":"http://localhost:4200/step/upload"}"
+[0-0] {"level":"error","time":1757901464616,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: And  I navigate to the upload step"}
+[0-0] Error in "3: And I navigate to the upload step"
+unknown error: WebDriverError: unknown error: net::ERR_CONNECTION_REFUSED
+  (Session info: chrome=140.0.7339.128) when running "url" with method "POST" and args "{"url":"http://localhost:4200/step/upload"}"
+    at FetchRequest._request (file:///C:/Users/trifo/Documents/flock/node_modules/webdriver/build/node.js:1951:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async Browser.wrapCommandFn (C:\Users\trifo\Documents\flock\node_modules\@wdio\utils\build\index.js:978:23)
+    at async Browser.url (C:\Users\trifo\Documents\flock\node_modules\webdriverio\build\node.js:5661:24)
+    at async Browser.wrapCommandFn (C:\Users\trifo\Documents\flock\node_modules\@wdio\utils\build\index.js:978:23)
+    at async StepLayoutPage.openUploadStep (C:\Users\trifo\Documents\flock\features\pageobjects\step-layout.page.ts:172:9)
+    at async World.<anonymous> (C:\Users\trifo\Documents\flock\features\step-definitions\step-navigation.ts:6:5)
+    at async wrapPromiseWithTimeout (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\time.ts:55:10)
+    at async Object.run (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\user_code_runner.ts:86:16)
+    at async Object.run (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\runtime\step_runner.ts:51:20)
+[0-0] {"level":"info","time":1757901464653,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","scenarioName":"Failed authentication shows appropriate error","status":"passed","resultType":"object","resultKeys":["attach","log","link","parameters"],"type":"scenario-complete","msg":"Scenario completed: Failed authentication shows appropriate error (passed)"}
+[0-0] {"level":"info","time":1757901464653,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","type":"timeout-telemetry-stop","totalEvents":0,"msg":"Timeout telemetry collection stopped"}
+[0-0] {"level":"info","time":1757901464653,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","type":"performance-monitoring-stop","msg":"Performance monitoring stopped"}
+[0-0] {"level":"info","time":1757901464653,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","testId":"949496ae-1248-4a24-9810-3dbf55056c60","testName":"Failed authentication shows appropriate error","status":"passed","duration":4845,"type":"metrics-complete","msg":"Completed metrics collection for test: Failed authentication shows appropriate error (passed)"}
+[0-0] {"level":"info","time":1757901464653,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","testId":"949496ae-1248-4a24-9810-3dbf55056c60","duration":4845,"navigations":0,"interactions":0,"errors":0,"type":"test-metrics-summary","msg":"Test Metrics Summary"}
+[0-0] {"level":"info","time":1757901464659,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","scenarioName":"Valid credentials allow navigation to next step","scenarioId":"fd3654d3-d376-4ce4-8e05-e16939a3fcb2","type":"scenario-start","msg":"Starting scenario: Valid credentials allow navigation to next step"}
+[0-0] 2025-09-15T01:57:44.659Z INFO webdriver: BIDI COMMAND script.callFunction {"functionDeclaration":"<Function[128 bytes] anonymous>","awaitPromise":true,"arguments":[],"target":{"context":"B7930696D6A27FB525DD325340D8266F"}}
+[0-0] {"level":"info","time":1757901464659,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","type":"timeout-telemetry-start","msg":"Timeout telemetry collection started"}
+[0-0] {"level":"info","time":1757901464659,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","type":"performance-monitoring-start","msg":"Performance monitoring started"}
+[0-0] {"level":"info","time":1757901464659,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","testId":"fd3654d3-d376-4ce4-8e05-e16939a3fcb2","testName":"Valid credentials allow navigation to next step","type":"metrics-start","msg":"Started metrics collection for test: Valid credentials allow navigation to next step"}
+[0-0] 2025-09-15T01:57:44.664Z INFO webdriver: BIDI RESULT {"id":26,"result":{"realm":"-4538760240407907309.8872191472466862399","result":{"type":"string","value":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"},"type":"success"},"type":"success"}
+[0-0] 2025-09-15T01:57:44.669Z INFO webdriver: BIDI COMMAND browsingContext.navigate {"context":"B7930696D6A27FB525DD325340D8266F","url":"http://localhost:4200/step/upload","wait":"complete"}
+[0-0] 2025-09-15T01:57:45.288Z INFO webdriver: BIDI RESULT {"error":"unknown error","id":27,"message":"net::ERR_CONNECTION_REFUSED","stacktrace":"Error\n    at new UnknownErrorException (\u003Canonymous>:65:5328)\n    at BrowsingContextImpl.navigate (\u003Canonymous>:680:15151)\n    at async #processCommand (\u003Canonymous>:485:5579)\n    at async CommandProcessor.processCommand (\u003Canonymous>:485:11702)","type":"error"}
+[0-0] 2025-09-15T01:57:45.290Z INFO webdriver: COMMAND navigateTo("http://localhost:4200/step/upload")
+[0-0] 2025-09-15T01:57:45.291Z INFO webdriver: [POST] http://localhost:60670/session/6609cae04ae9ff1208f089bf1472d08c/url
+[0-0] 2025-09-15T01:57:45.291Z INFO webdriver: DATA { url: 'http://localhost:4200/step/upload' }
+[0-0] 2025-09-15T01:57:49.442Z WARN webdriver: WebDriverError: unknown error: net::ERR_CONNECTION_REFUSED
+[0-0]   (Session info: chrome=140.0.7339.128) when running "url" with method "POST" and args "{"url":"http://localhost:4200/step/upload"}"
+[0-0] 2025-09-15T01:57:49.442Z INFO webdriver: Retrying 1/2
+[0-0] 2025-09-15T01:57:49.442Z INFO webdriver: [POST] http://localhost:60670/session/6609cae04ae9ff1208f089bf1472d08c/url
+[0-0] 2025-09-15T01:57:49.442Z INFO webdriver: DATA { url: 'http://localhost:4200/step/upload' }
+[0-0] 2025-09-15T01:57:50.587Z WARN webdriver: WebDriverError: unknown error: net::ERR_CONNECTION_REFUSED
+[0-0]   (Session info: chrome=140.0.7339.128) when running "url" with method "POST" and args "{"url":"http://localhost:4200/step/upload"}"
+[0-0] 2025-09-15T01:57:50.588Z INFO webdriver: Retrying 2/2
+[0-0] 2025-09-15T01:57:50.588Z INFO webdriver: [POST] http://localhost:60670/session/6609cae04ae9ff1208f089bf1472d08c/url
+[0-0] 2025-09-15T01:57:50.588Z INFO webdriver: DATA { url: 'http://localhost:4200/step/upload' }
+[0-0] 2025-09-15T01:57:54.274Z ERROR webdriver: WebDriverError: unknown error: net::ERR_CONNECTION_REFUSED
+[0-0]   (Session info: chrome=140.0.7339.128) when running "url" with method "POST" and args "{"url":"http://localhost:4200/step/upload"}"
+[0-0] {"level":"error","time":1757901474278,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: And  I navigate to the upload step"}
+[0-0] Error in "4: And I navigate to the upload step"
+unknown error: WebDriverError: unknown error: net::ERR_CONNECTION_REFUSED
+  (Session info: chrome=140.0.7339.128) when running "url" with method "POST" and args "{"url":"http://localhost:4200/step/upload"}"
+    at FetchRequest._request (file:///C:/Users/trifo/Documents/flock/node_modules/webdriver/build/node.js:1951:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async Browser.wrapCommandFn (C:\Users\trifo\Documents\flock\node_modules\@wdio\utils\build\index.js:978:23)
+    at async Browser.url (C:\Users\trifo\Documents\flock\node_modules\webdriverio\build\node.js:5661:24)
+    at async Browser.wrapCommandFn (C:\Users\trifo\Documents\flock\node_modules\@wdio\utils\build\index.js:978:23)
+    at async StepLayoutPage.openUploadStep (C:\Users\trifo\Documents\flock\features\pageobjects\step-layout.page.ts:172:9)
+    at async World.<anonymous> (C:\Users\trifo\Documents\flock\features\step-definitions\step-navigation.ts:6:5)
+    at async wrapPromiseWithTimeout (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\time.ts:55:10)
+    at async Object.run (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\user_code_runner.ts:86:16)
+    at async Object.run (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\runtime\step_runner.ts:51:20)
+[0-0] {"level":"info","time":1757901474298,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","scenarioName":"Valid credentials allow navigation to next step","status":"passed","resultType":"object","resultKeys":["attach","log","link","parameters"],"type":"scenario-complete","msg":"Scenario completed: Valid credentials allow navigation to next step (passed)"}
+[0-0] {"level":"info","time":1757901474299,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","type":"timeout-telemetry-stop","totalEvents":0,"msg":"Timeout telemetry collection stopped"}
+[0-0] {"level":"info","time":1757901474299,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","type":"performance-monitoring-stop","msg":"Performance monitoring stopped"}
+[0-0] {"level":"info","time":1757901474299,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","testId":"fd3654d3-d376-4ce4-8e05-e16939a3fcb2","testName":"Valid credentials allow navigation to next step","status":"passed","duration":9640,"type":"metrics-complete","msg":"Completed metrics collection for test: Valid credentials allow navigation to next step (passed)"}
+[0-0] {"level":"info","time":1757901474299,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","testId":"fd3654d3-d376-4ce4-8e05-e16939a3fcb2","duration":9640,"navigations":0,"interactions":0,"errors":0,"type":"test-metrics-summary","msg":"Test Metrics Summary"}
+[0-0] {"level":"info","time":1757901474303,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","scenarioName":"Valid credentials allow navigation to next step","scenarioId":"fd3654d3-d376-4ce4-8e05-e16939a3fcb2","type":"scenario-start","msg":"Starting scenario: Valid credentials allow navigation to next step"}
+[0-0] 2025-09-15T01:57:54.303Z INFO webdriver: BIDI COMMAND script.callFunction {"functionDeclaration":"<Function[128 bytes] anonymous>","awaitPromise":true,"arguments":[],"target":{"context":"B7930696D6A27FB525DD325340D8266F"}}
+[0-0] {"level":"info","time":1757901474303,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","type":"timeout-telemetry-start","msg":"Timeout telemetry collection started"}
+[0-0] {"level":"info","time":1757901474303,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","type":"performance-monitoring-start","msg":"Performance monitoring started"}
+[0-0] {"level":"info","time":1757901474303,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","testId":"fd3654d3-d376-4ce4-8e05-e16939a3fcb2","testName":"Valid credentials allow navigation to next step","type":"metrics-start","msg":"Started metrics collection for test: Valid credentials allow navigation to next step"}
+[0-0] 2025-09-15T01:57:54.307Z INFO webdriver: BIDI RESULT {"id":28,"result":{"realm":"7883659046166887872.117223895062952480","result":{"type":"string","value":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"},"type":"success"},"type":"success"}
+[0-0] 2025-09-15T01:57:54.311Z INFO webdriver: BIDI COMMAND browsingContext.navigate {"context":"B7930696D6A27FB525DD325340D8266F","url":"http://localhost:4200/step/upload","wait":"complete"}
+[0-0] 2025-09-15T01:57:55.396Z INFO webdriver: BIDI RESULT {"error":"unknown error","id":29,"message":"net::ERR_CONNECTION_REFUSED","stacktrace":"Error\n    at new UnknownErrorException (\u003Canonymous>:65:5328)\n    at BrowsingContextImpl.navigate (\u003Canonymous>:680:15151)\n    at async #processCommand (\u003Canonymous>:485:5579)\n    at async CommandProcessor.processCommand (\u003Canonymous>:485:11702)","type":"error"}
+[0-0] 2025-09-15T01:57:55.403Z INFO webdriver: COMMAND navigateTo("http://localhost:4200/step/upload")
+[0-0] 2025-09-15T01:57:55.404Z INFO webdriver: [POST] http://localhost:60670/session/6609cae04ae9ff1208f089bf1472d08c/url
+[0-0] 2025-09-15T01:57:55.404Z INFO webdriver: DATA { url: 'http://localhost:4200/step/upload' }
+[0-0] 2025-09-15T01:57:57.854Z WARN webdriver: WebDriverError: unknown error: net::ERR_CONNECTION_REFUSED
+[0-0]   (Session info: chrome=140.0.7339.128) when running "url" with method "POST" and args "{"url":"http://localhost:4200/step/upload"}"
+[0-0] 2025-09-15T01:57:57.855Z INFO webdriver: Retrying 1/2
+[0-0] 2025-09-15T01:57:57.855Z INFO webdriver: [POST] http://localhost:60670/session/6609cae04ae9ff1208f089bf1472d08c/url
+[0-0] 2025-09-15T01:57:57.855Z INFO webdriver: DATA { url: 'http://localhost:4200/step/upload' }
+[0-0] 2025-09-15T01:57:59.638Z WARN webdriver: WebDriverError: unknown error: net::ERR_CONNECTION_REFUSED
+[0-0]   (Session info: chrome=140.0.7339.128) when running "url" with method "POST" and args "{"url":"http://localhost:4200/step/upload"}"
+[0-0] 2025-09-15T01:57:59.638Z INFO webdriver: Retrying 2/2
+[0-0] 2025-09-15T01:57:59.638Z INFO webdriver: [POST] http://localhost:60670/session/6609cae04ae9ff1208f089bf1472d08c/url
+[0-0] 2025-09-15T01:57:59.638Z INFO webdriver: DATA { url: 'http://localhost:4200/step/upload' }
+[0-0] 2025-09-15T01:58:02.660Z ERROR webdriver: WebDriverError: unknown error: net::ERR_CONNECTION_REFUSED
+[0-0]   (Session info: chrome=140.0.7339.128) when running "url" with method "POST" and args "{"url":"http://localhost:4200/step/upload"}"
+[0-0] {"level":"error","time":1757901482665,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: And  I navigate to the upload step"}
+[0-0] Error in "4: And I navigate to the upload step"
+unknown error: WebDriverError: unknown error: net::ERR_CONNECTION_REFUSED
+  (Session info: chrome=140.0.7339.128) when running "url" with method "POST" and args "{"url":"http://localhost:4200/step/upload"}"
+    at FetchRequest._request (file:///C:/Users/trifo/Documents/flock/node_modules/webdriver/build/node.js:1951:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async Browser.wrapCommandFn (C:\Users\trifo\Documents\flock\node_modules\@wdio\utils\build\index.js:978:23)
+    at async Browser.url (C:\Users\trifo\Documents\flock\node_modules\webdriverio\build\node.js:5661:24)
+    at async Browser.wrapCommandFn (C:\Users\trifo\Documents\flock\node_modules\@wdio\utils\build\index.js:978:23)
+    at async StepLayoutPage.openUploadStep (C:\Users\trifo\Documents\flock\features\pageobjects\step-layout.page.ts:172:9)
+    at async World.<anonymous> (C:\Users\trifo\Documents\flock\features\step-definitions\step-navigation.ts:6:5)
+    at async wrapPromiseWithTimeout (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\time.ts:55:10)
+    at async Object.run (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\user_code_runner.ts:86:16)
+    at async Object.run (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\runtime\step_runner.ts:51:20)
+[0-0] {"level":"info","time":1757901482684,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","scenarioName":"Valid credentials allow navigation to next step","status":"passed","resultType":"object","resultKeys":["attach","log","link","parameters"],"type":"scenario-complete","msg":"Scenario completed: Valid credentials allow navigation to next step (passed)"}
+[0-0] {"level":"info","time":1757901482685,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","type":"timeout-telemetry-stop","totalEvents":0,"msg":"Timeout telemetry collection stopped"}
+[0-0] {"level":"info","time":1757901482685,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","type":"performance-monitoring-stop","msg":"Performance monitoring stopped"}
+[0-0] {"level":"info","time":1757901482685,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","testId":"fd3654d3-d376-4ce4-8e05-e16939a3fcb2","testName":"Valid credentials allow navigation to next step","status":"passed","duration":8382,"type":"metrics-complete","msg":"Completed metrics collection for test: Valid credentials allow navigation to next step (passed)"}
+[0-0] {"level":"info","time":1757901482685,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","testId":"fd3654d3-d376-4ce4-8e05-e16939a3fcb2","duration":8382,"navigations":0,"interactions":0,"errors":0,"type":"test-metrics-summary","msg":"Test Metrics Summary"}
+[0-0] {"level":"info","time":1757901482690,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","scenarioName":"Valid credentials trigger authentication splash screen","scenarioId":"bc1ba496-c76a-4e23-8ebe-a865eadfc14f","type":"scenario-start","msg":"Starting scenario: Valid credentials trigger authentication splash screen"}
+[0-0] 2025-09-15T01:58:02.690Z INFO webdriver: BIDI COMMAND script.callFunction {"functionDeclaration":"<Function[128 bytes] anonymous>","awaitPromise":true,"arguments":[],"target":{"context":"B7930696D6A27FB525DD325340D8266F"}}
+[0-0] {"level":"info","time":1757901482690,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","type":"timeout-telemetry-start","msg":"Timeout telemetry collection started"}
+[0-0] {"level":"info","time":1757901482690,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","type":"performance-monitoring-start","msg":"Performance monitoring started"}
+[0-0] {"level":"info","time":1757901482690,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","testId":"bc1ba496-c76a-4e23-8ebe-a865eadfc14f","testName":"Valid credentials trigger authentication splash screen","type":"metrics-start","msg":"Started metrics collection for test: Valid credentials trigger authentication splash screen"}
+[0-0] 2025-09-15T01:58:02.693Z INFO webdriver: BIDI RESULT {"id":30,"result":{"realm":"1363288302008213294.2018140858478299810","result":{"type":"string","value":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"},"type":"success"},"type":"success"}
+[0-0] 2025-09-15T01:58:02.699Z INFO webdriver: BIDI COMMAND browsingContext.navigate {"context":"B7930696D6A27FB525DD325340D8266F","url":"http://localhost:4200/step/upload","wait":"complete"}
+[0-0] 2025-09-15T01:58:04.410Z INFO webdriver: BIDI RESULT {"error":"unknown error","id":31,"message":"net::ERR_CONNECTION_REFUSED","stacktrace":"Error\n    at new UnknownErrorException (\u003Canonymous>:65:5328)\n    at BrowsingContextImpl.navigate (\u003Canonymous>:680:15151)\n    at async #processCommand (\u003Canonymous>:485:5579)\n    at async CommandProcessor.processCommand (\u003Canonymous>:485:11702)","type":"error"}
+[0-0] 2025-09-15T01:58:04.413Z INFO webdriver: COMMAND navigateTo("http://localhost:4200/step/upload")
+[0-0] 2025-09-15T01:58:04.414Z INFO webdriver: [POST] http://localhost:60670/session/6609cae04ae9ff1208f089bf1472d08c/url
+[0-0] 2025-09-15T01:58:04.414Z INFO webdriver: DATA { url: 'http://localhost:4200/step/upload' }
+[0-0] 2025-09-15T01:58:07.475Z WARN webdriver: WebDriverError: unknown error: net::ERR_CONNECTION_REFUSED
+[0-0]   (Session info: chrome=140.0.7339.128) when running "url" with method "POST" and args "{"url":"http://localhost:4200/step/upload"}"
+[0-0] 2025-09-15T01:58:07.475Z INFO webdriver: Retrying 1/2
+[0-0] 2025-09-15T01:58:07.475Z INFO webdriver: [POST] http://localhost:60670/session/6609cae04ae9ff1208f089bf1472d08c/url
+[0-0] 2025-09-15T01:58:07.475Z INFO webdriver: DATA { url: 'http://localhost:4200/step/upload' }
+[0-0] 2025-09-15T01:58:09.714Z WARN webdriver: WebDriverError: unknown error: net::ERR_CONNECTION_REFUSED
+[0-0]   (Session info: chrome=140.0.7339.128) when running "url" with method "POST" and args "{"url":"http://localhost:4200/step/upload"}"
+[0-0] 2025-09-15T01:58:09.714Z INFO webdriver: Retrying 2/2
+[0-0] 2025-09-15T01:58:09.714Z INFO webdriver: [POST] http://localhost:60670/session/6609cae04ae9ff1208f089bf1472d08c/url
+[0-0] 2025-09-15T01:58:09.715Z INFO webdriver: DATA { url: 'http://localhost:4200/step/upload' }
+[0-0] 2025-09-15T01:58:09.876Z ERROR webdriver: WebDriverError: unknown error: net::ERR_CONNECTION_REFUSED
+[0-0]   (Session info: chrome=140.0.7339.128) when running "url" with method "POST" and args "{"url":"http://localhost:4200/step/upload"}"
+[0-0] {"level":"error","time":1757901489881,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: And  I navigate to the upload step"}
+[0-0] Error in "5: And I navigate to the upload step"
+unknown error: WebDriverError: unknown error: net::ERR_CONNECTION_REFUSED
+  (Session info: chrome=140.0.7339.128) when running "url" with method "POST" and args "{"url":"http://localhost:4200/step/upload"}"
+    at FetchRequest._request (file:///C:/Users/trifo/Documents/flock/node_modules/webdriver/build/node.js:1951:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async Browser.wrapCommandFn (C:\Users\trifo\Documents\flock\node_modules\@wdio\utils\build\index.js:978:23)
+    at async Browser.url (C:\Users\trifo\Documents\flock\node_modules\webdriverio\build\node.js:5661:24)
+    at async Browser.wrapCommandFn (C:\Users\trifo\Documents\flock\node_modules\@wdio\utils\build\index.js:978:23)
+    at async StepLayoutPage.openUploadStep (C:\Users\trifo\Documents\flock\features\pageobjects\step-layout.page.ts:172:9)
+    at async World.<anonymous> (C:\Users\trifo\Documents\flock\features\step-definitions\step-navigation.ts:6:5)
+    at async wrapPromiseWithTimeout (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\time.ts:55:10)
+    at async Object.run (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\user_code_runner.ts:86:16)
+    at async Object.run (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\runtime\step_runner.ts:51:20)
+[0-0] {"level":"info","time":1757901489909,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","scenarioName":"Valid credentials trigger authentication splash screen","status":"passed","resultType":"object","resultKeys":["attach","log","link","parameters"],"type":"scenario-complete","msg":"Scenario completed: Valid credentials trigger authentication splash screen (passed)"}
+[0-0] {"level":"info","time":1757901489909,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","type":"timeout-telemetry-stop","totalEvents":0,"msg":"Timeout telemetry collection stopped"}
+[0-0] {"level":"info","time":1757901489909,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","type":"performance-monitoring-stop","msg":"Performance monitoring stopped"}
+[0-0] {"level":"info","time":1757901489909,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","testId":"bc1ba496-c76a-4e23-8ebe-a865eadfc14f","testName":"Valid credentials trigger authentication splash screen","status":"passed","duration":7219,"type":"metrics-complete","msg":"Completed metrics collection for test: Valid credentials trigger authentication splash screen (passed)"}
+[0-0] {"level":"info","time":1757901489909,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","testId":"bc1ba496-c76a-4e23-8ebe-a865eadfc14f","duration":7219,"navigations":0,"interactions":0,"errors":0,"type":"test-metrics-summary","msg":"Test Metrics Summary"}
+[0-0] {"level":"info","time":1757901489912,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","scenarioName":"Valid credentials trigger authentication splash screen","scenarioId":"bc1ba496-c76a-4e23-8ebe-a865eadfc14f","type":"scenario-start","msg":"Starting scenario: Valid credentials trigger authentication splash screen"}
+[0-0] 2025-09-15T01:58:09.912Z INFO webdriver: BIDI COMMAND script.callFunction {"functionDeclaration":"<Function[128 bytes] anonymous>","awaitPromise":true,"arguments":[],"target":{"context":"B7930696D6A27FB525DD325340D8266F"}}
+[0-0] {"level":"info","time":1757901489912,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","type":"timeout-telemetry-start","msg":"Timeout telemetry collection started"}
+[0-0] {"level":"info","time":1757901489912,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","type":"performance-monitoring-start","msg":"Performance monitoring started"}
+[0-0] {"level":"info","time":1757901489912,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","testId":"bc1ba496-c76a-4e23-8ebe-a865eadfc14f","testName":"Valid credentials trigger authentication splash screen","type":"metrics-start","msg":"Started metrics collection for test: Valid credentials trigger authentication splash screen"}
+[0-0] 2025-09-15T01:58:09.915Z INFO webdriver: BIDI RESULT {"id":32,"result":{"realm":"-7725009054220807920.1382463043483226047","result":{"type":"string","value":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"},"type":"success"},"type":"success"}
+[0-0] 2025-09-15T01:58:09.919Z INFO webdriver: BIDI COMMAND browsingContext.navigate {"context":"B7930696D6A27FB525DD325340D8266F","url":"http://localhost:4200/step/upload","wait":"complete"}
+[0-0] 2025-09-15T01:58:12.101Z INFO webdriver: BIDI RESULT {"error":"unknown error","id":33,"message":"net::ERR_CONNECTION_REFUSED","stacktrace":"Error\n    at new UnknownErrorException (\u003Canonymous>:65:5328)\n    at BrowsingContextImpl.navigate (\u003Canonymous>:680:15151)\n    at async #processCommand (\u003Canonymous>:485:5579)\n    at async CommandProcessor.processCommand (\u003Canonymous>:485:11702)","type":"error"}
+[0-0] 2025-09-15T01:58:12.104Z INFO webdriver: COMMAND navigateTo("http://localhost:4200/step/upload")
+[0-0] 2025-09-15T01:58:12.104Z INFO webdriver: [POST] http://localhost:60670/session/6609cae04ae9ff1208f089bf1472d08c/url
+[0-0] 2025-09-15T01:58:12.104Z INFO webdriver: DATA { url: 'http://localhost:4200/step/upload' }
+[0-0] 2025-09-15T01:58:14.496Z WARN webdriver: WebDriverError: unknown error: net::ERR_CONNECTION_REFUSED
+[0-0]   (Session info: chrome=140.0.7339.128) when running "url" with method "POST" and args "{"url":"http://localhost:4200/step/upload"}"
+[0-0] 2025-09-15T01:58:14.496Z INFO webdriver: Retrying 1/2
+[0-0] 2025-09-15T01:58:14.496Z INFO webdriver: [POST] http://localhost:60670/session/6609cae04ae9ff1208f089bf1472d08c/url
+[0-0] 2025-09-15T01:58:14.496Z INFO webdriver: DATA { url: 'http://localhost:4200/step/upload' }
+[0-0] 2025-09-15T01:58:17.414Z WARN webdriver: WebDriverError: unknown error: net::ERR_CONNECTION_REFUSED
+[0-0]   (Session info: chrome=140.0.7339.128) when running "url" with method "POST" and args "{"url":"http://localhost:4200/step/upload"}"
+[0-0] 2025-09-15T01:58:17.415Z INFO webdriver: Retrying 2/2
+[0-0] 2025-09-15T01:58:17.415Z INFO webdriver: [POST] http://localhost:60670/session/6609cae04ae9ff1208f089bf1472d08c/url
+[0-0] 2025-09-15T01:58:17.415Z INFO webdriver: DATA { url: 'http://localhost:4200/step/upload' }
+[0-0] 2025-09-15T01:58:19.846Z ERROR webdriver: WebDriverError: unknown error: net::ERR_CONNECTION_REFUSED
+[0-0]   (Session info: chrome=140.0.7339.128) when running "url" with method "POST" and args "{"url":"http://localhost:4200/step/upload"}"
+[0-0] {"level":"error","time":1757901499851,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","type":"bdd-error","msg":"❌ Step failed: And  I navigate to the upload step"}
+[0-0] Error in "5: And I navigate to the upload step"
+unknown error: WebDriverError: unknown error: net::ERR_CONNECTION_REFUSED
+  (Session info: chrome=140.0.7339.128) when running "url" with method "POST" and args "{"url":"http://localhost:4200/step/upload"}"
+    at FetchRequest._request (file:///C:/Users/trifo/Documents/flock/node_modules/webdriver/build/node.js:1951:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async Browser.wrapCommandFn (C:\Users\trifo\Documents\flock\node_modules\@wdio\utils\build\index.js:978:23)
+    at async Browser.url (C:\Users\trifo\Documents\flock\node_modules\webdriverio\build\node.js:5661:24)
+    at async Browser.wrapCommandFn (C:\Users\trifo\Documents\flock\node_modules\@wdio\utils\build\index.js:978:23)
+    at async StepLayoutPage.openUploadStep (C:\Users\trifo\Documents\flock\features\pageobjects\step-layout.page.ts:172:9)
+    at async World.<anonymous> (C:\Users\trifo\Documents\flock\features\step-definitions\step-navigation.ts:6:5)
+    at async wrapPromiseWithTimeout (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\time.ts:55:10)
+    at async Object.run (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\user_code_runner.ts:86:16)
+    at async Object.run (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\runtime\step_runner.ts:51:20)
+[0-0] {"level":"info","time":1757901499879,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","scenarioName":"Valid credentials trigger authentication splash screen","status":"passed","resultType":"object","resultKeys":["attach","log","link","parameters"],"type":"scenario-complete","msg":"Scenario completed: Valid credentials trigger authentication splash screen (passed)"}
+[0-0] {"level":"info","time":1757901499879,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","type":"timeout-telemetry-stop","totalEvents":0,"msg":"Timeout telemetry collection stopped"}
+[0-0] {"level":"info","time":1757901499879,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","type":"performance-monitoring-stop","msg":"Performance monitoring stopped"}
+[0-0] {"level":"info","time":1757901499879,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","testId":"bc1ba496-c76a-4e23-8ebe-a865eadfc14f","testName":"Valid credentials trigger authentication splash screen","status":"passed","duration":9967,"type":"metrics-complete","msg":"Completed metrics collection for test: Valid credentials trigger authentication splash screen (passed)"}
+[0-0] {"level":"info","time":1757901499879,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","testId":"bc1ba496-c76a-4e23-8ebe-a865eadfc14f","duration":9967,"navigations":0,"interactions":0,"errors":0,"type":"test-metrics-summary","msg":"Test Metrics Summary"}
+[0-0] {"level":"info","time":1757901499885,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","featureName":"Bluesky Authentication - User credential validation and authentication","featureUri":"C:\\Users\\trifo\\Documents\\flock\\features\\auth\\auth.feature","type":"feature-complete","msg":"Completed feature: Bluesky Authentication - User credential validation and authentication"}
+[0-0] {"level":"info","time":1757901499888,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","exitCode":12,"specCount":1,"type":"test-suite-complete","msg":"Test suite completed with exit code: 12"}
+[0-0] {"level":"info","time":1757901499889,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","type":"test-suite-summary","msg":"📊 Test Metrics Summary Report\n===============================\nTotal Tests: 12\n✅ Passed: 12 (100.0%)\n❌ Failed: 0 (0.0%)\n⏭️ Skipped: 0 (0.0%)\n\n⏱️ Performance Metrics\n----------------------\nTotal Duration: 116976ms (117.0s)\nAverage Test Duration: 9748ms\nAverage Navigation Time: 0ms\nAverage Wait Time: 0ms\n\n🚨 Error Summary\n----------------\nTotal Errors: 12\nTimeout Errors: 0\nElement Not Found: 0\nNavigation Errors: 0\nScript Errors: 0\nNetwork Errors: 0\nOther Errors: 12"}
+[0-0] {"level":"info","time":1757901499892,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","filename":"test-metrics-2025-09-15T01-58-19-889Z.json","filepath":"logs\\metrics\\test-metrics-2025-09-15T01-58-19-889Z.json","metricsCount":12,"type":"metrics-export","msg":"Metrics exported to logs\\metrics\\test-metrics-2025-09-15T01-58-19-889Z.json"}
+[0-0] {"level":"info","time":1757901499895,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","filename":"timeout-telemetry-2025-09-15T01-58-19-892Z.json","filepath":"logs\\metrics\\timeout-telemetry-2025-09-15T01-58-19-892Z.json","eventCount":0,"type":"timeout-telemetry-export","msg":"Timeout telemetry exported to logs\\metrics\\timeout-telemetry-2025-09-15T01-58-19-892Z.json"}
+[0-0] 2025-09-15T01:58:19.896Z INFO webdriver: COMMAND deleteSession()
+[0-0] 2025-09-15T01:58:19.896Z INFO webdriver: [DELETE] http://localhost:60670/session/6609cae04ae9ff1208f089bf1472d08c
+[0-0] {"level":"info","time":1757901499895,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","metricsCount":12,"type":"metrics-collection-complete","msg":"Collected metrics for 12 tests"}
+[0-0] {"level":"info","time":1757901499895,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","type":"timeout-telemetry-summary","msg":"🔍 Timeout Telemetry Analysis Report\n=====================================\n\n📊 Summary\n----------\nTotal Timeout Events: 0\nOverall Timeout Rate: 0.00%\n\n🚨 Critical Issues\n------------------\nNo critical issues detected\n\n📈 Top Timeout Patterns\n-----------------------\n\n\n💡 Recommendations\n------------------\nNo specific recommendations at this time\n\n🌍 Environmental Factors\n------------------------\nShard Distribution: No shard data\n\nBrowser Distribution: No browser data\n\nTime Distribution: No time data"}
+[0-0] {"level":"info","time":1757901499895,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","slowestTests":[{"rank":1,"testName":"Authentication form displays correctly","duration":15003},{"rank":2,"testName":"Successful authentication allows progression","duration":14480},{"rank":3,"testName":"Successful authentication allows progression","duration":12092}],"type":"performance-slowest-tests","msg":"Slowest Tests Analysis"}
+[0-0] {"level":"info","time":1757901499895,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","errorProneTests":[{"rank":1,"testName":"Authentication form displays correctly","totalErrors":1},{"rank":2,"testName":"Successful authentication allows progression","totalErrors":1},{"rank":3,"testName":"Successful authentication allows progression","totalErrors":1}],"type":"performance-error-prone-tests","msg":"Most Error-Prone Tests Analysis"}
+[0-0] {"level":"info","time":1757901499895,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","averageNavigationTime":0,"warning":false,"recommendation":null,"type":"performance-navigation-insights","msg":"Navigation Performance Analysis"}
+[0-0] {"level":"info","time":1757901499895,"pid":67108,"hostname":"DESKTOP-0Q6ENF6","totalTimeoutErrors":0,"totalElementErrors":0,"totalNavigationErrors":0,"timeoutErrorRate":0,"elementErrorRate":0,"navigationErrorRate":0,"warnings":[],"type":"performance-error-patterns","msg":"Error Pattern Analysis"}
+[0-0] 2025-09-15T01:58:19.967Z INFO webdriver: RESULT null
+[0-0] 2025-09-15T01:58:19.968Z INFO webdriver: Close Bidi connection to ws://127.0.0.1:60670/session/6609cae04ae9ff1208f089bf1472d08c
+[0-0] 2025-09-15T01:58:19.968Z INFO webdriver: Kill driver process with PID 14352
+[0-0] FAILED in chrome - file:///C:/Users/trifo/Documents/flock/features/auth/auth.feature
+2025-09-15T01:58:20.109Z INFO @wdio/cli:launcher: Run onWorkerEnd hook
+
+ "spec" Reporter:
+------------------------------------------------------------------
+[chrome 140.0.7339.128 windows #0-0] Running: chrome (v140.0.7339.128) on windows
+[chrome 140.0.7339.128 windows #0-0] Session ID: 6609cae04ae9ff1208f089bf1472d08c
+[chrome 140.0.7339.128 windows #0-0]
+[chrome 140.0.7339.128 windows #0-0] » features\auth\auth.feature
+[chrome 140.0.7339.128 windows #0-0] Bluesky Authentication - User credential validation and authentication
+[chrome 140.0.7339.128 windows #0-0] As a user migrating from Instagram to Bluesky
+[chrome 140.0.7339.128 windows #0-0] I want to authenticate with my Bluesky credentials
+[chrome 140.0.7339.128 windows #0-0] So that I can proceed with the migration process
+[chrome 140.0.7339.128 windows #0-0]
+[chrome 140.0.7339.128 windows #0-0] Authentication form displays correctly (1x retries)
+[chrome 140.0.7339.128 windows #0-0]    ✖ And I navigate to the upload step
+[chrome 140.0.7339.128 windows #0-0]    - And I select a valid Instagram archive file "valid-archive.zip"
+[chrome 140.0.7339.128 windows #0-0]    - And I navigate to the auth step
+[chrome 140.0.7339.128 windows #0-0]    - Then I should see the Bluesky authentication form
+[chrome 140.0.7339.128 windows #0-0]    - And I should see a username input field with @ prefix
+[chrome 140.0.7339.128 windows #0-0]    - And I should see a password input field
+[chrome 140.0.7339.128 windows #0-0]    - And the form should be initially invalid
+[chrome 140.0.7339.128 windows #0-0]
+[chrome 140.0.7339.128 windows #0-0] Form validation requires both fields to be valid (1x retries)
+[chrome 140.0.7339.128 windows #0-0]    ✖ And I navigate to the upload step
+[chrome 140.0.7339.128 windows #0-0]    - And I select a valid Instagram archive file "valid-archive.zip"
+[chrome 140.0.7339.128 windows #0-0]    - And I navigate to the auth step
+[chrome 140.0.7339.128 windows #0-0]    - Given I have entered a valid username
+[chrome 140.0.7339.128 windows #0-0]    - When I enter a valid password
+[chrome 140.0.7339.128 windows #0-0]    - Then the form should be valid
+[chrome 140.0.7339.128 windows #0-0]    - And the "Next" button should be enabled
+[chrome 140.0.7339.128 windows #0-0]    - Given I have entered a valid password
+[chrome 140.0.7339.128 windows #0-0]    - When I enter a valid username
+[chrome 140.0.7339.128 windows #0-0]    - Then the form should be valid
+[chrome 140.0.7339.128 windows #0-0]    - And the "Next" button should be enabled
+[chrome 140.0.7339.128 windows #0-0]
+[chrome 140.0.7339.128 windows #0-0] Successful authentication allows progression (1x retries)
+[chrome 140.0.7339.128 windows #0-0]    ✖ And I navigate to the upload step
+[chrome 140.0.7339.128 windows #0-0]    - And I select a valid Instagram archive file "valid-archive.zip"
+[chrome 140.0.7339.128 windows #0-0]    - And I navigate to the auth step
+[chrome 140.0.7339.128 windows #0-0]    - And I have entered valid credentials
+[chrome 140.0.7339.128 windows #0-0]    - When I click the "Next" button
+[chrome 140.0.7339.128 windows #0-0]    - Then the authentication script should run in the background
+[chrome 140.0.7339.128 windows #0-0]    - And I should be navigated to the config step
+[chrome 140.0.7339.128 windows #0-0]
+[chrome 140.0.7339.128 windows #0-0] Failed authentication shows appropriate error (1x retries)
+[chrome 140.0.7339.128 windows #0-0]    ✖ And I navigate to the upload step
+[chrome 140.0.7339.128 windows #0-0]    - And I select a valid Instagram archive file "valid-archive.zip"
+[chrome 140.0.7339.128 windows #0-0]    - And I navigate to the auth step
+[chrome 140.0.7339.128 windows #0-0]    - And I have entered invalid credentials
+[chrome 140.0.7339.128 windows #0-0]    - When I click the "Next" button
+[chrome 140.0.7339.128 windows #0-0]    - Then the authentication should fail
+[chrome 140.0.7339.128 windows #0-0]    - And I should see a snackbar error message
+[chrome 140.0.7339.128 windows #0-0]    - And the error should indicate "Invalid Bluesky credentials"
+[chrome 140.0.7339.128 windows #0-0]    - And I should remain on the auth step
+[chrome 140.0.7339.128 windows #0-0]    - And the form should remain invalid
+[chrome 140.0.7339.128 windows #0-0]
+[chrome 140.0.7339.128 windows #0-0] Valid credentials allow navigation to next step (1x retries)
+[chrome 140.0.7339.128 windows #0-0]    ✖ And I navigate to the upload step
+[chrome 140.0.7339.128 windows #0-0]    - And I select a valid Instagram archive file "valid-archive.zip"
+[chrome 140.0.7339.128 windows #0-0]    - And I navigate to the auth step
+[chrome 140.0.7339.128 windows #0-0]    - And I have entered valid credentials
+[chrome 140.0.7339.128 windows #0-0]    - When I attempt to navigate away from the auth step
+[chrome 140.0.7339.128 windows #0-0]    - Then the system should validate my credentials
+[chrome 140.0.7339.128 windows #0-0]    - And I should proceed to the next step
+[chrome 140.0.7339.128 windows #0-0]
+[chrome 140.0.7339.128 windows #0-0] Valid credentials trigger authentication splash screen (1x retries)
+[chrome 140.0.7339.128 windows #0-0]    ✖ And I navigate to the upload step
+[chrome 140.0.7339.128 windows #0-0]    - And I select a valid Instagram archive file "valid-archive.zip"
+[chrome 140.0.7339.128 windows #0-0]    - And I navigate to the auth step
+[chrome 140.0.7339.128 windows #0-0]    - Given I have entered a valid username
+[chrome 140.0.7339.128 windows #0-0]    - And I have entered a valid password
+[chrome 140.0.7339.128 windows #0-0]    - When I click the "Next" button
+[chrome 140.0.7339.128 windows #0-0]    - Then I should see the splash screen
+[chrome 140.0.7339.128 windows #0-0]    - And the splash screen should display "Authenticating with bsky.social"
+[chrome 140.0.7339.128 windows #0-0]    - And the authentication should process in the background
+[chrome 140.0.7339.128 windows #0-0]    - And I should be navigated to the config step
+[chrome 140.0.7339.128 windows #0-0]
+[chrome 140.0.7339.128 windows #0-0] 6 failing (1m 57.3s)
+[chrome 140.0.7339.128 windows #0-0] 92 skipped
+[chrome 140.0.7339.128 windows #0-0] 6 retried
+[chrome 140.0.7339.128 windows #0-0]
+[chrome 140.0.7339.128 windows #0-0] 1) Authentication form displays correctly And I navigate to the upload step
+[chrome 140.0.7339.128 windows #0-0] unknown error: WebDriverError: unknown error: net::ERR_CONNECTION_REFUSED
+[chrome 140.0.7339.128 windows #0-0] unknown error: WebDriverError: unknown error: net::ERR_CONNECTION_REFUSED
+[chrome 140.0.7339.128 windows #0-0]   (Session info: chrome=140.0.7339.128) when running "url" with method "POST" and args "{"url":"http://localhost:4200/step/upload"}"
+[chrome 140.0.7339.128 windows #0-0]     at FetchRequest._request (file:///C:/Users/trifo/Documents/flock/node_modules/webdriver/build/node.js:1951:19)
+[chrome 140.0.7339.128 windows #0-0]     at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+[chrome 140.0.7339.128 windows #0-0]     at async Browser.wrapCommandFn (C:\Users\trifo\Documents\flock\node_modules\@wdio\utils\build\index.js:978:23)
+[chrome 140.0.7339.128 windows #0-0]     at async Browser.url (C:\Users\trifo\Documents\flock\node_modules\webdriverio\build\node.js:5661:24)
+[chrome 140.0.7339.128 windows #0-0]     at async Browser.wrapCommandFn (C:\Users\trifo\Documents\flock\node_modules\@wdio\utils\build\index.js:978:23)
+[chrome 140.0.7339.128 windows #0-0]     at async StepLayoutPage.openUploadStep (C:\Users\trifo\Documents\flock\features\pageobjects\step-layout.page.ts:172:9)
+[chrome 140.0.7339.128 windows #0-0]     at async World.<anonymous> (C:\Users\trifo\Documents\flock\features\step-definitions\step-navigation.ts:6:5)
+[chrome 140.0.7339.128 windows #0-0]     at async wrapPromiseWithTimeout (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\time.ts:55:10)
+[chrome 140.0.7339.128 windows #0-0]     at async Object.run (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\user_code_runner.ts:86:16)
+[chrome 140.0.7339.128 windows #0-0]     at async Object.run (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\runtime\step_runner.ts:51:20)
+[chrome 140.0.7339.128 windows #0-0]
+[chrome 140.0.7339.128 windows #0-0] 2) Form validation requires both fields to be valid And I navigate to the upload step
+[chrome 140.0.7339.128 windows #0-0] unknown error: WebDriverError: unknown error: net::ERR_CONNECTION_REFUSED
+[chrome 140.0.7339.128 windows #0-0] unknown error: WebDriverError: unknown error: net::ERR_CONNECTION_REFUSED
+[chrome 140.0.7339.128 windows #0-0]   (Session info: chrome=140.0.7339.128) when running "url" with method "POST" and args "{"url":"http://localhost:4200/step/upload"}"
+[chrome 140.0.7339.128 windows #0-0]     at FetchRequest._request (file:///C:/Users/trifo/Documents/flock/node_modules/webdriver/build/node.js:1951:19)
+[chrome 140.0.7339.128 windows #0-0]     at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+[chrome 140.0.7339.128 windows #0-0]     at async Browser.wrapCommandFn (C:\Users\trifo\Documents\flock\node_modules\@wdio\utils\build\index.js:978:23)
+[chrome 140.0.7339.128 windows #0-0]     at async Browser.url (C:\Users\trifo\Documents\flock\node_modules\webdriverio\build\node.js:5661:24)
+[chrome 140.0.7339.128 windows #0-0]     at async Browser.wrapCommandFn (C:\Users\trifo\Documents\flock\node_modules\@wdio\utils\build\index.js:978:23)
+[chrome 140.0.7339.128 windows #0-0]     at async StepLayoutPage.openUploadStep (C:\Users\trifo\Documents\flock\features\pageobjects\step-layout.page.ts:172:9)
+[chrome 140.0.7339.128 windows #0-0]     at async World.<anonymous> (C:\Users\trifo\Documents\flock\features\step-definitions\step-navigation.ts:6:5)
+[chrome 140.0.7339.128 windows #0-0]     at async wrapPromiseWithTimeout (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\time.ts:55:10)
+[chrome 140.0.7339.128 windows #0-0]     at async Object.run (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\user_code_runner.ts:86:16)
+[chrome 140.0.7339.128 windows #0-0]     at async Object.run (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\runtime\step_runner.ts:51:20)
+[chrome 140.0.7339.128 windows #0-0]
+[chrome 140.0.7339.128 windows #0-0] 3) Successful authentication allows progression And I navigate to the upload step
+[chrome 140.0.7339.128 windows #0-0] unknown error: WebDriverError: unknown error: net::ERR_CONNECTION_REFUSED
+[chrome 140.0.7339.128 windows #0-0] unknown error: WebDriverError: unknown error: net::ERR_CONNECTION_REFUSED
+[chrome 140.0.7339.128 windows #0-0]   (Session info: chrome=140.0.7339.128) when running "url" with method "POST" and args "{"url":"http://localhost:4200/step/upload"}"
+[chrome 140.0.7339.128 windows #0-0]     at FetchRequest._request (file:///C:/Users/trifo/Documents/flock/node_modules/webdriver/build/node.js:1951:19)
+[chrome 140.0.7339.128 windows #0-0]     at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+[chrome 140.0.7339.128 windows #0-0]     at async Browser.wrapCommandFn (C:\Users\trifo\Documents\flock\node_modules\@wdio\utils\build\index.js:978:23)
+[chrome 140.0.7339.128 windows #0-0]     at async Browser.url (C:\Users\trifo\Documents\flock\node_modules\webdriverio\build\node.js:5661:24)
+[chrome 140.0.7339.128 windows #0-0]     at async Browser.wrapCommandFn (C:\Users\trifo\Documents\flock\node_modules\@wdio\utils\build\index.js:978:23)
+[chrome 140.0.7339.128 windows #0-0]     at async StepLayoutPage.openUploadStep (C:\Users\trifo\Documents\flock\features\pageobjects\step-layout.page.ts:172:9)
+[chrome 140.0.7339.128 windows #0-0]     at async World.<anonymous> (C:\Users\trifo\Documents\flock\features\step-definitions\step-navigation.ts:6:5)
+[chrome 140.0.7339.128 windows #0-0]     at async wrapPromiseWithTimeout (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\time.ts:55:10)
+[chrome 140.0.7339.128 windows #0-0]     at async Object.run (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\user_code_runner.ts:86:16)
+[chrome 140.0.7339.128 windows #0-0]     at async Object.run (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\runtime\step_runner.ts:51:20)
+[chrome 140.0.7339.128 windows #0-0]
+[chrome 140.0.7339.128 windows #0-0] 4) Failed authentication shows appropriate error And I navigate to the upload step
+[chrome 140.0.7339.128 windows #0-0] unknown error: WebDriverError: unknown error: net::ERR_CONNECTION_REFUSED
+[chrome 140.0.7339.128 windows #0-0] unknown error: WebDriverError: unknown error: net::ERR_CONNECTION_REFUSED
+[chrome 140.0.7339.128 windows #0-0]   (Session info: chrome=140.0.7339.128) when running "url" with method "POST" and args "{"url":"http://localhost:4200/step/upload"}"
+[chrome 140.0.7339.128 windows #0-0]     at FetchRequest._request (file:///C:/Users/trifo/Documents/flock/node_modules/webdriver/build/node.js:1951:19)
+[chrome 140.0.7339.128 windows #0-0]     at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+[chrome 140.0.7339.128 windows #0-0]     at async Browser.wrapCommandFn (C:\Users\trifo\Documents\flock\node_modules\@wdio\utils\build\index.js:978:23)
+[chrome 140.0.7339.128 windows #0-0]     at async Browser.url (C:\Users\trifo\Documents\flock\node_modules\webdriverio\build\node.js:5661:24)
+[chrome 140.0.7339.128 windows #0-0]     at async Browser.wrapCommandFn (C:\Users\trifo\Documents\flock\node_modules\@wdio\utils\build\index.js:978:23)
+[chrome 140.0.7339.128 windows #0-0]     at async StepLayoutPage.openUploadStep (C:\Users\trifo\Documents\flock\features\pageobjects\step-layout.page.ts:172:9)
+[chrome 140.0.7339.128 windows #0-0]     at async World.<anonymous> (C:\Users\trifo\Documents\flock\features\step-definitions\step-navigation.ts:6:5)
+[chrome 140.0.7339.128 windows #0-0]     at async wrapPromiseWithTimeout (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\time.ts:55:10)
+[chrome 140.0.7339.128 windows #0-0]     at async Object.run (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\user_code_runner.ts:86:16)
+[chrome 140.0.7339.128 windows #0-0]     at async Object.run (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\runtime\step_runner.ts:51:20)
+[chrome 140.0.7339.128 windows #0-0]
+[chrome 140.0.7339.128 windows #0-0] 5) Valid credentials allow navigation to next step And I navigate to the upload step
+[chrome 140.0.7339.128 windows #0-0] unknown error: WebDriverError: unknown error: net::ERR_CONNECTION_REFUSED
+[chrome 140.0.7339.128 windows #0-0] unknown error: WebDriverError: unknown error: net::ERR_CONNECTION_REFUSED
+[chrome 140.0.7339.128 windows #0-0]   (Session info: chrome=140.0.7339.128) when running "url" with method "POST" and args "{"url":"http://localhost:4200/step/upload"}"
+[chrome 140.0.7339.128 windows #0-0]     at FetchRequest._request (file:///C:/Users/trifo/Documents/flock/node_modules/webdriver/build/node.js:1951:19)
+[chrome 140.0.7339.128 windows #0-0]     at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+[chrome 140.0.7339.128 windows #0-0]     at async Browser.wrapCommandFn (C:\Users\trifo\Documents\flock\node_modules\@wdio\utils\build\index.js:978:23)
+[chrome 140.0.7339.128 windows #0-0]     at async Browser.url (C:\Users\trifo\Documents\flock\node_modules\webdriverio\build\node.js:5661:24)
+[chrome 140.0.7339.128 windows #0-0]     at async Browser.wrapCommandFn (C:\Users\trifo\Documents\flock\node_modules\@wdio\utils\build\index.js:978:23)
+[chrome 140.0.7339.128 windows #0-0]     at async StepLayoutPage.openUploadStep (C:\Users\trifo\Documents\flock\features\pageobjects\step-layout.page.ts:172:9)
+[chrome 140.0.7339.128 windows #0-0]     at async World.<anonymous> (C:\Users\trifo\Documents\flock\features\step-definitions\step-navigation.ts:6:5)
+[chrome 140.0.7339.128 windows #0-0]     at async wrapPromiseWithTimeout (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\time.ts:55:10)
+[chrome 140.0.7339.128 windows #0-0]     at async Object.run (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\user_code_runner.ts:86:16)
+[chrome 140.0.7339.128 windows #0-0]     at async Object.run (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\runtime\step_runner.ts:51:20)
+[chrome 140.0.7339.128 windows #0-0]
+[chrome 140.0.7339.128 windows #0-0] 6) Valid credentials trigger authentication splash screen And I navigate to the upload step
+[chrome 140.0.7339.128 windows #0-0] unknown error: WebDriverError: unknown error: net::ERR_CONNECTION_REFUSED
+[chrome 140.0.7339.128 windows #0-0] unknown error: WebDriverError: unknown error: net::ERR_CONNECTION_REFUSED
+[chrome 140.0.7339.128 windows #0-0]   (Session info: chrome=140.0.7339.128) when running "url" with method "POST" and args "{"url":"http://localhost:4200/step/upload"}"
+[chrome 140.0.7339.128 windows #0-0]     at FetchRequest._request (file:///C:/Users/trifo/Documents/flock/node_modules/webdriver/build/node.js:1951:19)
+[chrome 140.0.7339.128 windows #0-0]     at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+[chrome 140.0.7339.128 windows #0-0]     at async Browser.wrapCommandFn (C:\Users\trifo\Documents\flock\node_modules\@wdio\utils\build\index.js:978:23)
+[chrome 140.0.7339.128 windows #0-0]     at async Browser.url (C:\Users\trifo\Documents\flock\node_modules\webdriverio\build\node.js:5661:24)
+[chrome 140.0.7339.128 windows #0-0]     at async Browser.wrapCommandFn (C:\Users\trifo\Documents\flock\node_modules\@wdio\utils\build\index.js:978:23)
+[chrome 140.0.7339.128 windows #0-0]     at async StepLayoutPage.openUploadStep (C:\Users\trifo\Documents\flock\features\pageobjects\step-layout.page.ts:172:9)
+[chrome 140.0.7339.128 windows #0-0]     at async World.<anonymous> (C:\Users\trifo\Documents\flock\features\step-definitions\step-navigation.ts:6:5)
+[chrome 140.0.7339.128 windows #0-0]     at async wrapPromiseWithTimeout (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\time.ts:55:10)
+[chrome 140.0.7339.128 windows #0-0]     at async Object.run (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\user_code_runner.ts:86:16)
+[chrome 140.0.7339.128 windows #0-0]     at async Object.run (C:\Users\trifo\Documents\flock\node_modules\@cucumber\cucumber\src\runtime\step_runner.ts:51:20)
+
+
+Spec Files:	 0 passed, 1 failed, 1 total (100% completed) in 00:02:02  
+
+2025-09-15T01:58:20.110Z INFO @wdio/local-runner: Shutting down spawned worker
+2025-09-15T01:58:20.367Z INFO @wdio/local-runner: Waiting for 0 to shut down gracefully
+2025-09-15T01:58:20.367Z INFO @wdio/local-runner: shutting down
+2025-09-15T01:58:20.367Z INFO @wdio/cli:launcher: Run onComplete hook

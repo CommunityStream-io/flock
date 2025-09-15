@@ -45,10 +45,12 @@ allure-results/
 allure-report/
 coverage/
 reports/
+badges/
 
-# Documentation
+# Documentation (exclude all docs to reduce context)
 docs/
 README.md
+*.md
 
 # Scripts (except essential ones)
 scripts/
@@ -62,9 +64,6 @@ scripts/
 .env.development.local
 .env.test.local
 .env.production.local
-
-# npmrc file (needed for Docker build)
-# .npmrc
 
 # Cache directories
 .cache/
@@ -134,3 +133,31 @@ public
 # Temporary folders
 tmp/
 temp/
+
+# Docker files
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# Test configuration files not needed in container
+karma.conf.js
+tsconfig.e2e.json
+
+# Exclude other projects not needed for E2E testing
+projects/flock-native/
+projects/flock-murmur/
+
+# Exclude test files that are not needed in container
+test/
+*.spec.ts
+*.test.ts
+
+# Exclude development tools
+.eslintrc*
+.prettierrc*
+
+# Exclude lock files (package-lock.json will be copied explicitly)
+yarn.lock
+
+# Exclude CI/CD artifacts
+allure-report-combined/

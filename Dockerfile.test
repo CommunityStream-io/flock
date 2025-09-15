@@ -1,65 +1,81 @@
 # Optimized Multi-stage Dockerfile for E2E Testing
+# Performance targets: <1.5min build time, 30-40% size reduction, 80%+ layer cache reuse
+
 # Stage 1: Base environment with Chrome and ChromeDriver
 FROM node:20-slim AS base
 
-# Install system dependencies
+# Install system dependencies in a single layer
 RUN apt-get update && apt-get install -y \
     wget \
     gnupg \
     unzip \
     curl \
     xvfb \
-    && rm -rf /var/lib/apt/lists/*
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
 
-# Install Google Chrome
+# Install Google Chrome and ChromeDriver in a single layer
 RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor -o /usr/share/keyrings/googlechrome-linux-keyring.gpg \
     && echo "deb [arch=amd64 signed-by=/usr/share/keyrings/googlechrome-linux-keyring.gpg] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list \
     && apt-get update \
     && apt-get install -y google-chrome-stable \
-    && rm -rf /var/lib/apt/lists/*
-
-# Install ChromeDriver using the new API
-RUN CHROME_VERSION=$(google-chrome --version | cut -d " " -f3 | cut -d "." -f1) \
+    && CHROME_VERSION=$(google-chrome --version | cut -d " " -f3 | cut -d "." -f1) \
     && CHROMEDRIVER_VERSION=$(curl -s "https://googlechromelabs.github.io/chrome-for-testing/LATEST_RELEASE_${CHROME_VERSION}") \
     && wget -O /tmp/chromedriver.zip "https://storage.googleapis.com/chrome-for-testing-public/${CHROMEDRIVER_VERSION}/linux64/chromedriver-linux64.zip" \
     && unzip /tmp/chromedriver.zip -d /tmp/ \
     && mv /tmp/chromedriver-linux64/chromedriver /usr/local/bin/ \
     && chmod +x /usr/local/bin/chromedriver \
-    && rm -rf /tmp/chromedriver.zip /tmp/chromedriver-linux64
+    && rm -rf /tmp/chromedriver.zip /tmp/chromedriver-linux64 \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
 
-# Stage 2: Build Angular application
-FROM node:20-alpine AS builder
-
+# Stage 2: Dependencies layer for better caching
+FROM node:20-alpine AS deps
 WORKDIR /app
 
 # Accept build argument for package token
 ARG PACKAGE_TOKEN
+ENV PACKAGE_TOKEN=$PACKAGE_TOKEN
 
-# Set environment variable for npm authentication
+# Copy only package files first for optimal layer caching
+COPY package*.json ./
+COPY .npmrc ./
+
+# Install dependencies with npm ci for faster, reliable installs
+RUN npm ci --only=production --no-audit --no-fund
+
+# Stage 3: Build Angular application
+FROM node:20-alpine AS builder
+WORKDIR /app
+
+# Accept build argument for package token
+ARG PACKAGE_TOKEN
 ENV PACKAGE_TOKEN=$PACKAGE_TOKEN
 
 # Copy package files and npmrc
 COPY package*.json ./
-COPY angular.json ./
-COPY tsconfig*.json ./
 COPY .npmrc ./
 
-# Install dependencies
-RUN npm ci
+# Install all dependencies (including devDependencies for build)
+RUN npm ci --no-audit --no-fund
 
-# Copy source code
-COPY projects/ ./projects/
+# Copy only necessary configuration files
+COPY angular.json ./
+COPY tsconfig*.json ./
 
-# Build the Angular application
+# Copy only the specific project source code needed for E2E testing
+COPY projects/flock-mirage/ ./projects/flock-mirage/
+COPY projects/shared/ ./projects/shared/
+
+# Build the Angular application with test configuration
 RUN npx ng build flock-mirage --configuration=test
 
-# Stage 3: Runtime with pre-built artifacts
+# Stage 4: Runtime with pre-built artifacts
 FROM base AS runtime
 
 # Accept build argument for package token
 ARG PACKAGE_TOKEN
-
-# Set environment variable for npm authentication
 ENV PACKAGE_TOKEN=$PACKAGE_TOKEN
 
 # Set working directory
@@ -68,22 +84,25 @@ WORKDIR /app
 # Copy built application from builder stage
 COPY --from=builder /app/dist/flock-mirage ./dist/flock-mirage
 
-# Copy test files and configuration
+# Copy production dependencies from deps stage
+COPY --from=deps /app/node_modules ./node_modules
+
+# Copy only essential files for E2E testing
 COPY features/ ./features/
 COPY wdio.conf.ts ./
 COPY tsconfig.e2e.json ./
-COPY package*.json ./
+COPY package.json ./
 COPY .npmrc ./
 
-# Copy source code for Angular dev server
-COPY projects/ ./projects/
+# Copy only the minimal source code needed for Angular dev server
+COPY projects/flock-mirage/src/ ./projects/flock-mirage/src/
+COPY projects/shared/src/ ./projects/shared/src/
 COPY angular.json ./
 COPY tsconfig*.json ./
+
+# Copy essential startup script
 COPY scripts/docker-startup.sh /usr/local/bin/setup-npm-auth
 RUN chmod +x /usr/local/bin/setup-npm-auth
-
-# Install dependencies
-RUN npm ci
 
 # Create directories for logs and results
 RUN mkdir -p logs/servers logs/shards logs/exits allure-results
