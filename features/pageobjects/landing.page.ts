@@ -77,13 +77,13 @@ class LandingPage extends Page {
     // Methods for dynamic element selection
     public async getStepTitle(stepNumber: number) {
         // WebdriverIO auto-waits for elements to be interactable when we use them
-        const step = $(`.process-flow .process-step:nth-child(${stepNumber})`);
+        const step = $(`.process-step:nth-child(${stepNumber})`);
         return step.$('mat-card-title');
     }
 
     public async getStepDescription(stepNumber: number) {
         // WebdriverIO auto-waits for elements to be interactable when we use them
-        const step = $(`.process-flow .process-step:nth-child(${stepNumber})`);
+        const step = $(`.process-step:nth-child(${stepNumber})`);
         return step.$('mat-card-content p');
     }
 
