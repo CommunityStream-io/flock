@@ -37,6 +37,9 @@ export class Upload implements OnInit {
   onFileSelected(file: File) {
     this.logger.workflow(`File selected: ${file.name}`);
     
+    // Set the archived file in the service
+    this.fileProcessorService.archivedFile = file;
+    
     // Validate the archive
     this.fileProcessorService
       .validateArchive(file)
