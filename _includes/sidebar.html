@@ -93,22 +93,46 @@
         </li>
         
         <!-- Individual Tools -->
-        {% for tool in site.tools %}
-          <li class="nav-group">
-            <span class="nav-group-title">{{ tool[1].icon }} {{ tool[1].name }}</span>
-            <ul class="nav-sublist">
-              <li><a href="{{ tool[1].path | relative_url }}" class="nav-link {% if page.url contains tool[0] %}active{% endif %}">Documentation</a></li>
-              {% for branch in tool[1].branches %}
-                <li>
-                  <a href="{{ branch.url }}" target="_blank" class="nav-link external">
-                    {{ branch.name | capitalize }} 
-                    <i class="fas fa-external-link-alt"></i>
-                  </a>
-                </li>
-              {% endfor %}
-            </ul>
-          </li>
-        {% endfor %}
+        <li class="nav-group">
+          <span class="nav-group-title">📊 Allure Reports</span>
+          <ul class="nav-sublist">
+            <li><a href="/tools/allure/" class="nav-link {% if page.url contains 'allure' %}active{% endif %}">Documentation</a></li>
+            <li><a href="https://communitystream-io.github.io/flock/" target="_blank" class="nav-link external">
+              Production <i class="fas fa-external-link-alt"></i>
+            </a></li>
+            {% if site.current_branch_tools.allure_current_url and site.branch != 'main' %}
+              <li><a href="{{ site.current_branch_tools.allure_current_url }}" target="_blank" class="nav-link external">
+                {{ site.current_branch_tools.allure_current_branch | default: "Current" | capitalize }} <i class="fas fa-external-link-alt"></i>
+              </a></li>
+            {% endif %}
+          </ul>
+        </li>
+        
+        <li class="nav-group">
+          <span class="nav-group-title">🏆 Test Badges</span>
+          <ul class="nav-sublist">
+            <li><a href="/tools/badges/" class="nav-link {% if page.url contains 'badges' %}active{% endif %}">Documentation</a></li>
+            {% if site.current_branch_tools.badges_current_url %}
+              <li><a href="{{ site.current_branch_tools.badges_current_url }}" target="_blank" class="nav-link external">
+                {{ site.current_branch_tools.badges_current_branch | default: "Current" | capitalize }} <i class="fas fa-external-link-alt"></i>
+              </a></li>
+            {% endif %}
+          </ul>
+        </li>
+        
+        <li class="nav-group">
+          <span class="nav-group-title">📈 Code Coverage</span>
+          <ul class="nav-sublist">
+            <li><a href="https://codecov.io/github/CommunityStream-io/flock" target="_blank" class="nav-link external">
+              Production <i class="fas fa-external-link-alt"></i>
+            </a></li>
+            {% if site.current_branch_tools.coverage_current_url and site.branch != 'main' %}
+              <li><a href="{{ site.current_branch_tools.coverage_current_url }}" target="_blank" class="nav-link external">
+                {{ site.current_branch_tools.coverage_current_branch | default: "Current" | capitalize }} <i class="fas fa-external-link-alt"></i>
+              </a></li>
+            {% endif %}
+          </ul>
+        </li>
       </ul>
     </div>
   {% endif %}
