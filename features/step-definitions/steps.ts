@@ -2,7 +2,7 @@
 import { Given, When, Then, After, Before } from '@wdio/cucumber-framework';
 import { pages } from '../pageobjects';
 import { browser, $ } from '@wdio/globals';
-import { timeouts, timeoutMessages } from '../support/timeout-config';
+import { timeouts, timeoutMessages, timeoutOptions } from '../support/timeout-config';
 import { bddLog } from '../support/logger';
 // Allure API is available via @wdio/allure-reporter global
 
@@ -84,10 +84,7 @@ Given('the splash screen message should be {string}', async (expectedMessage: st
         // Wait for splash screen to be visible with longer timeout for CI
         const isSplashVisible = await browser.waitUntil(
             async () => await pages.stepLayout.isSplashScreenVisible(),
-            { 
-                timeout: timeouts.splashScreen,
-                timeoutMsg: timeoutMessages.splashScreen(process.env.CI === 'true')
-            }
+            timeoutOptions.splashScreen
         );
         
         if (isSplashVisible) {
