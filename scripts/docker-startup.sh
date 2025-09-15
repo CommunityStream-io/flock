@@ -25,11 +25,13 @@ if [ -z "$PACKAGE_TOKEN" ]; then
     exit 1
 fi
 
-# Set up npm authentication
-print_status $BLUE "🔐 Setting up npm authentication..."
-echo "//npm.pkg.github.com/:_authToken=$PACKAGE_TOKEN" > ~/.npmrc
-echo "@straiforos:registry=https://npm.pkg.github.com/" >> ~/.npmrc
-print_status $GREEN "✅ npm authentication configured"
+# Verify npm authentication is already configured via .npmrc template
+print_status $BLUE "🔐 Verifying npm authentication..."
+if [ ! -f ".npmrc" ]; then
+    print_status $RED "❌ .npmrc file not found - authentication may fail"
+    exit 1
+fi
+print_status $GREEN "✅ npm authentication configured via .npmrc template"
 
 # Install private packages at runtime
 print_status $BLUE "📦 Installing private packages..."
@@ -53,6 +55,5 @@ npx cross-env CI=true HEADLESS=true BASE_URL=http://localhost:4200 SHARDED_TESTS
 # Clean up
 print_status $BLUE "🧹 Cleaning up..."
 kill $SERVER_PID 2>/dev/null || true
-# Remove npm authentication file for security
-rm -f ~/.npmrc
+# Note: .npmrc uses environment variables - no cleanup needed
 print_status $GREEN "✅ Startup script completed successfully"
