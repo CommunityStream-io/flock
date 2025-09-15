@@ -31,6 +31,11 @@ echo "//npm.pkg.github.com/:_authToken=$PACKAGE_TOKEN" > ~/.npmrc
 echo "@straiforos:registry=https://npm.pkg.github.com/" >> ~/.npmrc
 print_status $GREEN "✅ npm authentication configured"
 
+# Install private packages at runtime
+print_status $BLUE "📦 Installing private packages..."
+npm install @straiforos/instagramtobluesky@^0.7.5
+print_status $GREEN "✅ Private packages installed"
+
 # Start Angular dev server
 print_status $BLUE "🚀 Starting Angular dev server..."
 npx ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0 &

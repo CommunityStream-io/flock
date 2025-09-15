@@ -37,8 +37,11 @@ COPY package*.json ./
 COPY angular.json ./
 COPY tsconfig*.json ./
 
-# Install all dependencies using build secrets for private packages
-RUN --mount=type=secret,id=npmrc,target=/root/.npmrc npm ci
+# Create a build-only package.json without private packages
+RUN npm pkg delete dependencies.@straiforos/instagramtobluesky
+
+# Install only public dependencies (no private packages needed for build)
+RUN npm ci
 
 # Copy source code
 COPY projects/ ./projects/
@@ -68,8 +71,8 @@ COPY tsconfig*.json ./
 COPY scripts/docker-startup.sh /usr/local/bin/setup-npm-auth
 RUN chmod +x /usr/local/bin/setup-npm-auth
 
-# Install all dependencies using build secrets for private packages
-RUN --mount=type=secret,id=npmrc,target=/root/.npmrc npm ci
+# Install only public dependencies (private packages installed at runtime)
+RUN npm ci
 
 # Create directories for logs and results
 RUN mkdir -p logs/servers logs/shards logs/exits allure-results
