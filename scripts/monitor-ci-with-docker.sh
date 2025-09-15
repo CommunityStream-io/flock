@@ -151,6 +151,27 @@ check_docker_build_in_progress() {
     fi
 }
 
+# Function to show Docker build progress with layer information
+show_docker_build_progress() {
+    local run_id=$1
+    print_status $PURPLE "🐳 Docker build in progress - monitoring layer timing..."
+    
+    # Get build job details
+    local build_job_id=$(gh run view $run_id --json jobs --jq '.jobs[] | select(.name == "Build E2E Docker Image") | .databaseId')
+    
+    if [ -n "$build_job_id" ] && [ "$build_job_id" != "null" ]; then
+        print_status $BLUE "📊 Build job ID: $build_job_id"
+        print_status $BLUE "🔗 View build logs: https://github.com/CommunityStream-io/flock/actions/runs/$run_id"
+        
+        # Try to get build progress from logs (if available)
+        print_status $PURPLE "⏱️  Monitoring build progress..."
+        print_status $PURPLE "   - Base image layers (Chrome + ChromeDriver)"
+        print_status $PURPLE "   - Dependencies installation"
+        print_status $PURPLE "   - Angular build process"
+        print_status $PURPLE "   - Runtime image assembly"
+    fi
+}
+
 # Function to run Docker performance test
 run_docker_performance_test() {
     if [ "$MONITOR_DOCKER" = "false" ]; then
@@ -158,6 +179,7 @@ run_docker_performance_test() {
     fi
     
     print_status $PURPLE "🐳 Running Docker performance test..."
+    print_status $PURPLE "📊 This will measure build layers, image loading, and matrix run simulation"
     
     # Check if Docker is available
     if ! check_docker; then
@@ -169,6 +191,7 @@ run_docker_performance_test() {
     if [ -f "scripts/monitor-docker-performance.sh" ]; then
         if ./scripts/monitor-docker-performance.sh --threshold $DOCKER_THRESHOLD; then
             print_status $GREEN "✅ Docker performance test completed"
+            print_status $PURPLE "📈 Performance metrics saved to logs/docker-performance/"
             return 0
         else
             print_status $RED "❌ Docker performance test failed"
@@ -288,12 +311,17 @@ monitor_workflow() {
             fi
         fi
         
-        # Run Docker performance test when Docker build is in progress
-        if [ "$MONITOR_DOCKER" = "true" ] && [ "$docker_test_run" = "false" ]; then
+        # Show Docker build progress when in progress
+        if [ "$MONITOR_DOCKER" = "true" ]; then
             if check_docker_build_in_progress $run_id; then
-                print_status $PURPLE "🐳 Docker build in progress, running performance test..."
-                if run_docker_performance_test; then
-                    docker_test_run=true
+                if [ "$docker_test_run" = "false" ]; then
+                    show_docker_build_progress $run_id
+                    print_status $PURPLE "🐳 Running performance test during build..."
+                    if run_docker_performance_test; then
+                        docker_test_run=true
+                    fi
+                else
+                    print_status $PURPLE "🐳 Docker build still in progress..."
                 fi
             fi
         fi
@@ -392,17 +420,27 @@ EOF
         local cache_efficiency=$(jq -r '.cache_efficiency.percentage' "$PERFORMANCE_DIR/current-metrics.json" 2>/dev/null || echo "N/A")
         local base_size=$(jq -r '.image_sizes.base_mb' "$PERFORMANCE_DIR/current-metrics.json" 2>/dev/null || echo "N/A")
         local runtime_size=$(jq -r '.image_sizes.runtime_mb' "$PERFORMANCE_DIR/current-metrics.json" 2>/dev/null || echo "N/A")
+        local base_load_time=$(jq -r '.image_loading_times.base_load_seconds' "$PERFORMANCE_DIR/current-metrics.json" 2>/dev/null || echo "N/A")
+        local runtime_load_time=$(jq -r '.image_loading_times.runtime_load_seconds' "$PERFORMANCE_DIR/current-metrics.json" 2>/dev/null || echo "N/A")
         
         cat >> "$report_file" << EOF
 - **Total Build Time**: ${total_time}s
 - **Cache Efficiency**: ${cache_efficiency}%
 - **Base Image Size**: ${base_size}MB
 - **Runtime Image Size**: ${runtime_size}MB
+- **Base Load Time**: ${base_load_time}s
+- **Runtime Load Time**: ${runtime_load_time}s
 
 ### Performance Targets
 
 - **Build Time Target**: <${DOCKER_THRESHOLD}s $([ "$total_time" != "N/A" ] && [ $total_time -lt $DOCKER_THRESHOLD ] && echo "✅ PASSED" || echo "❌ FAILED")
 - **Cache Efficiency Target**: >80% $([ "$cache_efficiency" != "N/A" ] && [ $cache_efficiency -ge 80 ] && echo "✅ PASSED" || echo "❌ FAILED")
+
+### Matrix Run Performance
+
+- **Image Loading Time**: $([ "$base_load_time" != "N/A" ] && [ "$runtime_load_time" != "N/A" ] && echo "$((base_load_time + runtime_load_time))s total" || echo "N/A")
+- **Base Image Load**: ${base_load_time}s
+- **Runtime Image Load**: ${runtime_load_time}s
 
 EOF
     else

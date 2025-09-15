@@ -81,7 +81,7 @@ check_docker() {
     fi
 }
 
-# Function to measure build time
+# Function to measure build time with detailed layer information
 measure_build_time() {
     local target=$1
     local tag=$2
@@ -89,12 +89,30 @@ measure_build_time() {
     
     print_status $BLUE "🔨 Building $target stage..."
     
-    if docker build -f Dockerfile.test --target $target -t $tag . > /dev/null 2>&1; then
-        local end_time=$(date +%s)
-        local duration=$((end_time - start_time))
+    # Build with verbose output to capture layer information
+    local build_output=$(docker build -f Dockerfile.test --target $target -t $tag . 2>&1)
+    local build_exit_code=$?
+    
+    local end_time=$(date +%s)
+    local duration=$((end_time - start_time))
+    
+    if [ $build_exit_code -eq 0 ]; then
+        # Extract layer timing information
+        local layer_times=$(echo "$build_output" | grep -E "=> \[.*\] [0-9]+\.[0-9]+s" | tail -5)
+        if [ -n "$layer_times" ]; then
+            print_status $BLUE "📊 Layer timing for $target:"
+            echo "$layer_times" | while read line; do
+                print_status $BLUE "   $line"
+            done
+        fi
+        
         echo $duration
     else
         print_status $RED "❌ Build failed for $target"
+        print_status $RED "Build output:"
+        echo "$build_output" | tail -10 | while read line; do
+            print_status $RED "   $line"
+        done
         return 1
     fi
 }
@@ -120,6 +138,45 @@ get_image_size_mb() {
 get_image_size_bytes() {
     local image=$1
     docker images --format "{{.Size}}" $image | tail -n +2 | head -1
+}
+
+# Function to measure Docker image loading time
+measure_image_load_time() {
+    local image=$1
+    local start_time=$(date +%s)
+    
+    print_status $BLUE "📦 Loading Docker image: $image"
+    
+    # Simulate image loading by running a simple command
+    if docker run --rm $image echo "Image loaded successfully" > /dev/null 2>&1; then
+        local end_time=$(date +%s)
+        local duration=$((end_time - start_time))
+        print_status $GREEN "✅ Image loaded in ${duration}s"
+        echo $duration
+    else
+        print_status $RED "❌ Failed to load image: $image"
+        return 1
+    fi
+}
+
+# Function to analyze Docker build layers
+analyze_build_layers() {
+    local image=$1
+    print_status $BLUE "🔍 Analyzing build layers for: $image"
+    
+    # Get layer information
+    local layer_info=$(docker history $image --format "table {{.CreatedBy}}\t{{.Size}}\t{{.CreatedAt}}" | head -10)
+    
+    if [ -n "$layer_info" ]; then
+        print_status $BLUE "📊 Build layers:"
+        echo "$layer_info" | while read line; do
+            print_status $BLUE "   $line"
+        done
+    fi
+    
+    # Get total layers count
+    local layer_count=$(docker history $image --format "{{.CreatedBy}}" | wc -l)
+    print_status $BLUE "📈 Total layers: $layer_count"
 }
 
 # Function to run performance test
@@ -165,6 +222,10 @@ run_performance_test() {
     local base_size=$(get_image_size_mb "flock-e2e-base:test")
     local runtime_size=$(get_image_size_mb "flock-e2e-runtime:test")
     
+    # Analyze build layers
+    analyze_build_layers "flock-e2e-base:test"
+    analyze_build_layers "flock-e2e-runtime:test"
+    
     # Test cache efficiency (rebuild runtime)
     print_status $BLUE "🔄 Testing cache efficiency..."
     docker rmi flock-e2e-runtime:test 2>/dev/null || true
@@ -176,6 +237,11 @@ run_performance_test() {
     fi
     local cache_end=$(date +%s)
     local cache_time=$((cache_end - cache_start))
+    
+    # Measure image loading times (simulating matrix run)
+    print_status $BLUE "🚀 Testing image loading times (matrix run simulation)..."
+    local base_load_time=$(measure_image_load_time "flock-e2e-base:test")
+    local runtime_load_time=$(measure_image_load_time "flock-e2e-runtime:test")
     
     # Calculate cache efficiency
     local cache_savings=$((runtime_time - cache_time))
@@ -198,6 +264,10 @@ run_performance_test() {
     "image_sizes": {
         "base_mb": $base_size,
         "runtime_mb": $runtime_size
+    },
+    "image_loading_times": {
+        "base_load_seconds": ${base_load_time:-0},
+        "runtime_load_seconds": ${runtime_load_time:-0}
     },
     "cache_efficiency": {
         "percentage": $cache_efficiency,
@@ -222,6 +292,8 @@ EOF
     print_status $BLUE "   Cache efficiency:    ${cache_efficiency}%"
     print_status $BLUE "   Base image size:     ${base_size}MB"
     print_status $BLUE "   Runtime image size:  ${runtime_size}MB"
+    print_status $BLUE "   Base load time:      ${base_load_time:-0}s"
+    print_status $BLUE "   Runtime load time:   ${runtime_load_time:-0}s"
     
     # Check performance targets
     if [ $total_time -lt $THRESHOLD ]; then
