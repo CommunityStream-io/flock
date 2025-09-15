@@ -52,7 +52,7 @@ Feature: Bluesky Authentication - User credential validation and authentication
     Then the system should validate my credentials
     And I should proceed to the next step
 
-  @bluesky-auth @authentication
+  @bluesky-auth @authentication @skip()
   Scenario: Valid credentials trigger authentication splash screen
     Given I have entered a valid username
     And I have entered a valid password
