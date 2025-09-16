@@ -164,7 +164,7 @@ ng build --configuration=development
 ## 📖 **Migration Resources**
 
 - **[Angular CLI Documentation](https://angular.dev/tools/cli)** - Flight instructor's manual
-- **[Angular Architecture](https://angular.dev/guide/architecture)** - How to build better nests
+- **[Angular Architecture](https://angular.dev/style-guide)** - How to build better nests
 - **[Electron Documentation](https://www.electronjs.org/docs)** - Native bird's flight manual
 - **[Material Design 3](https://m3.material.io/)** - Our flock's visual language
 

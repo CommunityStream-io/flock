@@ -1,5 +1,5 @@
 import Page from './page';
-import { timeouts, timeoutMessages } from '../support/timeout-config';
+import { timeouts, timeoutMessages, timeoutOptions } from '../support/timeout-config';
 
 class NavigationGuardPage extends Page {
     // Snackbar elements
@@ -51,7 +51,7 @@ class NavigationGuardPage extends Page {
                 const currentUrl = await browser.getUrl();
                 return currentUrl.includes('auth');
             },
-            { timeout: timeouts.navigation, timeoutMsg: timeoutMessages.navigation(process.env.CI === 'true') }
+            timeoutOptions.navigation
         );
     }
 
@@ -69,7 +69,7 @@ class NavigationGuardPage extends Page {
                 const currentUrl = await browser.getUrl();
                 return currentUrl.includes('auth');
             },
-            { timeout: timeouts.navigation, timeoutMsg: timeoutMessages.navigation(process.env.CI === 'true') }
+            timeoutOptions.navigation
         );
     }
 
@@ -107,7 +107,7 @@ class NavigationGuardPage extends Page {
         await this.snackbar.waitForDisplayed({ 
             reverse: true, 
             timeout, 
-            timeoutMsg: timeoutMessages.dialogClose(process.env.CI === 'true') 
+            timeoutMsg: timeoutOptions.dialogClose.timeoutMsg 
         });
     }
 

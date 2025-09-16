@@ -1,7 +1,7 @@
 import { Given, When, Then, After } from '@wdio/cucumber-framework';
 import { pages } from '../pageobjects';
 import { browser, $ } from '@wdio/globals';
-import { timeouts, timeoutMessages, timeoutOptions } from '../support/timeout-config';
+import { timeoutOptions, createTimeoutOptions } from '../support/timeout-config';
 
 Given('I am on the auth step page', async () => {
     await pages.auth.open();
@@ -47,10 +47,7 @@ When('I navigate back to the upload step', async () => {
                     return false;
                 }
             },
-            { 
-                timeout: timeouts.navigation,
-                timeoutMsg: `Navigation to upload step did not complete within ${timeouts.navigation}ms. This may indicate a server connectivity issue or port conflict.`
-            }
+            createTimeoutOptions('navigation', `Navigation to upload step did not complete within expected time. This may indicate a server connectivity issue or port conflict.`)
         );
         
         // Record successful navigation for metrics
@@ -305,7 +302,7 @@ Then('I should be navigated to the config step', async () => {
             const currentUrl = await browser.getUrl();
             return currentUrl.includes('/step/config');
         },
-            timeoutOptions.navigation
+        timeoutOptions.navigation
     );
 });
 
@@ -548,10 +545,7 @@ When('I close the help dialog', async () => {
             const isDialogVisible = await pages.auth.isHelpDialogVisible();
             return !isDialogVisible;
         },
-        { 
-            timeout: timeouts.dialogClose, 
-            timeoutMsg: timeoutMessages.dialogClose(process.env.CI === 'true')
-        }
+        timeoutOptions.dialogClose
     );
 });
 
@@ -563,10 +557,7 @@ When('I close the help dialog with Escape key', async () => {
             const isDialogVisible = await pages.auth.isHelpDialogVisible();
             return !isDialogVisible;
         },
-        { 
-            timeout: timeouts.dialogClose, 
-            timeoutMsg: 'Help dialog did not close with Escape key within expected time'
-        }
+        createTimeoutOptions('dialogClose', 'Help dialog did not close with Escape key within expected time')
     );
 });
 

@@ -1,0 +1,35 @@
+FROM ubuntu:24.04
+
+LABEL org.opencontainers.image.title="Cursor Background Agent (with GitHub CLI)"
+LABEL org.opencontainers.image.source="https://github.com/CommunityStream-io/flock"
+LABEL org.opencontainers.image.description="Minimal background agent image with gh CLI preinstalled for testing automation and GitHub operations"
+
+ENV DEBIAN_FRONTEND=noninteractive \
+    GH_HOST=github.com \
+    PATH=/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+       ca-certificates \
+       curl \
+       git \
+       jq \
+       gh \
+       bash \
+       tini \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create non-root user for safer defaults
+RUN useradd -m -u 1000 -s /bin/bash agent
+
+WORKDIR /workspace
+
+# Copy entrypoint
+COPY scripts/cursor-agent-entrypoint.sh /usr/local/bin/cursor-agent-entrypoint
+RUN chmod +x /usr/local/bin/cursor-agent-entrypoint
+
+USER agent
+
+ENTRYPOINT ["/usr/bin/tini", "--", "/usr/local/bin/cursor-agent-entrypoint"]
+CMD ["bash", "-lc", "sleep infinity"]
+
