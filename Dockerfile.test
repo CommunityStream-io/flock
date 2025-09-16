@@ -72,7 +72,7 @@ FROM base AS runtime
 # PACKAGE_TOKEN will be provided as environment variable at runtime
 
 # Install Angular CLI and build packages globally in runtime stage
-RUN npm install -g @angular/cli @angular/build
+RUN npm install -g @angular/cli @angular/build concurrently wait-on cross-env
 
 # Set working directory
 WORKDIR /app
