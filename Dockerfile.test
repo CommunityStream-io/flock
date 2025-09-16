@@ -69,9 +69,7 @@ RUN npx ng build flock-mirage --configuration=test
 # Stage 4: Runtime with pre-built artifacts
 FROM base AS runtime
 
-# Accept build argument for package token
-ARG PACKAGE_TOKEN
-ENV PACKAGE_TOKEN=$PACKAGE_TOKEN
+# PACKAGE_TOKEN will be provided as environment variable at runtime
 
 # Install Angular CLI and build packages globally in runtime stage
 RUN npm install -g @angular/cli @angular/build
