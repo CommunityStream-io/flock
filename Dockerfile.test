@@ -80,8 +80,8 @@ WORKDIR /app
 # Copy built application from builder stage
 COPY --from=builder /app/dist/flock-mirage ./dist/flock-mirage
 
-# Copy production dependencies from deps stage
-COPY --from=deps /app/node_modules ./node_modules
+# Copy ALL dependencies from builder stage (including devDependencies for dev server)
+COPY --from=builder /app/node_modules ./node_modules
 
 # Copy only essential files for E2E testing
 COPY features/ ./features/
