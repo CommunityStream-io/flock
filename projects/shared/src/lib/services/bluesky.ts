@@ -6,7 +6,7 @@ import {
   ConnectionResult,
 } from './interfaces/bluesky';
 import { PostRecordImpl } from '@straiforos/instagramtobluesky';
-import { validateBlueskyUsername, validateBlueskyUsernameWithAt } from './validators/username.validator';
+import { validateBlueskyUsernameWithAt } from './validators/username.validator';
 
 @Injectable({
   providedIn: 'root',

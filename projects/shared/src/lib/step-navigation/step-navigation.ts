@@ -1,10 +1,10 @@
-import { Component, inject, Signal, signal, computed } from '@angular/core';
+import { Component, inject, Signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, ActivationEnd, Router, RouterModule } from '@angular/router';
+import { ActivationEnd, Router, RouterModule } from '@angular/router';
 import { LOGGER, Logger, StepRouteData, ConfigServiceImpl } from '../';
 import { MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
-import { filter, map, Observable, tap } from 'rxjs';
+import { filter, map, Observable } from 'rxjs';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({

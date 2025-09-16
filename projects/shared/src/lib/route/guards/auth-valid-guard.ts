@@ -1,5 +1,5 @@
 import { inject } from '@angular/core';
-import { CanDeactivateFn, Router } from '@angular/router';
+import { CanDeactivateFn } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ConfigServiceImpl } from '../../services/config';
 
@@ -8,6 +8,7 @@ import { ConfigServiceImpl } from '../../services/config';
  * Shows a snackbar message to complete authentication before proceeding
  */
 export const authValidGuard: CanDeactivateFn<unknown> = (component) => {
+  void component;
   const configService = inject(ConfigServiceImpl);
   
   // Check if we have valid credentials stored (form was valid)

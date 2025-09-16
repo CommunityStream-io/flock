@@ -5,7 +5,7 @@ export interface ValidationResult {
   warnings: string[];
   timestamp: Date;
   field?: string;
-  value?: any;
+  value?: unknown;
 }
 
 /**

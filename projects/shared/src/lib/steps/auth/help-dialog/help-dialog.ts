@@ -20,7 +20,7 @@ export class HelpDialog {
 
   constructor(
     public dialogRef: MatDialogRef<HelpDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    @Inject(MAT_DIALOG_DATA) public data: unknown
   ) {}
 
   onClose(): void {

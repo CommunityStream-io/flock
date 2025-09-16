@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { BlueSkyService, Credentials, AuthResult, ConnectionResult } from 'shared';
 import { PostRecordImpl } from '@straiforos/instagramtobluesky';
 import { environment } from '../../environments/environment';

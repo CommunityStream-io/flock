@@ -7,10 +7,12 @@ import { InstagramService, ValidationResult } from '../services';
 })
 export class Instagram implements InstagramService {
   validateExportStructure(path: string): Promise<ValidationResult> {
+    void path;
     throw new Error('Method not implemented.');
   }
 
   processInstagramData(path: string): Promise<MediaProcessResult[]> {
+    void path;
     throw new Error('Method not implemented.');
   }
 }
