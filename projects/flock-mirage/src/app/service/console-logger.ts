@@ -9,16 +9,16 @@ import { Logger } from 'shared';
   providedIn: 'root'
 })
 export class ConsoleLogger implements Logger {
-  log(message: string, object?: any): void {
+  log(message: string, object?: unknown): void {
     console.log('LOG:', message, object);
   }
-  error(message: string, object?: any): void {
+  error(message: string, object?: unknown): void {
     console.error('ERROR:', message, object);
   }
-  warn(message: string, object?: any): void {
+  warn(message: string, object?: unknown): void {
     console.warn('WARN:', message, object);
   }
-  workflow(message: string, object?: any): void {
+  workflow(message: string, object?: unknown): void {
     console.log('WORKFLOW:', message, object);
   }
   async instrument(appName: string): Promise<void> {

@@ -1,7 +1,7 @@
 import { inject } from '@angular/core';
 import { ResolveFn } from '@angular/router';
 import { FILE_PROCESSOR, FileService, LOGGER, Logger, SplashScreenLoading } from '../../../services';
-import { catchError, finalize, from, Observable, of, tap } from 'rxjs';
+import { catchError, finalize, from, of, tap } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 export const extractArchiveResolver: ResolveFn<Observable<boolean>> = () => {
@@ -21,7 +21,7 @@ export const extractArchiveResolver: ResolveFn<Observable<boolean>> = () => {
       }
     }),
     catchError((error) => {
-      logger.error('Error extracting archive');
+      logger.error('Error extracting archive', error);
       snackBar.open('Error extracting archive', 'Close', { duration: 3000 });
       return of(false); // Return false to indicate failure
     }),

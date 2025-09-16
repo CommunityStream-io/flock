@@ -1,11 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Component, inject, OnInit } from '@angular/core';
-import { MatButton, MatIconButton } from '@angular/material/button';
-import { MatIcon } from '@angular/material/icon';
 import { FILE_PROCESSOR, FileService, LOGGER, Logger } from '../../services';
 import { FileUploadControl } from '../../controls/file-upload-control/file-upload-control';
-import { filter, tap } from 'rxjs/operators';
+import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'shared-upload',

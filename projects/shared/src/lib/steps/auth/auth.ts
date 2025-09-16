@@ -123,7 +123,7 @@ export class Auth implements OnInit, OnDestroy {
    * Custom validator for username format
    * Prevents @ symbol and requires at least two dots
    */
-  private usernameFormatValidator(control: FormControl): { [key: string]: any } | null {
+  private usernameFormatValidator(control: FormControl): { [key: string]: unknown } | null {
     const value = control.value;
 
     if (!value) {

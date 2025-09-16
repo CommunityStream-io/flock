@@ -27,7 +27,7 @@ export class FileUploadControl implements ControlValueAccessor {
   private _value: File | null = null;
 
   // ControlValueAccessor implementation
-  onChange = (value: File | null) => {};
+  onChange = (file: File | null) => { void file; };
   onTouched = () => {};
 
   get value(): File | null {

@@ -9,7 +9,6 @@ import {
   StepLayout,
   StepRoute,
   uploadValidGuard,
-  authValidGuard,
   extractArchiveResolver,
   authDeactivateGuard
 } from 'shared';
