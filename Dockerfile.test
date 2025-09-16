@@ -5,7 +5,7 @@ FROM node:20-alpine AS base
 # Install system dependencies in a single layer
 RUN apk add --no-cache \
     wget gnupg unzip curl xvfb ca-certificates \
-    chromium \
+    chromium git \
     && rm -rf /var/cache/apk/*
 
 # Install ChromeDriver for Alpine
