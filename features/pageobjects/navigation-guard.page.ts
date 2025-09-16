@@ -118,58 +118,91 @@ class NavigationGuardPage extends Page {
         }
     }
 
-    // File state simulation methods
+    // File state simulation methods - now use page object methods
     public async simulateNoFileUploaded() {
-        // Execute JavaScript to reset file service state
-        await browser.execute(() => {
-            // This would depend on your actual file service implementation
-            // For now, we'll simulate by clearing any file inputs
-            const fileInputs = document.querySelectorAll('input[type="file"]');
-            fileInputs.forEach(input => {
-                (input as HTMLInputElement).value = '';
-                input.dispatchEvent(new Event('change'));
-            });
-        });
+        // Navigate to upload step and ensure no files are selected
+        await browser.url('/step/upload');
+        
+        // Wait for upload page to load
+        await browser.waitUntil(
+            async () => {
+                const uploadSection = $('.upload-section');
+                return await uploadSection.isDisplayed();
+            },
+            { timeout: 5000, timeoutMsg: 'Upload page did not load' }
+        );
+        
+        // Clear any existing files by clicking delete buttons
+        const deleteButtons = await $$('.file-selected button[mat-icon-button]');
+        for (const button of deleteButtons) {
+            if (await button.isDisplayed()) {
+                await button.click();
+            }
+        }
     }
 
     public async simulateValidFileUploaded() {
-        // Execute JavaScript to simulate valid file state
-        await browser.execute(() => {
-            // This would ideally set the file service state
-            // For testing, we might need to mock the service
-            const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
-            if (fileInput) {
-                // Create a mock file
-                const dt = new DataTransfer();
-                const file = new File(['valid archive content'], 'valid-archive.zip', { type: 'application/zip' });
-                dt.items.add(file);
-                fileInput.files = dt.files;
-                fileInput.dispatchEvent(new Event('change', { bubbles: true }));
-            }
-        });
+        // Navigate to upload step
+        await browser.url('/step/upload');
+        
+        // Wait for upload page to load
+        await browser.waitUntil(
+            async () => {
+                const uploadSection = $('.upload-section');
+                return await uploadSection.isDisplayed();
+            },
+            { timeout: 5000, timeoutMsg: 'Upload page did not load' }
+        );
+        
+        // Use the upload step page object to select a file
+        const { pages } = await import('../pageobjects');
+        await pages.uploadStep.selectFile('test-archive.zip');
+        
+        // Wait for file validation to complete
+        await browser.waitUntil(
+            async () => {
+                const hasFiles = await pages.uploadStep.hasFiles();
+                const isFormValid = await pages.uploadStep.isFormValid();
+                return hasFiles && isFormValid;
+            },
+            { timeout: 5000, timeoutMsg: 'File validation did not complete' }
+        );
     }
 
     public async simulateInvalidFile() {
-        await browser.execute(() => {
-            const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
-            if (fileInput) {
-                const dt = new DataTransfer();
-                const file = new File(['invalid content'], 'invalid.txt', { type: 'text/plain' });
-                dt.items.add(file);
-                fileInput.files = dt.files;
-                fileInput.dispatchEvent(new Event('change', { bubbles: true }));
-            }
-        });
+        // Navigate to upload step
+        await browser.url('/step/upload');
+        
+        // Wait for upload page to load
+        await browser.waitUntil(
+            async () => {
+                const uploadSection = $('.upload-section');
+                return await uploadSection.isDisplayed();
+            },
+            { timeout: 5000, timeoutMsg: 'Upload page did not load' }
+        );
+        
+        // Try to select an invalid file (this should be prevented by the accept attribute)
+        const fileInput = await $('input[type="file"]');
+        const acceptAttribute = await fileInput.getAttribute('accept');
+        
+        // Verify that only zip files are accepted
+        if (acceptAttribute !== '.zip') {
+            throw new Error('File input should only accept zip files');
+        }
     }
 
-    // Validation state checking
+    // Validation state checking - now use page object methods
     public async isFileServiceValid() {
-        return await browser.execute(() => {
-            // This would check the actual file service state
-            // For now, check if we have valid files in inputs
-            const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
-            return fileInput && fileInput.files && fileInput.files.length > 0;
-        });
+        try {
+            // Use the upload step page object to check file state
+            const { pages } = await import('../pageobjects');
+            const hasFiles = await pages.uploadStep.hasFiles();
+            const isFormValid = await pages.uploadStep.isFormValid();
+            return hasFiles && isFormValid;
+        } catch (error) {
+            return false;
+        }
     }
 
     public async hasValidationErrors() {

@@ -9,7 +9,7 @@ import { timeouts, timeoutMessages, createTimeoutOptions } from './timeout-confi
 
 /**
  * Sets up a valid file upload state to allow navigation between steps
- * This bypasses the uploadValidGuard by directly setting the service state
+ * This uses DOM-based file selection instead of accessing private service properties
  */
 export async function setupValidFileUpload(filename: string = 'test-archive.zip'): Promise<void> {
   console.log('🔧 BDD: Setting up valid file upload state');
@@ -26,35 +26,18 @@ export async function setupValidFileUpload(filename: string = 'test-archive.zip'
     createTimeoutOptions('appLoad', 'Upload page did not load within expected time')
   );
   
-  // Select a valid file
+  // Select a valid file using the page object method
   await pages.uploadStep.selectFile(filename);
   
-  // Directly set the file service state to bypass validation
-  await browser.execute(() => {
-    // Access the Angular application and set the file service state directly
-    const appElement = document.querySelector('app-root');
-    if (appElement && (appElement as any).__ngContext__) {
-      const context = (appElement as any).__ngContext__;
-      // Find the file service in the context
-      for (let i = 0; i < context.length; i++) {
-        const service = context[i];
-        if (service && service.archivedFile !== undefined) {
-          // This is likely the file service, set a mock file
-          service.archivedFile = new File(['mock content'], 'test-archive.zip', { type: 'application/zip' });
-          console.log('✅ BDD: File service state set directly');
-          break;
-        }
-      }
-    }
-  });
-  
-  // Also set the state in localStorage to persist across navigations
-  await browser.execute(() => {
-    // Store file state in localStorage as a backup
-    localStorage.setItem('test-file-uploaded', 'true');
-    localStorage.setItem('test-file-name', 'test-archive.zip');
-    console.log('✅ BDD: File state stored in localStorage');
-  });
+  // Wait for file validation to complete
+  await browser.waitUntil(
+    async () => {
+      const hasFiles = await pages.uploadStep.hasFiles();
+      const isFormValid = await pages.uploadStep.isFormValid();
+      return hasFiles && isFormValid;
+    },
+    createTimeoutOptions('fileValidation', 'File validation did not complete within expected time')
+  );
   
   console.log('✅ BDD: Valid file upload state established');
 }
@@ -71,27 +54,6 @@ export async function setupAuthState(): Promise<void> {
   
   // Navigate to auth step - this should now work because we have valid file state
   await browser.url('/step/auth');
-  
-  // Restore file service state after navigation
-  await browser.execute(() => {
-    // Check if we have file state in localStorage
-    const hasFileState = localStorage.getItem('test-file-uploaded') === 'true';
-    if (hasFileState) {
-      // Restore the file service state
-      const appElement = document.querySelector('app-root');
-      if (appElement && (appElement as any).__ngContext__) {
-        const context = (appElement as any).__ngContext__;
-        for (let i = 0; i < context.length; i++) {
-          const service = context[i];
-          if (service && service.archivedFile !== undefined) {
-            service.archivedFile = new File(['mock content'], 'test-archive.zip', { type: 'application/zip' });
-            console.log('✅ BDD: File service state restored after navigation');
-            break;
-          }
-        }
-      }
-    }
-  });
   
   // Wait for auth form to be visible
   await browser.waitUntil(
@@ -122,4 +84,56 @@ export async function setupSplashScreenTestState(): Promise<void> {
   }
   
   console.log('✅ BDD: Splash screen test state established');
+}
+
+/**
+ * Simulates a valid file upload for navigation guard testing
+ * This uses DOM-based file selection to trigger the actual Angular form validation
+ */
+export async function simulateValidFileUpload(filename: string = 'test-archive.zip'): Promise<void> {
+  console.log('🔧 BDD: Simulating valid file upload');
+  
+  // Navigate to upload step
+  await pages.uploadStep.open();
+  
+  // Select a valid file using the page object method
+  await pages.uploadStep.selectFile(filename);
+  
+  // Wait for file validation to complete
+  await browser.waitUntil(
+    async () => {
+      const hasFiles = await pages.uploadStep.hasFiles();
+      const isFormValid = await pages.uploadStep.isFormValid();
+      return hasFiles && isFormValid;
+    },
+    createTimeoutOptions('fileValidation', 'File validation did not complete within expected time')
+  );
+  
+  console.log('✅ BDD: Valid file upload simulated');
+}
+
+/**
+ * Simulates no file upload state for testing navigation guards
+ * This ensures the upload step is in its initial state
+ */
+export async function simulateNoFileUpload(): Promise<void> {
+  console.log('🔧 BDD: Simulating no file upload state');
+  
+  // Navigate to upload step
+  await pages.uploadStep.open();
+  
+  // Verify no files are selected
+  const hasFiles = await pages.uploadStep.hasFiles();
+  if (hasFiles) {
+    // If files are selected, remove them
+    await pages.uploadStep.clickDeleteButton(0);
+  }
+  
+  // Verify the form is in invalid state
+  const isFormValid = await pages.uploadStep.isFormValid();
+  if (isFormValid) {
+    throw new Error('Form should be invalid when no file is uploaded');
+  }
+  
+  console.log('✅ BDD: No file upload state simulated');
 }
