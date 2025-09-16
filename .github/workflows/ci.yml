@@ -116,23 +116,60 @@ jobs:
       - name: Create logs directory
         run: mkdir -p logs/metrics allure-results
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Cache Docker layers
+        uses: actions/cache@v4
         with:
-          node-version: '24.5.0'
-          cache: 'npm'
-          cache-dependency-path: package-lock.json
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
 
-      - name: Install dependencies
-        run: npm ci
+      - name: Build Docker E2E image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile.test
+          push: false
+          load: true
+          tags: flock-e2e-docker:latest
+          build-args: |
+            PACKAGE_TOKEN=${{ secrets.PACKAGE_TOKEN }}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 
-      - name: Build shared library
-        run: npx ng build --project=shared
-
-      - name: Run E2E tests
+      - name: Move cache
         run: |
-          echo "🚀 Running shard ${{ matrix.shard }}/${{ matrix.total-shards }}..."
-          SHARD=${{ matrix.shard }} TOTAL_SHARDS=${{ matrix.total-shards }} npm run test:e2e:shard
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
+      - name: Run E2E tests with Docker
+        run: |
+          echo "🚀 Running shard ${{ matrix.shard }}/${{ matrix.total-shards }} with Docker..."
+          docker run --rm \
+            -v "$(pwd)/logs:/app/logs" \
+            -v "$(pwd)/allure-results:/app/allure-results" \
+            -e CI=true \
+            -e HEADLESS=true \
+            -e TIMEOUT_TELEMETRY=true \
+            -e SHARD=${{ matrix.shard }} \
+            -e TOTAL_SHARDS=${{ matrix.total-shards }} \
+            -e NODE_ENV=test \
+            -e PACKAGE_TOKEN=${{ secrets.PACKAGE_TOKEN }} \
+            flock-e2e-docker:latest \
+            sh -c "
+              echo 'Starting Angular dev server in background...' &&
+              npx ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0 &
+              SERVER_PID=\$! &&
+              echo 'Waiting for server to be ready...' &&
+              timeout 60 sh -c 'until curl -f http://localhost:4200; do sleep 2; done' &&
+              echo 'Server ready! Running tests with pre-installed ChromeDriver...' &&
+              npx cross-env CI=true HEADLESS=true BASE_URL=http://localhost:4200 SHARDED_TESTS=true TIMEOUT_TELEMETRY=true wdio run wdio.docker.conf.ts --shard=${{ matrix.shard }}/${{ matrix.total-shards }} &&
+              echo 'Tests completed! Stopping server...' &&
+              kill \$SERVER_PID 2>/dev/null || true
+            "
 
       - name: Upload Allure results as artifact (shard ${{ matrix.shard }})
         uses: actions/upload-artifact@v4
