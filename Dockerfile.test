@@ -69,7 +69,9 @@ RUN npx ng build flock-mirage --configuration=test
 # Stage 4: Runtime with pre-built artifacts
 FROM base AS runtime
 
-# PACKAGE_TOKEN will be provided as environment variable at runtime
+# Accept build argument for package token
+ARG PACKAGE_TOKEN
+ENV PACKAGE_TOKEN=$PACKAGE_TOKEN
 
 # Install Angular CLI and build packages globally in runtime stage
 RUN npm install -g @angular/cli @angular/build concurrently wait-on cross-env
@@ -80,8 +82,8 @@ WORKDIR /app
 # Copy built application from builder stage
 COPY --from=builder /app/dist/flock-mirage ./dist/flock-mirage
 
-# Copy ALL dependencies from builder stage (including devDependencies for dev server)
-COPY --from=builder /app/node_modules ./node_modules
+# Install dependencies directly in runtime stage to ensure proper permissions
+RUN npm ci --no-audit --no-fund --legacy-peer-deps
 
 # Copy only essential files for E2E testing
 COPY features/ ./features/
