@@ -1,0 +1,120 @@
+# Optimized Multi-stage Dockerfile for E2E Testing with Enhanced Security
+# Stage 1: Base environment with Chrome and ChromeDriver
+FROM node:20-alpine AS base
+
+# Install system dependencies in a single layer
+RUN apk add --no-cache \
+    wget gnupg unzip curl xvfb ca-certificates \
+    chromium \
+    && rm -rf /var/cache/apk/*
+
+# Install ChromeDriver for Alpine
+RUN CHROMEDRIVER_VERSION=$(curl -s "https://googlechromelabs.github.io/chrome-for-testing/LATEST_RELEASE_$(chromium-browser --version | cut -d " " -f2 | cut -d "." -f1)") \
+    && wget -O /tmp/chromedriver.zip "https://storage.googleapis.com/chrome-for-testing-public/${CHROMEDRIVER_VERSION}/linux64/chromedriver-linux64.zip" \
+    && unzip /tmp/chromedriver.zip -d /tmp/ \
+    && mv /tmp/chromedriver-linux64/chromedriver /usr/local/bin/ \
+    && chmod +x /usr/local/bin/chromedriver \
+    && rm -rf /tmp/chromedriver.zip /tmp/chromedriver-linux64
+
+# Stage 2: Dependencies layer for better caching
+FROM node:20-alpine AS deps
+WORKDIR /app
+
+# Accept build argument for package token
+ARG PACKAGE_TOKEN
+ENV PACKAGE_TOKEN=$PACKAGE_TOKEN
+
+# Copy only package files first for optimal layer caching
+COPY package*.json ./
+
+# Copy .npmrc with environment variable placeholder
+COPY .npmrc ./
+
+# Install dependencies with npm ci for faster, reliable installs
+# Use --legacy-peer-deps to handle dependency conflicts
+RUN npm ci --only=production --no-audit --no-fund --legacy-peer-deps
+
+# Stage 3: Build Angular application
+FROM node:20-alpine AS builder
+WORKDIR /app
+
+# Accept build argument for package token
+ARG PACKAGE_TOKEN
+ENV PACKAGE_TOKEN=$PACKAGE_TOKEN
+
+# Copy package files and npmrc
+COPY package*.json ./
+
+# Copy .npmrc with environment variable placeholder
+COPY .npmrc ./
+
+# Install all dependencies (including devDependencies for build)
+# Use --legacy-peer-deps to handle dependency conflicts
+RUN npm ci --no-audit --no-fund --legacy-peer-deps
+
+# Install Angular CLI globally for runtime
+RUN npm install -g @angular/cli
+
+# Copy only necessary configuration files
+COPY angular.json ./
+COPY tsconfig*.json ./
+
+# Copy only the specific project source code needed for E2E testing
+COPY projects/flock-mirage/ ./projects/flock-mirage/
+COPY projects/shared/ ./projects/shared/
+
+# Build the Angular application with test configuration
+RUN npx ng build flock-mirage --configuration=test
+
+# Stage 4: Runtime with pre-built artifacts
+FROM base AS runtime
+
+# Accept build argument for package token
+ARG PACKAGE_TOKEN
+ENV PACKAGE_TOKEN=$PACKAGE_TOKEN
+
+# Install Angular CLI and build packages globally in runtime stage
+RUN npm install -g @angular/cli @angular/build
+
+# Set working directory
+WORKDIR /app
+
+# Copy built application from builder stage
+COPY --from=builder /app/dist/flock-mirage ./dist/flock-mirage
+
+# Copy production dependencies from deps stage
+COPY --from=deps /app/node_modules ./node_modules
+
+# Copy only essential files for E2E testing
+COPY features/ ./features/
+COPY wdio.conf.ts ./
+COPY tsconfig.e2e.json ./
+COPY package.json ./
+
+# Copy .npmrc with environment variable placeholder
+COPY .npmrc ./
+
+# Copy only the minimal source code needed for Angular dev server
+COPY projects/flock-mirage/src/ ./projects/flock-mirage/src/
+COPY projects/shared/src/ ./projects/shared/src/
+COPY angular.json ./
+COPY tsconfig*.json ./
+
+# Copy essential startup script
+COPY scripts/docker-startup.sh /usr/local/bin/setup-npm-auth
+RUN chmod +x /usr/local/bin/setup-npm-auth
+
+# Create directories for logs and results
+RUN mkdir -p logs/servers logs/shards logs/exits allure-results
+
+# Set environment variables
+ENV NODE_ENV=test
+ENV HEADLESS=true
+ENV CI=true
+ENV TIMEOUT_TELEMETRY=true
+
+# Expose port for Angular dev server
+EXPOSE 4200
+
+# Default command (can be overridden)
+CMD ["npm", "run", "test:e2e:skip-failing"]
