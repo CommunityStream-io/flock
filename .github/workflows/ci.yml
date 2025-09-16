@@ -9,6 +9,7 @@ on:
 permissions:
   contents: read
   packages: write
+  write-all: true
 
 jobs:
   lint:
@@ -110,7 +111,7 @@ jobs:
       image-digest: ${{ steps.build.outputs.digest }}
     env:
       REGISTRY: ghcr.io
-      IMAGE_NAME: communitystream-io/flock/e2e-test
+      IMAGE_NAME: communitystream-io/flock-e2e-test
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -166,7 +167,7 @@ jobs:
       HEADLESS: true
       CI: true
     container:
-      image: ghcr.io/communitystream-io/flock/e2e-test:${{ github.ref_name }}
+      image: ghcr.io/communitystream-io/flock-e2e-test:${{ github.ref_name }}
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
