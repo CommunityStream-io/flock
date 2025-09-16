@@ -110,7 +110,7 @@ jobs:
       image-digest: ${{ steps.build.outputs.digest }}
     env:
       REGISTRY: ghcr.io
-      IMAGE_NAME: ${{ github.repository }}/e2e-test
+      IMAGE_NAME: communitystream-io/flock/e2e-test
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -166,7 +166,7 @@ jobs:
       HEADLESS: true
       CI: true
     container:
-      image: ghcr.io/${{ github.repository }}/e2e-test:latest
+      image: ghcr.io/communitystream-io/flock/e2e-test:latest
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
