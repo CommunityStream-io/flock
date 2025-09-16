@@ -76,9 +76,6 @@ ENV PACKAGE_TOKEN=$PACKAGE_TOKEN
 # Install Angular CLI and build packages globally in runtime stage
 RUN npm install -g @angular/cli @angular/build
 
-# Install dev dependencies needed for Angular dev server
-RUN npm install --save-dev @angular-devkit/build-angular
-
 # Set working directory
 WORKDIR /app
 
@@ -93,6 +90,7 @@ COPY features/ ./features/
 COPY wdio.conf.ts ./
 COPY tsconfig.e2e.json ./
 COPY package.json ./
+COPY package-lock.json ./
 
 # Copy .npmrc with environment variable placeholder
 COPY .npmrc ./
