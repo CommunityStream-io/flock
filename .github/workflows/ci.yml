@@ -182,15 +182,7 @@ jobs:
       - name: Run E2E tests in container
         run: |
           echo "🚀 Running shard ${{ matrix.shard }}/${{ matrix.total-shards }} in pre-built container..."
-          echo 'Starting Angular dev server in background...' &&
-          npx ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0 &
-          SERVER_PID=$! &&
-          echo 'Waiting for server to be ready...' &&
-          timeout 60 sh -c 'until curl -f http://localhost:4200; do sleep 2; done' &&
-          echo 'Server ready! Running tests with pre-installed ChromeDriver...' &&
-          npx cross-env CI=true HEADLESS=true BASE_URL=http://localhost:4200 SHARDED_TESTS=true TIMEOUT_TELEMETRY=true wdio run wdio.docker.conf.ts --shard=${{ matrix.shard }}/${{ matrix.total-shards }} &&
-          echo 'Tests completed! Stopping server...' &&
-          kill $SERVER_PID 2>/dev/null || true
+          SHARD=${{ matrix.shard }} TOTAL_SHARDS=${{ matrix.total-shards }} npm run test:e2e:docker
 
       - name: Upload Allure results as artifact (shard ${{ matrix.shard }})
         uses: actions/upload-artifact@v4
