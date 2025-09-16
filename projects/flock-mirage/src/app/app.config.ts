@@ -21,7 +21,9 @@ import {
 } from 'shared';
 import { FileProcessor } from './service/file-processor';
 import { ConsoleLogger } from './service/console-logger';
+import { FileLogger } from './service/file-logger';
 import { Bluesky } from './service/bluesky';
+import { RouterLoggingService } from './service/router-logging';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -47,5 +49,6 @@ export const appConfig: ApplicationConfig = {
       useClass: Bluesky,
     },
     SplashScreenLoading,
+    RouterLoggingService, // Add router logging service
   ],
 };

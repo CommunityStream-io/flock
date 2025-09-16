@@ -1,5 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { LayoutComponent, Logger, LOGGER, RouterSplash, SplashScreenLoading } from 'shared';
+import { RouterLoggingService } from './service/router-logging';
 
 @Component({
   selector: 'app-root',
@@ -13,6 +14,9 @@ export class App {
   constructor() {
     const logger = inject<Logger>(LOGGER);
     logger.instrument('Dodo bird ready to flap!');
+    
+    // Initialize router logging
+    inject(RouterLoggingService);
   }
   isLoading = inject(SplashScreenLoading).isLoading.asObservable();
 }

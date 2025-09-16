@@ -436,7 +436,7 @@ generate_summary() {
 }
 
 # Main execution
-TOTAL_SHARDS=19  # Use 19 shards - one per feature file
+TOTAL_SHARDS=3  # Use 3 shards for testing - reduced to avoid ChromeDriver issues
 
 echo "Running ${TOTAL_SHARDS} shards in parallel, each with its own server..."
 
