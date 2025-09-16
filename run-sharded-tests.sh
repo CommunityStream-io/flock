@@ -7,6 +7,7 @@
 export SHARDED_TESTS=true
 export DEBUG_TESTS=false
 export TIMEOUT_TELEMETRY=true
+export CHROMEDRIVER_PATH="./node_modules/chromedriver/lib/chromedriver/chromedriver.exe"
 
 # Parse command line arguments
 AUTO_SERVE_ALLURE=false
