@@ -166,7 +166,7 @@ jobs:
       HEADLESS: true
       CI: true
     container:
-      image: ghcr.io/communitystream-io/flock/e2e-test:latest
+      image: ghcr.io/communitystream-io/flock/e2e-test:${{ github.ref_name }}
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
