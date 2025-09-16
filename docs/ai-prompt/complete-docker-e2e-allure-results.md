@@ -106,6 +106,8 @@ The goal is to have a fully working container-based E2E testing solution that ge
 - Fixed Docker package name and permissions for GHCR
 - Refactored CI to use npm scripts instead of inline commands
 - Made `test:e2e:docker` call the existing `test:e2e:shard` command with Docker config
+- **LATEST**: Fixed missing `concurrently` package by installing it globally in Docker container
+- **LATEST**: Fixed node_modules copying issue by installing dependencies directly in runtime stage
 
 ## Current Workflow Status
 The CI workflow is currently running and should be building the Docker image and running E2E tests. The main remaining issue is ensuring Allure results are properly generated and uploaded as artifacts.
