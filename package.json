@@ -47,7 +47,7 @@
     "test:e2e:skip-failing": "wdio run wdio.conf.ts --cucumberOpts.tags='not @skip'",
     "test:e2e:only-passing": "wdio run wdio.conf.ts --cucumberOpts.tags='not @skip'",
     "test:e2e:run-all": "wdio run wdio.conf.ts --cucumberOpts.tags=''",
-    "test:e2e:shard": "concurrently --kill-others --success first \"ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0\" \"wait-on http://localhost:4200 && cross-env CI=true HEADLESS=true SHARDED_TESTS=true wdio run ${WDIO_CONFIG:-wdio.conf.ts} --shard=${SHARD}/${TOTAL_SHARDS}\"",
+    "test:e2e:shard": "npx concurrently --kill-others --success first \"npx ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0\" \"npx wait-on http://localhost:4200 && npx cross-env CI=true HEADLESS=true SHARDED_TESTS=true npx wdio run ${WDIO_CONFIG:-wdio.conf.ts} --shard=${SHARD}/${TOTAL_SHARDS}\"",
     "test:e2e:docker": "mkdir -p logs/metrics allure-results && SHARD=${SHARD} TOTAL_SHARDS=${TOTAL_SHARDS} WDIO_CONFIG=wdio.docker.conf.ts npm run test:e2e:shard",
     "test:all": "npm run test:ci && npm run test:e2e:ci",
     "analyze:metrics": "node scripts/analyze-test-metrics.js",

@@ -26,11 +26,8 @@ ENV PACKAGE_TOKEN=$PACKAGE_TOKEN
 COPY package*.json ./
 COPY .npmrc ./
 
-# Install dependencies (including devDependencies for Angular dev server)
+# Install all dependencies (including devDependencies for Angular dev server)
 RUN npm ci --no-audit --no-fund --legacy-peer-deps
-
-# Install global dependencies needed for E2E tests
-RUN npm install -g @angular/cli concurrently wait-on cross-env
 
 # Copy source code
 COPY . .
