@@ -33,7 +33,7 @@ RUN npm ci --no-audit --no-fund --legacy-peer-deps
 COPY . .
 
 # Build the shared library (required for the app)
-RUN ng build --project=shared
+RUN npx ng build --project=shared
 
 # Create directories for logs and results
 RUN mkdir -p logs/metrics logs/servers logs/shards logs/exits allure-results
