@@ -30,7 +30,7 @@ COPY .npmrc ./
 RUN npm ci --no-audit --no-fund --legacy-peer-deps
 
 # Install global dependencies needed for E2E tests
-RUN npm install -g @angular/cli
+RUN npm install -g @angular/cli concurrently wait-on cross-env
 
 # Copy source code
 COPY . .
