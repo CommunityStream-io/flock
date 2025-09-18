@@ -127,6 +127,17 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Build base image
+        id: build-base
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile.base
+          push: false
+          tags: flock-base:latest
+          cache-from: type=gha,scope=base
+          cache-to: type=gha,mode=max,scope=base
+
       - name: Extract metadata
         id: meta
         uses: docker/metadata-action@v5
@@ -137,8 +148,8 @@ jobs:
             type=sha
             type=raw,value=latest,enable={{is_default_branch}}
 
-      - name: Build and push Docker image
-        id: build
+      - name: Build and push test image
+        id: build-test
         uses: docker/build-push-action@v5
         with:
           context: .
@@ -148,8 +159,8 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
             PACKAGE_TOKEN=${{ secrets.PACKAGE_TOKEN }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,scope=test
+          cache-to: type=gha,mode=max,scope=test
 
   e2e:
     name: Practice the murmuration (E2E Test)
