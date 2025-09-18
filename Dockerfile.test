@@ -44,6 +44,9 @@ ENV HEADLESS=true
 ENV CI=true
 ENV TIMEOUT_TELEMETRY=true
 
+# Add node_modules/.bin to PATH so locally installed packages can be found
+ENV PATH="/app/node_modules/.bin:${PATH}"
+
 # Expose port for Angular dev server
 EXPOSE 4200
 
