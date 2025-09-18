@@ -55,6 +55,3 @@ EXPOSE 4200
 
 # Set working directory to /app where our project is located
 WORKDIR /app
-
-# Default command runs the Docker E2E tests
-CMD ["npm", "run", "test:e2e:docker"]
