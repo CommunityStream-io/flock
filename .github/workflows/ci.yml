@@ -171,15 +171,7 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          submodules: recursive
-
-      - name: Create logs directory
-        run: mkdir -p logs/metrics allure-results
-
-      - name: Run E2E tests in container
+      - name: Run E2E tests in pre-built container
         run: |
           echo "🚀 Running shard ${{ matrix.shard }}/${{ matrix.total-shards }} in pre-built container..."
           SHARD=${{ matrix.shard }} TOTAL_SHARDS=${{ matrix.total-shards }} npm run test:e2e:docker
