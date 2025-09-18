@@ -12,9 +12,6 @@ RUN apk add --no-cache \
     g++ \
     && rm -rf /var/cache/apk/*
 
-# Set Chrome environment variables
-ENV CHROME_BIN=/usr/bin/chromium-browser
-ENV CHROME_PATH=/usr/bin/chromium-browser
 
 # Accept build argument for package token
 ARG PACKAGE_TOKEN
