@@ -174,7 +174,21 @@ jobs:
       - name: Run E2E tests in pre-built container
         run: |
           echo "🚀 Running shard ${{ matrix.shard }}/${{ matrix.total-shards }} in pre-built container..."
+          echo "📁 Current directory: $(pwd)"
+          echo "📁 Contents of current directory:"
+          ls -la
+          echo "📁 Contents of /app directory:"
+          ls -la /app
+          echo "📁 Contents of /app/package.json:"
+          ls -la /app/package.json || echo "package.json not found in /app"
+          echo "📁 Contents of /app/node_modules:"
+          ls -la /app/node_modules | head -10 || echo "node_modules not found in /app"
+          echo "📁 Changing to /app directory..."
           cd /app
+          echo "📁 After cd /app, current directory: $(pwd)"
+          echo "📁 Contents of current directory after cd:"
+          ls -la
+          echo "📁 Running npm command from: $(pwd)"
           SHARD=${{ matrix.shard }} TOTAL_SHARDS=${{ matrix.total-shards }} npm run test:e2e:docker
 
       - name: Upload Allure results as artifact (shard ${{ matrix.shard }})
