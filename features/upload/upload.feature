@@ -32,7 +32,7 @@ Feature: File Upload and Validation - Instagram Archive Processing
     When I select a valid Instagram archive file "archive.zip"
     Then I should be able to proceed to the next step
 
-  @file-upload @navigation-reset @skip()
+  @file-upload @navigation-reset
   Scenario: Navigation back to upload step resets splash screen message
     Given I have selected a valid Instagram archive file "test-archive.zip"
     And I have navigated to the auth step

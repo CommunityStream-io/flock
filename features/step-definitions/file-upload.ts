@@ -1,7 +1,7 @@
 import { Given, When, Then, After } from '@wdio/cucumber-framework';
 import { pages } from '../pageobjects';
 import { browser } from '@wdio/globals';
-import { timeouts, timeoutMessages } from '../support/timeout-config';
+import { timeouts, timeoutMessages, timeoutOptions } from '../support/timeout-config';
 
 Then('I should see the upload section', async () => {
     await expect(pages.uploadStep.uploadSection).toBeDisplayed();
@@ -33,7 +33,7 @@ Then('the file input should accept {string} files', async (fileType: string) => 
 When('I select a valid Instagram archive file {string}', async (filename: string) => {
     await pages.uploadStep.selectFile(filename);
     // Wait for file list to be displayed - WebdriverIO auto-waits for interactable
-    await pages.uploadStep.fileListSection.waitForDisplayed({ timeout: timeouts.fileProcessing });
+    await pages.uploadStep.fileListSection.waitForDisplayed(timeoutOptions.fileProcessing);
 });
 
 When('I select an invalid file {string}', async (filename: string) => {
@@ -140,7 +140,7 @@ Then('users cannot accidentally select text files', async () => {
 Given('I have selected a valid Instagram archive file {string}', async (filename: string) => {
     await pages.uploadStep.selectFile(filename);
     // Wait for file list to be displayed - WebdriverIO auto-waits for interactable
-    await pages.uploadStep.fileListSection.waitForDisplayed({ timeout: timeouts.fileValidation });
+    await pages.uploadStep.fileListSection.waitForDisplayed(timeoutOptions.fileValidation);
 });
 
 When('I click the delete button for {string}', async (filename: string) => {
@@ -189,10 +189,7 @@ When('I try to proceed without a file', async () => {
             const hasSnackbar = await pages.navigationGuard.isSnackbarVisible();
             return isStillOnUpload || hasSnackbar;
         },
-        { 
-            timeout: timeouts.navigation,
-            timeoutMsg: timeoutMessages.navigation(process.env.CI === 'true')
-        }
+        timeoutOptions.navigation
     );
 });
 
@@ -227,10 +224,7 @@ Then('I should be able to proceed to the next step', async () => {
             const isStillOnUpload = await pages.navigationGuard.isStillOnStep('upload');
             return !isStillOnUpload;
         },
-        { 
-            timeout: timeouts.navigation,
-            timeoutMsg: timeoutMessages.navigation(process.env.CI === 'true')
-        }
+        timeoutOptions.navigation
     );
 });
 
@@ -281,10 +275,7 @@ When('I upload a valid Instagram archive file', async () => {
             const isFileServiceValid = await pages.navigationGuard.isFileServiceValid();
             return isFileServiceValid;
         },
-        { 
-            timeout: timeouts.fileValidation,
-            timeoutMsg: timeoutMessages.fileValidation(process.env.CI === 'true')
-        }
+        timeoutOptions.fileValidation
     );
 });
 
@@ -296,10 +287,7 @@ When('I upload a valid Instagram archive', async () => {
             const isFileServiceValid = await pages.navigationGuard.isFileServiceValid();
             return isFileServiceValid;
         },
-        { 
-            timeout: timeouts.fileValidation,
-            timeoutMsg: timeoutMessages.fileValidation(process.env.CI === 'true')
-        }
+        timeoutOptions.fileValidation
     );
 });
 
@@ -321,10 +309,7 @@ When('I select a file but validation fails', async () => {
             const hasErrors = await pages.navigationGuard.hasValidationErrors();
             return hasErrors;
         },
-        { 
-            timeout: timeouts.fileError,
-            timeoutMsg: timeoutMessages.fileError(process.env.CI === 'true')
-        }
+        timeoutOptions.fileError
     );
 });
 

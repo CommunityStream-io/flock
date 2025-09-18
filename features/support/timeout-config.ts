@@ -9,6 +9,8 @@
 export interface TimeoutConfig {
   // Global timeouts
   global: number;
+  waitforTimeout: number;   // WebdriverIO waitfor timeout
+  connectionRetryTimeout: number; // WebdriverIO connection retry timeout
   waitUntilGlobal: number;  // Global timeout for waitUntil calls
   
   // Application loading timeouts
@@ -48,6 +50,8 @@ export function getTimeoutConfig(isCI: boolean = process.env.CI === 'true'): Tim
     // CI timeouts - optimized for Phase 3 with complex waits
     return {
       global: 120000,          // 120s (2 minutes) - Global timeout (must be higher than all step-specific timeouts)
+      waitforTimeout: 30000,   // 30s - WebdriverIO waitfor timeout
+      connectionRetryTimeout: 60000, // 60s - WebdriverIO connection retry timeout
       waitUntilGlobal: 8000,   // 8s - Global timeout for waitUntil calls (optimized for Phase 3)
       appLoad: 20000,          // 20s - Application loading (optimized for Phase 3)
       splashScreen: 15000,     // 15s - Splash screen appearance (optimized for Phase 3)
@@ -67,6 +71,8 @@ export function getTimeoutConfig(isCI: boolean = process.env.CI === 'true'): Tim
     // Local development timeouts - optimized for Phase 3 with debugging support
     return {
       global: 120000,          // 120s (2 minutes) - Global timeout (must be higher than all step-specific timeouts)
+      waitforTimeout: 30000,   // 30s - WebdriverIO waitfor timeout
+      connectionRetryTimeout: 60000, // 60s - WebdriverIO connection retry timeout
       waitUntilGlobal: 8000,   // 8s - Global timeout for waitUntil calls (optimized for Phase 3)
       appLoad: 15000,          // 15s - Application loading (optimized for Phase 3)
       splashScreen: 12000,     // 12s - Splash screen appearance (optimized for Phase 3)
@@ -98,6 +104,8 @@ export function getTimeouts() {
 // For backward compatibility, create a dynamic object that calls the function
 export const timeouts = {
     get global() { return getTimeouts().global; },
+    get waitforTimeout() { return getTimeouts().waitforTimeout; },
+    get connectionRetryTimeout() { return getTimeouts().connectionRetryTimeout; },
     get appLoad() { return getTimeouts().appLoad; },
     get splashScreen() { return getTimeouts().splashScreen; },
     get navigation() { return getTimeouts().navigation; },

@@ -1,7 +1,7 @@
 import { Given, When, Then, After } from '@wdio/cucumber-framework';
 import { pages } from '../pageobjects';
 import { browser, $ } from '@wdio/globals';
-import { timeouts, timeoutMessages } from '../support/timeout-config';
+import { timeoutOptions, createTimeoutOptions } from '../support/timeout-config';
 
 Given('I am on the auth step page', async () => {
     await pages.auth.open();
@@ -23,10 +23,7 @@ Given('I have navigated to the auth step', async () => {
             const isAuthFormVisible = await pages.auth.authForm.isDisplayed();
             return isOnAuthStep && isAuthFormVisible;
         },
-        { 
-            timeout: timeouts.navigation,
-            timeoutMsg: timeoutMessages.navigation(process.env.CI === 'true')
-        }
+        timeoutOptions.navigation
     );
 });
 
@@ -50,10 +47,7 @@ When('I navigate back to the upload step', async () => {
                     return false;
                 }
             },
-            { 
-                timeout: timeouts.navigation,
-                timeoutMsg: `Navigation to upload step did not complete within ${timeouts.navigation}ms. This may indicate a server connectivity issue or port conflict.`
-            }
+            createTimeoutOptions('navigation', `Navigation to upload step did not complete within expected time. This may indicate a server connectivity issue or port conflict.`)
         );
         
         // Record successful navigation for metrics
@@ -209,10 +203,7 @@ When('I leave the password field empty', async () => {
             const isFormValid = await pages.auth.isFormValid();
             return isFormValid;
         },
-        { 
-            timeout: timeouts.uiInteraction,
-            timeoutMsg: timeoutMessages.uiInteraction(process.env.CI === 'true')
-        }
+        timeoutOptions.uiInteraction
     );
 });
 
@@ -282,10 +273,7 @@ Given('I have entered valid credentials', async () => {
             const hasPassword = await pages.auth.passwordField.getValue();
             return isFormValid && hasUsername && hasPassword;
         },
-        { 
-            timeout: timeouts.credentialEntry,
-            timeoutMsg: timeoutMessages.credentialEntry(process.env.CI === 'true')
-        }
+        timeoutOptions.credentialEntry
     );
     
     console.log('✅ BDD: Valid credentials entered and form validated successfully');
@@ -304,7 +292,7 @@ Then('the authentication script should run in the background', async () => {
             const currentUrl = await browser.getUrl();
             return currentUrl.includes('/step/config');
         },
-        { timeout: timeouts.authNavigation, timeoutMsg: timeoutMessages.authNavigation(process.env.CI === 'true') }
+        timeoutOptions.authNavigation
     );
 });
 
@@ -314,7 +302,7 @@ Then('I should be navigated to the config step', async () => {
             const currentUrl = await browser.getUrl();
             return currentUrl.includes('/step/config');
         },
-        { timeout: timeouts.navigation, timeoutMsg: timeoutMessages.navigation(process.env.CI === 'true') }
+        timeoutOptions.navigation
     );
 });
 
@@ -346,10 +334,7 @@ Given('I have entered invalid credentials', async () => {
             const isFormValid = await pages.auth.isFormValid();
             return isFormValid;
         },
-        { 
-            timeout: timeouts.uiInteraction,
-            timeoutMsg: timeoutMessages.uiInteraction(process.env.CI === 'true')
-        }
+        timeoutOptions.uiInteraction
     );
 });
 
@@ -560,10 +545,7 @@ When('I close the help dialog', async () => {
             const isDialogVisible = await pages.auth.isHelpDialogVisible();
             return !isDialogVisible;
         },
-        { 
-            timeout: timeouts.dialogClose, 
-            timeoutMsg: timeoutMessages.dialogClose(process.env.CI === 'true')
-        }
+        timeoutOptions.dialogClose
     );
 });
 
@@ -575,10 +557,7 @@ When('I close the help dialog with Escape key', async () => {
             const isDialogVisible = await pages.auth.isHelpDialogVisible();
             return !isDialogVisible;
         },
-        { 
-            timeout: timeouts.dialogClose, 
-            timeoutMsg: 'Help dialog did not close with Escape key within expected time'
-        }
+        createTimeoutOptions('dialogClose', 'Help dialog did not close with Escape key within expected time')
     );
 });
 

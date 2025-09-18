@@ -1,4 +1,5 @@
 import Page from './page';
+import { createTimeoutOptions } from '../support/timeout-config';
 
 class StepLayoutPage extends Page {
     // Step layout container
@@ -123,7 +124,7 @@ class StepLayoutPage extends Page {
         await browser.url(`/step/${stepName}`);
         await browser.waitUntil(
             async () => await this.isOnStep(stepName),
-            { timeout: 5000, timeoutMsg: `Navigation to ${stepName} step failed` }
+            createTimeoutOptions('quickNavigation', `Navigation to ${stepName} step failed`)
         );
     }
 
@@ -144,7 +145,7 @@ class StepLayoutPage extends Page {
     public async waitForStepLoad(stepName: string) {
         await browser.waitUntil(
             async () => await this.isOnStep(stepName),
-            { timeout: 5000, timeoutMsg: `Step ${stepName} did not load` }
+            createTimeoutOptions('quickNavigation', `Step ${stepName} did not load`)
         );
         
         // Wait for step-specific content to load
@@ -223,10 +224,9 @@ class StepLayoutPage extends Page {
 
     public async getSplashScreenMessage() {
         const messageElement = await this.splashScreenMessage;
-        await messageElement.waitForDisplayed({
-            timeout: 5000,
-            timeoutMsg: 'Splash screen message did not appear within 5 seconds'
-        });
+        await messageElement.waitForDisplayed(
+            createTimeoutOptions('uiInteraction', 'Splash screen message did not appear within expected time')
+        );
         return await messageElement.getText();
     }
 

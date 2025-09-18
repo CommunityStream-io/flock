@@ -2,7 +2,7 @@
 import { Given, When, Then } from '@wdio/cucumber-framework';
 import { pages } from '../pageobjects';
 import { browser } from '@wdio/globals';
-import { timeouts, timeoutMessages } from '../support/timeout-config';
+import { timeouts, timeoutMessages, timeoutOptions } from '../support/timeout-config';
 
 Given('I am on the landing page', async () => {
     await pages.landing.open();
@@ -73,6 +73,6 @@ Then('I should be navigated to the upload step', async () => {
             const currentUrl = await browser.getUrl();
             return currentUrl.includes('/step/upload');
         },
-        { timeout: timeouts.navigation, timeoutMsg: timeoutMessages.navigation(process.env.CI === 'true') }
+        timeoutOptions.navigation
     );
 });
