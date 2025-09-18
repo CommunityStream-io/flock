@@ -22,18 +22,11 @@ WORKDIR /app
 ARG PACKAGE_TOKEN
 ENV PACKAGE_TOKEN=$PACKAGE_TOKEN
 
-# Copy package files for dependency installation
-COPY package*.json ./
-COPY .npmrc ./
+# Copy entire project for complete context
+COPY . .
 
 # Install all dependencies (including devDependencies for Angular dev server)
 RUN npm ci --no-audit --no-fund --legacy-peer-deps
-
-# Install Angular build packages globally to ensure dev-server builder is available
-RUN npm install -g @angular/build @angular/cli
-
-# Copy source code (node_modules will be preserved from previous step)
-COPY . .
 
 # Build the shared library (required for the app)
 RUN npx ng build --project=shared
