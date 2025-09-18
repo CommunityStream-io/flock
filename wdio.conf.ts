@@ -49,21 +49,18 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
       maxInstances: 1, // Only one browser instance at a time
       browserName: 'chrome',
       acceptInsecureCerts: true,
-      // Enable Chrome DevTools Protocol for network simulation
+      // Configure Chrome for Docker environment (based on WebdriverIO Docker docs)
       'goog:chromeOptions': {
-        // Use Docker Chrome binary when available, fallback to system Chrome
-        ...(process.env.CHROME_BIN ? { binary: process.env.CHROME_BIN } : {}),
         args: [
-          // Network simulation and CDP support
-          '--enable-chrome-browser-cloud-management',
-          '--disable-web-security', // Allow network interception
+          '--no-sandbox',
+          '--disable-infobars',
+          '--headless',
+          '--disable-gpu',
+          '--window-size=1440,735',
+          // Additional stability options for Docker
+          '--disable-dev-shm-usage',
+          '--disable-web-security',
           '--disable-features=VizDisplayCompositor',
-          // Standard Chrome options
-          '--no-sandbox', // Disable sandbox for CI environments
-          '--disable-dev-shm-usage', // Prevent shared memory issues
-          '--disable-gpu', // Disable GPU acceleration
-          '--window-size=1920,1080', // Set consistent window size
-          // Additional CI stability options
           '--disable-background-timer-throttling',
           '--disable-backgrounding-occluded-windows',
           '--disable-renderer-backgrounding',
@@ -85,19 +82,14 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
           '--disable-logging',
           '--disable-permissions-api',
           '--disable-popup-blocking',
-          '--disable-prompt-on-repost',
           '--disable-web-resources',
           '--disable-xss-auditor',
-          '--disable-features=VizDisplayCompositor',
           '--force-color-profile=srgb',
           '--memory-pressure-off',
           '--max_old_space_size=4096',
-          // Log suppression options
-          '--log-level=3', // Only show fatal errors
-          '--silent', // Suppress most output
-          '--disable-gpu-logging', // Disable GPU logging
-          // Conditionally add headless mode
-          ...(process.env.HEADLESS === 'true' ? ['--headless=new'] : []),
+          '--log-level=3',
+          '--silent',
+          '--disable-gpu-logging',
         ],
         // Redirect Chrome logs to separate files
         prefs: {
@@ -150,7 +142,7 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
   connectionRetryCount: process.env.CI === 'true' ? 3 : 2,
 
   // Test runner services
-  // Note: chromedriver service is built-in for WebdriverIO v9
+  // Selenium standalone Chrome image handles ChromeDriver automatically
   services: [],
 
   // Environment variables are handled by the test runner
