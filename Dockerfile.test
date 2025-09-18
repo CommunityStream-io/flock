@@ -16,9 +16,6 @@ RUN apk add --no-cache \
 ENV CHROME_BIN=/usr/bin/chromium-browser
 ENV CHROME_PATH=/usr/bin/chromium-browser
 
-# Create app directory
-WORKDIR /app
-
 # Accept build argument for package token
 ARG PACKAGE_TOKEN
 ENV PACKAGE_TOKEN=$PACKAGE_TOKEN
@@ -46,10 +43,7 @@ ENV CI=true
 ENV TIMEOUT_TELEMETRY=true
 
 # Ensure node_modules/.bin is in PATH
-ENV PATH="/app/node_modules/.bin:${PATH}"
+ENV PATH="/node_modules/.bin:${PATH}"
 
 # Expose port for Angular dev server
 EXPOSE 4200
-
-# Set working directory to /app where our project is located
-WORKDIR /app

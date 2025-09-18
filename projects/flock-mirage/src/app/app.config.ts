@@ -21,7 +21,6 @@ import {
 } from 'shared';
 import { FileProcessor } from './service/file-processor';
 import { ConsoleLogger } from './service/console-logger';
-import { FileLogger } from './service/file-logger';
 import { Bluesky } from './service/bluesky';
 import { RouterLoggingService } from './service/router-logging';
 
