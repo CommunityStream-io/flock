@@ -1,6 +1,28 @@
-# Use our custom base image with Node.js and Chrome pre-installed
-# This will be much faster than installing everything from scratch
-FROM flock-base:latest
+# Multi-stage build: first build the base image, then the test image
+# Stage 1: Build base image with Node.js and Chrome
+FROM node:22-slim AS base
+
+# Install Chrome and dependencies
+RUN apt-get update && \
+    apt-get install -y wget gnupg unzip curl && \
+    wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - && \
+    echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list && \
+    apt-get update && \
+    apt-get install -y google-chrome-stable && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install ChromeDriver using the new API
+RUN CHROME_VERSION=$(google-chrome --version | awk '{print $3}' | cut -d'.' -f1-3) && \
+    CHROMEDRIVER_VERSION=$(curl -s "https://googlechromelabs.github.io/chrome-for-testing/LATEST_RELEASE_${CHROME_VERSION}") && \
+    wget -O /tmp/chromedriver.zip "https://storage.googleapis.com/chrome-for-testing-public/${CHROMEDRIVER_VERSION}/linux64/chromedriver-linux64.zip" && \
+    unzip /tmp/chromedriver.zip -d /tmp/ && \
+    mv /tmp/chromedriver-linux64/chromedriver /usr/local/bin/chromedriver && \
+    chmod +x /usr/local/bin/chromedriver && \
+    rm -rf /tmp/chromedriver*
+
+# Stage 2: Build test image using the base
+FROM base AS test
 
 # Set working directory
 WORKDIR /app
