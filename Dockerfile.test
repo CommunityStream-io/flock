@@ -1,5 +1,5 @@
-# Simplified Dockerfile for E2E Testing
-FROM node:24.5.0-alpine
+# Multi-stage Dockerfile for E2E Testing with robust base image
+FROM node:24.5.0-alpine AS base
 
 # Install system dependencies including Chrome and ChromeDriver
 RUN apk add --no-cache \
@@ -8,6 +8,9 @@ RUN apk add --no-cache \
     git \
     curl \
     bash \
+    python3 \
+    make \
+    g++ \
     && rm -rf /var/cache/apk/*
 
 # Set Chrome environment variables
@@ -22,14 +25,18 @@ WORKDIR /app
 ARG PACKAGE_TOKEN
 ENV PACKAGE_TOKEN=$PACKAGE_TOKEN
 
-# Copy entire project for complete context
-COPY . .
+# Copy package files for dependency installation
+COPY package*.json ./
+COPY .npmrc ./
 
 # Install all dependencies (including devDependencies for Angular dev server)
 RUN npm ci --no-audit --no-fund --legacy-peer-deps
 
+# Copy source code
+COPY . .
+
 # Build the shared library (required for the app)
-RUN npx ng build --project=shared
+RUN npm run build:shared
 
 # Create directories for logs and results
 RUN mkdir -p logs/metrics logs/servers logs/shards logs/exits allure-results
@@ -40,13 +47,11 @@ ENV HEADLESS=true
 ENV CI=true
 ENV TIMEOUT_TELEMETRY=true
 
-# Add node_modules/.bin to PATH so locally installed packages can be found
+# Ensure node_modules/.bin is in PATH
 ENV PATH="/app/node_modules/.bin:${PATH}"
 
 # Expose port for Angular dev server
 EXPOSE 4200
 
 # Default command runs the Docker E2E tests
-# Ensure we're in the right directory and node_modules are accessible
-WORKDIR /app
 CMD ["npm", "run", "test:e2e:docker"]
