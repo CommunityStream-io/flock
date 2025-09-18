@@ -51,6 +51,8 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
       acceptInsecureCerts: true,
       // Enable Chrome DevTools Protocol for network simulation
       'goog:chromeOptions': {
+        // Use Docker Chrome binary when available, fallback to system Chrome
+        ...(process.env.CHROME_BIN ? { binary: process.env.CHROME_BIN } : {}),
         args: [
           // Network simulation and CDP support
           '--enable-chrome-browser-cloud-management',
