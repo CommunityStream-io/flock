@@ -1,7 +1,6 @@
 # Use our custom base image with Node.js and Chrome pre-installed
 # This will be much faster than installing everything from scratch
-# Replace 'your-dockerhub-username' with your actual Docker Hub username
-FROM your-dockerhub-username/flock-base:latest
+FROM flock-base:latest
 
 # Set working directory
 WORKDIR /app
