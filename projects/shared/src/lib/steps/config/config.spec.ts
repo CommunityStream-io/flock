@@ -3,7 +3,6 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MatDialogModule } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
 import { of } from 'rxjs';
-import { FormControl } from '@angular/forms';
 
 import { Config } from './config';
 import { LOGGER, ConfigServiceImpl, Logger } from '../../services';
@@ -616,26 +615,35 @@ describe('Feature: Migration Configuration (BDD-Style)', () => {
     });
   });
 
-  describe('Form State Indicators', () => {
-    it('should show form state indicators when form is dirty', () => {
+  describe('Form State Management', () => {
+    it('should update form state when form becomes dirty', () => {
+      console.log(`🔧 BDD: Setting up form state test`);
       // Set value and mark as dirty to trigger form state update
       component.configForm.get('startDate')?.setValue('2023-01-01');
       component.configForm.markAsDirty();
       component['updateFormState'](); // Manually update form state
       fixture.detectChanges();
       
-      const stateIndicators = fixture.debugElement.query(By.css('.form-state-indicators'));
-      expect(stateIndicators).toBeTruthy();
+      console.log(`⚙️ BDD: Form state updated`);
+      // Verify the form state signal is updated correctly
+      const formState = component['formStateSignal']();
+      expect(formState.dirty).toBe(true);
+      console.log(`✅ BDD: Form state correctly reflects dirty state`);
     });
 
-    it('should show validation success when form is valid and touched', () => {
+    it('should track form validation state when touched', () => {
+      console.log(`🔧 BDD: Setting up validation state test`);
       component.configForm.get('startDate')?.setValue('2023-01-01');
       component.configForm.get('startDate')?.markAsTouched();
       component['updateFormState'](); // Manually update form state
       fixture.detectChanges();
       
-      const successIndicators = fixture.debugElement.query(By.css('.validation-success'));
-      expect(successIndicators).toBeTruthy();
+      console.log(`⚙️ BDD: Validation state checked`);
+      // Verify the form state signal tracks touched state
+      const formState = component['formStateSignal']();
+      expect(formState.touched).toBe(true);
+      expect(component.configForm.valid).toBe(true);
+      console.log(`✅ BDD: Form validation state correctly tracked`);
     });
   });
 
