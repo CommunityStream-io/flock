@@ -11,10 +11,11 @@ import { delay, filter, map, tap, combineLatest, switchMap, timer, of, startWith
 import { SplashScreen } from '../splash-screen/splash-screen';
 import { CommonModule } from '@angular/common';
 import { LOGGER, Logger, SplashScreenLoading } from '../services';
+import { ProgressPanel } from '../steps/migrate/progress-panel/progress-panel';
 
 @Component({
   selector: 'shared-router-splash',
-  imports: [SplashScreen, RouterModule, RouterOutlet, CommonModule],
+  imports: [SplashScreen, RouterModule, RouterOutlet, CommonModule, ProgressPanel],
   templateUrl: './router-splash.html',
   styleUrl: './router-splash.css',
 })
@@ -61,4 +62,17 @@ export class RouterSplash {
       }
     })
   );
+
+  ngOnInit() {
+    this.router.events.pipe(
+      filter((e): e is NavigationStart => e instanceof NavigationStart)
+    ).subscribe((e) => {
+      const url = (e as NavigationStart).url;
+      if (url.includes('/step/complete')) {
+        this.splashScreenLoading.setComponent(ProgressPanel);
+      } else {
+        this.splashScreenLoading.setComponent(null);
+      }
+    });
+  }
 }

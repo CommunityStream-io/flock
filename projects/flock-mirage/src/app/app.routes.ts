@@ -11,7 +11,9 @@ import {
   uploadValidGuard,
   authValidGuard,
   extractArchiveResolver,
-  authDeactivateGuard
+  authDeactivateGuard,
+  migrateRunResolver,
+  loggerInstrumentationResolver
 } from 'shared';
 
 export const routes: Routes = [
@@ -63,7 +65,7 @@ export const routes: Routes = [
           description: 'Start the migration process',
           next: 'complete',
           previous: 'config',
-        }
+        },
       },
       {
         path: 'complete',
@@ -73,6 +75,9 @@ export const routes: Routes = [
           description: 'Migration completed successfully',
           previous: 'migrate',
         },
+        resolve: {
+          migrate: migrateRunResolver
+        }
       },
     ] as (StepRoute & Route)[],
   },

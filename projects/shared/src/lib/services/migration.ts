@@ -1,9 +1,10 @@
 import { Injectable, signal } from '@angular/core';
+import type { MigrationService } from './interfaces/migration';
 
 @Injectable({
   providedIn: 'root'
 })
-export class Migration {
+export class Migration implements MigrationService {
   public percentComplete = signal(0);
   public currentOperation = signal('');
   public elapsedSeconds = signal(0);
@@ -27,6 +28,10 @@ export class Migration {
 
     const elapsedMs = Date.now() - start;
     this.currentOperation.set('Completed');
+    if (!simulate && Math.random() < 0.0) {
+      // placeholder for future error cases
+      throw new Error('Migration failed');
+    }
     return { count: 42, elapsedMs };
   }
 }

@@ -1,7 +1,7 @@
 import { Component, inject, Signal, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, ActivationEnd, Router, RouterModule } from '@angular/router';
-import { LOGGER, Logger, StepRouteData, ConfigServiceImpl } from '../';
+import { LOGGER, Logger, StepRouteData, ConfigServiceImpl, SplashScreenLoading } from '../';
 import { MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { filter, map, Observable, tap } from 'rxjs';
@@ -19,6 +19,7 @@ export class StepNavigationComponent {
   private router = inject(Router);
   private logger = inject(LOGGER) as Logger;
   private configService = inject(ConfigServiceImpl);
+  private loading = inject(SplashScreenLoading);
   private currentRoute: Observable<StepRouteData> = this.router.events.pipe(
     filter((event): event is ActivationEnd => typeof event === 'object' && event instanceof ActivationEnd),
     // tap((event) => this.logger.log('Current route:', event)),
@@ -38,6 +39,8 @@ export class StepNavigationComponent {
       // tap((next) => this.logger.log('Previous route:', next))
     )
   ) as Signal<string>;
+
+  public isLoading = toSignal(this.loading.isLoading, { initialValue: false }) as Signal<boolean>;
 
 
 
