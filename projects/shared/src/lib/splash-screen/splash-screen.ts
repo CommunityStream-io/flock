@@ -1,6 +1,6 @@
 import { Component, inject, ViewEncapsulation } from '@angular/core';
 import { SplashScreenLoading } from '../services';
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, NgComponentOutlet } from '@angular/common';
 
 /**
  * Butterfly splash screen
@@ -9,7 +9,7 @@ import { AsyncPipe } from '@angular/common';
  */
 @Component({
   selector: 'shared-splash-screen',
-  imports: [AsyncPipe],
+  imports: [AsyncPipe, NgComponentOutlet],
   templateUrl: './splash-screen.html',
   styleUrl: './splash-screen.scss',
   host: { class: 'splash-screen' },
@@ -19,4 +19,5 @@ export class SplashScreen {
   // *flap* *flap* *flap*
   splashScreenLoading = inject(SplashScreenLoading);
   public message = this.splashScreenLoading.message.asObservable();
+  public component = this.splashScreenLoading.component.asObservable();
 }
