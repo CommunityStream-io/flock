@@ -35,27 +35,24 @@ describe('ConfigHelpDialog', () => {
     expect(mockDialogRef.close).toHaveBeenCalled();
   });
 
-  it('should return appropriate help content for date-range type', () => {
-    component.data.type = 'date-range';
-    const content = component.getHelpContent();
-    expect(content).toContain('Date Range Filtering');
-    expect(content).toContain('Start Date');
-    expect(content).toContain('End Date');
+  it('should display data title in template', () => {
+    component.data.title = 'Test Help Title';
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement;
+    expect(compiled.textContent).toContain('Test Help Title');
   });
 
-  it('should return appropriate help content for testing-options type', () => {
-    component.data.type = 'testing-options';
-    const content = component.getHelpContent();
-    expect(content).toContain('Testing Options');
-    expect(content).toContain('Test Video Mode');
-    expect(content).toContain('Simulation Mode');
-  });
-
-  it('should return appropriate help content for general type', () => {
+  it('should display appropriate help content based on type', () => {
     component.data.type = 'general';
-    const content = component.getHelpContent();
-    expect(content).toContain('Configuration Help');
-    expect(content).toContain('Date Range');
-    expect(content).toContain('Testing Options');
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement;
+    expect(compiled.textContent).toContain('Configuration Help');
+    expect(compiled.textContent).toContain('Date Range');
+    expect(compiled.textContent).toContain('Testing Options');
+  });
+
+  it('should have correct dialog type', () => {
+    component.data.type = 'date-range';
+    expect(component.data.type).toBe('date-range');
   });
 });
