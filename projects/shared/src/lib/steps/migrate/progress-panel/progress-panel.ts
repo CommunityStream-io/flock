@@ -1,6 +1,7 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LOGGER, Logger } from '../../../services';
+import { Migration } from '../../../services/migration';
 
 @Component({
   selector: 'shared-progress-panel',
@@ -10,8 +11,8 @@ import { LOGGER, Logger } from '../../../services';
 })
 export class ProgressPanel {
   private logger = inject(LOGGER) as Logger;
-  // Phase 1: simple placeholders; will wire to Migration service in next task
-  public percentComplete = signal(0);
-  public currentOperation = signal('Waiting to start');
-  public elapsedSeconds = signal(0);
+  private migration = inject(Migration);
+  public percentComplete = this.migration.percentComplete;
+  public currentOperation = this.migration.currentOperation;
+  public elapsedSeconds = this.migration.elapsedSeconds;
 }
