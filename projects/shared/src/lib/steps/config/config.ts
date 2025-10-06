@@ -205,8 +205,6 @@ export class Config implements OnInit, OnDestroy {
 
     const dialogRef = this.dialog.open(ConfigHelpDialog, {
       data: dialogData,
-      width: '500px',
-      maxWidth: '90vw',
       disableClose: false,
       autoFocus: true,
       panelClass: 'help-dialog-panel'
