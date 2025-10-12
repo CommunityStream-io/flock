@@ -74,6 +74,7 @@ Each step validates its data before allowing the next step, ensuring our migrati
 3. **Shared Components** - Common nest elements for consistency
 4. **Progressive Validation** - Each step builds on the previous
 5. **Real Service Integration** - No fake data in production
+6. **Routing-Based Business Logic** - Chain guards and resolvers for flexible, declarative workflows with abstraction overhead
 
 ## 📚 **Detailed Architecture Documentation**
 
@@ -101,7 +102,7 @@ For deep dives into specific areas, explore our detailed architecture docs:
 - **[Components](architecture/shared/COMPONENTS.md)** - Shared component patterns and interfaces
 - **[Services](architecture/shared/SERVICES.md)** - Service interfaces and shared implementations
 - **[Theming](architecture/shared/THEMING.md)** - Material Design system and theme architecture
-- **[Routing](architecture/shared/ROUTING.md)** - Routing patterns and navigation architecture
+- **[Routing](architecture/shared/ROUTING.md)** - ⭐ Routing architecture, guards, resolvers, and best practices
 
 ## 🚀 **Why This Architecture?**
 

@@ -9,6 +9,11 @@ export interface MigrationService {
   elapsedSeconds: Signal<number>;
 
   /**
+   * Resets the migration state to initial values
+   */
+  reset(): void;
+
+  /**
    * Runs the migration (or simulation when simulate=true) and resolves with a summary
    */
   run(simulate: boolean): Promise<{ count: number; elapsedMs: number }>;

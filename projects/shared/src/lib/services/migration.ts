@@ -10,6 +10,12 @@ export class Migration implements MigrationService {
   public elapsedSeconds = signal(0);
   public lastResult: { count: number; elapsedMs: number } | null = null;
 
+  reset(): void {
+    this.percentComplete.set(0);
+    this.currentOperation.set('');
+    this.elapsedSeconds.set(0);
+  }
+
   async run(simulate: boolean): Promise<{ count: number; elapsedMs: number }> {
     this.percentComplete.set(0);
     this.currentOperation.set(simulate ? 'Dry run starting' : 'Migration starting');

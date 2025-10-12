@@ -13,6 +13,7 @@ import {
   extractArchiveResolver,
   authDeactivateGuard,
   migrateRunResolver,
+  migrationResetResolver,
   loggerInstrumentationResolver
 } from 'shared';
 
@@ -44,7 +45,8 @@ export const routes: Routes = [
         },
         canDeactivate: [authDeactivateGuard],
         resolve: {
-          extractedArchive: extractArchiveResolver
+          extractedArchive: extractArchiveResolver,
+          migrationReset: migrationResetResolver
         },
       },
       {
@@ -56,6 +58,9 @@ export const routes: Routes = [
           next: 'migrate',
           previous: 'auth',
         },
+        resolve: {
+          migrationReset: migrationResetResolver
+        },
       },
       {
         path: 'migrate',
@@ -65,6 +70,9 @@ export const routes: Routes = [
           description: 'Start the migration process',
           next: 'complete',
           previous: 'config',
+        },
+        resolve: {
+          migrationReset: migrationResetResolver
         },
       },
       {
