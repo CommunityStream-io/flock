@@ -23,7 +23,7 @@ export class PreflightSummary {
     const file = this.fileService.archivedFile;
     if (file) return file.name;
     const path = this.config.archivePath;
-    return path ? path.split(/[\\\/]/).pop() || '' : '';
+    return path ? path.split(/[\\/]/).pop() || '' : '';
   }
 
   get simulate(): boolean {

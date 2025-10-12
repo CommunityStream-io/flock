@@ -102,7 +102,7 @@ class StepLayoutPage extends Page {
     // Methods for step operations
     public async getCurrentStepName() {
         const url = await browser.getUrl();
-        const stepMatch = url.match(/\/step\/(\w+)/);
+        const stepMatch = url.match(new RegExp('/step/(\\w+)'));
         return stepMatch ? stepMatch[1] : null;
     }
 
