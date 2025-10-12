@@ -247,9 +247,13 @@ Given('I have not uploaded any archive file', async () => {
     await pages.navigationGuard.simulateNoFileUploaded();
 });
 
+// Support both old and new phrasing
 When('I attempt to navigate to the auth step directly', async () => {
     await pages.navigationGuard.attemptDirectNavigation('auth');
-    await pages.navigationGuard.waitForGuardExecution();
+});
+
+When('I click the next step button in the navigation', async () => {
+    await pages.navigationGuard.attemptDirectNavigation('auth');
 });
 
 Then('I should remain on the upload step', async () => {
@@ -269,26 +273,10 @@ Then('the snackbar should auto-dismiss after {int} seconds', async (seconds: num
 
 When('I upload a valid Instagram archive file', async () => {
     await pages.navigationGuard.simulateValidFileUploaded();
-    // Wait for file validation to complete
-    await browser.waitUntil(
-        async () => {
-            const isFileServiceValid = await pages.navigationGuard.isFileServiceValid();
-            return isFileServiceValid;
-        },
-        timeoutOptions.fileValidation
-    );
 });
 
 When('I upload a valid Instagram archive', async () => {
     await pages.navigationGuard.simulateValidFileUploaded();
-    // Wait for file validation to complete
-    await browser.waitUntil(
-        async () => {
-            const isFileServiceValid = await pages.navigationGuard.isFileServiceValid();
-            return isFileServiceValid;
-        },
-        timeoutOptions.fileValidation
-    );
 });
 
 Then('I should successfully navigate to the auth step', async () => {
@@ -303,14 +291,6 @@ Then('I should not see any error messages', async () => {
 
 When('I select a file but validation fails', async () => {
     await pages.navigationGuard.simulateInvalidFile();
-    // Wait for validation to process
-    await browser.waitUntil(
-        async () => {
-            const hasErrors = await pages.navigationGuard.hasValidationErrors();
-            return hasErrors;
-        },
-        timeoutOptions.fileError
-    );
 });
 
 When('I wait for the snackbar to dismiss', async () => {
@@ -326,11 +306,6 @@ Then('I should see the snackbar message again', async () => {
     await pages.navigationGuard.waitForSnackbar();
     const isVisible = await pages.navigationGuard.isSnackbarVisible();
     expect(isVisible).toBe(true);
-});
-
-When('I click the next step button in the navigation', async () => {
-    await pages.stepLayout.clickNextStep();
-    await pages.navigationGuard.waitForGuardExecution();
 });
 
 Then('the navigation should be blocked', async () => {

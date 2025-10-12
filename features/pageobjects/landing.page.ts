@@ -76,9 +76,29 @@ class LandingPage extends Page {
 
     // Methods for dynamic element selection
     public async getStepTitle(stepNumber: number) {
-        // WebdriverIO auto-waits for elements to be interactable when we use them
-        const step = $(`.process-flow .process-step:nth-child(${stepNumber})`);
-        return step.$('mat-card-title');
+        // Wait for process flow to be visible first
+        await $('.process-flow').waitForDisplayed({ timeout: 5000 });
+        
+        // Get all step titles using a more direct approach
+        const titles = await $$('.process-flow .process-step mat-card-title');
+        
+        // Wait for the specific title to be visible
+        await titles[stepNumber - 1].waitForDisplayed({ timeout: 3000 });
+        
+        // Wait for text content to be populated (Material animation delay)
+        await browser.waitUntil(
+            async () => {
+                const text = await titles[stepNumber - 1].getText();
+                return text.length > 0;
+            },
+            { 
+                timeout: 3000,
+                interval: 200,
+                timeoutMsg: `Step ${stepNumber} title text not populated after animation`
+            }
+        );
+        
+        return titles[stepNumber - 1];
     }
 
     public async getStepDescription(stepNumber: number) {
