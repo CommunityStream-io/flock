@@ -6,39 +6,58 @@
 
 Our shared library implements a comprehensive routing system that manages navigation through the migration workflow. The routing system uses Angular's modern routing features with guards, resolvers, and step-based navigation.
 
+**Core Architecture Layers:**
+- 🛤️ **Route Configuration** - Declarative routing setup
+- 🛡️ **Guards** - Access control and prerequisite validation
+- 🔄 **Resolvers** - Data loading and state initialization
+- 🎨 **Components** - Pure presentation and user interaction
+
 ```mermaid
 graph TB
-    subgraph "Routing System"
-        A[StepRoute] --> B[Guards]
-        A --> C[Resolvers]
-        A --> D[RouteReuse]
+    subgraph "Migration Steps Flow"
+        J[UploadStep] -->|next| K[AuthStep]
+        K -->|next| L[ConfigStep]
+        L -->|next| M[MigrateStep]
+        M -->|next| N[CompleteStep]
     end
     
-    subgraph "Guards"
-        E[AuthValidGuard] --> F[UploadValidGuard]
-        E --> G[AuthDeactivateGuard]
+    subgraph "Routing Protection Layer"
+        B[Guards]
+        B1[uploadValidGuard]
+        B2[authValidGuard]
+        B3[authDeactivateGuard]
+        B --> B1
+        B --> B2
+        B --> B3
     end
     
-    subgraph "Resolvers"
-        H[ExtractArchiveResolver] --> I[LoggerInstrumentationResolver]
+    subgraph "Data & State Layer"
+        C[Resolvers]
+        C1[extractArchiveResolver]
+        C2[migrationResetResolver]
+        C3[migrateRunResolver]
+        C --> C1
+        C --> C2
+        C --> C3
     end
     
-    subgraph "Step Navigation"
-        J[UploadStep] --> K[AuthStep]
-        K --> L[ConfigStep]
-        L --> M[MigrateStep]
-        M --> N[CompleteStep]
+    subgraph "Route Configuration"
+        A[StepRoute Config]
+        A --> B
+        A --> C
     end
     
     A --> J
-    B --> J
-    C --> J
+    B -.validates.-> J
+    C -.initializes.-> J
     
     style A fill:#ffeb3b
     style B fill:#c8e6c9
     style C fill:#bbdefb
     style J fill:#f8bbd9
 ```
+
+> 💡 **Key Insight**: Each layer has a specific responsibility. Guards never modify state, resolvers never render UI, and components never inspect routes. See [Architectural Best Practices](#architectural-best-practices) for details.
 
 ## 🎯 **Routing Components**
 
@@ -55,6 +74,8 @@ graph TB
 ### **Resolvers**
 - **[ExtractArchiveResolver](../../../projects/shared/src/lib/route/resolver/extract-archive/extract-archive-resolver.ts)** - Archive extraction
 - **[LoggerInstrumentationResolver](../../../projects/shared/src/lib/route/resolver/logger-instrumentation-resolver.ts)** - Logger instrumentation
+- **[MigrateRunResolver](../../../projects/shared/src/lib/route/resolver/migrate-run-resolver.ts)** - Executes migration and displays progress
+- **[MigrationResetResolver](../../../projects/shared/src/lib/route/resolver/migration-reset-resolver.ts)** - Resets migration state for clean navigation
 
 ## 🔧 **Step-Based Routing**
 
@@ -64,39 +85,37 @@ export const stepRoutes: Routes = [
   {
     path: 'upload',
     component: UploadStep,
-    canActivate: [AuthValidGuard],
-    canDeactivate: [AuthDeactivateGuard],
-    resolve: { logger: LoggerInstrumentationResolver }
+    canDeactivate: [UploadValidGuard]
   },
   {
     path: 'auth',
     component: AuthStep,
-    canActivate: [UploadValidGuard],
     canDeactivate: [AuthDeactivateGuard],
-    resolve: { logger: LoggerInstrumentationResolver }
+    resolve: { 
+      extractedArchive: ExtractArchiveResolver,
+      migrationReset: MigrationResetResolver
+    }
   },
   {
     path: 'config',
     component: ConfigStep,
-    canActivate: [AuthValidGuard],
-    canDeactivate: [AuthDeactivateGuard],
-    resolve: { logger: LoggerInstrumentationResolver }
+    resolve: { 
+      migrationReset: MigrationResetResolver 
+    }
   },
   {
     path: 'migrate',
     component: MigrateStep,
-    canActivate: [AuthValidGuard],
-    canDeactivate: [AuthDeactivateGuard],
     resolve: { 
-      archive: ExtractArchiveResolver,
-      logger: LoggerInstrumentationResolver 
+      migrationReset: MigrationResetResolver 
     }
   },
   {
     path: 'complete',
     component: CompleteStep,
-    canActivate: [AuthValidGuard],
-    resolve: { logger: LoggerInstrumentationResolver }
+    resolve: { 
+      migrate: MigrateRunResolver 
+    }
   }
 ];
 ```
@@ -236,6 +255,59 @@ export class LoggerInstrumentationResolver implements Resolve<void> {
     return of(undefined);
   }
 }
+```
+
+### **Migration Run Resolver**
+```typescript
+/**
+ * Resolver that runs the migration process and displays progress.
+ * Applied to the 'complete' route to trigger migration when navigating to completion screen.
+ */
+export const migrateRunResolver: ResolveFn<Promise<void>> = async () => {
+  const loading = inject(SplashScreenLoading);
+  const migration = inject<MigrationService>(MIGRATION);
+  const logger = inject<Logger>(LOGGER);
+  const snackBar = inject(MatSnackBar);
+  
+  // Set up progress panel component for migration feedback
+  loading.setComponent(ProgressPanel);
+  
+  // Show splash message with progress overlay
+  loading.show('Migrating…');
+  
+  try {
+    await migration.run(false);
+    logger.workflow('Migration completed');
+  } catch (error: any) {
+    logger.error('Migration error', error);
+    snackBar.open(error?.message || 'Migration failed', 'Close', { duration: 4000 });
+  } finally {
+    loading.hide();
+  }
+};
+```
+
+### **Migration Reset Resolver**
+```typescript
+/**
+ * Resolver that resets migration state and clears the progress panel component.
+ * Should be applied to routes that need a clean migration state (e.g., config, auth, migrate steps).
+ */
+export const migrationResetResolver: ResolveFn<void> = () => {
+  const migration = inject<MigrationService>(MIGRATION);
+  const loading = inject(SplashScreenLoading);
+  const logger = inject<Logger>(LOGGER);
+  
+  logger.log('Resetting migration state via resolver');
+  
+  // Reset migration state
+  migration.reset();
+  
+  // Clear any progress panel component
+  loading.setComponent(null);
+  
+  return undefined;
+};
 ```
 
 ## 🔄 **Route Reuse Strategy**
@@ -439,6 +511,188 @@ export class MyStep {
 3. **Resolver Preloading** - Prepare data before component loads
 4. **Route Reuse** - Optimize performance with smart caching
 5. **Error Handling** - Graceful fallbacks and user feedback
+6. **Separation of Concerns** - Resolvers handle state management, not UI components
+
+## 🏗️ **Architectural Best Practices**
+
+### **Routing-Based Business Logic**
+
+Our architecture uses the routing layer to orchestrate business logic in a declarative, chainable manner. This provides flexibility at the cost of some abstraction overhead, but enables powerful composition patterns.
+
+**Benefits:**
+- 🔗 **Chainable** - Compose multiple guards and resolvers in sequence
+- 📋 **Declarative** - Route configuration documents the entire flow
+- 🔄 **Flexible** - Easy to reorder, add, or remove steps
+- 🧪 **Testable** - Each piece can be tested in isolation
+
+**Trade-offs:**
+- ⚖️ **Abstraction Overhead** - Adds a layer of indirection
+- 🔍 **Discoverability** - Logic is distributed across multiple files
+- 📚 **Learning Curve** - Requires understanding Angular routing lifecycle
+
+### **Routing Responsibility Separation**
+
+Each layer in the routing system has a specific responsibility:
+
+```mermaid
+graph TB
+    R[Route Config] --> G[Guards]
+    R --> RES[Resolvers]
+    R --> C[Components]
+    
+    G -->|Validate| ACC[Access Control]
+    G -->|Check| PRE[Prerequisites]
+    
+    RES -->|Load| DATA[Data]
+    RES -->|Initialize| STATE[State]
+    RES -->|Configure| UI[UI Services]
+    
+    C -->|Render| VIEW[View]
+    C -->|Handle| EVENTS[User Events]
+    
+    style R fill:#ffeb3b
+    style G fill:#c8e6c9
+    style RES fill:#bbdefb
+    style C fill:#f8bbd9
+```
+
+### **Design Principles**
+
+| Layer | ✅ Should | ❌ Should NOT |
+|-------|-----------|---------------|
+| **Route Config** | Declare guards, resolvers, and data | Contain business logic |
+| **Guards** | Validate access, check prerequisites | Modify application state |
+| **Resolvers** | Load data, initialize state, configure services | Render UI directly |
+| **Components** | Render UI, handle user events | Inspect URLs or routes |
+| **Services** | Manage state, business logic | Know about routing |
+
+### **Common Anti-Patterns to Avoid**
+
+#### **❌ Components Inspecting Routes**
+```typescript
+// BAD: Component subscribing to router events
+export class MyComponent {
+  ngOnInit() {
+    this.router.events.subscribe(event => {
+      if (event.url.includes('/special-route')) {
+        this.doSomething();
+      }
+    });
+  }
+}
+```
+
+#### **✅ Resolver Handling Route-Specific Logic**
+```typescript
+// GOOD: Resolver handles route-specific setup
+export const setupResolver: ResolveFn<void> = () => {
+  const service = inject(MyService);
+  service.doSomething();
+  return undefined;
+};
+
+// Route config
+{ path: 'special-route', resolve: { setup: setupResolver } }
+```
+
+#### **❌ Guards Modifying State**
+```typescript
+// BAD: Guard modifying application state
+export const badGuard: CanActivateFn = () => {
+  const service = inject(MyService);
+  service.resetData(); // Don't do this!
+  return true;
+};
+```
+
+#### **✅ Resolvers Managing State**
+```typescript
+// GOOD: Resolver manages state initialization
+export const stateResetResolver: ResolveFn<void> = () => {
+  const service = inject(MyService);
+  service.resetData(); // Perfect place for this
+  return undefined;
+};
+```
+
+### **Real-World Example: Migration Flow**
+
+Here's how we apply these principles to our migration workflow:
+
+```typescript
+// Guards: Control Access
+export const authValidGuard: CanActivateFn = () => {
+  const config = inject(ConfigServiceImpl);
+  return config.hasCredentials() || inject(Router).createUrlTree(['/step/auth']);
+};
+
+// Resolvers: Initialize State & Load Data
+export const extractArchiveResolver: ResolveFn<void> = async () => {
+  const fileService = inject<FileService>(FILE_PROCESSOR);
+  const loading = inject(SplashScreenLoading);
+  loading.show('Extracting Archive...');
+  try {
+    await fileService.extractArchive();
+  } finally {
+    loading.hide();
+  }
+};
+
+export const migrationResetResolver: ResolveFn<void> = () => {
+  const migration = inject<MigrationService>(MIGRATION);
+  const loading = inject(SplashScreenLoading);
+  migration.reset();
+  loading.setComponent(null);
+  return undefined;
+};
+
+export const migrateRunResolver: ResolveFn<void> = async () => {
+  const migration = inject<MigrationService>(MIGRATION);
+  const loading = inject(SplashScreenLoading);
+  loading.setComponent(ProgressPanel);
+  loading.show('Migrating...');
+  try {
+    await migration.run(false);
+  } finally {
+    loading.hide();
+  }
+};
+
+// Components: Pure Presentation
+@Component({
+  selector: 'shared-migrate',
+  template: `
+    <h2>Migration</h2>
+    <shared-preflight-summary></shared-preflight-summary>
+  `
+})
+export class Migrate {
+  // No routing logic, no URL inspection, just render UI
+}
+```
+
+### **Benefits of Routing-Based Business Logic**
+
+1. **Declarative Configuration** - Route config documents the entire workflow
+2. **Chainable Composition** - Stack guards and resolvers like middleware
+3. **Separation of Concerns** - Each layer has a clear, single purpose
+4. **Testability** - Easy to unit test each piece in isolation
+5. **Maintainability** - Changes are localized to the appropriate layer
+6. **Reusability** - Guards and resolvers can be composed and reused across routes
+
+### **When to Use This Pattern**
+
+✅ **Good For:**
+- Multi-step workflows with dependencies (e.g., upload → auth → migrate)
+- State initialization that depends on route context
+- Access control based on application state
+- Data preloading before component renders
+
+❌ **Consider Alternatives For:**
+- Simple state management (use services directly)
+- Component-specific logic (keep in components)
+- Frequently changing business rules (may cause resolver churn)
+- Complex conditional flows (consider state machines)
 
 ---
 

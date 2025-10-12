@@ -1,0 +1,9 @@
+<div class="preflight-summary">
+  <h3>Pre-flight summary</h3>
+  <ul>
+    <li><strong>Archive:</strong> {{ archiveName || 'Not selected' }}</li>
+    <li><strong>Auth:</strong> {{ username || 'Not authenticated' }}</li>
+    <li><strong>Date range:</strong> {{ dateRange }}</li>
+    <li><strong>Mode:</strong> {{ simulate ? 'Dry run' : 'Live' }}</li>
+  </ul>
+</div>

@@ -11,3 +11,7 @@
 <div class="shadow"></div>
 
 <span>{{ message | async }}</span>
+
+@if (component | async; as cmp) {
+  <ng-container *ngComponentOutlet="cmp"></ng-container>
+}

@@ -11,7 +11,10 @@ import {
   uploadValidGuard,
   authValidGuard,
   extractArchiveResolver,
-  authDeactivateGuard
+  authDeactivateGuard,
+  migrateRunResolver,
+  migrationResetResolver,
+  loggerInstrumentationResolver
 } from 'shared';
 
 export const routes: Routes = [
@@ -42,7 +45,8 @@ export const routes: Routes = [
         },
         canDeactivate: [authDeactivateGuard],
         resolve: {
-          extractedArchive: extractArchiveResolver
+          extractedArchive: extractArchiveResolver,
+          migrationReset: migrationResetResolver
         },
       },
       {
@@ -54,6 +58,9 @@ export const routes: Routes = [
           next: 'migrate',
           previous: 'auth',
         },
+        resolve: {
+          migrationReset: migrationResetResolver
+        },
       },
       {
         path: 'migrate',
@@ -63,7 +70,10 @@ export const routes: Routes = [
           description: 'Start the migration process',
           next: 'complete',
           previous: 'config',
-        }
+        },
+        resolve: {
+          migrationReset: migrationResetResolver
+        },
       },
       {
         path: 'complete',
@@ -73,6 +83,9 @@ export const routes: Routes = [
           description: 'Migration completed successfully',
           previous: 'migrate',
         },
+        resolve: {
+          migrate: migrateRunResolver
+        }
       },
     ] as (StepRoute & Route)[],
   },

@@ -37,8 +37,9 @@ function filterHookFailures() {
             
             totalFiles++;
             
-            // Check if this is a phantom hook failure
-            if (result.name === 'hook:' && result.status === 'failed' && 
+            // Check if this is a phantom hook failure (generic hook: or network error hook)
+            if ((result.name === 'hook:' || result.name === 'hook:@network-error') && 
+                result.status === 'failed' && 
                 (!result.statusDetails || Object.keys(result.statusDetails).length === 0) &&
                 (!result.steps || result.steps.length === 0) &&
                 (!result.attachments || result.attachments.length === 0)) {

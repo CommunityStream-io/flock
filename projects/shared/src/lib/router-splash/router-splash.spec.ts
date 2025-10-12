@@ -15,6 +15,7 @@ describe('Feature: Router Splash Screen', () => {
   let routerEventsSubject: Subject<any>;
   let isLoadingSubject: BehaviorSubject<boolean>;
   let messageSubject: BehaviorSubject<string>;
+  let componentSubject: BehaviorSubject<any | null>;
 
   beforeEach(async () => {
     mockLogger = jasmine.createSpyObj('Logger', ['log', 'error', 'warn', 'workflow', 'instrument']);
@@ -22,6 +23,7 @@ describe('Feature: Router Splash Screen', () => {
     routerEventsSubject = new Subject();
     isLoadingSubject = new BehaviorSubject(false);
     messageSubject = new BehaviorSubject('*flap* *flap* *flap*');
+    componentSubject = new BehaviorSubject<any | null>(null);
     
     mockRouter = jasmine.createSpyObj('Router', ['navigate']);
     Object.defineProperty(mockRouter, 'events', {
@@ -29,13 +31,17 @@ describe('Feature: Router Splash Screen', () => {
       writable: false
     });
     
-    mockSplashScreenLoading = jasmine.createSpyObj('SplashScreenLoading', ['show', 'hide']);
+    mockSplashScreenLoading = jasmine.createSpyObj('SplashScreenLoading', ['show', 'hide', 'setComponent']);
     Object.defineProperty(mockSplashScreenLoading, 'isLoading', {
       value: isLoadingSubject,
       writable: false
     });
     Object.defineProperty(mockSplashScreenLoading, 'message', {
       value: messageSubject,
+      writable: false
+    });
+    Object.defineProperty(mockSplashScreenLoading, 'component', {
+      value: componentSubject,
       writable: false
     });
 

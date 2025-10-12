@@ -1,34 +1,37 @@
-/* Help dialog specific overrides using MDC theming */
-.help-dialog {
-  /* Help-specific content styling */
-  .mat-mdc-dialog-content {
-    /* Additional help content styling if needed */
-    .help-section {
-      margin-bottom: 24px;
-      
-      &:last-child {
-        margin-bottom: 0;
-      }
-    }
-    
-    .help-list {
-      margin: 16px 0;
-      padding-left: 0;
-      list-style: none;
-      
-      li {
-        position: relative;
-        padding-left: 24px;
-        margin-bottom: 12px;
-        
-        &::before {
-          content: '•';
-          color: var(--mat-sys-primary);
-          font-weight: bold;
-          position: absolute;
-          left: 0;
-        }
-      }
-    }
-  }
+/* Ultra-minimal styling - leverage MD3 defaults */
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dialog-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dialog-content {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.note {
+  display: flex;
+  gap: 0.5rem;
+  padding: 1rem 1.5rem;
+  border-left: 4px solid currentColor;
+  margin: 1rem 0;
+}
+
+.note mat-icon {
+  flex-shrink: 0;
+}
+
+.note p {
+  margin: 0;
+}
+
+.mat-mdc-dialog-surface.mdc-dialog__surface {
+  overflow-y: visible;
 }

@@ -1,5 +1,5 @@
 import Page from './page';
-import { timeouts, timeoutMessages } from '../support/timeout-config';
+import { timeouts, timeoutMessages, timeoutOptions } from '../support/timeout-config';
 
 class ConfigStepPage extends Page {
     // Main configuration form elements
@@ -479,7 +479,7 @@ class ConfigStepPage extends Page {
                 const value = await this.startDateField.getValue();
                 return value === date;
             },
-            { timeout: timeouts.uiInteraction, timeoutMsg: timeoutMessages.uiInteraction(process.env.CI === 'true') }
+            timeoutOptions.uiInteraction
         );
         
         const currentPosition = await configSection.getLocation();
@@ -528,7 +528,7 @@ class ConfigStepPage extends Page {
                 const value = await this.startDateField.getValue();
                 return value === date;
             },
-            { timeout: timeouts.uiInteraction, timeoutMsg: timeoutMessages.uiInteraction(process.env.CI === 'true') }
+            timeoutOptions.uiInteraction
         );
     }
 

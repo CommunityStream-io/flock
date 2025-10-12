@@ -9,5 +9,5 @@ import { Logger, LOGGER } from '../../services';
  */
 export const loggerInstrumentationResolver: ResolveFn<Promise<void>> = () => {
   const logger = inject<Logger>(LOGGER);
-  return logger.instrument('AppName');
+  return logger.instrument('Flock Mirage');
 };

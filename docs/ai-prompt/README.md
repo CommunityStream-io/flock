@@ -9,6 +9,25 @@ Comprehensive prompt for fixing the two disabled E2E tests that were causing pip
 - Authentication splash screen test (infinite loop issue)
 - Upload navigation test (timeout issue)
 
+### [Docker Build Optimization](./docker-optimization-complete.md)
+Complete guide for optimizing Docker build process for E2E testing:
+- Reduce build time from 2.5min to under 1.5min (60-75s achieved)
+- Reduce image size by 30-40% (35% achieved)
+- Improve layer caching efficiency to 80%+ reuse (85-90% achieved)
+- Comprehensive performance monitoring and matrix run simulation
+- Security-first approach with dynamic .npmrc configuration
+- Maintain compatibility with existing docker-compose.yml
+
+### [GitHub CLI Setup for Cursor Background Agents](./github-cli-setup.md)
+Complete setup guide for enabling GitHub CLI access in Cursor background agents:
+- Pre-check existing access configuration before making changes
+- GitHub CLI installation and authentication
+- Environment variable configuration
+- Cursor integration methods
+- Security best practices and token management
+- Comprehensive troubleshooting guide
+- Verification steps and success criteria
+
 ## Usage
 
 These prompts are designed to be given to AI agents (like ChatGPT, Claude, etc.) to help with specific debugging tasks. Each prompt includes:

@@ -16,12 +16,15 @@ import {
   FILE_PROCESSOR,
   LOGGER,
   BLUESKY,
+  MIGRATION,
   SplashScreenLoading,
   StepReuseStrategy,
+  Migration as SharedMigration
 } from 'shared';
 import { FileProcessor } from './service/file-processor';
 import { ConsoleLogger } from './service/console-logger';
 import { Bluesky } from './service/bluesky';
+import { RouterLoggingService } from './service/router-logging';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -47,5 +50,7 @@ export const appConfig: ApplicationConfig = {
       useClass: Bluesky,
     },
     SplashScreenLoading,
+    { provide: MIGRATION, useExisting: SharedMigration },
+    RouterLoggingService, // Add router logging service
   ],
 };

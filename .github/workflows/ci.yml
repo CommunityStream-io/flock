@@ -6,6 +6,10 @@ on:
   # pull_request:
   #   branches: [ "*" ] # All PRs to include forks
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   lint:
     name: Waterproof feathers (Lint)
@@ -96,10 +100,64 @@ jobs:
           # Set output
           echo "matrix=$MATRIX" >> $GITHUB_OUTPUT
 
+  build-e2e-image:
+    name: Build E2E Docker Image
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    outputs:
+      image-digest: ${{ steps.build.outputs.digest }}
+    env:
+      REGISTRY: ghcr.io
+      IMAGE_NAME: communitystream-io/flock-e2e-test
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=sha
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build and push Docker image
+        id: build
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile.test
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            PACKAGE_TOKEN=${{ secrets.PACKAGE_TOKEN }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
   e2e:
     name: Practice the murmuration (E2E Test)
     runs-on: ubuntu-latest
-    needs: e2e-matrix
+    needs: [e2e-matrix, build-e2e-image]
+    permissions:
+      contents: read
+      packages: read
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(needs.e2e-matrix.outputs.matrix) }}
@@ -107,31 +165,26 @@ jobs:
       PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
       HEADLESS: true
       CI: true
+    container:
+      image: ghcr.io/communitystream-io/flock-e2e-test:${{ github.ref_name }}
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          submodules: recursive
-
-      - name: Create logs directory
-        run: mkdir -p logs/metrics allure-results
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '24.5.0'
-          cache: 'npm'
-          cache-dependency-path: package-lock.json
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build shared library
-        run: npx ng build --project=shared
-
-      - name: Run E2E tests
+      - name: Run E2E tests in pre-built container
         run: |
-          echo "🚀 Running shard ${{ matrix.shard }}/${{ matrix.total-shards }}..."
+          echo "🚀 Running shard ${{ matrix.shard }}/${{ matrix.total-shards }} in pre-built container..."
+          echo "📁 Current directory: $(pwd)"
+          echo "📁 Contents of current directory:"
+          ls -la
+          echo "📁 Contents of /app directory:"
+          ls -la /app
+          echo "📁 Contents of package.json:"
+          ls -la /app/package.json || echo "package.json not found in /app"
+          echo "📁 Contents of node_modules:"
+          ls -la /app/node_modules | head -10 || echo "node_modules not found in /app"
+          echo "📁 Running npm command from: /app"
+          cd /app
           SHARD=${{ matrix.shard }} TOTAL_SHARDS=${{ matrix.total-shards }} npm run test:e2e:shard
 
       - name: Upload Allure results as artifact (shard ${{ matrix.shard }})
@@ -140,7 +193,6 @@ jobs:
           name: allure-results-shard-${{ matrix.shard }}-${{ github.run_number }}
           path: allure-results/
           retention-days: 30
-        if: always()
 
       - name: Upload timeout telemetry as artifact (shard ${{ matrix.shard }})
         uses: actions/upload-artifact@v4
@@ -148,7 +200,6 @@ jobs:
           name: timeout-telemetry-shard-${{ matrix.shard }}-${{ github.run_number }}
           path: logs/metrics/timeout-telemetry-*.json
           retention-days: 30
-        if: always()
 
       - name: Upload test metrics as artifact (shard ${{ matrix.shard }})
         uses: actions/upload-artifact@v4
@@ -156,12 +207,11 @@ jobs:
           name: test-metrics-shard-${{ matrix.shard }}-${{ github.run_number }}
           path: logs/metrics/test-metrics-*.json
           retention-days: 30
-        if: always()
 
   timeout-analysis:
     name: Analyze Timeout Patterns
     runs-on: ubuntu-latest
-    needs: [e2e-matrix, e2e]
+    needs: [e2e-matrix, build-e2e-image, e2e]
     if: always()
     steps:
       - name: Checkout code
@@ -235,7 +285,7 @@ jobs:
   deploy-allure:
     name: Deploy Allure Report to GitHub Pages
     runs-on: ubuntu-latest
-    needs: [e2e-matrix, e2e, timeout-analysis]
+    needs: [e2e-matrix, build-e2e-image, e2e, timeout-analysis]
     if: always()
     permissions:
       contents: write

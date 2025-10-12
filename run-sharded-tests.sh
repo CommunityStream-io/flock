@@ -7,12 +7,14 @@
 export SHARDED_TESTS=true
 export DEBUG_TESTS=false
 export TIMEOUT_TELEMETRY=true
+export CHROMEDRIVER_PATH="./node_modules/chromedriver/lib/chromedriver/chromedriver.exe"
 
 # Parse command line arguments
 AUTO_SERVE_ALLURE=false
 SKIP_ALLURE=false
 TRACK_PERFORMANCE=false
 ANALYZE_TIMEOUTS=true
+FAIL_FAST=false  # Default to false - run all shards even if one fails
 
 while [[ $# -gt 0 ]]; do
     case $1 in
@@ -32,6 +34,10 @@ while [[ $# -gt 0 ]]; do
             ANALYZE_TIMEOUTS=false
             shift
             ;;
+        --fail-fast)
+            FAIL_FAST=true
+            shift
+            ;;
         --help|-h)
             echo "Sharded E2E Test Runner with Allure Integration"
             echo ""
@@ -42,14 +48,16 @@ while [[ $# -gt 0 ]]; do
             echo "  --skip-allure         Skip Allure report generation and serving"
             echo "  --track-performance   Enable detailed performance timing tracking"
             echo "  --skip-timeout-analysis Skip timeout telemetry analysis"
+            echo "  --fail-fast           Stop all shards on first failure (default: false)"
             echo "  --help, -h            Show this help message"
             echo ""
             echo "Examples:"
-            echo "  $0                           # Run tests with interactive Allure options"
+            echo "  $0                           # Run all shards to completion"
+            echo "  $0 --fail-fast               # Stop on first shard failure"
             echo "  $0 --serve-allure            # Run tests and automatically serve report"
             echo "  $0 --skip-allure             # Run tests without Allure reports"
             echo "  $0 --track-performance       # Run with detailed performance tracking"
-            echo "  $0 --serve-allure --track-performance  # Full featured run"
+            echo "  $0 --fail-fast --serve-allure  # Fail fast with automatic report serving"
             exit 0
             ;;
         *)
@@ -435,7 +443,7 @@ generate_summary() {
 }
 
 # Main execution
-TOTAL_SHARDS=19  # Use 19 shards - one per feature file
+TOTAL_SHARDS=3  # Use 3 shards for testing - reduced to avoid ChromeDriver issues
 
 echo "Running ${TOTAL_SHARDS} shards in parallel, each with its own server..."
 
@@ -454,8 +462,12 @@ else
 fi
 echo ""
 
-# Run all shards in parallel with fail-fast behavior
-echo "Starting all ${TOTAL_SHARDS} shards in parallel (fail-fast)..."
+# Run all shards in parallel
+if [ "$FAIL_FAST" = true ]; then
+    echo "Starting all ${TOTAL_SHARDS} shards in parallel (fail-fast enabled - will stop on first failure)..."
+else
+    echo "Starting all ${TOTAL_SHARDS} shards in parallel (fail-fast disabled - all shards will run to completion)..."
+fi
 
 # Start all shards in background with staggered startup to avoid ChromeDriver throttling
 # Initialize global counters for performance tracking
@@ -478,7 +490,7 @@ done
 
 echo "Started ${#pids[@]} shards with PIDs: ${pids[*]}"
 
-# Wait for any shard to complete and check for failures
+# Wait for shards to complete and check for failures
 failed_shard=""
 timeout_counter=0
 max_timeout=300  # 5 minutes max wait time per shard
@@ -492,18 +504,23 @@ while [ ${#pids[@]} -gt 0 ] && [ $timeout_counter -lt $max_timeout ]; do
             shard_num=$((i + 1))
             
             if [ "$exit_code" -ne 0 ]; then
-                echo "❌ Shard ${shard_num} failed with exit code ${exit_code} - stopping execution (fail-fast)"
-                failed_shard=$shard_num
-                # Kill all remaining processes and record their exit codes
-                for j in "${!pids[@]}"; do
-                    if [ $j -ne $i ]; then
-                        remaining_shard=$((j + 1))
-                        echo "Killing shard ${remaining_shard} (PID: ${pids[$j]})..."
-                        kill "${pids[$j]}" 2>/dev/null || true
-                        echo "130" > "logs/exits/shard-${remaining_shard}.exit"  # SIGTERM exit code
-                    fi
-                done
-                break 2
+                if [ "$FAIL_FAST" = true ]; then
+                    echo "❌ Shard ${shard_num} failed with exit code ${exit_code} - stopping execution (fail-fast enabled)"
+                    failed_shard=$shard_num
+                    # Kill all remaining processes and record their exit codes
+                    for j in "${!pids[@]}"; do
+                        if [ $j -ne $i ]; then
+                            remaining_shard=$((j + 1))
+                            echo "Killing shard ${remaining_shard} (PID: ${pids[$j]})..."
+                            kill "${pids[$j]}" 2>/dev/null || true
+                            echo "130" > "logs/exits/shard-${remaining_shard}.exit"  # SIGTERM exit code
+                        fi
+                    done
+                    break 2
+                else
+                    echo "❌ Shard ${shard_num} failed with exit code ${exit_code} (continuing with other shards)"
+                    failed_shard=$shard_num
+                fi
             else
                 echo "✅ Shard ${shard_num} passed"
             fi
@@ -561,7 +578,11 @@ else
     
     # If any shard failed, show error but still try to generate reports
     if [ -n "$failed_shard" ]; then
-        echo "❌ Execution stopped due to shard ${failed_shard} failure (fail-fast)"
+        if [ "$FAIL_FAST" = true ]; then
+            echo "❌ Execution stopped due to shard ${failed_shard} failure (fail-fast enabled)"
+        else
+            echo "⚠️  One or more shards failed (fail-fast disabled - all shards ran to completion)"
+        fi
         echo "⚠️  Some tests may have failed, but attempting to generate reports anyway..."
     fi
 fi

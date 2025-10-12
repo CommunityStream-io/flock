@@ -1,21 +1,123 @@
-<div class="help-dialog">
-  <div class="dialog-header">
-    <h2 mat-dialog-title>
-      <mat-icon>help</mat-icon>
-      {{ data.title }}
-    </h2>
-    <button mat-icon-button mat-dialog-close class="close-button" aria-label="Close dialog">
-      <mat-icon>close</mat-icon>
-    </button>
-  </div>
-  
-  <div mat-dialog-content class="dialog-content">
-    <div [innerHTML]="getHelpContent()"></div>
-  </div>
-  
-  <div mat-dialog-actions class="dialog-actions">
-    <button mat-raised-button color="primary" (click)="onClose()" aria-label="Close help dialog">
-      Got it!
-    </button>
-  </div>
+<div class="dialog-header">
+  <h2 mat-dialog-title class="dialog-title">
+    <mat-icon class="title-icon">help</mat-icon>
+    <span class="title-text">{{ data.title }}</span>
+  </h2>
+  <button
+    mat-icon-button
+    mat-dialog-close
+    class="close-button"
+    aria-label="Close dialog"
+  >
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
+
+<div mat-dialog-content class="dialog-content mat-typography">
+  <!-- Date Range Help Template -->
+  <ng-template #dateRangeHelp>
+    <h3>Date Range Filtering</h3>
+    <p>
+      Use date range filtering to migrate only posts from specific time periods:
+    </p>
+    <ul>
+      <li>
+        <strong>Start Date:</strong> The earliest date for posts to include
+        (format: YYYY-MM-DD)
+      </li>
+      <li>
+        <strong>End Date:</strong> The latest date for posts to include (format:
+        YYYY-MM-DD)
+      </li>
+      <li>
+        <strong>Both dates are optional</strong> - leave empty to include all
+        posts
+      </li>
+      <li>
+        <strong>Date format:</strong> Use YYYY-MM-DD format (e.g., 2023-01-01)
+      </li>
+    </ul>
+    <aside class="note">
+      <mat-icon>info</mat-icon>
+      <p>Only posts created between the start and end dates will be migrated.
+      Future dates are not allowed.</p>
+    </aside>
+  </ng-template>
+
+  <!-- Testing Options Help Template -->
+  <ng-template #testingOptionsHelp>
+    <h3>Testing Options</h3>
+    <p>
+      Use these options to safely test your migration without posting to
+      Bluesky:
+    </p>
+    <ul>
+      <li>
+        <strong>Test Video Mode:</strong> Process videos for testing without
+        uploading them
+      </li>
+      <li>
+        <strong>Simulation Mode:</strong> Run the entire migration in simulation
+        mode - no actual posts will be created
+      </li>
+      <li>
+        <strong>Both modes can be enabled together</strong> for comprehensive
+        testing
+      </li>
+    </ul>
+    <aside class="note">
+      <mat-icon>info</mat-icon>
+      <p>These options are perfect for testing your migration settings before
+      running the actual migration.</p>
+    </aside>
+  </ng-template>
+
+  <!-- General Help Template -->
+  <ng-template #generalHelp>
+    <h3>Configuration Help</h3>
+    <p>
+      Configure your migration settings to customize how your Instagram posts
+      are migrated to Bluesky:
+    </p>
+    <ul>
+      <li><strong>Date Range:</strong> Filter posts by creation date</li>
+      <li><strong>Testing Options:</strong> Test your migration safely</li>
+      <li>
+        <strong>All settings are optional</strong> - you can proceed with
+        default settings
+      </li>
+    </ul>
+    <aside class="note">
+      <mat-icon>info</mat-icon>
+      <p>Changes are automatically saved as you make them. You can always come back
+      to modify these settings.</p>
+    </aside>
+  </ng-template>
+
+  <!-- Template Container -->
+  <ng-container [ngSwitch]="data.type">
+    <ng-container
+      *ngSwitchCase="'date-range'"
+      [ngTemplateOutlet]="dateRangeHelp"
+    ></ng-container>
+    <ng-container
+      *ngSwitchCase="'testing-options'"
+      [ngTemplateOutlet]="testingOptionsHelp"
+    ></ng-container>
+    <ng-container
+      *ngSwitchDefault
+      [ngTemplateOutlet]="generalHelp"
+    ></ng-container>
+  </ng-container>
+</div>
+
+<div mat-dialog-actions class="dialog-actions">
+  <button
+    mat-raised-button
+    color="primary"
+    (click)="onClose()"
+    aria-label="Close help dialog"
+  >
+    Got it!
+  </button>
 </div>

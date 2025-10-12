@@ -80,37 +80,31 @@
       
       <div class="toggle-options">
         <mat-slide-toggle 
+          id="testVideoMode"
           formControlName="testVideoMode"
           [attr.aria-label]="'Test video mode toggle'"
           class="toggle-option">
           <div class="toggle-content">
-            <span class="toggle-label">Test Video Mode</span>
-            <span class="toggle-description">Process videos for testing without posting them to Bluesky</span>
+            <label for="testVideoMode">
+              <h4>Test Video Mode</h4>
+              <p>Process videos for testing without posting them to Bluesky</p>
+            </label>
           </div>
         </mat-slide-toggle>
         
-        <mat-slide-toggle 
+        <mat-slide-toggle
+          id="simulationMode"
           formControlName="simulationMode"
           [attr.aria-label]="'Simulation mode toggle'"
           class="toggle-option">
           <div class="toggle-content">
-            <span class="toggle-label">Simulation Mode</span>
-            <span class="toggle-description">Run migration in simulation mode - no actual posts will be created</span>
+            <label for="simulationMode">
+              <h4>Simulation Mode</h4>
+              <p>Run migration in simulation mode - no actual posts will be created</p>
+            </label>
           </div>
         </mat-slide-toggle>
       </div>
     </mat-card-content>
   </mat-card>
-
-  <!-- Form State Indicators -->
-  <div class="form-state-indicators" *ngIf="isFormDirty()">
-    <mat-icon class="state-icon" [class.dirty]="isFormDirty()">edit</mat-icon>
-    <span class="state-text">Configuration has been modified</span>
-  </div>
-
-  <!-- Validation Success Indicators -->
-  <div class="validation-success" *ngIf="isFormValid() && isFormTouched()">
-    <mat-icon class="success-icon">check_circle</mat-icon>
-    <span class="success-text">Configuration is valid</span>
-  </div>
 </section>
