@@ -8,6 +8,7 @@ export class Migration implements MigrationService {
   public percentComplete = signal(0);
   public currentOperation = signal('');
   public elapsedSeconds = signal(0);
+  public lastResult: { count: number; elapsedMs: number } | null = null;
 
   async run(simulate: boolean): Promise<{ count: number; elapsedMs: number }> {
     this.percentComplete.set(0);
@@ -32,6 +33,7 @@ export class Migration implements MigrationService {
       // placeholder for future error cases
       throw new Error('Migration failed');
     }
-    return { count: 42, elapsedMs };
+    this.lastResult = { count: 42, elapsedMs };
+    return this.lastResult;
   }
 }

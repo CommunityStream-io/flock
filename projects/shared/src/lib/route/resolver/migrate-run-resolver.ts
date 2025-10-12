@@ -3,15 +3,16 @@ import { inject } from '@angular/core';
 import { SplashScreenLoading, MIGRATION, LOGGER, Logger } from '../../services';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import type { MigrationService } from '../../services/interfaces/migration';
+import { ProgressPanel } from '../../steps/migrate/progress-panel/progress-panel';
 
 export const migrateRunResolver: ResolveFn<Promise<void>> = async () => {
   const loading = inject(SplashScreenLoading);
   const migration = inject<MigrationService>(MIGRATION);
   const logger = inject<Logger>(LOGGER);
   const snackBar = inject(MatSnackBar);
-  // Show splash and set progress component via service
-  // Component is set where we navigate, here we ensure loading is visible
+  // Show splash message and separate progress overlay
   loading.show('Migrating…');
+  loading.setComponent(ProgressPanel);
   try {
     await migration.run(false);
     logger.workflow('Migration completed');
@@ -20,6 +21,7 @@ export const migrateRunResolver: ResolveFn<Promise<void>> = async () => {
     snackBar.open(error?.message || 'Migration failed', 'Close', { duration: 4000 });
   } finally {
     loading.hide();
+    loading.setComponent(null);
   }
 };
 
