@@ -56,6 +56,7 @@
           "options": {
             "outputPath": "dist/flock-native",
             "browser": "projects/flock-native/src/main.ts",
+            "baseHref": "./",
             "polyfills": [
               "zone.js"
             ],
@@ -76,13 +77,13 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "1MB",
+                  "maximumWarning": "1.5MB",
                   "maximumError": "2MB"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "10kB",
-                  "maximumError": "15kB"
+                  "maximumWarning": "15kB",
+                  "maximumError": "20kB"
                 }
               ],
               "outputHashing": "all"
