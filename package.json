@@ -83,7 +83,7 @@
     "pack:all": "npm run clean:electron && npm run build:native && electron-builder -mwl",
     "clean": "npm run clean:dist && npm run clean:coverage && npm run clean:logs",
     "clean:dist": "rimraf dist",
-    "clean:electron": "rimraf dist/electron",
+    "clean:electron": "node scripts/clean-electron.js",
     "clean:coverage": "rimraf coverage allure-results allure-report",
     "clean:logs": "rimraf logs",
     "clean:node_modules": "rimraf node_modules",
