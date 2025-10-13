@@ -169,16 +169,11 @@ jobs:
           SMOKE_COUNT=$(grep -r "@smoke" features --include="*.feature" | cut -d: -f1 | sort -u | wc -l)
           echo "Found $SMOKE_COUNT feature files with @smoke tag"
           
-          # Cap shards at 4 for smoke tests (they should be fast)
-          if [ $SMOKE_COUNT -gt 4 ]; then
-            TOTAL_SHARDS=4
-          else
-            TOTAL_SHARDS=$SMOKE_COUNT
-          fi
+          # Use one shard per smoke test feature for maximum parallelization
+          TOTAL_SHARDS=$SMOKE_COUNT
+          echo "Using $TOTAL_SHARDS shards for smoke tests (1 shard per feature)"
           
-          echo "Using $TOTAL_SHARDS shards for smoke tests"
-          
-          # Generate shard array
+          # Generate shard array (1 to SMOKE_COUNT)
           SHARDS=$(seq 1 $TOTAL_SHARDS | tr '\n' ',' | sed 's/,$//')
           echo "Generated shards: $SHARDS"
           
