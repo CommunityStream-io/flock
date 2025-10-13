@@ -3,6 +3,7 @@ import {
   Auth,
   Complete,
   Config,
+  Help,
   LandingPage,
   Licenses,
   Migrate,
@@ -32,6 +33,11 @@ export const routes: Routes = [
     path: 'support',
     component: Support,
     title: 'Support Flock',
+  },
+  {
+    path: 'help',
+    component: Help,
+    title: 'Getting Started Guide',
   },
   {
     path: 'step',
