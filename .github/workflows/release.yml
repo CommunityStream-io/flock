@@ -1,0 +1,292 @@
+name: Release Flock Native
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release (e.g., 1.0.0)'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  create-release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+      version: ${{ steps.get_version.outputs.version }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Get version from tag
+        id: get_version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            VERSION="${{ github.event.inputs.version }}"
+          else
+            VERSION=${GITHUB_REF#refs/tags/v}
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Version: $VERSION"
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.event_name == 'workflow_dispatch' && format('v{0}', github.event.inputs.version) || github.ref }}
+          release_name: Flock Native v${{ steps.get_version.outputs.version }}
+          draft: true
+          prerelease: false
+          body: |
+            # Flock Native v${{ steps.get_version.outputs.version }}
+            
+            ## Downloads
+            
+            ### Windows
+            - **Installer**: `Flock-Native-Setup-${{ steps.get_version.outputs.version }}.exe` (Recommended)
+            - **Portable**: `Flock-Native-${{ steps.get_version.outputs.version }}.exe` (No installation required)
+            - **ZIP Archive**: `Flock-Native-${{ steps.get_version.outputs.version }}-win.zip`
+            
+            ### macOS
+            - **DMG**: `Flock-Native-${{ steps.get_version.outputs.version }}-universal.dmg` (Recommended)
+            - **ZIP Archive**: `Flock-Native-${{ steps.get_version.outputs.version }}-mac.zip`
+            
+            ### Linux
+            - **AppImage**: `Flock-Native-${{ steps.get_version.outputs.version }}.AppImage` (Universal, no installation)
+            - **DEB Package**: `flock-native_${{ steps.get_version.outputs.version }}_amd64.deb` (Debian/Ubuntu)
+            - **RPM Package**: `flock-native-${{ steps.get_version.outputs.version }}.x86_64.rpm` (Fedora/RHEL)
+            
+            ## Installation Instructions
+            
+            See the [installation guide](https://github.com/CommunityStream-io/flock/blob/main/INSTALLATION.md) for detailed platform-specific instructions.
+            
+            ## What's New
+            
+            _Release notes will be added here before publishing._
+            
+            ## System Requirements
+            
+            - **Windows**: Windows 10 or later (64-bit)
+            - **macOS**: macOS 10.15 (Catalina) or later
+            - **Linux**: Ubuntu 20.04+ or equivalent
+
+  build-windows:
+    name: Build Windows
+    needs: create-release
+    runs-on: windows-latest
+    env:
+      PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24.5.0'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Angular app
+        run: npm run build:native
+
+      - name: Build Windows installers
+        run: npx electron-builder --win
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate checksums
+        run: |
+          cd dist/electron
+          Get-FileHash -Algorithm SHA256 *.exe | ForEach-Object { "$($_.Hash)  $($_.Path | Split-Path -Leaf)" } | Out-File -FilePath checksums-windows.txt -Encoding ASCII
+          Get-FileHash -Algorithm SHA256 *.zip | ForEach-Object { "$($_.Hash)  $($_.Path | Split-Path -Leaf)" } | Out-File -Append -FilePath checksums-windows.txt -Encoding ASCII
+        shell: pwsh
+
+      - name: Upload Windows NSIS Installer
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create-release.outputs.upload_url }}
+          asset_path: ./dist/electron/Flock Native Setup ${{ needs.create-release.outputs.version }}.exe
+          asset_name: Flock-Native-Setup-${{ needs.create-release.outputs.version }}.exe
+          asset_content_type: application/octet-stream
+
+      - name: Upload Windows Portable
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create-release.outputs.upload_url }}
+          asset_path: ./dist/electron/Flock Native ${{ needs.create-release.outputs.version }}.exe
+          asset_name: Flock-Native-${{ needs.create-release.outputs.version }}.exe
+          asset_content_type: application/octet-stream
+
+      - name: Upload Windows ZIP
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create-release.outputs.upload_url }}
+          asset_path: ./dist/electron/Flock Native-${{ needs.create-release.outputs.version }}-win.zip
+          asset_name: Flock-Native-${{ needs.create-release.outputs.version }}-win.zip
+          asset_content_type: application/zip
+
+      - name: Upload Windows Checksums
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create-release.outputs.upload_url }}
+          asset_path: ./dist/electron/checksums-windows.txt
+          asset_name: checksums-windows.txt
+          asset_content_type: text/plain
+
+  build-macos:
+    name: Build macOS
+    needs: create-release
+    runs-on: macos-latest
+    env:
+      PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24.5.0'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Angular app
+        run: npm run build:native
+
+      - name: Build macOS packages
+        run: npx electron-builder --mac
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate checksums
+        run: |
+          cd dist/electron
+          shasum -a 256 *.dmg *.zip > checksums-macos.txt
+
+      - name: Upload macOS DMG
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create-release.outputs.upload_url }}
+          asset_path: ./dist/electron/Flock Native-${{ needs.create-release.outputs.version }}-universal.dmg
+          asset_name: Flock-Native-${{ needs.create-release.outputs.version }}-universal.dmg
+          asset_content_type: application/octet-stream
+
+      - name: Upload macOS ZIP
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create-release.outputs.upload_url }}
+          asset_path: ./dist/electron/Flock Native-${{ needs.create-release.outputs.version }}-mac.zip
+          asset_name: Flock-Native-${{ needs.create-release.outputs.version }}-mac.zip
+          asset_content_type: application/zip
+
+      - name: Upload macOS Checksums
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create-release.outputs.upload_url }}
+          asset_path: ./dist/electron/checksums-macos.txt
+          asset_name: checksums-macos.txt
+          asset_content_type: text/plain
+
+  build-linux:
+    name: Build Linux
+    needs: create-release
+    runs-on: ubuntu-latest
+    env:
+      PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24.5.0'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          npm ci
+          sudo apt-get update
+          sudo apt-get install -y rpm
+
+      - name: Build Angular app
+        run: npm run build:native
+
+      - name: Build Linux packages
+        run: npx electron-builder --linux
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate checksums
+        run: |
+          cd dist/electron
+          sha256sum *.AppImage *.deb *.rpm > checksums-linux.txt
+
+      - name: Upload Linux AppImage
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create-release.outputs.upload_url }}
+          asset_path: ./dist/electron/Flock Native-${{ needs.create-release.outputs.version }}.AppImage
+          asset_name: Flock-Native-${{ needs.create-release.outputs.version }}.AppImage
+          asset_content_type: application/octet-stream
+
+      - name: Upload Linux DEB
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create-release.outputs.upload_url }}
+          asset_path: ./dist/electron/flock-native_${{ needs.create-release.outputs.version }}_amd64.deb
+          asset_name: flock-native_${{ needs.create-release.outputs.version }}_amd64.deb
+          asset_content_type: application/vnd.debian.binary-package
+
+      - name: Upload Linux RPM
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create-release.outputs.upload_url }}
+          asset_path: ./dist/electron/flock-native-${{ needs.create-release.outputs.version }}.x86_64.rpm
+          asset_name: flock-native-${{ needs.create-release.outputs.version }}.x86_64.rpm
+          asset_content_type: application/x-rpm
+
+      - name: Upload Linux Checksums
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create-release.outputs.upload_url }}
+          asset_path: ./dist/electron/checksums-linux.txt
+          asset_name: checksums-linux.txt
+          asset_content_type: text/plain
+
