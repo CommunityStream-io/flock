@@ -4,9 +4,11 @@ import {
   Complete,
   Config,
   LandingPage,
+  Licenses,
   Migrate,
   StepLayout,
   StepRoute,
+  Support,
   uploadValidGuard,
   authDeactivateGuard,
   extractArchiveResolver,
@@ -20,6 +22,16 @@ export const routes: Routes = [
     path: 'home',
     component: LandingPage,
     title: 'Flock Native - Bluesky Social Migrator',
+  },
+  {
+    path: 'licenses',
+    component: Licenses,
+    title: 'Licenses & Attributions',
+  },
+  {
+    path: 'support',
+    component: Support,
+    title: 'Support Flock',
   },
   {
     path: 'step',

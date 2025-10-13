@@ -1,4 +1,6 @@
-# 🦅 Flock - Bluesky Social Migrator [![Feathering the Nest](https://github.com/CommunityStream-io/flock/actions/workflows/ci.yml/badge.svg)](https://github.com/CommunityStream-io/flock/actions/workflows/ci.yml) [![codecov](https://codecov.io/github/CommunityStream-io/flock/graph/badge.svg?token=Gvjk9DnKQb)](https://codecov.io/github/CommunityStream-io/flock) [![E2E Tests](https://img.shields.io/badge/E2E%20Tests-91%25%20(1211/1325)-green?style=flat-square&logo=allure&logoColor=white)](https://communitystream-io.github.io/flock/)
+# 🦅 Flock - Bluesky Social Migrator [![Feathering the Nest](https://github.com/CommunityStream-io/flock/actions/workflows/ci.yml/badge.svg)](https://github.com/CommunityStream-io/flock/actions/workflows/ci.yml) [![codecov](https://codecov.io/github/CommunityStream-io/flock/graph/badge.svg?token=Gvjk9DnKQb)](https://codecov.io/github/CommunityStream-io/flock) [![E2E Tests](https://img.shields.io/badge/E2E%20Tests-91%25%20(1211/1325)-green?style=flat-square&logo=allure&logoColor=white)](https://communitystream-io.github.io/flock/) 
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/H2H51XLXW)
 
 A **flock** of Angular applications soaring through the social media migration skies! Each variant has its own personality while sharing the same nest of components and services. Built with a unified M3 Material design that keeps our flock flying in perfect formation.
 
@@ -175,6 +177,14 @@ ng build --configuration=development
 3. Implement BDD-style testing for new features
 4. Keep the flock flying in formation (consistency)
 5. Update our migration maps (documentation)
+
+## ❤️ **Support Flock**
+
+Flock is open source and free to use. If you find it helpful, consider supporting its development!
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/H2H51XLXW)
+
+Your support helps keep this project free and open source for everyone.
 
 ---
 

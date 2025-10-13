@@ -1,0 +1,234 @@
+/* Licenses Page Component */
+
+.licenses-page {
+  min-height: 100vh;
+  padding: 40px 20px;
+}
+
+/* Page Header */
+.page-header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.page-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  font-family: var(--mat-sys-typescale-display-small-font-family);
+  font-size: var(--mat-sys-typescale-display-small-font-size);
+  font-weight: var(--mat-sys-typescale-display-small-font-weight);
+  color: var(--mat-sys-on-surface);
+  margin: 0 0 16px 0;
+}
+
+.title-icon {
+  font-size: 40px;
+  width: 40px;
+  height: 40px;
+  color: var(--mat-sys-primary);
+}
+
+.page-subtitle {
+  font-family: var(--mat-sys-typescale-title-medium-font-family);
+  font-size: var(--mat-sys-typescale-title-medium-font-size);
+  color: var(--mat-sys-on-surface-variant);
+  margin: 0;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Flexbox Layout */
+.attributions-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 24px;
+  max-width: 1200px;
+  margin: 0 auto 48px;
+}
+
+.attributions-grid > * {
+  flex: 1 1 300px;
+  max-width: 500px;
+  min-width: 300px;
+}
+
+/* Attribution Cards */
+.attribution-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.attribution-card .mat-mdc-card-header {
+  padding: 24px 24px 16px;
+}
+
+.attribution-card .mat-mdc-card-content {
+  flex: 1;
+  padding: 0 24px 16px;
+}
+
+.attribution-card .mat-mdc-card-content p {
+  font-family: var(--mat-sys-typescale-body-medium-font-family);
+  font-size: var(--mat-sys-typescale-body-medium-font-size);
+  line-height: 1.6;
+  color: var(--mat-sys-on-surface-variant);
+  margin: 0;
+}
+
+.attribution-card .mat-mdc-card-actions {
+  padding: 8px 16px 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* Avatar Styles */
+.card-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+  position: relative;
+}
+
+.butterfly-avatar {
+  background: var(--mat-sys-primary-container);
+  transform: scale(0.6);
+  overflow: visible;
+}
+
+.marco-avatar {
+  background: var(--mat-sys-secondary-container);
+  color: var(--mat-sys-on-secondary-container);
+}
+
+.marco-avatar mat-icon {
+  font-size: 32px;
+  width: 32px;
+  height: 32px;
+}
+
+.license-avatar {
+  background: var(--mat-sys-tertiary-container);
+  color: var(--mat-sys-on-tertiary-container);
+}
+
+.license-avatar mat-icon {
+  font-size: 32px;
+  width: 32px;
+  height: 32px;
+}
+
+.support-avatar {
+  background: linear-gradient(135deg, var(--mat-sys-primary), var(--mat-sys-tertiary));
+  color: var(--mat-sys-on-primary);
+}
+
+.support-avatar mat-icon {
+  font-size: 32px;
+  width: 32px;
+  height: 32px;
+}
+
+/* Support Card Specific - No special styling needed, flexbox handles centering */
+
+.support-buttons {
+  margin-top: 16px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.kofi-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Page Footer */
+.page-footer {
+  text-align: center;
+  margin-top: 32px;
+}
+
+.page-footer button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 960px) {
+  .attributions-grid {
+    gap: 20px;
+  }
+  
+  .attributions-grid > * {
+    flex: 1 1 280px;
+    min-width: 280px;
+  }
+}
+
+@media (max-width: 768px) {
+  .licenses-page {
+    padding: 24px 16px;
+  }
+
+  .page-header {
+    margin-bottom: 32px;
+  }
+
+  .page-title {
+    font-size: var(--mat-sys-typescale-headline-large-font-size);
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .attributions-grid {
+    gap: 16px;
+  }
+  
+  .attributions-grid > * {
+    flex: 1 1 100%;
+    min-width: unset;
+  }
+
+  .attribution-card .mat-mdc-card-actions {
+    flex-direction: column;
+  }
+
+  .attribution-card .mat-mdc-card-actions a {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .support-buttons {
+    flex-direction: column;
+  }
+
+  .support-buttons a {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-title {
+    font-size: var(--mat-sys-typescale-headline-medium-font-size);
+  }
+
+  .title-icon {
+    font-size: 32px;
+    width: 32px;
+    height: 32px;
+  }
+}
+

@@ -1,0 +1,172 @@
+<div class="licenses-page full-height">
+  <section class="section-padding">
+    <div class="page-header">
+      <h1 class="page-title">
+        <mat-icon class="title-icon">favorite</mat-icon>
+        Licenses & Attributions
+      </h1>
+      <p class="page-subtitle">
+        Built with love and powered by amazing open source contributors
+      </p>
+    </div>
+
+    <div class="attributions-grid">
+      <!-- Butterfly Animation Card -->
+      <mat-card class="attribution-card">
+        <mat-card-header>
+          <div mat-card-avatar class="card-avatar butterfly-avatar">
+            <shared-butterfly></shared-butterfly>
+          </div>
+          <mat-card-title>Butterfly Animation</mat-card-title>
+          <mat-card-subtitle>by dazulu</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <p>
+            The beautiful 3D butterfly animation used in our splash screen.
+            Created with pure CSS and amazing attention to detail.
+          </p>
+        </mat-card-content>
+        <mat-card-actions>
+          <a 
+            href="https://codepen.io/dazulu/pen/aOzqvz" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            mat-button
+            color="primary"
+          >
+            <mat-icon>code</mat-icon>
+            CodePen
+          </a>
+          <a 
+            href="https://bsky.app/profile/did:plc:76lzczubpyga4qfno7mr5vkq" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            mat-button
+            color="primary"
+          >
+            <mat-icon>flutter_dash</mat-icon>
+            Bluesky
+          </a>
+          <a 
+            href="https://ko-fi.com/dazulu" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            mat-button
+            color="accent"
+          >
+            <mat-icon>local_cafe</mat-icon>
+            Ko-fi
+          </a>
+        </mat-card-actions>
+      </mat-card>
+
+      <!-- Marco Maroni Card -->
+      <mat-card class="attribution-card">
+        <mat-card-header>
+          <div mat-card-avatar class="card-avatar marco-avatar">
+            <mat-icon>travel_explore</mat-icon>
+          </div>
+          <mat-card-title>Migration Library</mat-card-title>
+          <mat-card-subtitle>by Marco Maroni</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <p>
+            The core instagram-to-bluesky migration library that powers this application.
+            Thank you for making social media migration accessible!
+          </p>
+        </mat-card-content>
+        <mat-card-actions>
+          <a 
+            href="https://tangled.org/@marcomaroni.it/instagram-to-bluesky" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            mat-button
+            color="primary"
+          >
+            <mat-icon>link</mat-icon>
+            Project
+          </a>
+        </mat-card-actions>
+      </mat-card>
+
+      <!-- Project License Card -->
+      <mat-card class="attribution-card">
+        <mat-card-header>
+          <div mat-card-avatar class="card-avatar license-avatar">
+            <mat-icon>gavel</mat-icon>
+          </div>
+          <mat-card-title>Open Source License</mat-card-title>
+          <mat-card-subtitle>MIT License</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <p>
+            Flock is free and open source software. You are free to use, modify, 
+            and distribute this software according to the MIT License terms.
+          </p>
+        </mat-card-content>
+        <mat-card-actions>
+          <a 
+            href="https://github.com/CommunityStream-io/flock/blob/main/LICENSE" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            mat-button
+            color="primary"
+          >
+            <mat-icon>description</mat-icon>
+            License
+          </a>
+          <a 
+            href="https://github.com/CommunityStream-io/flock" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            mat-button
+            color="primary"
+          >
+            <mat-icon>code</mat-icon>
+            GitHub
+          </a>
+        </mat-card-actions>
+      </mat-card>
+
+      <!-- Developer Support Card -->
+      <mat-card class="attribution-card support-card">
+        <mat-card-header>
+          <div mat-card-avatar class="card-avatar support-avatar">
+            <mat-icon>volunteer_activism</mat-icon>
+          </div>
+          <mat-card-title>Support Development</mat-card-title>
+          <mat-card-subtitle>Help keep Flock free & open source</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <p>
+            If Flock helped you migrate to Bluesky, consider supporting its continued 
+            development and maintenance.
+          </p>
+        </mat-card-content>
+        <mat-card-actions>
+          <button 
+            mat-raised-button
+            color="accent"
+            routerLink="/support"
+          >
+            <mat-icon>local_cafe</mat-icon>
+            Support Page
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+
+    <!-- Back to Home -->
+    <div class="page-footer">
+      <button 
+        mat-raised-button 
+        color="primary" 
+        routerLink="/"
+      >
+        <mat-icon>home</mat-icon>
+        Back to Home
+      </button>
+    </div>
+  </section>
+</div>
+
