@@ -216,14 +216,14 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const releaseId = '${{ needs.create-release.outputs.release_id }}';
             const version = '${{ needs.create-release.outputs.version }}';
+            const tagName = `v${version}`;
             
-            // Get the release
-            const { data: release } = await github.rest.repos.getRelease({
+            // Get the release by tag
+            const { data: release } = await github.rest.repos.getReleaseByTag({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              release_id: releaseId
+              tag: tagName
             });
             
             // Update release body with build completion note
@@ -256,7 +256,7 @@ jobs:
             await github.rest.repos.updateRelease({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              release_id: releaseId,
+              release_id: release.id,
               body: updatedBody
             });
             
