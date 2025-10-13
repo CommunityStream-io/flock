@@ -7,7 +7,7 @@ Feature: File Management - File Selection, Removal, and UI Updates
   Background:
     And I navigate to the upload step
 
-  @file-upload @file-removal 
+  @upload @core @parallel
   Scenario: File removal works correctly
     Given I have selected a valid Instagram archive file "test-archive.zip"
     When I click the delete button for "test-archive.zip"
@@ -16,7 +16,7 @@ Feature: File Management - File Selection, Removal, and UI Updates
     And I should not see the selected files section
     And the "Choose Files" button should be visible again
 
-  @file-upload @button-visibility
+  @upload @ui @parallel
   Scenario: Upload button visibility changes with file selection
     Given I am on the upload step
     Then I should see the "Choose Files" button

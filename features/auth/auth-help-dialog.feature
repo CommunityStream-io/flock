@@ -9,7 +9,7 @@ Feature: Authentication Help Dialog - Username Format Guidance
     And I select a valid Instagram archive file "valid-archive.zip"
     And I navigate to the auth step
 
-  @bluesky-auth @help @dialog
+  @auth @help @ui @parallel
   Scenario: Help dialog provides username format guidance
     When I click the help icon
     Then I should see a help dialog with username format suggestions
@@ -19,7 +19,7 @@ Feature: Authentication Help Dialog - Username Format Guidance
     When I close the help dialog
     Then the help dialog should be hidden
 
-  @bluesky-auth @help @dialog @escape
+  @auth @help @ui @accessibility @parallel
   Scenario: Help dialog can be closed with Escape key
     When I click the help icon
     Then I should see a help dialog with username format suggestions

@@ -9,7 +9,7 @@ Feature: Password Validation - Bluesky Password Requirements
     And I select a valid Instagram archive file "valid-archive.zip"
     And I navigate to the auth step
 
-  @bluesky-auth @validation
+  @auth @core @validation @parallel
   Scenario: Password validation requires non-empty value
     When I leave the password field empty
     Then the password field should show an error

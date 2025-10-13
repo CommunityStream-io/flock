@@ -140,7 +140,7 @@ Create `docs/testing/E2E_PHASE_3_HANDOFF.md` with:
 
 ### To-dos
 
-- [ ] Audit all feature files and create tag mapping (old → new tags)
+- [x] Audit all feature files and create tag mapping (old → new tags)
 - [ ] Update tags in auth feature files (5 files)
 - [ ] Update tags in upload feature files (4 files)
 - [ ] Update tags in config feature files (7 files)

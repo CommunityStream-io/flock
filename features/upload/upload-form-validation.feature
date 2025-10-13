@@ -7,7 +7,7 @@ Feature: Upload Form Validation - Error Handling and User Feedback
   Background:
     And I navigate to the upload step
 
-  @file-upload @form-validation
+  @upload @core @validation @parallel
   Scenario: Form validation shows error when proceeding without file
     When I try to proceed without a file
     Then I should see an error message

@@ -11,7 +11,7 @@ Feature: Date Range Filtering - Instagram Post Date Selection
     And I have entered valid credentials
     And I navigate to the config step
 
-  @config @date-range @validation
+  @config @date-range @core @validation @parallel
   Scenario: Date range section displays correctly
     Then I should see the date range section
     And I should see a start date input field
@@ -19,7 +19,7 @@ Feature: Date Range Filtering - Instagram Post Date Selection
     And I should see a clear dates button
     And both date fields should be initially empty
 
-  @config @date-range @validation
+  @config @date-range @core @validation @parallel
   Scenario: Start date validation enforces proper format
     When I enter an invalid start date "invalid-date"
     Then the start date field should show an error
@@ -30,7 +30,7 @@ Feature: Date Range Filtering - Instagram Post Date Selection
     Then the start date field should not show any errors
     And the start date validation should pass
 
-  @config @date-range @validation
+  @config @date-range @core @validation @parallel
   Scenario: End date validation enforces proper format
     When I enter an invalid end date "invalid-date"
     Then the end date field should show an error
@@ -41,7 +41,7 @@ Feature: Date Range Filtering - Instagram Post Date Selection
     Then the end date field should not show any errors
     And the end date validation should pass
 
-  @config @date-range @validation
+  @config @date-range @core @validation @parallel
   Scenario: Date range validation enforces logical order
     When I enter a start date "2023-12-31"
     And I enter an end date "2023-01-01"
@@ -54,7 +54,7 @@ Feature: Date Range Filtering - Instagram Post Date Selection
     Then the end date field should not show any errors
     And the date range validation should pass
 
-  @config @date-range @validation
+  @config @date-range @core @validation @parallel
   Scenario: Future date validation prevents future dates
     When I enter a start date in the future
     Then the start date field should show an error
@@ -66,7 +66,7 @@ Feature: Date Range Filtering - Instagram Post Date Selection
     And the error should indicate "End date cannot be in the future"
     And the form should remain valid
 
-  @config @date-range @validation
+  @config @date-range @core @validation @parallel
   Scenario: Date range validation allows reasonable past dates
     When I enter a start date "2020-01-01"
     And I enter an end date "2023-12-31"
@@ -74,7 +74,7 @@ Feature: Date Range Filtering - Instagram Post Date Selection
     And the date range validation should pass
     And the form should be valid
 
-  @config @date-range @functionality
+  @config @date-range @core @parallel
   Scenario: Clear dates button resets date fields
     Given I have entered a start date "2023-01-01"
     And I have entered an end date "2023-12-31"
@@ -83,7 +83,7 @@ Feature: Date Range Filtering - Instagram Post Date Selection
     And the end date field should be empty
     And the form should be valid
 
-  @config @date-range @functionality
+  @config @date-range @core @parallel
   Scenario: Date range settings are saved to service
     When I enter a start date "2023-01-01"
     And I enter an end date "2023-12-31"
@@ -91,7 +91,7 @@ Feature: Date Range Filtering - Instagram Post Date Selection
     And the start date setting should be stored
     And the end date setting should be stored
 
-  @config @date-range @functionality
+  @config @date-range @core @parallel
   Scenario: Date range settings persist when navigating back
     Given I have entered a start date "2023-01-01"
     And I have entered an end date "2023-12-31"
@@ -110,14 +110,14 @@ Feature: Date Range Filtering - Instagram Post Date Selection
     When I close the help dialog
     Then the help dialog should be hidden
 
-  @config @date-range @help @dialog @escape
+  @config @date-range @help @ui @accessibility @parallel
   Scenario: Help dialog can be closed with Escape key
     When I click the help icon for date range
     Then I should see a help dialog with date range guidance
     When I close the help dialog with Escape key
     Then the help dialog should be hidden
 
-  @config @date-range @edge-cases
+  @config @date-range @edge-case @parallel
   Scenario: Date range handles edge cases gracefully
     When I enter a start date "2023-02-29"
     Then the start date field should show an error

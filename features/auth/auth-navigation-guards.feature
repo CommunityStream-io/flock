@@ -10,7 +10,7 @@ Feature: Authentication Navigation Guards - Route Protection and Validation
     And I select a valid Instagram archive file "valid-archive.zip"
     And I navigate to the auth step
 
-  @bluesky-auth @validation
+  @auth @guards @validation @parallel
   Scenario: Navigation guard prevents progression without valid credentials
     And I am on the auth step page without valid credentials
     When I attempt to navigate to the config step
@@ -24,7 +24,7 @@ Feature: Authentication Navigation Guards - Route Protection and Validation
     Then the navigation should succeed
     And I should be on the config step page
 
-  @bluesky-auth @navigation @auth-guard
+  @auth @guards @navigation @parallel
   Scenario: Navigation to previous step is always allowed
     Given I am on the auth step page
     When I attempt to navigate to the upload step
@@ -32,7 +32,7 @@ Feature: Authentication Navigation Guards - Route Protection and Validation
     And I should be on the upload step
     And no authentication should be triggered
 
-  @bluesky-auth @navigation @authentication @auth-guard
+  @auth @guards @navigation @parallel
   Scenario: Navigation to next step blocks when credentials are not stored
     Given I am on the auth step page
     And I have entered valid credentials
@@ -43,7 +43,7 @@ Feature: Authentication Navigation Guards - Route Protection and Validation
     And I should remain on the auth step
     And no authentication process should be triggered
 
-  @bluesky-auth @navigation @authentication @auth-guard
+  @auth @guards @navigation @parallel
   Scenario: Navigation to next step blocks with invalid credentials
     Given I am on the auth step page
     And I have entered invalid credentials
@@ -54,7 +54,7 @@ Feature: Authentication Navigation Guards - Route Protection and Validation
     And I should remain on the auth step
     And no authentication process should be triggered
 
-  @bluesky-auth @navigation @authentication @auth-guard
+  @auth @guards @navigation @parallel
   Scenario: Navigation to next step fails when no credentials are provided
     Given I am on the auth step page
     And I have not entered any credentials
@@ -65,7 +65,7 @@ Feature: Authentication Navigation Guards - Route Protection and Validation
     And I should remain on the auth step
     And no authentication process should be triggered
 
-  @bluesky-auth @navigation @authentication @auth-guard
+  @auth @guards @navigation @parallel
   Scenario: Already authenticated user navigation is blocked when credentials not stored
     Given I am on the auth step page
     And I have already been authenticated
@@ -76,7 +76,7 @@ Feature: Authentication Navigation Guards - Route Protection and Validation
     And I should remain on the auth step
     And no authentication process should be triggered
 
-  @bluesky-auth @navigation @auth-guard
+  @auth @guards @navigation @parallel
   Scenario: Direct URL navigation triggers authentication process
     Given I am on the auth step page
     When I attempt to navigate to a different URL directly
@@ -86,7 +86,7 @@ Feature: Authentication Navigation Guards - Route Protection and Validation
     And I should remain on the auth step
     And no authentication process should be triggered
 
-  @bluesky-auth @navigation @authentication @auth-guard @network-error
+  @auth @guards @navigation @edge-case @parallel
   Scenario: Network error credentials still block navigation
     Given I am on the auth step page
     And I have entered credentials that will cause a network error
