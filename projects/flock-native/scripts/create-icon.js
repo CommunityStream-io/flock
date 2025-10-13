@@ -5,6 +5,7 @@ const sharp = require('sharp');
 const svgPath = path.join(__dirname, '../public/favicon.svg');
 const pngPath = path.join(__dirname, '../public/icon.png');
 const icoPath = path.join(__dirname, '../public/favicon.ico');
+const buildIcoPath = path.join(__dirname, '../build/icon.ico');
 
 // Read SVG
 const svgBuffer = fs.readFileSync(svgPath);
@@ -64,7 +65,15 @@ async function generateIcons() {
     const icoBuffer = Buffer.concat([iconDir, ...imageBuffers]);
     fs.writeFileSync(icoPath, icoBuffer);
     
+    // Copy to build directory for electron-builder
+    const buildDir = path.dirname(buildIcoPath);
+    if (!fs.existsSync(buildDir)) {
+      fs.mkdirSync(buildDir, { recursive: true });
+    }
+    fs.copyFileSync(icoPath, buildIcoPath);
+    
     console.log('✅ ICO icon created at:', icoPath);
+    console.log('✅ ICO icon copied to:', buildIcoPath);
     console.log(`   Contains ${sizes.length} sizes: ${sizes.join('x, ')}x`);
   } catch (err) {
     console.error('❌ Error creating icons:', err);

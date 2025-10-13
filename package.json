@@ -72,7 +72,12 @@
     "agent:run:auth": "docker run --rm -it -e GH_TOKEN=$GH_TOKEN -v $PWD:/workspace cursor-background-agent:latest bash -lc 'gh auth status && gh repo view --json nameWithOwner,visibility'",
     "start:native": "concurrently --kill-others --success first \"ng serve flock-native --port=4201\" \"wait-on http://localhost:4201 && electron projects/flock-native/electron/main.js\"",
     "build:native": "node projects/flock-native/scripts/create-icon.js && ng build flock-native --configuration=production",
-    "electron:dev": "electron projects/flock-native/electron/main.js"
+    "electron:dev": "electron projects/flock-native/electron/main.js",
+    "pack:win": "npm run build:native && electron-builder --win",
+    "pack:win:dir": "npm run build:native && electron-builder --win --dir",
+    "pack:mac": "npm run build:native && electron-builder --mac",
+    "pack:linux": "npm run build:native && electron-builder --linux",
+    "pack:all": "npm run build:native && electron-builder -mwl"
   },
   "prettier": {
     "overrides": [
@@ -83,6 +88,90 @@
         }
       }
     ]
+  },
+  "build": {
+    "appId": "io.communitystream.flock.native",
+    "productName": "Flock Native",
+    "copyright": "Copyright © 2025 CommunityStream.io",
+    "directories": {
+      "buildResources": "projects/flock-native/build",
+      "output": "dist/electron"
+    },
+    "files": [
+      "dist/flock-native/**/*",
+      "projects/flock-native/electron/**/*",
+      "node_modules/**/*",
+      "package.json"
+    ],
+    "extraMetadata": {
+      "main": "projects/flock-native/electron/main.js"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        },
+        {
+          "target": "portable",
+          "arch": ["x64"]
+        },
+        {
+          "target": "zip",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "projects/flock-native/build/icon.ico",
+      "publisherName": "CommunityStream.io"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Flock Native"
+    },
+    "mac": {
+      "category": "public.app-category.utilities",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": ["universal"]
+        },
+        {
+          "target": "zip",
+          "arch": ["universal"]
+        }
+      ],
+      "icon": "projects/flock-native/build/icon.icns"
+    },
+    "linux": {
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": ["x64"]
+        },
+        {
+          "target": "deb",
+          "arch": ["x64"]
+        },
+        {
+          "target": "rpm",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "projects/flock-native/build/icons",
+      "category": "Utility",
+      "maintainer": "CommunityStream.io",
+      "vendor": "CommunityStream.io",
+      "description": "Migrate Instagram data to Bluesky with native desktop power"
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "CommunityStream-io",
+      "repo": "flock"
+    }
   },
   "private": true,
   "dependencies": {
