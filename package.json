@@ -59,7 +59,7 @@
     "analyze:metrics": "node scripts/analyze-test-metrics.js",
     "analyze:metrics:latest": "node scripts/analyze-test-metrics.js $(ls -t logs/metrics/test-metrics-*.json | head -1)",
     "analyze:timeouts": "node scripts/analyze-timeout-telemetry.js",
-    "analyze:timeouts:latest": "node scripts/analyze-timeout-telemetry.js",
+    "analyze:timeouts:latest": "node scripts/analyze-timeout-telemetry.js",                                                                 
     "analyze:timeouts:ci": "node scripts/analyze-ci-timeouts.js",
     "lint": "ng lint",
     "lint:fix": "ng lint --fix",
@@ -81,14 +81,14 @@
     "pack:mac": "npm run clean:electron && npm run build:native && electron-builder --mac",
     "pack:linux": "npm run clean:electron && npm run build:native && electron-builder --linux",
     "pack:all": "npm run clean:electron && npm run build:native && electron-builder -mwl",
-    "clean": "npm run clean:dist && npm run clean:coverage && npm run clean:logs",
+    "clean": "node scripts/clean.js",
     "clean:dist": "rimraf dist",
     "clean:electron": "node scripts/clean-electron.js",
     "clean:coverage": "rimraf coverage allure-results allure-report",
     "clean:logs": "rimraf logs",
     "clean:node_modules": "rimraf node_modules",
-    "clean:all": "npm run clean && npm run clean:node_modules",
-    "rebuild": "npm run clean && npm install"
+    "clean:all": "node scripts/clean.js && npm run clean:node_modules",
+    "rebuild": "npm run clean:all && npm install"
   },
   "prettier": {
     "overrides": [
