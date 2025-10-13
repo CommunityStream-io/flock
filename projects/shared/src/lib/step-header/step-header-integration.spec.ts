@@ -9,6 +9,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { StepHeader } from './step-header';
 import { StepLayout } from '../step-layout/step-layout';
 import { StepNavigationComponent } from '../step-navigation/step-navigation';
+import { LOGGER } from '../services';
 import { 
   STEP_ROUTE_TEST_DATA, 
   EDGE_CASE_TEST_DATA,
@@ -17,19 +18,34 @@ import {
 } from './step-header-test-utils';
 
 // Mock step components for integration testing
-@Component({ template: '<div class="upload-content">Upload Step</div>' })
+@Component({ 
+  standalone: true,
+  template: '<div class="upload-content">Upload Step</div>' 
+})
 class MockUploadComponent { }
 
-@Component({ template: '<div class="auth-content">Auth Step</div>' })
+@Component({ 
+  standalone: true,
+  template: '<div class="auth-content">Auth Step</div>' 
+})
 class MockAuthComponent { }
 
-@Component({ template: '<div class="config-content">Config Step</div>' })
+@Component({ 
+  standalone: true,
+  template: '<div class="config-content">Config Step</div>' 
+})
 class MockConfigComponent { }
 
-@Component({ template: '<div class="migrate-content">Migrate Step</div>' })
+@Component({ 
+  standalone: true,
+  template: '<div class="migrate-content">Migrate Step</div>' 
+})
 class MockMigrateComponent { }
 
-@Component({ template: '<div class="complete-content">Complete Step</div>' })
+@Component({ 
+  standalone: true,
+  template: '<div class="complete-content">Complete Step</div>' 
+})
 class MockCompleteComponent { }
 
 /**
@@ -42,13 +58,21 @@ describe('Feature: StepHeader Integration with Real Routes (BDD-Style)', () => {
   let fixture: ComponentFixture<StepLayout>;
   let router: Router;
   let location: Location;
+  let mockLogger: jasmine.SpyObj<any>;
 
   beforeEach(async () => {
+    mockLogger = jasmine.createSpyObj('Logger', ['log', 'error', 'warn', 'info']);
+    
     await TestBed.configureTestingModule({
       imports: [
         StepLayout,
         StepHeader,
         StepNavigationComponent,
+        MockUploadComponent,
+        MockAuthComponent,
+        MockConfigComponent,
+        MockMigrateComponent,
+        MockCompleteComponent,
         RouterTestingModule.withRoutes([
           {
             path: 'step',
@@ -89,12 +113,8 @@ describe('Feature: StepHeader Integration with Real Routes (BDD-Style)', () => {
         ]),
         NoopAnimationsModule
       ],
-      declarations: [
-        MockUploadComponent,
-        MockAuthComponent,
-        MockConfigComponent,
-        MockMigrateComponent,
-        MockCompleteComponent
+      providers: [
+        { provide: LOGGER, useValue: mockLogger }
       ]
     }).compileComponents();
 
@@ -190,11 +210,11 @@ describe('Feature: StepHeader Integration with Real Routes (BDD-Style)', () => {
         expect(stepData.data?.description).toBeTruthy();
         
         // And: Should have navigation data (except complete step)
-        if (stepName !== 'complete') {
-          expect(stepData.data?.next).toBeTruthy();
+        if (stepName !== 'complete' && stepData.data && 'next' in stepData.data) {
+          expect(stepData.data.next).toBeTruthy();
         }
-        if (stepName !== 'upload') {
-          expect(stepData.data?.previous).toBeTruthy();
+        if (stepName !== 'upload' && stepData.data && 'previous' in stepData.data) {
+          expect(stepData.data.previous).toBeTruthy();
         }
       });
     });
@@ -215,12 +235,12 @@ describe('Feature: StepHeader Integration with Real Routes (BDD-Style)', () => {
         // Then: Navigation links should match expected sequence
         console.log(`✅ BDD: Verifying ${currentStep} step navigation links`);
         
-        if (i > 0) {
-          expect(stepData.data?.previous).toBe(expectedSequence[i - 1]);
+        if (i > 0 && stepData.data && 'previous' in stepData.data) {
+          expect(stepData.data.previous).toBe(expectedSequence[i - 1]);
         }
         
-        if (i < expectedSequence.length - 1) {
-          expect(stepData.data?.next).toBe(expectedSequence[i + 1]);
+        if (i < expectedSequence.length - 1 && stepData.data && 'next' in stepData.data) {
+          expect(stepData.data.next).toBe(expectedSequence[i + 1]);
         }
       }
     });
@@ -261,26 +281,24 @@ describe('Feature: StepHeader Integration with Real Routes (BDD-Style)', () => {
  * Edge Case Integration Tests with Real Router
  */
 describe('Feature: StepHeader Edge Cases with Router Integration', () => {
-  let component: StepHeader;
-  let fixture: ComponentFixture<StepHeader>;
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [StepHeader, RouterTestingModule, NoopAnimationsModule]
-    }).compileComponents();
-
-    fixture = TestBed.createComponent(StepHeader);
-    component = fixture.componentInstance;
-  });
-
   describe('Scenario: Handle malformed route data gracefully', () => {
     Object.entries(EDGE_CASE_TEST_DATA).forEach(([caseName, caseData]) => {
-      it(`Given ${caseName} route data, When component renders, Then should handle gracefully without errors`, () => {
+      it(`Given ${caseName} route data, When component renders, Then should handle gracefully without errors`, async () => {
         // Given: Edge case route data
         console.log(`🔧 BDD: Setting up ${caseName} edge case scenario`);
         
         const mockRoute = createMockActivatedRoute(caseData);
-        TestBed.overrideProvider(ActivatedRoute, { useValue: mockRoute });
+        
+        // Configure TestBed with the mock route
+        await TestBed.configureTestingModule({
+          imports: [StepHeader, RouterTestingModule, NoopAnimationsModule],
+          providers: [
+            { provide: ActivatedRoute, useValue: mockRoute }
+          ]
+        }).compileComponents();
+
+        const fixture = TestBed.createComponent(StepHeader);
+        const component = fixture.componentInstance;
         
         // When: Component renders with edge case data
         console.log(`⚙️ BDD: Component renders with ${caseName} data`);
@@ -301,7 +319,7 @@ describe('Feature: StepHeader Edge Cases with Router Integration', () => {
         
         // Content should be empty string for null/undefined cases
         const expectedTitle = caseData.title || '';
-        const expectedDescription = caseData.data?.description || '';
+        const expectedDescription = (caseData.data && 'description' in caseData.data) ? caseData.data.description || '' : '';
         
         expect(titleElement.nativeElement.textContent.trim()).toBe(expectedTitle);
         expect(descriptionElement.nativeElement.textContent.trim()).toBe(expectedDescription);
@@ -315,8 +333,11 @@ describe('Feature: StepHeader Edge Cases with Router Integration', () => {
  */
 describe('Feature: StepHeader Accessibility and Semantics', () => {
   let fixture: ComponentFixture<StepLayout>;
+  let mockLogger: jasmine.SpyObj<any>;
 
   beforeEach(async () => {
+    mockLogger = jasmine.createSpyObj('Logger', ['log', 'error', 'warn', 'info']);
+    
     await TestBed.configureTestingModule({
       imports: [
         StepLayout,
@@ -331,6 +352,9 @@ describe('Feature: StepHeader Accessibility and Semantics', () => {
           }
         ]),
         NoopAnimationsModule
+      ],
+      providers: [
+        { provide: LOGGER, useValue: mockLogger }
       ]
     }).compileComponents();
 

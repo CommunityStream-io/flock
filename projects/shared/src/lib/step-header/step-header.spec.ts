@@ -148,7 +148,11 @@ describe('StepHeader Component Unit Tests', () => {
         firstChild: null
       });
 
-      mockActivatedRoute.firstChild = childRoute;
+      Object.defineProperty(mockActivatedRoute, 'firstChild', {
+        value: childRoute,
+        writable: true,
+        configurable: true
+      });
       mockActivatedRoute.snapshot = {
         title: 'Parent Title',
         data: { description: 'Parent Description' }
@@ -183,7 +187,11 @@ describe('StepHeader Component Unit Tests', () => {
         firstChild: deepestChild
       });
 
-      mockActivatedRoute.firstChild = middleChild;
+      Object.defineProperty(mockActivatedRoute, 'firstChild', {
+        value: middleChild,
+        writable: true,
+        configurable: true
+      });
 
       component.ngOnInit();
       fixture.detectChanges();

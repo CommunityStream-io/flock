@@ -203,7 +203,11 @@ describe('Feature: Dynamic Step Header Display (BDD-Style)', () => {
         firstChild: null
       });
 
-      mockActivatedRoute.firstChild = childRoute;
+      Object.defineProperty(mockActivatedRoute, 'firstChild', {
+        value: childRoute,
+        writable: true,
+        configurable: true
+      });
       mockActivatedRoute.snapshot = {
         title: 'Parent Route Title',
         data: { description: 'Parent Route Description' }
@@ -242,7 +246,11 @@ describe('Feature: Dynamic Step Header Display (BDD-Style)', () => {
         firstChild: deepestChild
       });
 
-      mockActivatedRoute.firstChild = middleChild;
+      Object.defineProperty(mockActivatedRoute, 'firstChild', {
+        value: middleChild,
+        writable: true,
+        configurable: true
+      });
       mockActivatedRoute.snapshot = {
         title: 'Root Title',
         data: { description: 'Root Description' }

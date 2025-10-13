@@ -12,6 +12,7 @@ import { StepNavigationComponent } from '../step-navigation/step-navigation';
 
 // Mock components for testing
 @Component({
+  standalone: true,
   selector: 'mock-step-component',
   template: '<div class="mock-step-content">Mock Step Content</div>'
 })
@@ -50,12 +51,12 @@ describe('Feature: Step Layout Integration with Header (BDD-Style)', () => {
         StepLayout, 
         StepHeader, 
         StepNavigationComponent,
+        MockStepComponent,
         RouterTestingModule.withRoutes([
           { path: 'test', component: MockStepComponent }
         ]),
         NoopAnimationsModule
       ],
-      declarations: [MockStepComponent],
       providers: [
         { provide: ActivatedRoute, useValue: activatedRouteSpy },
         { provide: Router, useValue: routerSpy }
@@ -115,11 +116,11 @@ describe('Feature: Step Layout Integration with Header (BDD-Style)', () => {
       
       // Verify header comes before router outlet in DOM order
       const contentChildren = contentArea.nativeElement.children;
-      const headerIndex = Array.from(contentChildren).findIndex(child => 
-        child.tagName.toLowerCase() === 'shared-step-header'
+      const headerIndex = Array.from(contentChildren).findIndex((child: unknown) => 
+        (child as HTMLElement).tagName.toLowerCase() === 'shared-step-header'
       );
-      const outletIndex = Array.from(contentChildren).findIndex(child => 
-        child.tagName.toLowerCase() === 'router-outlet'
+      const outletIndex = Array.from(contentChildren).findIndex((child: unknown) => 
+        (child as HTMLElement).tagName.toLowerCase() === 'router-outlet'
       );
       
       expect(headerIndex).toBeLessThan(outletIndex);
