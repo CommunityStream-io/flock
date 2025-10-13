@@ -1,4 +1,4 @@
-import { Injectable, Type, inject, DOCUMENT } from '@angular/core';
+import { Injectable, Type, inject } from '@angular/core';
 import { Loading, Logger } from './interfaces';
 import { BehaviorSubject } from 'rxjs';
 import { LOGGER } from '.';
@@ -8,7 +8,6 @@ import { LOGGER } from '.';
 })
 export class SplashScreenLoading implements Loading {
   private logger = inject<Logger>(LOGGER);
-  private document = inject(DOCUMENT);
   
   isLoading = new BehaviorSubject<boolean>(false);
   private defaultMessage = '*flap* *flap* *flap*';
@@ -19,8 +18,6 @@ export class SplashScreenLoading implements Loading {
     this.log('show() called with message:', message);
     this.message.next(message);
     this.isLoading.next(true);
-    // Prevent scrolling when splash screen is active
-    this.document.body.style.overflow = 'hidden';
   }
 
   hide() {
@@ -28,8 +25,6 @@ export class SplashScreenLoading implements Loading {
     this.isLoading.next(false);
     this.message.next(this.defaultMessage);
     this.component.next(null);
-    // Restore scrolling when splash screen is hidden
-    this.document.body.style.overflow = '';
   }
 
   setComponent(component: Type<unknown> | null): void {
