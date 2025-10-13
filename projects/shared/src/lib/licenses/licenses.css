@@ -5,132 +5,230 @@
   padding: 40px 20px;
 }
 
-.licenses-card {
-  margin: 0 auto;
-  max-width: 900px;
-}
-
-.licenses-card .mat-mdc-card-header {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+/* Page Header */
+.page-header {
   text-align: center;
-  padding: 32px 24px 16px 24px;
-  overflow: visible;
+  margin-bottom: 48px;
 }
 
-.licenses-card .mat-mdc-card-title {
-  overflow: visible;
-}
-
-.icon-large {
-  font-size: 48px;
-  width: auto;
-  height: auto;
-  margin-bottom: 16px;
-  color: var(--mat-sys-primary);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.attribution-section {
-  padding: 32px 0;
-}
-
-.butterfly-showcase {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 24px;
-  padding: 32px;
-  background: var(--mat-sys-surface-container-lowest);
-  border-radius: 16px;
-  min-height: 200px;
-}
-
-.attribution-section h3 {
+.page-title {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 16px;
-  font-family: var(--mat-sys-typescale-headline-small-font-family);
-  font-size: var(--mat-sys-typescale-headline-small-font-size);
-  font-weight: var(--mat-sys-typescale-headline-small-font-weight);
+  justify-content: center;
+  gap: 16px;
+  font-family: var(--mat-sys-typescale-display-small-font-family);
+  font-size: var(--mat-sys-typescale-display-small-font-size);
+  font-weight: var(--mat-sys-typescale-display-small-font-weight);
   color: var(--mat-sys-on-surface);
+  margin: 0 0 16px 0;
 }
 
-.attribution-section p {
-  margin-bottom: 20px;
-  font-family: var(--mat-sys-typescale-body-large-font-family);
-  font-size: var(--mat-sys-typescale-body-large-font-size);
-  line-height: 1.6;
+.title-icon {
+  font-size: 40px;
+  width: 40px;
+  height: 40px;
+  color: var(--mat-sys-primary);
+}
+
+.page-subtitle {
+  font-family: var(--mat-sys-typescale-title-medium-font-family);
+  font-size: var(--mat-sys-typescale-title-medium-font-size);
   color: var(--mat-sys-on-surface-variant);
+  margin: 0;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.attribution-links {
+/* Flexbox Layout */
+.attributions-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
-  margin-top: 16px;
+  justify-content: center;
+  gap: 24px;
+  max-width: 1200px;
+  margin: 0 auto 48px;
 }
 
-.attribution-links a {
+.attributions-grid > * {
+  flex: 1 1 300px;
+  max-width: 500px;
+  min-width: 300px;
+}
+
+/* Attribution Cards */
+.attribution-card {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  height: 100%;
+}
+
+.attribution-card .mat-mdc-card-header {
+  padding: 24px 24px 16px;
+}
+
+.attribution-card .mat-mdc-card-content {
+  flex: 1;
+  padding: 0 24px 16px;
+}
+
+.attribution-card .mat-mdc-card-content p {
+  font-family: var(--mat-sys-typescale-body-medium-font-family);
+  font-size: var(--mat-sys-typescale-body-medium-font-size);
+  line-height: 1.6;
+  color: var(--mat-sys-on-surface-variant);
+  margin: 0;
+}
+
+.attribution-card .mat-mdc-card-actions {
+  padding: 8px 16px 16px;
+  display: flex;
+  flex-wrap: wrap;
   gap: 8px;
 }
 
-.kofi-container {
-  margin: 24px 0;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: var(--mat-sys-elevation-level2);
+/* Avatar Styles */
+.card-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+  position: relative;
 }
 
-.support-section {
-  background: var(--mat-sys-surface-container-low);
-  padding: 32px 24px;
-  border-radius: 12px;
-  margin: 16px 0;
+.butterfly-avatar {
+  background: var(--mat-sys-primary-container);
+  transform: scale(0.6);
+  overflow: visible;
 }
 
-.back-to-home {
-  margin-top: 32px;
-  padding-top: 24px;
+.marco-avatar {
+  background: var(--mat-sys-secondary-container);
+  color: var(--mat-sys-on-secondary-container);
 }
 
-.back-to-home button {
+.marco-avatar mat-icon {
+  font-size: 32px;
+  width: 32px;
+  height: 32px;
+}
+
+.license-avatar {
+  background: var(--mat-sys-tertiary-container);
+  color: var(--mat-sys-on-tertiary-container);
+}
+
+.license-avatar mat-icon {
+  font-size: 32px;
+  width: 32px;
+  height: 32px;
+}
+
+.support-avatar {
+  background: linear-gradient(135deg, var(--mat-sys-primary), var(--mat-sys-tertiary));
+  color: var(--mat-sys-on-primary);
+}
+
+.support-avatar mat-icon {
+  font-size: 32px;
+  width: 32px;
+  height: 32px;
+}
+
+/* Support Card Specific - No special styling needed, flexbox handles centering */
+
+.support-buttons {
+  margin-top: 16px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.kofi-button {
   display: inline-flex;
   align-items: center;
   gap: 8px;
 }
 
-mat-divider {
-  margin: 32px 0;
+/* Page Footer */
+.page-footer {
+  text-align: center;
+  margin-top: 32px;
+}
+
+.page-footer button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
 
 /* Responsive adjustments */
+@media (max-width: 960px) {
+  .attributions-grid {
+    gap: 20px;
+  }
+  
+  .attributions-grid > * {
+    flex: 1 1 280px;
+    min-width: 280px;
+  }
+}
+
 @media (max-width: 768px) {
   .licenses-page {
-    padding: 20px 12px;
+    padding: 24px 16px;
   }
 
-  .attribution-section {
-    padding: 24px 0;
+  .page-header {
+    margin-bottom: 32px;
   }
 
-  .attribution-links {
+  .page-title {
+    font-size: var(--mat-sys-typescale-headline-large-font-size);
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .attributions-grid {
+    gap: 16px;
+  }
+  
+  .attributions-grid > * {
+    flex: 1 1 100%;
+    min-width: unset;
+  }
+
+  .attribution-card .mat-mdc-card-actions {
     flex-direction: column;
   }
 
-  .attribution-links a {
+  .attribution-card .mat-mdc-card-actions a {
     width: 100%;
     justify-content: center;
   }
 
-  .kofi-container iframe {
-    height: 600px;
+  .support-buttons {
+    flex-direction: column;
+  }
+
+  .support-buttons a {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-title {
+    font-size: var(--mat-sys-typescale-headline-medium-font-size);
+  }
+
+  .title-icon {
+    font-size: 32px;
+    width: 32px;
+    height: 32px;
   }
 }
 
