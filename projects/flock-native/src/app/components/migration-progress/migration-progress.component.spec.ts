@@ -51,12 +51,7 @@ describe('MigrationProgressComponent', () => {
   });
 
   it('should have Font Awesome icons defined', () => {
-    expect(component.faHourglass).toBeDefined();
-    expect(component.faRocket).toBeDefined();
-    expect(component.faCheckCircle).toBeDefined();
-    expect(component.faExclamationTriangle).toBeDefined();
     expect(component.faWarning).toBeDefined();
-    expect(component.faFeather).toBeDefined();
   });
 
   it('should log initialization on ngOnInit', () => {
@@ -65,6 +60,39 @@ describe('MigrationProgressComponent', () => {
     expect(mockLogger.log).toHaveBeenCalledWith(jasmine.stringContaining('[MigrationProgressComponent] ========== ngOnInit called =========='));
     expect(mockLogger.log).toHaveBeenCalledWith(jasmine.stringContaining('[MigrationProgressComponent] Component is being initialized'));
     expect(mockSplashLoading.show).toHaveBeenCalledWith(jasmine.stringContaining('Starting your Instagram to Bluesky migration'));
+  });
+
+  describe('ANSI Code Stripping', () => {
+    it('should strip ANSI color codes from output', () => {
+      const inputWithAnsi = 'Test message\x1B[39m with colors\x1B[0m';
+      const result = (component as any).stripAnsiCodes(inputWithAnsi);
+      
+      expect(result).toBe('Test message with colors');
+      expect(result).not.toContain('\x1B');
+    });
+
+    it('should handle multiple ANSI codes', () => {
+      const inputWithAnsi = '\x1B[31mRed\x1B[0m \x1B[32mGreen\x1B[0m \x1B[34mBlue\x1B[39m';
+      const result = (component as any).stripAnsiCodes(inputWithAnsi);
+      
+      expect(result).toBe('Red Green Blue');
+    });
+
+    it('should handle text without ANSI codes', () => {
+      const plainText = 'Plain text without codes';
+      const result = (component as any).stripAnsiCodes(plainText);
+      
+      expect(result).toBe(plainText);
+    });
+
+    it('should strip ANSI codes from URLs', () => {
+      const urlWithAnsi = 'https://bsky.app/profile/user.bsky.social/post/abc123\x1B[39m';
+      const result = (component as any).stripAnsiCodes(urlWithAnsi);
+      
+      expect(result).toBe('https://bsky.app/profile/user.bsky.social/post/abc123');
+      expect(result).toMatch(/^https:\/\//);
+      expect(result).not.toContain('\x1B');
+    });
   });
 
   describe('CLI Output Handling', () => {
@@ -122,6 +150,21 @@ describe('MigrationProgressComponent', () => {
 
       expect(component.postsCreated()).toBe(1);
       expect(component.lastPostUrl()).toBe('https://bsky.app/profile/user.bsky.social/post/abc123');
+    });
+
+    it('should strip ANSI codes from URLs in CLI output', () => {
+      const outputData: CLIOutputData = {
+        processId: 'test-123',
+        type: 'stdout',
+        data: 'Bluesky post created with url: https://bsky.app/profile/user.bsky.social/post/3m32h3rccbp2y\x1B[39m'
+      };
+
+      outputSubject.next(outputData);
+
+      expect(component.postsCreated()).toBe(1);
+      expect(component.lastPostUrl()).toBe('https://bsky.app/profile/user.bsky.social/post/3m32h3rccbp2y');
+      expect(component.lastPostUrl()).not.toContain('\x1B');
+      expect(component.lastPostUrl()).not.toContain('[39m');
     });
 
     it('should increment posts created counter', () => {
@@ -435,6 +478,88 @@ describe('MigrationProgressComponent', () => {
       ]);
 
       expect(component.warningCount()).toBe(2);
+    });
+
+    it('should detect rate limit errors', () => {
+      const outputData: CLIOutputData = {
+        processId: 'test-123',
+        type: 'stdout',
+        data: 'Failed to upload media: Rate Limit Exceeded'
+      };
+
+      outputSubject.next(outputData);
+
+      expect(component.warnings().length).toBe(1);
+      expect(component.warnings()[0].type).toBe('rate_limit');
+      expect(component.warnings()[0].message).toContain('Rate limit exceeded');
+      expect(mockSplashLoading.show).toHaveBeenCalledWith(jasmine.stringContaining('Rate limited'));
+    });
+
+    it('should extract error reason from upload failure and use it in warning', () => {
+      // First, the error with reason
+      const errorData: CLIOutputData = {
+        processId: 'test-123',
+        type: 'stdout',
+        data: 'Failed to upload media: fetch failed'
+      };
+      outputSubject.next(errorData);
+
+      // Then, the "no media uploaded" warning
+      const warningData: CLIOutputData = {
+        processId: 'test-123',
+        type: 'stdout',
+        data: 'No media uploaded! Check Error logs'
+      };
+      outputSubject.next(warningData);
+
+      expect(component.warnings().length).toBe(1);
+      expect(component.warnings()[0].type).toBe('upload_failure');
+      expect(component.warnings()[0].message).toBe('Media upload failed: fetch failed');
+      expect(component.warnings()[0].details).toBe('Post was created without the image attachment');
+    });
+
+    it('should handle no media uploaded with unknown error when reason not captured', () => {
+      const outputData: CLIOutputData = {
+        processId: 'test-123',
+        type: 'stdout',
+        data: 'No media uploaded! Check Error logs'
+      };
+
+      outputSubject.next(outputData);
+
+      expect(component.warnings().length).toBe(1);
+      expect(component.warnings()[0].type).toBe('upload_failure');
+      expect(component.warnings()[0].message).toBe('Media upload failed: Unknown error');
+    });
+
+    it('should handle multiple upload errors with different reasons', () => {
+      // First error
+      outputSubject.next({
+        processId: 'test-123',
+        type: 'stdout',
+        data: 'Failed to upload media: fetch failed'
+      });
+      outputSubject.next({
+        processId: 'test-123',
+        type: 'stdout',
+        data: 'No media uploaded! Check Error logs'
+      });
+
+      // Second error
+      outputSubject.next({
+        processId: 'test-123',
+        type: 'stdout',
+        data: 'Failed to upload media: network timeout'
+      });
+      outputSubject.next({
+        processId: 'test-123',
+        type: 'stdout',
+        data: 'No media uploaded! Check Error logs'
+      });
+
+      expect(component.warnings().length).toBe(2);
+      expect(component.warnings()[0].message).toBe('Media upload failed: fetch failed');
+      expect(component.warnings()[1].message).toBe('Media upload failed: network timeout');
     });
   });
 
