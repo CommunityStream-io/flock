@@ -1,12 +1,21 @@
 import { TestBed } from '@angular/core/testing';
 
 import { SplashScreenLoading } from './splash-screen-loading';
+import { LOGGER } from '.';
+
 
 describe('SplashScreenLoading', () => {
   let service: SplashScreenLoading;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      providers: [
+        {
+          provide: LOGGER,
+          useValue: jasmine.createSpyObj('Logger', ['log', 'error', 'warn', 'workflow'])
+        }
+      ]
+    });
     service = TestBed.inject(SplashScreenLoading);
   });
 
@@ -120,7 +129,120 @@ describe('SplashScreenLoading', () => {
     });
   });
 
+  describe('setComponent() method', () => {
+    class TestComponent {}
+    class ExtractionProgressComponent {}
+    class MigrationProgressComponent {}
+
+    it('should set component to provided value', () => {
+      service.setComponent(TestComponent);
+      
+      expect(service.component.value).toBe(TestComponent);
+    });
+
+    it('should set component to null', () => {
+      service.setComponent(TestComponent);
+      expect(service.component.value).toBe(TestComponent);
+      
+      service.setComponent(null);
+      expect(service.component.value).toBeNull();
+    });
+
+    it('should update component value when called multiple times', () => {
+      service.setComponent(TestComponent);
+      expect(service.component.value).toBe(TestComponent);
+      
+      service.setComponent(ExtractionProgressComponent);
+      expect(service.component.value).toBe(ExtractionProgressComponent);
+      
+      service.setComponent(MigrationProgressComponent);
+      expect(service.component.value).toBe(MigrationProgressComponent);
+    });
+
+    it('should emit new value to component BehaviorSubject', (done) => {
+      let emissionCount = 0;
+      const expectedValues = [null, TestComponent];
+      
+      service.component.subscribe(value => {
+        expect(value).toBe(expectedValues[emissionCount]);
+        emissionCount++;
+        
+        if (emissionCount === expectedValues.length) {
+          done();
+        }
+      });
+      
+      service.setComponent(TestComponent);
+    });
+
+    it('should handle setting same component multiple times', () => {
+      service.setComponent(TestComponent);
+      service.setComponent(TestComponent);
+      service.setComponent(TestComponent);
+      
+      expect(service.component.value).toBe(TestComponent);
+    });
+
+    it('should handle setting null multiple times', () => {
+      service.setComponent(null);
+      service.setComponent(null);
+      
+      expect(service.component.value).toBeNull();
+    });
+  });
+
+  describe('component BehaviorSubject', () => {
+    it('should initialize with null', () => {
+      expect(service.component.value).toBeNull();
+    });
+
+    it('should be observable', (done) => {
+      service.component.subscribe(value => {
+        expect(value).toBeNull();
+        done();
+      });
+    });
+  });
+
+  describe('hide() component reset', () => {
+    class TestComponent {}
+
+    it('should reset component to null when hiding', () => {
+      service.setComponent(TestComponent);
+      expect(service.component.value).toBe(TestComponent);
+      
+      service.hide();
+      
+      expect(service.component.value).toBeNull();
+    });
+
+    it('should reset component even if already null', () => {
+      expect(service.component.value).toBeNull();
+      
+      service.hide();
+      
+      expect(service.component.value).toBeNull();
+    });
+
+    it('should reset component along with other properties', () => {
+      service.show('Test message');
+      service.setComponent(TestComponent);
+      
+      expect(service.isLoading.value).toBe(true);
+      expect(service.message.value).toBe('Test message');
+      expect(service.component.value).toBe(TestComponent);
+      
+      service.hide();
+      
+      expect(service.isLoading.value).toBe(false);
+      expect(service.message.value).toBe('*flap* *flap* *flap*');
+      expect(service.component.value).toBeNull();
+    });
+  });
+
   describe('Integration Scenarios', () => {
+    class TestComponent {}
+
     it('should handle complete show/hide cycle', () => {
       // Initial state
       expect(service.isLoading.value).toBe(false);
@@ -166,6 +288,33 @@ describe('SplashScreenLoading', () => {
       
       expect(service.isLoading.value).toBe(false);
       expect(service.message.value).toBe('*flap* *flap* *flap*');
+    });
+
+    it('should handle show/hide with component lifecycle', () => {
+      // Show loading
+      service.show('Loading data...');
+      expect(service.isLoading.value).toBe(true);
+      
+      // Set component
+      service.setComponent(TestComponent);
+      expect(service.component.value).toBe(TestComponent);
+      
+      // Hide should reset everything
+      service.hide();
+      expect(service.isLoading.value).toBe(false);
+      expect(service.message.value).toBe('*flap* *flap* *flap*');
+      expect(service.component.value).toBeNull();
+    });
+
+    it('should handle component changes without affecting loading state', () => {
+      service.show('Processing...');
+      expect(service.isLoading.value).toBe(true);
+      
+      service.setComponent(TestComponent);
+      expect(service.isLoading.value).toBe(true); // Still loading
+      
+      service.setComponent(null);
+      expect(service.isLoading.value).toBe(true); // Still loading
     });
   });
 });

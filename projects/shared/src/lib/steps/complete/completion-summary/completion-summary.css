@@ -1,0 +1,43 @@
+.completion-summary {
+    padding: 2rem;
+    border-radius: var(--mat-border-radius-medium, 8px);
+    background-color: var(--mat-sys-surface-container, var(--mat-app-surface-container));
+    border: 1px solid var(--mat-sys-outline-variant, var(--mat-app-outline-variant));
+}
+
+.completion-summary h3 {
+    color: var(--mat-sys-on-surface, var(--mat-app-on-surface));
+    margin-top: 0;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+    font-weight: 500;
+}
+
+.completion-summary ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.completion-summary li {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--mat-sys-outline-variant, var(--mat-app-outline-variant));
+    color: var(--mat-sys-on-surface, var(--mat-app-on-surface));
+}
+
+.completion-summary li:last-child {
+    border-bottom: none;
+}
+
+.completion-summary strong {
+    color: var(--mat-sys-on-surface-variant, var(--mat-app-on-surface-variant));
+    font-weight: 500;
+    margin-right: 0.5rem;
+}
+
+.error-message {
+    color: var(--mat-sys-error, var(--mat-app-error));
+    font-weight: 500;
+    margin: 0.5rem 0;
+}
+

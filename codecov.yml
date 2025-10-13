@@ -16,6 +16,10 @@ flags:
     paths:
       - projects/shared/src/
     carryforward: true
+  nativetests:
+    paths:
+      - projects/flock-native/src/
+    carryforward: true
   e2etests:
     paths:
       - projects/flock-mirage/src/

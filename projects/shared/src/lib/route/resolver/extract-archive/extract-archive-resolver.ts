@@ -9,24 +9,34 @@ export const extractArchiveResolver: ResolveFn<Observable<boolean>> = () => {
   const splashScreenLoading = inject(SplashScreenLoading);
   const snackBar = inject(MatSnackBar);
   
+  logger.log('[ExtractArchiveResolver] Resolver called');
+  
   // Check if there's an archive to extract first
   const fileService = inject<FileService>(FILE_PROCESSOR);
   
-  splashScreenLoading.show('Extracting Instagram Archive');
+  // NOTE: Don't show splash screen here - let the file processor handle it
+  // This ensures the component is set BEFORE the splash is shown
+  logger.log('[ExtractArchiveResolver] Calling extractArchive()');
   
   return from(fileService.extractArchive()).pipe(
     tap((result) => {
       if (result) {
-        logger.log('Archive extracted successfully');
+        logger.log('[ExtractArchiveResolver] Archive extracted successfully');
+      } else {
+        logger.log('[ExtractArchiveResolver] Archive extraction returned false');
       }
     }),
     catchError((error) => {
-      logger.error('Error extracting archive');
+      logger.error('[ExtractArchiveResolver] Error extracting archive:', error);
       snackBar.open('Error extracting archive', 'Close', { duration: 3000 });
       return of(false); // Return false to indicate failure
     }),
     finalize(() => {
+      // Reset component and hide splash screen (similar to migration resolver pattern)
+      logger.log('[ExtractArchiveResolver] Finalize: resetting component and hiding splash');
+      splashScreenLoading.setComponent(null);
       splashScreenLoading.hide();
+      logger.log('[ExtractArchiveResolver] Finalize complete');
     })
   );
 };

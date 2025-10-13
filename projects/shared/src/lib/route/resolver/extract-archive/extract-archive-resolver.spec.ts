@@ -18,7 +18,7 @@ describe('Feature: Archive Extraction Resolution', () => {
     mockFileService = jasmine.createSpyObj<FileService>('FileService', ['extractArchive']);
     mockSnackBar = jasmine.createSpyObj<MatSnackBar>('MatSnackBar', ['open']);
     mockLogger = jasmine.createSpyObj<Logger>('Logger', ['log', 'error', 'warn', 'workflow', 'instrument']);
-    mockSplashScreenLoading = jasmine.createSpyObj<SplashScreenLoading>('SplashScreenLoading', ['show', 'hide']);
+    mockSplashScreenLoading = jasmine.createSpyObj<SplashScreenLoading>('SplashScreenLoading', ['show', 'hide', 'setComponent']);
 
     TestBed.configureTestingModule({
       providers: [
@@ -49,9 +49,9 @@ describe('Feature: Archive Extraction Resolution', () => {
       expect(result).toBe(true);
       expect(mockFileService.extractArchive).toHaveBeenCalled();
       expect(mockSnackBar.open).not.toHaveBeenCalled();
-      expect(mockSplashScreenLoading.show).toHaveBeenCalledWith('Extracting Instagram Archive');
+      expect(mockSplashScreenLoading.setComponent).toHaveBeenCalledWith(null);
       expect(mockSplashScreenLoading.hide).toHaveBeenCalled();
-      expect(mockLogger.log).toHaveBeenCalledWith('Archive extracted successfully');
+      expect(mockLogger.log).toHaveBeenCalledWith('[ExtractArchiveResolver] Resolver called');
     });
   });
 
@@ -75,7 +75,7 @@ describe('Feature: Archive Extraction Resolution', () => {
         'Close',
         { duration: 3000 }
       );
-      expect(mockLogger.error).toHaveBeenCalledWith('Error extracting archive');
+      expect(mockSplashScreenLoading.setComponent).toHaveBeenCalledWith(null);
       expect(mockSplashScreenLoading.hide).toHaveBeenCalled();
     });
 
@@ -97,7 +97,7 @@ describe('Feature: Archive Extraction Resolution', () => {
         'Close',
         { duration: 3000 }
       );
-      expect(mockLogger.error).toHaveBeenCalledWith('Error extracting archive');
+      expect(mockSplashScreenLoading.setComponent).toHaveBeenCalledWith(null);
       expect(mockSplashScreenLoading.hide).toHaveBeenCalled();
     });
   });

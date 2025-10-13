@@ -1,0 +1,41 @@
+<div class="native-file-upload-control">
+  <!-- Upload button -->
+  @if (!value) {
+  <button
+    mat-raised-button
+    color="primary"
+    [disabled]="disabled || isSelecting"
+    (click)="openFileDialog()"
+    type="button"
+  >
+    @if (isSelecting) {
+      <ng-container>
+        <mat-icon>hourglass_empty</mat-icon> Selecting...
+      </ng-container>
+    } @else {
+      <ng-container>
+        <mat-icon>upload</mat-icon> Choose Files
+      </ng-container>
+    }
+  </button>
+  }
+  
+  <!-- Selected file display -->
+  @if (value) {
+  <div class="file-list">
+    <h3>Selected Files:</h3>
+    <div class="file-selected">
+      {{ value.name }}
+      <button
+        mat-icon-button
+        [disabled]="disabled"
+        (click)="removeFile()"
+        type="button"
+      >
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
+  </div>
+  }
+</div>
+
