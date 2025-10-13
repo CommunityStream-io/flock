@@ -32,6 +32,36 @@
   flex-wrap: wrap;
 }
 
+/* Help hint in step cards */
+.help-hint {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  font-family: var(--mat-sys-typescale-body-small-font-family);
+  font-size: var(--mat-sys-typescale-body-small-font-size);
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.help-hint mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  color: var(--mat-sys-tertiary);
+}
+
+.help-hint a {
+  color: var(--mat-sys-primary);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.help-hint a:hover {
+  color: var(--mat-sys-tertiary);
+  text-decoration: underline;
+}
+
 .step-number {
   position: absolute;
   top: -30px;

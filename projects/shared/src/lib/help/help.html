@@ -1,0 +1,292 @@
+<div class="help-page full-height">
+  <section class="section-padding">
+    <div class="page-header">
+      <h1 class="page-title">
+        <mat-icon class="title-icon">help_center</mat-icon>
+        Getting Started Guide
+      </h1>
+      <p class="page-subtitle">
+        Everything you need to know to migrate from Instagram to Bluesky
+      </p>
+    </div>
+
+    <div class="help-container">
+      <!-- Video Tutorial Section -->
+      <mat-card class="help-section-card video-card">
+        <mat-card-header>
+          <mat-icon class="section-icon">play_circle</mat-icon>
+          <mat-card-title>Video Tutorial</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p class="section-intro">
+            Watch this step-by-step video guide to see the entire process in action.
+            Perfect for visual learners!
+          </p>
+          <div class="video-container">
+            <video controls class="tutorial-video">
+              <source src="/media/Flock Insta Export Archive.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Instagram Export Instructions -->
+      <mat-card class="help-section-card">
+        <mat-card-header>
+          <mat-icon class="section-icon">download</mat-icon>
+          <mat-card-title>Step 1: Request Your Instagram Data</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p class="section-intro">
+            First, you'll need to download your Instagram data. Don't worry - it's easier than it sounds!
+          </p>
+          
+          <div class="instructions-list">
+            <div class="instruction-step">
+              <div class="step-badge">1</div>
+              <div class="step-content">
+                <h3>Visit Instagram's Download Page</h3>
+                <p>Click the button below or go to Instagram's settings:</p>
+                <a 
+                  href="https://www.instagram.com/download/request" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  mat-raised-button
+                  color="primary"
+                  class="download-button"
+                >
+                  <mat-icon>open_in_new</mat-icon>
+                  Request Instagram Data
+                </a>
+              </div>
+            </div>
+
+            <div class="instruction-step">
+              <div class="step-badge">2</div>
+              <div class="step-content">
+                <h3>Select Your Data</h3>
+                <p>Choose "Download Your Information" and select:</p>
+                <ul>
+                  <li><strong>Date range:</strong> All time (or your preferred range)</li>
+                  <li><strong>Format:</strong> JSON</li>
+                  <li><strong>Media quality:</strong> High (recommended for best results)</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="instruction-step">
+              <div class="step-badge">3</div>
+              <div class="step-content">
+                <h3>Wait for the Email</h3>
+                <p>
+                  Instagram will process your request. This can take anywhere from a few minutes 
+                  to 48 hours depending on how much data you have. You'll receive an email when it's ready!
+                </p>
+              </div>
+            </div>
+
+            <div class="instruction-step">
+              <div class="step-badge">4</div>
+              <div class="step-content">
+                <h3>Download Your Archive</h3>
+                <p>
+                  When you receive the email from Instagram, click the download link. 
+                  Here's what the email will look like:
+                </p>
+                <div class="email-example">
+                  <img 
+                    src="/media/meta export email image.png" 
+                    alt="Example of Instagram export email"
+                    class="email-screenshot"
+                  />
+                </div>
+                <p class="note">
+                  <mat-icon>info</mat-icon>
+                  <span>Save the downloaded ZIP file somewhere you can easily find it - you'll need it in the next step!</span>
+                </p>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Bluesky App Password Section -->
+      <mat-card class="help-section-card security-card">
+        <mat-card-header>
+          <mat-icon class="section-icon">lock</mat-icon>
+          <mat-card-title>Step 2: Create a Bluesky App Password</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="security-highlight">
+            <mat-icon color="primary">verified_user</mat-icon>
+            <div>
+              <h3>Why use an App Password?</h3>
+              <p>
+                For your security, we strongly recommend using an App Password instead of your main 
+                Bluesky password. This way, if you ever want to revoke Flock's access, you can do so 
+                without changing your main password.
+              </p>
+            </div>
+          </div>
+
+          <div class="instructions-list">
+            <div class="instruction-step">
+              <div class="step-badge">1</div>
+              <div class="step-content">
+                <h3>Go to Bluesky Settings</h3>
+                <p>Log into your Bluesky account and navigate to Settings → App Passwords</p>
+              </div>
+            </div>
+
+            <div class="instruction-step">
+              <div class="step-badge">2</div>
+              <div class="step-content">
+                <h3>Create New App Password</h3>
+                <p>Click "Add App Password" and give it a name like "Flock Migration"</p>
+              </div>
+            </div>
+
+            <div class="instruction-step">
+              <div class="step-badge">3</div>
+              <div class="step-content">
+                <h3>Save Your Password</h3>
+                <p>
+                  Copy the generated password immediately - you won't be able to see it again! 
+                  You'll use this during the authentication step in Flock.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="best-practices">
+            <h3>Security Best Practices</h3>
+            <ul>
+              <li><mat-icon>check_circle</mat-icon> Never share your App Password with others</li>
+              <li><mat-icon>check_circle</mat-icon> Store it securely (password manager recommended)</li>
+              <li><mat-icon>check_circle</mat-icon> Revoke it after your migration is complete if you won't use Flock again</li>
+              <li><mat-icon>check_circle</mat-icon> Create separate App Passwords for different apps</li>
+            </ul>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Rate Limiting Information -->
+      <mat-card class="help-section-card">
+        <mat-card-header>
+          <mat-icon class="section-icon">speed</mat-icon>
+          <mat-card-title>Understanding Rate Limits</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p class="section-intro">
+            Bluesky has rate limits to ensure platform stability. Here's what you need to know:
+          </p>
+
+          <mat-expansion-panel class="info-panel">
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                <mat-icon>schedule</mat-icon>
+                What are rate limits?
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            <p>
+              Rate limits control how many posts you can create within a certain time period. 
+              This prevents spam and keeps the platform running smoothly for everyone.
+            </p>
+          </mat-expansion-panel>
+
+          <mat-expansion-panel class="info-panel">
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                <mat-icon>hourglass_empty</mat-icon>
+                How does this affect my migration?
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            <p>
+              If you have a large Instagram archive, Flock will automatically pace your uploads 
+              to stay within Bluesky's limits. This means your migration might take several hours 
+              or even days for very large archives.
+            </p>
+            <p>
+              <strong>Don't worry!</strong> Flock tracks your progress and can resume if interrupted. 
+              You can safely close the app and come back later.
+            </p>
+          </mat-expansion-panel>
+
+          <mat-expansion-panel class="info-panel">
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                <mat-icon>tips_and_updates</mat-icon>
+                Tips for a smooth migration
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            <ul>
+              <li>Start your migration when you have time to let it run</li>
+              <li>Keep your device awake and connected to power</li>
+              <li>Ensure stable internet connection</li>
+              <li>Consider migrating in smaller batches if you prefer</li>
+              <li>Be patient - good things take time!</li>
+            </ul>
+          </mat-expansion-panel>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Quick Reference Card -->
+      <mat-card class="help-section-card quick-ref-card">
+        <mat-card-header>
+          <mat-icon class="section-icon">rocket_launch</mat-icon>
+          <mat-card-title>Ready to Begin?</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="checklist">
+            <h3>Before you start, make sure you have:</h3>
+            <ul class="checklist-items">
+              <li>
+                <mat-icon>check_box_outline_blank</mat-icon>
+                Your Instagram data archive (ZIP file)
+              </li>
+              <li>
+                <mat-icon>check_box_outline_blank</mat-icon>
+                A Bluesky account
+              </li>
+              <li>
+                <mat-icon>check_box_outline_blank</mat-icon>
+                A Bluesky App Password created
+              </li>
+              <li>
+                <mat-icon>check_box_outline_blank</mat-icon>
+                Stable internet connection
+              </li>
+              <li>
+                <mat-icon>check_box_outline_blank</mat-icon>
+                Some time to let the migration run
+              </li>
+            </ul>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Navigation Footer -->
+    <div class="page-footer">
+      <button 
+        mat-stroked-button 
+        color="primary" 
+        routerLink="/home"
+      >
+        <mat-icon>home</mat-icon>
+        Back to Home
+      </button>
+      <button 
+        mat-raised-button 
+        color="accent" 
+        routerLink="/step/upload"
+        class="start-journey-button"
+      >
+        <mat-icon>flight_takeoff</mat-icon>
+        Start Your Journey
+      </button>
+    </div>
+  </section>
+</div>
+
