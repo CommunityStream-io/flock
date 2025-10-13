@@ -2,15 +2,16 @@ import { Component, inject, ViewEncapsulation } from '@angular/core';
 import { SplashScreenLoading, LOGGER, Logger } from '../services';
 import { AsyncPipe, NgComponentOutlet } from '@angular/common';
 import { tap } from 'rxjs';
+import { Butterfly } from '../butterfly/butterfly';
 
 /**
  * Butterfly splash screen
- * TODO ask for permission to use their work
+ * Uses the Butterfly component created by dazulu
  * @link https://codepen.io/dazulu/pen/aOzqvz
  */
 @Component({
   selector: 'shared-splash-screen',
-  imports: [AsyncPipe, NgComponentOutlet],
+  imports: [AsyncPipe, NgComponentOutlet, Butterfly],
   templateUrl: './splash-screen.html',
   styleUrl: './splash-screen.scss',
   host: { class: 'splash-screen' },

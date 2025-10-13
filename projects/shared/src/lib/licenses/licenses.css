@@ -16,18 +16,37 @@
   align-items: center;
   text-align: center;
   padding: 32px 24px 16px 24px;
+  overflow: visible;
+}
+
+.licenses-card .mat-mdc-card-title {
+  overflow: visible;
 }
 
 .icon-large {
   font-size: 48px;
-  width: 48px;
-  height: 48px;
+  width: auto;
+  height: auto;
   margin-bottom: 16px;
   color: var(--mat-sys-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .attribution-section {
   padding: 32px 0;
+}
+
+.butterfly-showcase {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 24px;
+  padding: 32px;
+  background: var(--mat-sys-surface-container-lowest);
+  border-radius: 16px;
+  min-height: 200px;
 }
 
 .attribution-section h3 {

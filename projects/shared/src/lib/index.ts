@@ -14,6 +14,7 @@ export * from './licenses/licenses';
 // =========== UI Components ==============
 export * from './theme-toggle/theme-toggle';
 export * from './router-splash/router-splash';
+export * from './butterfly/butterfly';
 
 // ====== Steps ======
 export * from './steps';
