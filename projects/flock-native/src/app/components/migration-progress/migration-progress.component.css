@@ -4,14 +4,12 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 3rem 2rem;
+  padding: 0 2rem;
   background: var(--mat-sys-surface-container);
   border-radius: var(--mat-sys-shape-corner-large, 24px);
   box-shadow: var(--mat-sys-elevation-3);
   max-width: 600px;
-  margin: 2rem auto;
   text-align: center;
-  min-height: 350px;
 }
 
 .content-wrapper {
@@ -134,7 +132,7 @@ mat-progress-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1rem 1.5rem;
+  padding: 0 1.5rem;
   background: transparent;
   border: none;
   cursor: pointer;
@@ -266,7 +264,7 @@ mat-progress-bar {
 /* Responsive adjustments */
 @media (max-width: 600px) {
   .migration-progress-container {
-    padding: 2rem 1.5rem;
+    padding: 0 1.5rem;
     margin: 1rem auto;
     min-height: 300px;
   }
