@@ -1,0 +1,117 @@
+/* Licenses Page Component */
+
+.licenses-page {
+  min-height: 100vh;
+  padding: 40px 20px;
+}
+
+.licenses-card {
+  margin: 0 auto;
+  max-width: 900px;
+}
+
+.licenses-card .mat-mdc-card-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 32px 24px 16px 24px;
+}
+
+.icon-large {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  margin-bottom: 16px;
+  color: var(--mat-sys-primary);
+}
+
+.attribution-section {
+  padding: 32px 0;
+}
+
+.attribution-section h3 {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  font-family: var(--mat-sys-typescale-headline-small-font-family);
+  font-size: var(--mat-sys-typescale-headline-small-font-size);
+  font-weight: var(--mat-sys-typescale-headline-small-font-weight);
+  color: var(--mat-sys-on-surface);
+}
+
+.attribution-section p {
+  margin-bottom: 20px;
+  font-family: var(--mat-sys-typescale-body-large-font-family);
+  font-size: var(--mat-sys-typescale-body-large-font-size);
+  line-height: 1.6;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.attribution-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.attribution-links a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.kofi-container {
+  margin: 24px 0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: var(--mat-sys-elevation-level2);
+}
+
+.support-section {
+  background: var(--mat-sys-surface-container-low);
+  padding: 32px 24px;
+  border-radius: 12px;
+  margin: 16px 0;
+}
+
+.back-to-home {
+  margin-top: 32px;
+  padding-top: 24px;
+}
+
+.back-to-home button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+mat-divider {
+  margin: 32px 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .licenses-page {
+    padding: 20px 12px;
+  }
+
+  .attribution-section {
+    padding: 24px 0;
+  }
+
+  .attribution-links {
+    flex-direction: column;
+  }
+
+  .attribution-links a {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .kofi-container iframe {
+    height: 600px;
+  }
+}
+
