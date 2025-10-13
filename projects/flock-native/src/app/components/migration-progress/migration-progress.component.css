@@ -261,6 +261,12 @@ mat-progress-bar {
   background: var(--mat-sys-outline);
 }
 
+/* Hide scrollbar corner */
+.warnings-list::-webkit-scrollbar-corner {
+  background: transparent;
+  display: none;
+}
+
 /* Responsive adjustments */
 @media (max-width: 600px) {
   .migration-progress-container {
