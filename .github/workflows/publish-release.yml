@@ -1,0 +1,173 @@
+name: Publish Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to publish (e.g., 0.1.2)'
+        required: true
+        type: string
+      confirm:
+        description: 'Type "PUBLISH" to confirm'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  validate:
+    name: Validate Input
+    runs-on: ubuntu-latest
+    outputs:
+      release_id: ${{ steps.get_release.outputs.release_id }}
+      can_publish: ${{ steps.validate.outputs.can_publish }}
+    steps:
+      - name: Check confirmation
+        id: validate
+        run: |
+          if [ "${{ github.event.inputs.confirm }}" != "PUBLISH" ]; then
+            echo "❌ Confirmation failed. You must type 'PUBLISH' to confirm."
+            exit 1
+          fi
+          echo "can_publish=true" >> $GITHUB_OUTPUT
+
+      - name: Get release
+        id: get_release
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const version = '${{ github.event.inputs.version }}';
+            const tagName = version.startsWith('v') ? version : `v${version}`;
+            
+            try {
+              const { data: release } = await github.rest.repos.getReleaseByTag({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                tag: tagName
+              });
+              
+              console.log(`Found release: ${release.name}`);
+              console.log(`Draft: ${release.draft}`);
+              console.log(`Assets: ${release.assets.length}`);
+              
+              if (!release.draft) {
+                core.setFailed(`Release ${tagName} is already published!`);
+                return;
+              }
+              
+              if (release.assets.length === 0) {
+                core.setFailed(`Release ${tagName} has no assets! Build may have failed.`);
+                return;
+              }
+              
+              core.setOutput('release_id', release.id);
+              return release.id;
+            } catch (error) {
+              core.setFailed(`Release ${tagName} not found: ${error.message}`);
+            }
+
+  request-approval:
+    name: Request Approval
+    needs: validate
+    runs-on: ubuntu-latest
+    environment: 
+      name: production-release
+      url: https://github.com/CommunityStream-io/flock/releases/tag/v${{ github.event.inputs.version }}
+    steps:
+      - name: Wait for approval
+        run: |
+          echo "🔒 Waiting for manual approval to publish release v${{ github.event.inputs.version }}"
+          echo "This release will be published after approval."
+
+  publish:
+    name: Publish Release
+    needs: [validate, request-approval]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Publish release
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const releaseId = '${{ needs.validate.outputs.release_id }}';
+            const version = '${{ github.event.inputs.version }}';
+            
+            console.log(`Publishing release ID: ${releaseId}`);
+            
+            const { data: release } = await github.rest.repos.updateRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              release_id: releaseId,
+              draft: false
+            });
+            
+            console.log(`✅ Release v${version} published successfully!`);
+            console.log(`URL: ${release.html_url}`);
+            
+            return release.html_url;
+
+      - name: Add publish notification
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const version = '${{ github.event.inputs.version }}';
+            const tagName = version.startsWith('v') ? version : `v${version}`;
+            
+            // Get the release again to get updated data
+            const { data: release } = await github.rest.repos.getReleaseByTag({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag: tagName
+            });
+            
+            // Update release body with publish info
+            const publishNote = `
+            
+            ---
+            
+            ## 🚀 Release Published
+            
+            **Published by**: @${{ github.actor }}  
+            **Published at**: ${new Date().toISOString()}  
+            **Workflow run**: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            `;
+            
+            await github.rest.repos.updateRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              release_id: release.id,
+              body: release.body + publishNote
+            });
+
+      - name: Post summary
+        run: |
+          echo "## 🚀 Release Published Successfully!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Version**: v${{ github.event.inputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Published by**: @${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Release URL**: https://github.com/CommunityStream-io/flock/releases/tag/v${{ github.event.inputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Next Steps" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Users can now download the release" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Auto-update will detect the new version" >> $GITHUB_STEP_SUMMARY
+          echo "- 📣 Consider announcing on social media / GitHub Discussions" >> $GITHUB_STEP_SUMMARY
+
+  notify-failure:
+    name: Notify Failure
+    needs: [validate, request-approval, publish]
+    if: failure()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Post failure summary
+        run: |
+          echo "## ❌ Publish Failed!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Version**: v${{ github.event.inputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Triggered by**: @${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Troubleshooting" >> $GITHUB_STEP_SUMMARY
+          echo "- Check if the release exists as a draft" >> $GITHUB_STEP_SUMMARY
+          echo "- Verify the version number is correct" >> $GITHUB_STEP_SUMMARY
+          echo "- Ensure you typed 'PUBLISH' exactly as shown" >> $GITHUB_STEP_SUMMARY
+          echo "- Check the workflow logs for details" >> $GITHUB_STEP_SUMMARY
+

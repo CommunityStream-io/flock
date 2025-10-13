@@ -21,9 +21,12 @@ jobs:
     outputs:
       upload_url: ${{ steps.create_release.outputs.upload_url }}
       version: ${{ steps.get_version.outputs.version }}
+      release_id: ${{ steps.create_release.outputs.id }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all history for release notes generation
 
       - name: Get version from tag
         id: get_version
@@ -36,6 +39,71 @@ jobs:
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "Version: $VERSION"
 
+      - name: Get previous tag
+        id: get_previous_tag
+        run: |
+          PREVIOUS_TAG=$(git describe --abbrev=0 --tags $(git rev-list --tags --skip=1 --max-count=1) 2>/dev/null || echo "")
+          echo "previous_tag=$PREVIOUS_TAG" >> $GITHUB_OUTPUT
+          echo "Previous tag: $PREVIOUS_TAG"
+
+      - name: Generate Release Notes
+        id: generate_notes
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data } = await github.rest.repos.generateReleaseNotes({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag_name: '${{ github.event_name == 'workflow_dispatch' && format('v{0}', github.event.inputs.version) || github.ref_name }}',
+              previous_tag_name: '${{ steps.get_previous_tag.outputs.previous_tag }}' || undefined
+            });
+            
+            // Parse and enhance the generated notes
+            let body = data.body;
+            
+            // Add custom sections
+            const customNotes = `
+            ## 📦 Downloads
+            
+            ### Windows
+            - **Installer**: \`Flock-Native-Setup-${{ steps.get_version.outputs.version }}.exe\` (Recommended)
+            - **Portable**: \`Flock-Native-${{ steps.get_version.outputs.version }}.exe\` (No installation required)
+            - **ZIP Archive**: \`Flock-Native-${{ steps.get_version.outputs.version }}-win.zip\`
+            
+            ### macOS
+            - **DMG**: \`Flock-Native-${{ steps.get_version.outputs.version }}-universal.dmg\` (Recommended)
+            - **ZIP Archive**: \`Flock-Native-${{ steps.get_version.outputs.version }}-mac.zip\`
+            
+            ### Linux
+            - **AppImage**: \`Flock-Native-${{ steps.get_version.outputs.version }}.AppImage\` (Universal, no installation)
+            - **DEB Package**: \`flock-native_${{ steps.get_version.outputs.version }}_amd64.deb\` (Debian/Ubuntu)
+            - **RPM Package**: \`flock-native-${{ steps.get_version.outputs.version }}.x86_64.rpm\` (Fedora/RHEL)
+            
+            ## 📝 Installation Instructions
+            
+            See the [installation guide](https://github.com/CommunityStream-io/flock/blob/main/INSTALLATION.md) for detailed platform-specific instructions.
+            
+            ${body}
+            
+            ## 📋 System Requirements
+            
+            - **Windows**: Windows 10 or later (64-bit)
+            - **macOS**: macOS 10.15 (Catalina) or later (Universal: Intel & Apple Silicon)
+            - **Linux**: Ubuntu 20.04+ or equivalent
+            
+            ## ⚠️ Known Issues
+            
+            - Windows SmartScreen and macOS Gatekeeper may show warnings (app is not yet code-signed)
+            - This is expected for unsigned applications
+            
+            ## 💬 Feedback
+            
+            Please report issues or provide feedback at: https://github.com/CommunityStream-io/flock/issues
+            `;
+            
+            core.setOutput('notes', customNotes);
+            return customNotes;
+
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -46,38 +114,7 @@ jobs:
           release_name: Flock Native v${{ steps.get_version.outputs.version }}
           draft: true
           prerelease: false
-          body: |
-            # Flock Native v${{ steps.get_version.outputs.version }}
-            
-            ## Downloads
-            
-            ### Windows
-            - **Installer**: `Flock-Native-Setup-${{ steps.get_version.outputs.version }}.exe` (Recommended)
-            - **Portable**: `Flock-Native-${{ steps.get_version.outputs.version }}.exe` (No installation required)
-            - **ZIP Archive**: `Flock-Native-${{ steps.get_version.outputs.version }}-win.zip`
-            
-            ### macOS
-            - **DMG**: `Flock-Native-${{ steps.get_version.outputs.version }}-universal.dmg` (Recommended)
-            - **ZIP Archive**: `Flock-Native-${{ steps.get_version.outputs.version }}-mac.zip`
-            
-            ### Linux
-            - **AppImage**: `Flock-Native-${{ steps.get_version.outputs.version }}.AppImage` (Universal, no installation)
-            - **DEB Package**: `flock-native_${{ steps.get_version.outputs.version }}_amd64.deb` (Debian/Ubuntu)
-            - **RPM Package**: `flock-native-${{ steps.get_version.outputs.version }}.x86_64.rpm` (Fedora/RHEL)
-            
-            ## Installation Instructions
-            
-            See the [installation guide](https://github.com/CommunityStream-io/flock/blob/main/INSTALLATION.md) for detailed platform-specific instructions.
-            
-            ## What's New
-            
-            _Release notes will be added here before publishing._
-            
-            ## System Requirements
-            
-            - **Windows**: Windows 10 or later (64-bit)
-            - **macOS**: macOS 10.15 (Catalina) or later
-            - **Linux**: Ubuntu 20.04+ or equivalent
+          body: ${{ steps.generate_notes.outputs.notes }}
 
   build-windows:
     name: Build Windows
@@ -163,3 +200,69 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+  notify-build-complete:
+    name: Notify Build Complete
+    needs: [build-windows, build-macos, build-linux, create-release]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add comment to release
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const releaseId = '${{ needs.create-release.outputs.release_id }}';
+            const version = '${{ needs.create-release.outputs.version }}';
+            
+            // Get the release
+            const { data: release } = await github.rest.repos.getRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              release_id: releaseId
+            });
+            
+            // Update release body with build completion note
+            const updatedBody = release.body + `
+            
+            ---
+            
+            ## ✅ Build Status
+            
+            All platform builds completed successfully! This release is ready for review.
+            
+            **Build Summary:**
+            - ✅ Windows (NSIS, Portable, ZIP)
+            - ✅ macOS (DMG, ZIP) - Universal binary
+            - ✅ Linux (AppImage, DEB, RPM)
+            
+            **Next Steps:**
+            1. Review the release notes above
+            2. Test the installers if needed
+            3. Publish the release when ready
+            
+            **To publish this release:**
+            \`\`\`bash
+            gh release edit v${version} --draft=false
+            \`\`\`
+            
+            Or use the [Publish Release workflow](https://github.com/CommunityStream-io/flock/actions/workflows/publish-release.yml).
+            `;
+            
+            await github.rest.repos.updateRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              release_id: releaseId,
+              body: updatedBody
+            });
+            
+            console.log('✅ Release notes updated with build status');
+
+      - name: Post summary
+        run: |
+          echo "## 🎉 Release Build Complete!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Version**: v${{ needs.create-release.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Status**: Draft (awaiting approval)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Next Steps" >> $GITHUB_STEP_SUMMARY
+          echo "1. Review the [draft release](https://github.com/CommunityStream-io/flock/releases)" >> $GITHUB_STEP_SUMMARY
+          echo "2. Test installers if needed" >> $GITHUB_STEP_SUMMARY
+          echo "3. Run the [Publish Release](https://github.com/CommunityStream-io/flock/actions/workflows/publish-release.yml) workflow to publish" >> $GITHUB_STEP_SUMMARY
