@@ -39,9 +39,18 @@ function createWindow() {
     mainWindow.webContents.openDevTools();
   } else {
     // Production mode - load from built files
-    // Use app.getAppPath() to get the correct path in packaged apps
     const appPath = app.getAppPath();
-    const indexPath = path.join(appPath, 'dist/flock-native/browser/index.html');
+    let indexPath;
+    
+    if (app.isPackaged) {
+      // In packaged app, files are in dist/flock-native/browser/
+      indexPath = path.join(appPath, 'dist/flock-native/browser/index.html');
+    } else {
+      // In local test (ELECTRON_IS_PACKAGED=1), need to go to project root
+      // appPath is projects/flock-native/electron, need to go up 3 levels
+      const projectRoot = path.join(appPath, '../../..');
+      indexPath = path.join(projectRoot, 'dist/flock-native/browser/index.html');
+    }
     
     console.log('🔍 Loading from:', indexPath);
     mainWindow.loadFile(indexPath).catch(err => {
