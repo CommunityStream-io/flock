@@ -100,7 +100,7 @@ Feature: Date Range Filtering - Instagram Post Date Selection
     Then the start date should still be "2023-01-01"
     And the end date should still be "2023-12-31"
 
-  @config @date-range @help @dialog
+  @config @date-range @help @ui @parallel
   Scenario: Help dialog provides date range guidance
     When I click the help icon for date range
     Then I should see a help dialog with date range guidance

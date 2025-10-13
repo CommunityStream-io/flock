@@ -11,7 +11,7 @@ Feature: Configuration Dialog Scroll Detection - Prevent Layout Issues
     And I have entered valid credentials
     And I navigate to the config step
 
-  @config @dialog @scroll-detection @edge-case
+  @config @ui @edge-case @parallel
   Scenario: Help dialog should not have scroll issues
     When I click the date range help button
     Then the help dialog should open
@@ -20,7 +20,7 @@ Feature: Configuration Dialog Scroll Detection - Prevent Layout Issues
     And the help dialog should not cause page scroll
     And the help dialog footer should be visible without scrolling
 
-  @config @dialog @scroll-detection @edge-case
+  @config @ui @edge-case @parallel
   Scenario: Help dialog should handle long content gracefully
     When I click the testing options help button
     Then the help dialog should open
@@ -29,7 +29,7 @@ Feature: Configuration Dialog Scroll Detection - Prevent Layout Issues
     And the help dialog should maintain proper spacing
     And the help dialog should not overflow the viewport
 
-  @config @dialog @scroll-detection @edge-case
+  @config @ui @edge-case @parallel
   Scenario: Help dialog should work on different screen sizes
     When I resize the browser to mobile size
     And I click the date range help button
@@ -45,7 +45,7 @@ Feature: Configuration Dialog Scroll Detection - Prevent Layout Issues
     And the help dialog should fit within the tablet viewport
     And the help dialog should be fully accessible
 
-  @config @dialog @scroll-detection @edge-case
+  @config @ui @edge-case @parallel
   Scenario: Help dialog should prevent body scroll when open
     When I click the date range help button
     Then the help dialog should open
@@ -53,7 +53,7 @@ Feature: Configuration Dialog Scroll Detection - Prevent Layout Issues
     And the page content should not move
     And the help dialog should be the only scrollable element
 
-  @config @dialog @scroll-detection @edge-case
+  @config @ui @edge-case @parallel
   Scenario: Help dialog should restore scroll when closed
     When I click the date range help button
     And the help dialog opens
@@ -62,7 +62,7 @@ Feature: Configuration Dialog Scroll Detection - Prevent Layout Issues
     And the page should return to its original state
     And no scroll issues should remain
 
-  @config @dialog @scroll-detection @edge-case
+  @config @ui @edge-case @parallel
   Scenario: Multiple help dialogs should not accumulate scroll issues
     When I click the date range help button
     And I close the help dialog
@@ -72,7 +72,7 @@ Feature: Configuration Dialog Scroll Detection - Prevent Layout Issues
     And the body should be scrollable
     And no layout problems should persist
 
-  @config @dialog @scroll-detection @edge-case
+  @config @ui @edge-case @parallel
   Scenario: Help dialog should handle keyboard navigation without scroll issues
     When I click the date range help button
     And I use Tab to navigate through the dialog
@@ -81,7 +81,7 @@ Feature: Configuration Dialog Scroll Detection - Prevent Layout Issues
     And the dialog should not scroll unexpectedly
     And the dialog should maintain proper focus management
 
-  @config @dialog @scroll-detection @edge-case
+  @config @ui @edge-case @parallel
   Scenario: Help dialog should handle window resize without scroll issues
     When I click the date range help button
     And I resize the browser window
