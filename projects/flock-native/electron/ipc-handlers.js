@@ -306,6 +306,54 @@ function setupIpcHandlers(mainWindow) {
     }
   });
 
+  // Test helper: CLI path resolution (for E2E tests)
+  ipcMain.handle('test:resolveCliPath', async (event) => {
+    try {
+      const appPath = app.getAppPath();
+      const appRoot = app.isPackaged ? appPath : path.join(appPath, '../../..');
+      const cliRelativePath = 'node_modules/@straiforos/instagramtobluesky/dist/main.js';
+      
+      // Try to resolve the CLI path using the same logic as execute-cli
+      const possiblePaths = [];
+      
+      if (app.isPackaged) {
+        if (appPath.includes('.asar')) {
+          possiblePaths.push(path.join(appPath + '.unpacked', cliRelativePath));
+        } else {
+          possiblePaths.push(path.join(appPath, '..', 'app.asar.unpacked', cliRelativePath));
+          possiblePaths.push(path.join(appPath, 'app.asar.unpacked', cliRelativePath));
+        }
+        possiblePaths.push(path.join(appRoot, cliRelativePath));
+      } else {
+        possiblePaths.push(path.join(appRoot, cliRelativePath));
+      }
+      
+      // Find first existing path
+      let resolvedPath = null;
+      for (const testPath of possiblePaths) {
+        if (fsSync.existsSync(testPath)) {
+          resolvedPath = testPath;
+          break;
+        }
+      }
+      
+      return {
+        success: true,
+        exists: resolvedPath !== null,
+        path: resolvedPath || possiblePaths[0],
+        triedPaths: possiblePaths,
+        isPackaged: app.isPackaged
+      };
+    } catch (error) {
+      console.error('❌ [ELECTRON MAIN] Failed to resolve CLI path:', error);
+      return {
+        success: false,
+        exists: false,
+        error: error.message
+      };
+    }
+  });
+
   // CLI execution handler
   ipcMain.handle('execute-cli', async (event, command, args = [], options = {}) => {
     try {
