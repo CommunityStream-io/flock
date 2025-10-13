@@ -146,7 +146,7 @@
           "arch": ["universal"]
         }
       ],
-      "icon": "projects/flock-native/build/icon.icns"
+      "icon": "projects/flock-native/build/icon.png"
     },
     "linux": {
       "target": [
