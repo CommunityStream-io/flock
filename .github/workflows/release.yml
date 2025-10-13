@@ -106,15 +106,22 @@ jobs:
 
       - name: Create Release
         id: create_release
-        uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.event_name == 'workflow_dispatch' && format('v{0}', github.event.inputs.version) || github.ref_name }}
-          release_name: Flock Native v${{ steps.get_version.outputs.version }}
-          draft: true
-          prerelease: false
-          body: ${{ steps.generate_notes.outputs.notes }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG_NAME="${{ github.event_name == 'workflow_dispatch' && format('v{0}', github.event.inputs.version) || github.ref_name }}"
+          
+          # Create release using gh CLI
+          gh release create "$TAG_NAME" \
+            --draft \
+            --title "Flock Native v${{ steps.get_version.outputs.version }}" \
+            --notes '${{ steps.generate_notes.outputs.notes }}' \
+            --repo ${{ github.repository }}
+          
+          # Get release data for outputs
+          RELEASE_DATA=$(gh release view "$TAG_NAME" --json url,uploadUrl,id --jq '{upload_url: .uploadUrl, html_url: .url, id: .id}')
+          echo "upload_url=$(echo $RELEASE_DATA | jq -r .upload_url)" >> $GITHUB_OUTPUT
+          echo "id=$(echo $RELEASE_DATA | jq -r .id)" >> $GITHUB_OUTPUT
 
   build-windows:
     name: Build Windows
