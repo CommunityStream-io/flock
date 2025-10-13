@@ -2,22 +2,11 @@
   
   <div class="content-wrapper">
     @if (phase() === 'error') {
-      <div class="icon-glow error-glow">
-        <fa-icon [icon]="faExclamationTriangle" class="status-icon error-icon shake"></fa-icon>
-      </div>
+      <mat-icon class="status-icon error-icon">error</mat-icon>
       <h2 class="status-message error-message">Migration Error</h2>
     } @else if (phase() === 'complete') {
-      <div class="success-burst">
-        <div class="burst-particle"></div>
-        <div class="burst-particle"></div>
-        <div class="burst-particle"></div>
-        <div class="burst-particle"></div>
-        <div class="burst-particle"></div>
-      </div>
-      <div class="icon-glow success-glow">
-        <fa-icon [icon]="faCheckCircle" class="status-icon success-icon celebration"></fa-icon>
-      </div>
-      <h2 class="status-message success-message gradient-text">Migration Complete!</h2>
+      <mat-icon class="status-icon success-icon">check_circle</mat-icon>
+      <h2 class="status-message success-message">Migration Complete!</h2>
       
       @if (warningCount() > 0) {
         <div class="warnings-summary bounce-in">
@@ -54,31 +43,19 @@
       }
       
       @if (lastPostUrl()) {
-        <a [href]="lastPostUrl()!" target="_blank" class="bluesky-link hover-lift">
+        <a [href]="lastPostUrl()!" target="_blank" rel="noopener noreferrer" mat-raised-button color="primary">
           <mat-icon>open_in_new</mat-icon>
           <span>View on Bluesky</span>
-          <div class="link-shimmer"></div>
         </a>
       }
     } @else {
-      <div class="migration-icon-wrapper">
-        <div class="icon-glow primary-glow">
-          <fa-icon [icon]="faHourglass" class="migration-icon hourglass-flip"></fa-icon>
-        </div>
-        <div class="sand-particles">
-          <div class="sand-particle"></div>
-          <div class="sand-particle"></div>
-          <div class="sand-particle"></div>
-        </div>
-      </div>
+      <mat-icon class="migration-icon">hourglass_empty</mat-icon>
       
       <div class="progress-wrapper">
         <mat-progress-bar 
           [mode]="progressMode()"
-          [value]="progressPercentage()"
-          class="modern-progress">
+          [value]="progressPercentage()">
         </mat-progress-bar>
-        <div class="progress-glow"></div>
       </div>
       
       <div class="progress-details fade-in">
@@ -92,18 +69,17 @@
             <span class="number-highlight">{{ postsCreated() }}</span> posts created
           </span>
           <span class="loading-indicator">
-            <fa-icon [icon]="faHourglass" class="small-hourglass"></fa-icon>
+            <mat-icon class="small-icon">schedule</mat-icon>
             Processing...
           </span>
         }
       </div>
 
       @if (lastPostUrl()) {
-        <div class="last-post-info bounce-in">
-          <mat-icon class="small-icon pulse">check_circle</mat-icon>
-          <span>Latest post uploaded</span>
-          <div class="ripple"></div>
-        </div>
+        <a [href]="lastPostUrl()!" target="_blank" rel="noopener noreferrer" mat-stroked-button color="primary" class="latest-post-link">
+          <mat-icon>open_in_new</mat-icon>
+          <span>View latest post on Bluesky</span>
+        </a>
       }
     }
   </div>

@@ -4,12 +4,12 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faHourglassHalf, faRocket, faCheckCircle, faExclamationTriangle, faWarning, faFeather } from '@fortawesome/free-solid-svg-icons';
+import { faWarning } from '@fortawesome/free-solid-svg-icons';
 import { LOGGER, Logger, SplashScreenLoading } from 'shared';
 import { CLIService } from '../../service/cli/cli.service';
 
 interface MigrationWarning {
-  type: 'missing_file' | 'truncated_caption' | 'skipped_post';
+  type: 'missing_file' | 'truncated_caption' | 'skipped_post' | 'upload_failure' | 'extraction_error';
   message: string;
   details?: string;
 }
@@ -27,13 +27,8 @@ export class MigrationProgressComponent implements OnInit, OnDestroy {
   private splashLoading = inject(SplashScreenLoading);
   private outputSubscription: any;
 
-  // Font Awesome icons
-  faHourglass = faHourglassHalf;
-  faRocket = faRocket;
-  faCheckCircle = faCheckCircle;
-  faExclamationTriangle = faExclamationTriangle;
+  // FontAwesome icons (keeping for warnings only)
   faWarning = faWarning;
-  faFeather = faFeather;
 
   // State signals
   phase = signal<'starting' | 'migrating' | 'complete' | 'error'>('starting');
@@ -101,13 +96,24 @@ export class MigrationProgressComponent implements OnInit, OnDestroy {
   }
 
   private handleOutput(output: string): void {
+    // Detect extraction phase
+    if (output.includes('[EXTRACT]')) {
+      if (output.includes('Progress:')) {
+        this.phase.set('starting');
+        this.splashLoading.show('📦 Extracting your Instagram archive...');
+      } else if (output.includes('Extraction completed')) {
+        this.splashLoading.show('✅ Archive extracted! Starting migration...');
+      }
+      return;
+    }
+
     // Detect import start
     if (output.includes('Import started')) {
       this.phase.set('migrating');
       this.splashLoading.show(this.getRandomMessage());
     }
 
-    // Detect total posts (from final import message)
+    // Detect total posts (from final import message) - Note: This pattern may not exist in real logs
     const importMatch = output.match(/imported (\d+) posts? with (\d+) media/i);
     if (importMatch) {
       this.totalPosts.set(parseInt(importMatch[1], 10));
@@ -168,10 +174,28 @@ export class MigrationProgressComponent implements OnInit, OnDestroy {
       }
     }
 
+    // Detect media upload failures (more serious than missing files)
+    if (output.includes('Failed to upload media')) {
+      this.warnings.update(warnings => [...warnings, {
+        type: 'upload_failure',
+        message: 'Failed to upload media to Bluesky',
+        details: output.trim()
+      }]);
+    }
+
+    if (output.includes('No media uploaded! Check Error logs')) {
+      this.warnings.update(warnings => [...warnings, {
+        type: 'upload_failure',
+        message: 'Media upload failed - post created without image'
+      }]);
+    }
+
     // Detect errors
     if (output.includes('ERROR') || output.includes('Error')) {
-      // Don't set error phase for missing files - they're warnings
-      if (!output.includes('Failed to read media file') && !output.includes('Failed to get image aspect ratio')) {
+      // Don't set error phase for missing files or upload failures - they're warnings
+      if (!output.includes('Failed to read media file') && 
+          !output.includes('Failed to get image aspect ratio') &&
+          !output.includes('Failed to upload media')) {
         this.phase.set('error');
         this.splashLoading.show('⚠️ Encountered an issue during migration');
       }
