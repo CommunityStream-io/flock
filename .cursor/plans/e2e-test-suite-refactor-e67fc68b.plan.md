@@ -141,12 +141,12 @@ Create `docs/testing/E2E_PHASE_3_HANDOFF.md` with:
 ### To-dos
 
 - [x] Audit all feature files and create tag mapping (old → new tags)
-- [ ] Update tags in auth feature files (5 files)
-- [ ] Update tags in upload feature files (4 files)
-- [ ] Update tags in config feature files (7 files)
-- [ ] Update tags in electron, web, core, and root feature files (15 files)
-- [ ] Create config-happy-path.feature with ~5 smoke scenarios
-- [ ] Split config-user-interface.feature into config-ui-interactions.feature and config-ui-layout.feature
-- [ ] Reduce config-validation.feature from 19 to 12 scenarios
-- [ ] Reduce config-testing.feature from 14 to 10 scenarios
-- [ ] Create E2E_PHASE_3_HANDOFF.md with instructions for Phases 3-5
+- [x] Update tags in auth feature files (5 files)
+- [x] Update tags in upload feature files (4 files)
+- [x] Update tags in config feature files (7 files)
+- [x] Update tags in electron, web, core, and root feature files (15 files)
+- [x] Create config-happy-path.feature with ~5 smoke scenarios
+- [x] Split config-user-interface.feature into config-ui-interactions.feature and config-ui-layout.feature
+- [x] Reduce config-validation.feature from 19 to 12 scenarios
+- [x] Reduce config-testing.feature from 14 to 10 scenarios
+- [x] Create E2E_PHASE_3_HANDOFF.md with instructions for Phases 3-5
