@@ -67,7 +67,7 @@ fi
 # Build Docker image if requested
 if [ "$BUILD_IMAGE" = true ]; then
     echo "🏗️  Building Docker image..."
-    docker build -f Dockerfile.test -t e2e-test-local .
+    docker build -f docker/Dockerfile.test -t e2e-test-local .
     if [ $? -eq 0 ]; then
         echo "✅ Docker image built successfully"
     else

@@ -27,9 +27,9 @@ try {
 console.log('\n🐳 Docker Configuration Analysis:');
 
 // Check Dockerfile
-if (fs.existsSync('Dockerfile.test')) {
+if (fs.existsSync('docker/Dockerfile.test')) {
   try {
-    const dockerfile = fs.readFileSync('Dockerfile.test', 'utf8');
+    const dockerfile = fs.readFileSync('docker/Dockerfile.test', 'utf8');
     const nodeVersion = dockerfile.match(/FROM node:([^\s]+)/);
     const hasChrome = dockerfile.includes('chromium');
     const hasAngularCLI = dockerfile.includes('@angular/cli');
@@ -43,7 +43,7 @@ if (fs.existsSync('Dockerfile.test')) {
     console.log(`❌ Error reading Dockerfile: ${error.message}`);
   }
 } else {
-  console.log('❌ Dockerfile.test not found');
+  console.log('❌ docker/Dockerfile.test not found');
 }
 
 console.log('\n⚙️ Expected CI Workflow:');

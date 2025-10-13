@@ -29,8 +29,8 @@ That's it! The script handles everything automatically.
 
 | File | Purpose |
 |------|---------|
-| `Dockerfile.electron-build` | Docker image with Node, Wine, and build tools |
-| `docker-compose.electron-build.yml` | Container orchestration with volume mounts |
+| `docker/Dockerfile.electron-build` | Docker image with Node, Wine, and build tools |
+| `docker/docker-compose.electron-build.yml` | Container orchestration with volume mounts |
 | `scripts/docker-build-electron.sh` | Build automation script |
 
 ---
@@ -98,13 +98,13 @@ npm run pack:win:dir
 ### Manual Docker Build
 ```bash
 # Build image
-docker-compose -f docker-compose.electron-build.yml build
+docker-compose -f docker/docker-compose.electron-build.yml build
 
 # Run build
-docker-compose -f docker-compose.electron-build.yml up
+docker-compose -f docker/docker-compose.electron-build.yml up
 
 # Clean up
-docker-compose -f docker-compose.electron-build.yml down
+docker-compose -f docker/docker-compose.electron-build.yml down
 ```
 
 ---
@@ -141,7 +141,7 @@ net start com.docker.service
 Wine is used to build Windows executables on Linux. If you see Wine errors:
 ```bash
 # Clean everything and rebuild
-docker-compose -f docker-compose.electron-build.yml down -v
+docker-compose -f docker/docker-compose.electron-build.yml down -v
 npm run pack:win:docker
 ```
 

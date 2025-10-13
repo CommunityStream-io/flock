@@ -28,8 +28,13 @@ RUN wine64 wineboot --init && \
 # Set working directory
 WORKDIR /app
 
+# Accept GitHub package token as build argument
+ARG PACKAGE_TOKEN
+ENV PACKAGE_TOKEN=${PACKAGE_TOKEN}
+
 # Copy package files first for better caching
 COPY package*.json ./
+COPY .npmrc ./
 COPY tsconfig*.json ./
 COPY angular.json ./
 

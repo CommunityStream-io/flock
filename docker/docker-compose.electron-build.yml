@@ -3,12 +3,15 @@ version: '3.8'
 services:
   electron-builder:
     build:
-      context: .
-      dockerfile: Dockerfile.electron-build
+      context: ..
+      dockerfile: docker/Dockerfile.electron-build
+      args:
+        # Pass GitHub package token from host environment
+        PACKAGE_TOKEN: ${PACKAGE_TOKEN}
     container_name: flock-electron-builder
     volumes:
       # Mount output directory to host
-      - ./dist/electron:/app/dist/electron
+      - ../dist/electron:/app/dist/electron
       # Mount node_modules for faster rebuilds (optional)
       - electron-node-modules:/app/node_modules
     environment:
@@ -17,6 +20,8 @@ services:
       - DEBUG=electron-builder
       # Prevent Electron from downloading on every build
       - ELECTRON_CACHE=/app/.electron-cache
+      # Pass GitHub package token
+      - PACKAGE_TOKEN=${PACKAGE_TOKEN}
     command: >
       sh -c "
         echo '🐳 Starting Electron Windows build in Docker...' &&

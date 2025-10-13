@@ -56,7 +56,7 @@ const hasLogs = checkDirectory('logs', 'Test Logs');
 
 // Check Docker setup
 console.log('\n🐳 Docker Configuration Status:');
-const dockerFiles = ['Dockerfile.test', 'wdio.docker.conf.ts'];
+const dockerFiles = ['docker/Dockerfile.test', 'wdio.docker.conf.ts'];
 dockerFiles.forEach(file => {
   if (fs.existsSync(file)) {
     console.log(`✅ ${file}`);
