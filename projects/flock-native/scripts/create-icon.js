@@ -6,6 +6,8 @@ const svgPath = path.join(__dirname, '../public/favicon.svg');
 const pngPath = path.join(__dirname, '../public/icon.png');
 const icoPath = path.join(__dirname, '../public/favicon.ico');
 const buildIcoPath = path.join(__dirname, '../build/icon.ico');
+const buildIconsDir = path.join(__dirname, '../build/icons');
+const buildIcnsPath = path.join(__dirname, '../build/icon.icns');
 
 // Read SVG
 const svgBuffer = fs.readFileSync(svgPath);
@@ -75,6 +77,87 @@ async function generateIcons() {
     console.log('✅ ICO icon created at:', icoPath);
     console.log('✅ ICO icon copied to:', buildIcoPath);
     console.log(`   Contains ${sizes.length} sizes: ${sizes.join('x, ')}x`);
+
+    // Generate Linux PNG icon set
+    const linuxSizes = [16, 32, 48, 64, 128, 256, 512];
+    if (!fs.existsSync(buildIconsDir)) {
+      fs.mkdirSync(buildIconsDir, { recursive: true });
+    }
+
+    console.log('\n🐧 Generating Linux icon set...');
+    await Promise.all(
+      linuxSizes.map(async (size) => {
+        const filename = `${size}x${size}.png`;
+        const filepath = path.join(buildIconsDir, filename);
+        await sharp(svgBuffer)
+          .resize(size, size)
+          .png()
+          .toFile(filepath);
+        return filename;
+      })
+    );
+    console.log('✅ Linux PNG icons created in:', buildIconsDir);
+    console.log(`   Sizes: ${linuxSizes.map(s => `${s}x${s}`).join(', ')}`);
+
+    // Generate macOS ICNS
+    // ICNS requires specific sizes for different retina displays
+    const macSizes = [
+      { size: 16, name: 'icon_16x16.png' },
+      { size: 32, name: 'icon_16x16@2x.png' },
+      { size: 32, name: 'icon_32x32.png' },
+      { size: 64, name: 'icon_32x32@2x.png' },
+      { size: 128, name: 'icon_128x128.png' },
+      { size: 256, name: 'icon_128x128@2x.png' },
+      { size: 256, name: 'icon_256x256.png' },
+      { size: 512, name: 'icon_256x256@2x.png' },
+      { size: 512, name: 'icon_512x512.png' },
+      { size: 1024, name: 'icon_512x512@2x.png' },
+    ];
+
+    console.log('\n🍎 Generating macOS ICNS file...');
+    const icnsDir = path.join(__dirname, '../build/icon.iconset');
+    if (!fs.existsSync(icnsDir)) {
+      fs.mkdirSync(icnsDir, { recursive: true });
+    }
+
+    // Generate all PNG files for iconset
+    await Promise.all(
+      macSizes.map(async ({ size, name }) => {
+        const filepath = path.join(icnsDir, name);
+        await sharp(svgBuffer)
+          .resize(size, size)
+          .png()
+          .toFile(filepath);
+      })
+    );
+
+    // Convert iconset to icns using iconutil (macOS only) or create a note for CI
+    if (process.platform === 'darwin') {
+      const { execSync } = require('child_process');
+      try {
+        execSync(`iconutil -c icns "${icnsDir}" -o "${buildIcnsPath}"`, { stdio: 'inherit' });
+        console.log('✅ macOS ICNS created at:', buildIcnsPath);
+        // Clean up iconset directory
+        fs.rmSync(icnsDir, { recursive: true, force: true });
+      } catch (err) {
+        console.log('⚠️  Could not run iconutil (macOS only), keeping iconset directory');
+        console.log('   The CI build on macOS will generate the ICNS file');
+      }
+    } else {
+      // On non-macOS systems, we'll use electron-builder to handle ICNS generation
+      // electron-builder can work with PNG files directly
+      console.log('✅ macOS iconset created at:', icnsDir);
+      console.log('   (ICNS conversion will happen during electron-builder on macOS)');
+      
+      // electron-builder can use a single high-res PNG for macOS
+      const macIconPath = path.join(path.dirname(buildIcnsPath), 'icon.png');
+      await sharp(svgBuffer)
+        .resize(1024, 1024)
+        .png()
+        .toFile(macIconPath);
+      console.log('✅ High-res macOS icon (1024x1024) created at:', macIconPath);
+    }
+
   } catch (err) {
     console.error('❌ Error creating icons:', err);
     process.exit(1);
