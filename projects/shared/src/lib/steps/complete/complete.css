@@ -98,12 +98,16 @@
 }
 
 .kofi-button {
-    font-size: 1rem;
-    padding: 0.75rem 2rem;
+    display: inline-block;
+    transition: transform 0.2s ease;
 }
 
-.kofi-button mat-icon {
-    margin-right: 0.5rem;
+.kofi-button:hover {
+    transform: scale(1.05);
+}
+
+.kofi-button img {
+    display: block;
 }
 
 @media (max-width: 768px) {
@@ -116,8 +120,7 @@
         padding: 1.5rem;
     }
 
-    .share-button,
-    .kofi-button {
+    .share-button {
         min-width: 200px;
         font-size: 0.875rem;
     }
