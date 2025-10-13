@@ -1,0 +1,8 @@
+.distro-container { padding: 24px; display: flex; flex-direction: column; gap: 24px; }
+.hero { text-align: center; }
+.hero h1 { margin: 0; font-size: 2rem; }
+.hero p { margin: 8px 0; }
+.release-note { color: rgba(0,0,0,0.6); font-size: 0.9rem; }
+.downloads { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+.platform-card ul { margin: 0; padding-left: 16px; }
+.platform-card li { margin: 4px 0; }

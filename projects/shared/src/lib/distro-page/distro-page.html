@@ -1,0 +1,81 @@
+<div class="distro-container">
+  <section class="hero">
+    <h1>Flock Native</h1>
+    <p>Desktop app for fast, private, and offline Instagram ➜ Bluesky migrations.</p>
+    <a class="primary-cta" [href]="latestReleaseUrl" target="_blank" rel="noreferrer noopener">
+      <button mat-raised-button color="primary">
+        <mat-icon>download</mat-icon>
+        {{ ctaLabel() }}
+      </button>
+    </a>
+    <p class="release-note">Latest installers are available on GitHub Releases.</p>
+  </section>
+
+  <section class="downloads">
+    <mat-card class="platform-card">
+      <mat-card-header>
+        <mat-card-title>Windows</mat-card-title>
+        <mat-card-subtitle>Windows 10/11 (x64)</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <ul>
+          <li>.exe installer (recommended)</li>
+          <li>.msi installer</li>
+          <li>Portable .zip</li>
+        </ul>
+      </mat-card-content>
+      <mat-card-actions>
+        <a [href]="latestReleaseUrl" target="_blank" rel="noreferrer noopener">
+          <button mat-stroked-button color="primary">
+            <mat-icon>download</mat-icon>
+            View Windows downloads
+          </button>
+        </a>
+      </mat-card-actions>
+    </mat-card>
+
+    <mat-card class="platform-card">
+      <mat-card-header>
+        <mat-card-title>macOS</mat-card-title>
+        <mat-card-subtitle>macOS 10.15+ (Intel & Apple Silicon)</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <ul>
+          <li>.dmg (recommended)</li>
+          <li>.pkg</li>
+          <li>.zip</li>
+        </ul>
+      </mat-card-content>
+      <mat-card-actions>
+        <a [href]="latestReleaseUrl" target="_blank" rel="noreferrer noopener">
+          <button mat-stroked-button color="primary">
+            <mat-icon>download</mat-icon>
+            View macOS downloads
+          </button>
+        </a>
+      </mat-card-actions>
+    </mat-card>
+
+    <mat-card class="platform-card">
+      <mat-card-header>
+        <mat-card-title>Linux</mat-card-title>
+        <mat-card-subtitle>Ubuntu/Fedora & others (x64, arm64)</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <ul>
+          <li>.AppImage (no install)</li>
+          <li>.deb (Debian/Ubuntu)</li>
+          <li>.rpm (Fedora/RHEL)</li>
+        </ul>
+      </mat-card-content>
+      <mat-card-actions>
+        <a [href]="latestReleaseUrl" target="_blank" rel="noreferrer noopener">
+          <button mat-stroked-button color="primary">
+            <mat-icon>download</mat-icon>
+            View Linux downloads
+          </button>
+        </a>
+      </mat-card-actions>
+    </mat-card>
+  </section>
+</div>

@@ -12,6 +12,8 @@ export * from './route';
 export * from './landing-page/landing-page';
 export * from './licenses/licenses';
 export * from './support/support';
+export * from './distro-page/distro-page';
+export * from './services/platform.service';
 
 // =========== UI Components ==============
 export * from './theme-toggle/theme-toggle';

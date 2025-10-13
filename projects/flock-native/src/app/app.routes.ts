@@ -13,6 +13,7 @@ import {
   authDeactivateGuard,
   extractArchiveResolver,
   migrationResetResolver,
+  DistroPage
 } from 'shared';
 import { NativeUpload } from './steps/upload/upload';
 import { nativeMigrateRunResolver } from './resolvers/migrate-run.resolver';
@@ -22,6 +23,11 @@ export const routes: Routes = [
     path: 'home',
     component: LandingPage,
     title: 'Flock Native - Bluesky Social Migrator',
+  },
+  {
+    path: 'distro',
+    component: DistroPage,
+    title: 'Flock Native Downloads',
   },
   {
     path: 'licenses',

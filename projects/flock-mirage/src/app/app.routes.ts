@@ -16,7 +16,8 @@ import {
   authDeactivateGuard,
   migrateRunResolver,
   migrationResetResolver,
-  loggerInstrumentationResolver
+  loggerInstrumentationResolver,
+  DistroPage
 } from 'shared';
 
 export const routes: Routes = [
@@ -24,6 +25,11 @@ export const routes: Routes = [
     path: 'home',
     component: LandingPage,
     title: 'Bluesky Social Migrator',
+  },
+  {
+    path: 'distro',
+    component: DistroPage,
+    title: 'Flock Native Downloads',
   },
   {
     path: 'licenses',
