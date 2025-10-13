@@ -4,6 +4,7 @@ import {
   Complete,
   Config,
   LandingPage,
+  Licenses,
   Migrate,
   Upload,
   StepLayout,
@@ -22,6 +23,11 @@ export const routes: Routes = [
     path: 'home',
     component: LandingPage,
     title: 'Bluesky Social Migrator',
+  },
+  {
+    path: 'licenses',
+    component: Licenses,
+    title: 'Licenses & Attributions',
   },
   {
     path: 'step',

@@ -170,6 +170,79 @@ describe('Feature: Application Header Navigation', () => {
       expect(component).toBeTruthy();
       expect(fixture.nativeElement).toBeTruthy();
     });
+
+    it('Given the header renders, When it displays navigation links, Then it should include a Home link', () => {
+      // Given: Header renders
+      console.log('🔧 BDD: Header renders');
+      fixture.detectChanges();
+      
+      // When: It displays navigation links
+      console.log('⚙️ BDD: Displaying navigation links');
+      const compiled = fixture.nativeElement as HTMLElement;
+      const navSection = compiled.querySelector('.header-nav');
+      const homeButton = Array.from(navSection?.querySelectorAll('button[routerLink]') || [])
+        .find((button) => button.getAttribute('routerLink') === '/') as HTMLElement;
+      
+      // Then: Should include a Home link
+      console.log('✅ BDD: Header includes Home link');
+      expect(homeButton).toBeTruthy();
+      expect(homeButton?.textContent?.trim()).toContain('Home');
+    });
+
+    it('Given the header renders, When it displays navigation links, Then it should include a Help link', () => {
+      // Given: Header renders
+      console.log('🔧 BDD: Header renders');
+      fixture.detectChanges();
+      
+      // When: It displays navigation links
+      console.log('⚙️ BDD: Displaying navigation links');
+      const compiled = fixture.nativeElement as HTMLElement;
+      const navSection = compiled.querySelector('.header-nav');
+      const helpButton = Array.from(navSection?.querySelectorAll('button[routerLink]') || [])
+        .find((button) => button.getAttribute('routerLink') === '/help') as HTMLElement;
+      
+      // Then: Should include a Help link
+      console.log('✅ BDD: Header includes Help link');
+      expect(helpButton).toBeTruthy();
+      expect(helpButton?.textContent?.trim()).toContain('Help');
+    });
+
+    it('Given the header renders, When it displays navigation links, Then it should include a Licenses link', () => {
+      // Given: Header renders
+      console.log('🔧 BDD: Header renders');
+      fixture.detectChanges();
+      
+      // When: It displays navigation links
+      console.log('⚙️ BDD: Displaying navigation links');
+      const compiled = fixture.nativeElement as HTMLElement;
+      const navSection = compiled.querySelector('.header-nav');
+      const licensesButton = Array.from(navSection?.querySelectorAll('button[routerLink]') || [])
+        .find((button) => button.getAttribute('routerLink') === '/licenses') as HTMLElement;
+      
+      // Then: Should include a Licenses link
+      console.log('✅ BDD: Header includes Licenses link');
+      expect(licensesButton).toBeTruthy();
+      expect(licensesButton?.textContent?.trim()).toContain('Licenses');
+    });
+
+    it('Given the licenses link renders, When it initializes, Then it should display a favorite icon', () => {
+      // Given: Licenses link renders
+      console.log('🔧 BDD: Licenses link renders');
+      fixture.detectChanges();
+      
+      // When: It initializes
+      console.log('⚙️ BDD: Licenses link initializes');
+      const compiled = fixture.nativeElement as HTMLElement;
+      const navSection = compiled.querySelector('.header-nav');
+      const licensesButton = Array.from(navSection?.querySelectorAll('button[routerLink]') || [])
+        .find((button) => button.getAttribute('routerLink') === '/licenses') as HTMLElement;
+      const icon = licensesButton?.querySelector('mat-icon');
+      
+      // Then: Should display a favorite icon
+      console.log('✅ BDD: Licenses link displays favorite icon');
+      expect(icon).toBeTruthy();
+      expect(icon?.textContent?.trim()).toBe('favorite');
+    });
   });
 
   describe('Scenario: Theme toggle integration', () => {

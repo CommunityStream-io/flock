@@ -9,6 +9,7 @@ export * from './route';
 
 // Feature Components
 export * from './landing-page/landing-page';
+export * from './licenses/licenses';
 
 // =========== UI Components ==============
 export * from './theme-toggle/theme-toggle';
