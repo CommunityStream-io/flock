@@ -6,14 +6,17 @@ $color-background: #d6c18b;
 $color-twitter: #4099ff;
 
 .splash-screen {
+  position: fixed;
   top: 0;
   left: 0;
+  width: 100vw;
+  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
   flex-direction: column;
   row-gap: 4rem;
+  background: $color-background;
   z-index: 1000;
 
   html {
