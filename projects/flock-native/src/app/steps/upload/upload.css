@@ -1,0 +1,18 @@
+.upload-section {
+  padding: 2rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.upload-section h2 {
+  margin-bottom: 0.5rem;
+}
+
+.upload-section p {
+  margin-bottom: 1.5rem;
+}
+
+.upload-section form {
+  margin-top: 1rem;
+}
+

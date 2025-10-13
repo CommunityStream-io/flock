@@ -1,6 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { LayoutComponent, Logger, LOGGER, RouterSplash, SplashScreenLoading } from 'shared';
-import { RouterLoggingService } from './service/router-logging';
+import { LayoutComponent, Logger, LOGGER, RouterSplash, SplashScreenLoading, RouterLoggingService } from 'shared';
 
 @Component({
   selector: 'app-root',

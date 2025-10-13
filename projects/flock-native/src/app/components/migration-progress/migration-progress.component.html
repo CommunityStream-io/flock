@@ -1,0 +1,120 @@
+<div class="migration-progress-container">
+  <!-- Animated background gradient -->
+  <div class="gradient-bg"></div>
+  
+  <!-- Floating feathers animation -->
+  <div class="feathers-container">
+    <fa-icon [icon]="faFeather" class="feather feather-1"></fa-icon>
+    <fa-icon [icon]="faFeather" class="feather feather-2"></fa-icon>
+    <fa-icon [icon]="faFeather" class="feather feather-3"></fa-icon>
+  </div>
+  
+  <div class="content-wrapper">
+    @if (phase() === 'error') {
+      <div class="icon-glow error-glow">
+        <fa-icon [icon]="faExclamationTriangle" class="status-icon error-icon shake"></fa-icon>
+      </div>
+      <h2 class="status-message error-message">Migration Error</h2>
+    } @else if (phase() === 'complete') {
+      <div class="success-burst">
+        <div class="burst-particle"></div>
+        <div class="burst-particle"></div>
+        <div class="burst-particle"></div>
+        <div class="burst-particle"></div>
+        <div class="burst-particle"></div>
+      </div>
+      <div class="icon-glow success-glow">
+        <fa-icon [icon]="faCheckCircle" class="status-icon success-icon celebration"></fa-icon>
+      </div>
+      <h2 class="status-message success-message gradient-text">Migration Complete!</h2>
+      
+      @if (warningCount() > 0) {
+        <div class="warnings-summary bounce-in">
+          <button class="warnings-toggle" (click)="toggleWarnings()">
+            <fa-icon [icon]="faWarning" class="warning-icon"></fa-icon>
+            <span>{{ warningCount() }} warning{{ warningCount() > 1 ? 's' : '' }}</span>
+            <mat-icon class="expand-icon">{{ showWarnings() ? 'expand_less' : 'expand_more' }}</mat-icon>
+          </button>
+          
+          @if (showWarnings()) {
+            <div class="warnings-list fade-in">
+              @for (warning of warnings(); track $index) {
+                <div class="warning-item" [class.warning-missing-file]="warning.type === 'missing_file'">
+                  <mat-icon class="warning-item-icon">
+                    @if (warning.type === 'missing_file') {
+                      image_not_supported
+                    } @else if (warning.type === 'truncated_caption') {
+                      content_cut
+                    } @else {
+                      skip_next
+                    }
+                  </mat-icon>
+                  <div class="warning-content">
+                    <span class="warning-message">{{ warning.message }}</span>
+                    @if (warning.details) {
+                      <span class="warning-details">{{ warning.details }}</span>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      }
+      
+      @if (lastPostUrl()) {
+        <a [href]="lastPostUrl()!" target="_blank" class="bluesky-link hover-lift">
+          <mat-icon>open_in_new</mat-icon>
+          <span>View on Bluesky</span>
+          <div class="link-shimmer"></div>
+        </a>
+      }
+    } @else {
+      <div class="migration-icon-wrapper">
+        <div class="icon-glow primary-glow">
+          <fa-icon [icon]="faHourglass" class="migration-icon hourglass-flip"></fa-icon>
+        </div>
+        <div class="sand-particles">
+          <div class="sand-particle"></div>
+          <div class="sand-particle"></div>
+          <div class="sand-particle"></div>
+        </div>
+      </div>
+      
+      <div class="progress-wrapper">
+        <mat-progress-bar 
+          [mode]="progressMode()"
+          [value]="progressPercentage()"
+          class="modern-progress">
+        </mat-progress-bar>
+        <div class="progress-glow"></div>
+      </div>
+      
+      <div class="progress-details fade-in">
+        @if (totalPosts() !== null) {
+          <span class="posts-count">
+            <span class="number-highlight">{{ postsCreated() }}</span> / {{ totalPosts() }} posts
+          </span>
+          <span class="percentage gradient-text">{{ progressPercentage().toFixed(0) }}%</span>
+        } @else {
+          <span class="posts-count">
+            <span class="number-highlight">{{ postsCreated() }}</span> posts created
+          </span>
+          <span class="loading-indicator">
+            <fa-icon [icon]="faHourglass" class="small-hourglass"></fa-icon>
+            Processing...
+          </span>
+        }
+      </div>
+
+      @if (lastPostUrl()) {
+        <div class="last-post-info bounce-in">
+          <mat-icon class="small-icon pulse">check_circle</mat-icon>
+          <span>Latest post uploaded</span>
+          <div class="ripple"></div>
+        </div>
+      }
+    }
+  </div>
+</div>
+

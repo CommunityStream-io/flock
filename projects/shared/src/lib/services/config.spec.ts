@@ -200,7 +200,7 @@ describe('Feature: Configuration Service', () => {
       
       // When: Test video mode is set to true
       console.log('⚙️ BDD: Setting test video mode to true');
-      service.setTestVideoMode(true);
+      service.setTestMode('video');
       
       // Then: Should return true
       console.log('✅ BDD: Test video mode is set to true');

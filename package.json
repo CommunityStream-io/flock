@@ -24,10 +24,14 @@
     "test:coverage": "cross-env CI=true ng test shared --watch=false --code-coverage",
     "test:e2e": "concurrently --kill-others --success first \"ng serve flock-mirage --configuration=test-coverage --port=4200\" \"wait-on http://localhost:4200 && cross-env HEADLESS=true wdio run wdio.conf.ts\"",
     "test:e2e:ci": "concurrently --kill-others --success first \"ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0\" \"wait-on http://localhost:4200 && cross-env CI=true HEADLESS=true wdio run wdio.conf.ts\"",
-    "coverage:all": "npm run test:coverage",
+    "coverage:all": "npm run test:coverage && npm run test:native:coverage",
     "test:shared": "ng test shared",
     "test:shared:watch": "ng test shared --watch",
     "test:shared:ci": "cross-env CI=true ng test shared",
+    "test:native": "ng test flock-native",
+    "test:native:watch": "ng test flock-native --watch",
+    "test:native:ci": "cross-env CI=true ng test flock-native --watch=false",
+    "test:native:coverage": "cross-env CI=true ng test flock-native --watch=false --code-coverage",
     "test:e2e:headless": "concurrently --kill-others --success first \"ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0\" \"wait-on http://localhost:4200 && cross-env HEADLESS=true wdio run wdio.conf.ts\"",
     "test:e2e:watch": "wdio run wdio.conf.ts --watch",
     "test:e2e:watch:headless": "cross-env HEADLESS=true wdio run wdio.conf.ts --watch",
@@ -65,7 +69,10 @@
     "lint:all": "npm run lint:shared && npm run lint:flock-native && npm run lint:flock-mirage && npm run lint:flock-murmur",
     "agent:build": "docker build -f Dockerfile.background-agent -t cursor-background-agent:latest .",
     "agent:run": "docker run --rm -it -v $PWD:/workspace cursor-background-agent:latest",
-    "agent:run:auth": "docker run --rm -it -e GH_TOKEN=$GH_TOKEN -v $PWD:/workspace cursor-background-agent:latest bash -lc 'gh auth status && gh repo view --json nameWithOwner,visibility'"
+    "agent:run:auth": "docker run --rm -it -e GH_TOKEN=$GH_TOKEN -v $PWD:/workspace cursor-background-agent:latest bash -lc 'gh auth status && gh repo view --json nameWithOwner,visibility'",
+    "start:native": "concurrently --kill-others --success first \"ng serve flock-native --port=4201\" \"wait-on http://localhost:4201 && electron projects/flock-native/electron/main.js\"",
+    "build:native": "node projects/flock-native/scripts/create-icon.js && ng build flock-native --configuration=production",
+    "electron:dev": "electron projects/flock-native/electron/main.js"
   },
   "prettier": {
     "overrides": [
@@ -88,7 +95,11 @@
     "@angular/material": "^20.1.6",
     "@angular/platform-browser": "^20.1.0",
     "@angular/router": "^20.1.0",
+    "@fortawesome/angular-fontawesome": "^3.0.0",
+    "@fortawesome/fontawesome-svg-core": "^7.1.0",
+    "@fortawesome/free-solid-svg-icons": "^7.1.0",
     "@straiforos/instagramtobluesky": "^0.7.5",
+    "extract-zip": "^2.0.1",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"
@@ -119,6 +130,8 @@
     "concurrently": "^9.2.0",
     "cross-env": "^10.0.0",
     "devtools": "^8.42.0",
+    "electron": "^33.2.0",
+    "electron-builder": "^25.1.8",
     "eslint": "8.57.1",
     "eslint-plugin-import": "^2.32.0",
     "expect-webdriverio": "^5.4.2",
@@ -134,6 +147,7 @@
     "pino": "^9.9.5",
     "pino-pretty": "^13.1.1",
     "puppeteer": "^24.22.0",
+    "sharp": "^0.34.4",
     "typescript": "~5.8.2",
     "wait-on": "^8.0.4",
     "webdriverio-mcp": "^1.0.3"

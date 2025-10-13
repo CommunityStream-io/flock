@@ -8,7 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, takeUntil, tap } from 'rxjs';
 import { LOGGER, Logger } from '../../services';
 import { ConfigServiceImpl } from '../../services/config';
 import { ConfigHelpDialog, HelpDialogData } from './help-dialog/help-dialog';
@@ -46,6 +46,7 @@ export class Config implements OnInit, OnDestroy {
     startDate: new FormControl<string>('', [this.dateValidator.bind(this)]),
     endDate: new FormControl<string>('', [this.dateValidator.bind(this), this.endDateValidator.bind(this)]),
     testVideoMode: new FormControl<boolean>(false),
+    testMixedMediaMode: new FormControl<boolean>(false),
     simulationMode: new FormControl<boolean>(false)
   });
 
@@ -93,6 +94,9 @@ export class Config implements OnInit, OnDestroy {
     // Initialize form state
     this.updateFormState();
 
+    // Set up radio-button-style behavior for test modes
+    this.setupTestModeRadioBehavior();
+
     // Subscribe to form value changes
     this.configForm.valueChanges.pipe(
       takeUntil(this.destroy$)
@@ -109,6 +113,34 @@ export class Config implements OnInit, OnDestroy {
       this.updateFormState();
       this.cdr.markForCheck();
     });
+  }
+
+  /**
+   * Set up radio-button-style behavior for test mode toggles
+   * When one is enabled, others are automatically disabled
+   */
+  private setupTestModeRadioBehavior(): void {
+    // Watch testVideoMode
+    this.configForm.get('testVideoMode')?.valueChanges.pipe(
+      tap((value) => {
+        if (value) {
+          // Disable others without triggering valueChanges
+          this.configForm.get('testMixedMediaMode')?.setValue(false, { emitEvent: false });
+        }
+      }),
+      takeUntil(this.destroy$)
+    ).subscribe();
+
+    // Watch testMixedMediaMode
+    this.configForm.get('testMixedMediaMode')?.valueChanges.pipe(
+      tap((value) => {
+        if (value) {
+          // Disable others without triggering valueChanges
+          this.configForm.get('testVideoMode')?.setValue(false, { emitEvent: false });
+        }
+      }),
+      takeUntil(this.destroy$)
+    ).subscribe();
   }
 
   ngOnDestroy() {
@@ -131,10 +163,12 @@ export class Config implements OnInit, OnDestroy {
    * Load configuration from service
    */
   private loadConfiguration(): void {
+    const testMode = this.configService.testMode;
     this.configForm.patchValue({
       startDate: this.configService.startDate,
       endDate: this.configService.endDate,
-      testVideoMode: this.configService.testVideoMode,
+      testVideoMode: testMode === 'video',
+      testMixedMediaMode: testMode === 'mixed',
       simulationMode: this.configService.simulate
     });
   }
@@ -154,8 +188,13 @@ export class Config implements OnInit, OnDestroy {
         this.configService.setEndDate(formValue.endDate);
       }
       
-      if (formValue.testVideoMode !== undefined && formValue.testVideoMode !== null) {
-        this.configService.setTestVideoMode(formValue.testVideoMode);
+      // Handle test mode - only one can be active
+      if (formValue.testVideoMode) {
+        this.configService.setTestMode('video');
+      } else if (formValue.testMixedMediaMode) {
+        this.configService.setTestMode('mixed');
+      } else {
+        this.configService.setTestMode('none');
       }
       
       if (formValue.simulationMode !== undefined && formValue.simulationMode !== null) {
@@ -185,6 +224,7 @@ export class Config implements OnInit, OnDestroy {
       startDate: '',
       endDate: '',
       testVideoMode: false,
+      testMixedMediaMode: false,
       simulationMode: false
     });
     this.logger.workflow('Form reset to defaults');

@@ -1,0 +1,19 @@
+.complete-step {
+    padding: 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.step-title {
+    font-size: 2rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: var(--mat-sys-on-surface, var(--mat-app-on-surface));
+}
+
+.step-description {
+    font-size: 1rem;
+    margin-bottom: 2rem;
+    color: var(--mat-sys-on-surface-variant, var(--mat-app-on-surface-variant));
+}
+

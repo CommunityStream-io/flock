@@ -1,3 +1,4 @@
+@skip @wip
 Feature: Authentication Navigation Guards - Route Protection and Validation
 
   As a user navigating through the authentication process

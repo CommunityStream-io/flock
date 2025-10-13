@@ -87,7 +87,20 @@
           <div class="toggle-content">
             <label for="testVideoMode">
               <h4>Test Video Mode</h4>
-              <p>Process videos for testing without posting them to Bluesky</p>
+              <p>Use pre-defined test video data (1 post with 1 video)</p>
+            </label>
+          </div>
+        </mat-slide-toggle>
+        
+        <mat-slide-toggle 
+          id="testMixedMediaMode"
+          formControlName="testMixedMediaMode"
+          [attr.aria-label]="'Test mixed media mode toggle'"
+          class="toggle-option">
+          <div class="toggle-content">
+            <label for="testMixedMediaMode">
+              <h4>Test Mixed Media Mode</h4>
+              <p>Use pre-defined test data with images and videos (multiple posts)</p>
             </label>
           </div>
         </mat-slide-toggle>

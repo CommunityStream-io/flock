@@ -1,0 +1,12 @@
+<section class="upload-section">
+  <h2>Upload Your Files</h2>
+  <p>Upload instagram archive</p>
+  
+  <form [formGroup]="fileUploadForm">
+    <native-file-upload-control
+      formControlName="instagramArchive"
+      accept=".zip"
+    ></native-file-upload-control>
+  </form>
+</section>
+

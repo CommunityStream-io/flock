@@ -23,7 +23,7 @@ describe('Feature: Migration Configuration (BDD-Style)', () => {
   beforeEach(async () => {
     mockLogger = jasmine.createSpyObj('Logger', ['log', 'error', 'warn', 'workflow', 'instrument']);
     mockConfigService = jasmine.createSpyObj('ConfigServiceImpl', [
-      'setStartDate', 'setEndDate', 'setTestVideoMode', 'setSimulate',
+      'setStartDate', 'setEndDate', 'setTestMode', 'setSimulate',
       'getStartDate', 'getEndDate', 'getTestVideoMode', 'getSimulate'
     ], {
       startDate: '',
@@ -378,7 +378,7 @@ describe('Feature: Migration Configuration (BDD-Style)', () => {
       console.log(`✅ BDD: All configuration changes are persisted to service`);
       expect(mockConfigService.setStartDate).toHaveBeenCalledWith('2023-01-01');
       expect(mockConfigService.setEndDate).toHaveBeenCalledWith('2023-12-31');
-      expect(mockConfigService.setTestVideoMode).toHaveBeenCalledWith(true);
+      expect(mockConfigService.setTestMode).toHaveBeenCalledWith('video');
       expect(mockConfigService.setSimulate).toHaveBeenCalledWith(true);
     });
 
@@ -989,7 +989,7 @@ describe('Feature: Migration Configuration (BDD-Style)', () => {
       console.log('✅ BDD: Null values are handled without errors');
       expect(mockConfigService.setStartDate).not.toHaveBeenCalled();
       expect(mockConfigService.setEndDate).not.toHaveBeenCalled();
-      expect(mockConfigService.setTestVideoMode).not.toHaveBeenCalled();
+      expect(mockConfigService.setTestMode).toHaveBeenCalled();
       expect(mockConfigService.setSimulate).not.toHaveBeenCalled();
     });
 
@@ -1011,7 +1011,7 @@ describe('Feature: Migration Configuration (BDD-Style)', () => {
       console.log('✅ BDD: Undefined values are handled without errors');
       expect(mockConfigService.setStartDate).not.toHaveBeenCalled();
       expect(mockConfigService.setEndDate).not.toHaveBeenCalled();
-      expect(mockConfigService.setTestVideoMode).not.toHaveBeenCalled();
+      expect(mockConfigService.setTestMode).toHaveBeenCalled();
       expect(mockConfigService.setSimulate).not.toHaveBeenCalled();
     });
 

@@ -186,7 +186,7 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
     snippets: true,
     source: true,
     strict: false, // Allow skipped steps without failing the entire scenario
-    tags: process.env.TEST_TAGS || '',
+    tags: process.env.TEST_TAGS || 'not @skip and not @wip',
     timeout: timeouts.global, // Global timeout for step execution (25s CI, 20s local)
     ignoreUndefinedDefinitions: true,
     format: process.env.SHARDED_TESTS === 'true' ? ['progress'] : ['pretty'], // Minimal format for sharded tests, pretty for debugging

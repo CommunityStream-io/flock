@@ -22,7 +22,14 @@ export class ConfigServiceImpl implements ConfigService {
   private simulateSignal = signal<boolean>(false);
 
   /**
-   * Signal to track test video mode
+   * Signal to track which test mode is active
+   * 'none' | 'video' | 'mixed'
+   */
+  private testModeSignal = signal<'none' | 'video' | 'mixed'>('none');
+
+  /**
+   * Signal to track test video mode (deprecated, use testMode instead)
+   * @deprecated Use testMode getter instead
    */
   private testVideoModeSignal = signal<boolean>(false);
 
@@ -40,6 +47,16 @@ export class ConfigServiceImpl implements ConfigService {
    * Signal to track if user is authenticated
    */
   private isAuthenticatedSignal = signal<boolean>(false);
+
+  /**
+   * Signal to track migration results
+   */
+  private migrationResultsSignal = signal<{
+    postsImported: number;
+    mediaCount: number;
+    duration: string;
+    success: boolean;
+  } | null>(null);
 
   /**
    * Get the current archive path
@@ -91,17 +108,27 @@ export class ConfigServiceImpl implements ConfigService {
   }
 
   /**
-   * Get the test video mode
+   * Get the active test mode
    */
-  public get testVideoMode(): boolean {
-    return this.testVideoModeSignal();
+  public get testMode(): 'none' | 'video' | 'mixed' {
+    return this.testModeSignal();
   }
 
   /**
-   * Set the test video mode
+   * Set the active test mode
    */
-  public setTestVideoMode(value: boolean): void {
-    this.testVideoModeSignal.set(value);
+  public setTestMode(mode: 'none' | 'video' | 'mixed'): void {
+    this.testModeSignal.set(mode);
+    // Keep legacy signal in sync
+    this.testVideoModeSignal.set(mode === 'video');
+  }
+
+  /**
+   * Get the test video mode (legacy)
+   * @deprecated Use testMode getter instead
+   */
+  public get testVideoMode(): boolean {
+    return this.testModeSignal() === 'video';
   }
 
   /**
@@ -154,6 +181,25 @@ export class ConfigServiceImpl implements ConfigService {
   }
 
   /**
+   * Get migration results
+   */
+  public get migrationResults() {
+    return this.migrationResultsSignal();
+  }
+
+  /**
+   * Set migration results
+   */
+  public setMigrationResults(results: {
+    postsImported: number;
+    mediaCount: number;
+    duration: string;
+    success: boolean;
+  }): void {
+    this.migrationResultsSignal.set(results);
+  }
+
+  /**
    * Validate the current configuration
    */
   public async validateConfig(): Promise<boolean> {
@@ -167,9 +213,11 @@ export class ConfigServiceImpl implements ConfigService {
     this.archivePathSignal.set('');
     this.blueskyCredentialsSignal.set(null);
     this.simulateSignal.set(false);
+    this.testModeSignal.set('none');
     this.testVideoModeSignal.set(false);
     this.startDateSignal.set('');
     this.endDateSignal.set('');
     this.isAuthenticatedSignal.set(false);
+    this.migrationResultsSignal.set(null);
   }
 }

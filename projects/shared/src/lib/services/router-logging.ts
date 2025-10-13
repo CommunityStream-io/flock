@@ -1,7 +1,8 @@
 import { Injectable, inject } from '@angular/core';
 import { Router, NavigationStart, NavigationEnd, NavigationCancel, NavigationError } from '@angular/router';
 import { filter } from 'rxjs/operators';
-import { Logger, LOGGER } from 'shared';
+import { Logger } from './interfaces';
+import { LOGGER } from './injection-tokens';
 
 @Injectable({
   providedIn: 'root'

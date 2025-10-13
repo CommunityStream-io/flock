@@ -1,6 +1,7 @@
 import { Component, inject, ViewEncapsulation } from '@angular/core';
-import { SplashScreenLoading } from '../services';
+import { SplashScreenLoading, LOGGER, Logger } from '../services';
 import { AsyncPipe, NgComponentOutlet } from '@angular/common';
+import { tap } from 'rxjs';
 
 /**
  * Butterfly splash screen
@@ -17,7 +18,13 @@ import { AsyncPipe, NgComponentOutlet } from '@angular/common';
 })
 export class SplashScreen {
   // *flap* *flap* *flap*
+  private logger = inject<Logger>(LOGGER);
   splashScreenLoading = inject(SplashScreenLoading);
   public message = this.splashScreenLoading.message.asObservable();
-  public component = this.splashScreenLoading.component.asObservable();
+  public component = this.splashScreenLoading.component.asObservable().pipe(
+    tap(cmp => {
+      const componentName = cmp ? cmp.name : 'null';
+      this.logger.log(`[SplashScreen] Component changed to: ${componentName}`);
+    })
+  );
 }
