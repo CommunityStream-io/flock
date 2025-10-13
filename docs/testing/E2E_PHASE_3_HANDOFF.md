@@ -6,7 +6,41 @@ Phases 1 (Tag Cleanup) and Phase 2 (Config Split) have been **successfully compl
 
 ---
 
-## ✅ Completed Work (Phases 1-2)
+## ✅ Completed Work (Phases 1-2 + Bonus)
+
+### BONUS: Enhanced Sharded Test Script ✅ COMPLETE
+
+**Updated `scripts/run-sharded-tests.sh`** to support the new tag hierarchy and multi-app architecture:
+
+#### New Features
+- **Tag-based execution**: `--smoke`, `--core`, `--auth`, `--upload`, `--config`, `--web`, `--electron`, `--regression`
+- **Custom tag expressions**: `--tags '@auth and @validation'`
+- **Platform targeting**: `--platform web` or `--platform electron`
+- **Intelligent shard allocation**: Automatically adjusts shard count based on test scope (2-4 shards)
+- **Full backward compatibility**: All existing options still work
+
+#### Quick Examples
+```bash
+# Smoke tests (2 shards, ~3 min)
+./scripts/run-sharded-tests.sh --smoke
+
+# Core tests (3 shards, ~8 min)
+./scripts/run-sharded-tests.sh --core
+
+# Config tests only
+./scripts/run-sharded-tests.sh --config
+
+# Web platform with report
+./scripts/run-sharded-tests.sh --web --serve-allure
+```
+
+#### Documentation
+Created **`docs/testing/E2E_SHARDED_TESTS_GUIDE.md`** with:
+- Quick start guide
+- Tag-based execution examples
+- Performance optimization tips
+- Troubleshooting guide
+- CI/CD integration instructions
 
 ### Phase 1: Tag Cleanup ✅ COMPLETE
 
