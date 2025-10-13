@@ -1,0 +1,17 @@
+.step-header-content {
+  margin-bottom: 1rem;
+}
+
+.step-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--primary-text-color);
+}
+
+.step-description {
+  font-size: 1rem;
+  color: var(--secondary-text-color);
+  margin-bottom: 1rem;
+  line-height: 1.4;
+}

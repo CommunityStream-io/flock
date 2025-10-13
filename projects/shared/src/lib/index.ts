@@ -3,6 +3,7 @@ export * from './layout/layout';
 export * from './step-layout/step-layout';
 export * from './header/header';
 export * from './step-navigation/step-navigation';
+export * from './step-header/step-header';
 
 // ===== Route utilities; Resolvers, Data interfaces =====
 export * from './route';
