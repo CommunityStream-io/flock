@@ -56,6 +56,7 @@
           "options": {
             "outputPath": "dist/flock-native",
             "browser": "projects/flock-native/src/main.ts",
+            "baseHref": "./",
             "polyfills": [
               "zone.js"
             ],
