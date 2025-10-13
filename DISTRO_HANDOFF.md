@@ -70,10 +70,10 @@ View it here: `gh release view v0.1.0`
    - Download and test macOS DMG (check Gatekeeper behavior)
    - Download and test Linux AppImage
 
-3. **Update README.md** with download section:
-   - Add "Download" section pointing to latest release
-   - Link to `INSTALLATION.md` for detailed instructions
-   - Mention it's a desktop app vs web version
+3. **Update README.md** with download section: ✅ **COMPLETED**
+   - ✅ Added "Download" section pointing to latest release
+   - ✅ Linked to `INSTALLATION.md` for detailed instructions
+   - ✅ Clarified it's a desktop app with platform support
 
 #### Future Enhancements (track in issue #43):
 4. **Create Distribution Page** (optional - GitHub Releases works fine for now)
@@ -197,5 +197,5 @@ If issues arise:
 
 **Last Updated:** October 13, 2025  
 **Context:** Issue #43 - Distribution page implementation  
-**Status:** Release workflow verified and working ✅
+**Status:** ✅ v0.1.1 Released & Published | README Updated with Downloads
 
