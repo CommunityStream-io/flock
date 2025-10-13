@@ -2,7 +2,7 @@ const { ipcMain, dialog, app } = require('electron');
 const fs = require('fs').promises;
 const fsSync = require('fs');
 const path = require('path');
-const { spawn } = require('child_process');
+const { spawn, fork } = require('child_process');
 const extract = require('extract-zip');
 const os = require('os');
 
@@ -363,20 +363,14 @@ function setupIpcHandlers(mainWindow) {
       const appPath = app.getAppPath();
       const appRoot = app.isPackaged ? appPath : path.join(appPath, '../../..');
       
-      // Determine the correct Node.js executable
-      // In packaged apps, use process.execPath (Electron's bundled Node.js)
-      // In development, use 'node' from system PATH
-      let nodeExecutable = command;
-      if (command === 'node') {
-        // Use the Electron runtime's Node.js
-        nodeExecutable = process.execPath;
-        console.log('🚀 [ELECTRON MAIN] Using bundled Node.js runtime:', nodeExecutable);
-      }
+      // For Node.js scripts, we'll use fork() which uses Electron's built-in Node.js
+      // This is more reliable than trying to spawn with process.execPath
+      const useNodeFork = command === 'node';
       
       console.log('=====================================');
       console.log('🚀 [ELECTRON MAIN] CLI EXECUTION STARTED');
       console.log('🚀 [ELECTRON MAIN] Process ID:', processId);
-      console.log('🚀 [ELECTRON MAIN] Command:', command, '→', nodeExecutable);
+      console.log('🚀 [ELECTRON MAIN] Execution Method:', useNodeFork ? 'fork (Node.js)' : 'spawn');
       console.log('🚀 [ELECTRON MAIN] Args (raw):', args);
       console.log('🚀 [ELECTRON MAIN] App Root:', appRoot);
       console.log('🚀 [ELECTRON MAIN] App Path:', appPath);
@@ -439,18 +433,38 @@ function setupIpcHandlers(mainWindow) {
       }
       
         console.log('🚀 [ELECTRON MAIN] Final Args:', resolvedArgs);
-        console.log('🚀 [ELECTRON MAIN] Command to execute:', nodeExecutable);
         console.log('=====================================');
         
-        // Spawn the CLI process
-        // Use bundled Node.js runtime (process.execPath) instead of system 'node'
-        // This ensures the app works without requiring Node.js to be installed
-        const child = spawn(nodeExecutable, resolvedArgs, {
-        cwd: options.cwd || appRoot,
-        env: mergedEnv,
-        shell: false, // Direct spawn without shell wrapper
-        windowsHide: true // Hide console window on Windows
-      });
+        // Create the child process
+        let child;
+        
+        if (useNodeFork && resolvedArgs.length > 0) {
+          // Use fork() for Node.js scripts - this uses Electron's built-in Node.js
+          // fork(modulePath, args, options)
+          const scriptPath = resolvedArgs[0];
+          const scriptArgs = resolvedArgs.slice(1);
+          
+          console.log('🚀 [ELECTRON MAIN] Using fork() to execute Node.js script');
+          console.log('🚀 [ELECTRON MAIN] Script:', scriptPath);
+          console.log('🚀 [ELECTRON MAIN] Script args:', scriptArgs);
+          
+          child = fork(scriptPath, scriptArgs, {
+            cwd: options.cwd || appRoot,
+            env: mergedEnv,
+            silent: true, // Capture stdout/stderr
+            windowsHide: true // Hide console window on Windows
+          });
+        } else {
+          // Use spawn() for other commands
+          console.log('🚀 [ELECTRON MAIN] Using spawn() for command:', command);
+          
+          child = spawn(command, resolvedArgs, {
+            cwd: options.cwd || appRoot,
+            env: mergedEnv,
+            shell: false,
+            windowsHide: true
+          });
+        }
 
       // Store the process
       activeProcesses.set(processId, child);

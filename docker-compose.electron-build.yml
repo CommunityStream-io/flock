@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  electron-builder:
+    build:
+      context: .
+      dockerfile: Dockerfile.electron-build
+    container_name: flock-electron-builder
+    volumes:
+      # Mount output directory to host
+      - ./dist/electron:/app/dist/electron
+      # Mount node_modules for faster rebuilds (optional)
+      - electron-node-modules:/app/node_modules
+    environment:
+      # Electron builder configuration
+      - CI=true
+      - DEBUG=electron-builder
+      # Prevent Electron from downloading on every build
+      - ELECTRON_CACHE=/app/.electron-cache
+    command: >
+      sh -c "
+        echo '🐳 Starting Electron Windows build in Docker...' &&
+        echo '📦 Cleaning old build artifacts...' &&
+        rm -rf /app/dist/electron/* &&
+        echo '🔨 Building Electron app...' &&
+        npx electron-builder --win --dir --config.directories.output=/app/dist/electron &&
+        echo '✅ Build complete! Check dist/electron/win-unpacked/' &&
+        ls -la /app/dist/electron/
+      "
+    networks:
+      - electron-build-network
+
+volumes:
+  electron-node-modules:
+    driver: local
+
+networks:
+  electron-build-network:
+    driver: bridge
+

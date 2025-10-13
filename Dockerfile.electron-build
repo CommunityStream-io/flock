@@ -1,0 +1,52 @@
+# Dockerfile for building Electron Windows app
+# This avoids Windows file locking issues by building in an isolated container
+
+FROM node:20-bullseye
+
+# Install Wine and dependencies for Windows builds on Linux
+RUN dpkg --add-architecture i386 && \
+    apt-get update && \
+    apt-get install -y \
+    wine \
+    wine32 \
+    wine64 \
+    mono-devel \
+    fakeroot \
+    dpkg \
+    rpm \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set Wine architecture
+ENV WINEARCH=win64
+ENV WINEPREFIX=/root/.wine
+
+# Initialize Wine
+RUN wine64 wineboot --init && \
+    while pgrep wineserver > /dev/null; do sleep 1; done
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files first for better caching
+COPY package*.json ./
+COPY tsconfig*.json ./
+COPY angular.json ./
+
+# Install dependencies
+RUN npm ci
+
+# Copy source code
+COPY projects ./projects
+COPY scripts ./scripts
+COPY features ./features
+COPY wdio*.ts ./
+
+# Build Angular app
+RUN npm run build:native
+
+# The electron-builder command will be run via docker-compose
+# to allow for volume mounting of the output
+
+CMD ["npm", "run", "electron:docker:build"]
+
