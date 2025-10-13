@@ -9,7 +9,7 @@ import { LOGGER, Logger, SplashScreenLoading } from 'shared';
 import { CLIService } from '../../service/cli/cli.service';
 
 interface MigrationWarning {
-  type: 'missing_file' | 'truncated_caption' | 'skipped_post' | 'upload_failure' | 'extraction_error';
+  type: 'missing_file' | 'truncated_caption' | 'skipped_post' | 'upload_failure' | 'extraction_error' | 'rate_limit';
   message: string;
   details?: string;
 }
@@ -38,6 +38,9 @@ export class MigrationProgressComponent implements OnInit, OnDestroy {
   mediaCount = signal<number>(0);
   warnings = signal<MigrationWarning[]>([]);
   showWarnings = signal<boolean>(false);
+  
+  // Track last media upload error reason to provide context for "No media uploaded" warnings
+  private lastUploadErrorReason: string | null = null;
   
   // Fun messages
   private messages = [
@@ -95,34 +98,46 @@ export class MigrationProgressComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Strip ANSI escape codes from CLI output
+   * ANSI codes can interfere with URL parsing and other regex matches
+   */
+  private stripAnsiCodes(text: string): string {
+    // eslint-disable-next-line no-control-regex
+    return text.replace(/\x1B\[[0-9;]*m/g, '');
+  }
+
   private handleOutput(output: string): void {
+    // Strip ANSI color codes from output to prevent them from being captured in URLs
+    const cleanOutput = this.stripAnsiCodes(output);
+    
     // Detect extraction phase
-    if (output.includes('[EXTRACT]')) {
-      if (output.includes('Progress:')) {
+    if (cleanOutput.includes('[EXTRACT]')) {
+      if (cleanOutput.includes('Progress:')) {
         this.phase.set('starting');
         this.splashLoading.show('📦 Extracting your Instagram archive...');
-      } else if (output.includes('Extraction completed')) {
+      } else if (cleanOutput.includes('Extraction completed')) {
         this.splashLoading.show('✅ Archive extracted! Starting migration...');
       }
       return;
     }
 
     // Detect import start
-    if (output.includes('Import started')) {
+    if (cleanOutput.includes('Import started')) {
       this.phase.set('migrating');
       this.splashLoading.show(this.getRandomMessage());
     }
 
     // Detect total posts (from final import message) - Note: This pattern may not exist in real logs
-    const importMatch = output.match(/imported (\d+) posts? with (\d+) media/i);
+    const importMatch = cleanOutput.match(/imported (\d+) posts? with (\d+) media/i);
     if (importMatch) {
       this.totalPosts.set(parseInt(importMatch[1], 10));
       this.mediaCount.set(parseInt(importMatch[2], 10));
     }
 
     // Detect post creation
-    if (output.includes('Bluesky post created with url:')) {
-      const urlMatch = output.match(/https:\/\/bsky\.app\/profile\/[^\s]+/);
+    if (cleanOutput.includes('Bluesky post created with url:')) {
+      const urlMatch = cleanOutput.match(/https:\/\/bsky\.app\/profile\/[^\s]+/);
       if (urlMatch) {
         this.lastPostUrl.set(urlMatch[0]);
       }
@@ -139,7 +154,7 @@ export class MigrationProgressComponent implements OnInit, OnDestroy {
     }
 
     // Detect import finish
-    if (output.includes('Import finished')) {
+    if (cleanOutput.includes('Import finished')) {
       this.phase.set('complete');
       const posts = this.postsCreated();
       const media = this.mediaCount();
@@ -149,8 +164,8 @@ export class MigrationProgressComponent implements OnInit, OnDestroy {
     }
 
     // Detect missing files
-    if (output.includes('Failed to read media file:')) {
-      const fileMatch = output.match(/Failed to read media file: (.+)/);
+    if (cleanOutput.includes('Failed to read media file:')) {
+      const fileMatch = cleanOutput.match(/Failed to read media file: (.+)/);
       if (fileMatch) {
         const filePath = fileMatch[1];
         // Extract just the filename from the full path
@@ -164,8 +179,8 @@ export class MigrationProgressComponent implements OnInit, OnDestroy {
     }
 
     // Detect truncated captions
-    if (output.includes('Truncating image caption')) {
-      const truncateMatch = output.match(/Truncating image caption from (\d+) to (\d+) characters/);
+    if (cleanOutput.includes('Truncating image caption')) {
+      const truncateMatch = cleanOutput.match(/Truncating image caption from (\d+) to (\d+) characters/);
       if (truncateMatch) {
         this.warnings.update(warnings => [...warnings, {
           type: 'truncated_caption',
@@ -174,35 +189,53 @@ export class MigrationProgressComponent implements OnInit, OnDestroy {
       }
     }
 
-    // Detect media upload failures (more serious than missing files)
-    if (output.includes('Failed to upload media')) {
+    // Detect rate limit errors (most critical - need to slow down)
+    if (cleanOutput.includes('Rate Limit Exceeded')) {
+      this.lastUploadErrorReason = 'Rate limit exceeded';
       this.warnings.update(warnings => [...warnings, {
-        type: 'upload_failure',
-        message: 'Failed to upload media to Bluesky',
-        details: output.trim()
+        type: 'rate_limit',
+        message: '⚠️ Rate limit exceeded - Bluesky is throttling uploads',
+        details: 'The migration will continue but may need more time. Consider pausing and resuming later.'
       }]);
+      // Update splash message to inform user
+      this.splashLoading.show('⏳ Rate limited - slowing down uploads...');
     }
 
-    if (output.includes('No media uploaded! Check Error logs')) {
+    // Extract specific error reason from "Failed to upload media: [reason]"
+    if (cleanOutput.includes('Failed to upload media:') && !cleanOutput.includes('Rate Limit Exceeded')) {
+      const errorMatch = cleanOutput.match(/Failed to upload media:\s*(.+?)(?:\n|$)/);
+      if (errorMatch && errorMatch[1]) {
+        this.lastUploadErrorReason = errorMatch[1].trim();
+      } else {
+        this.lastUploadErrorReason = 'Unknown error';
+      }
+    }
+
+    // Detect "No media uploaded" and use the last captured error reason
+    if (cleanOutput.includes('No media uploaded! Check Error logs')) {
+      const errorReason = this.lastUploadErrorReason || 'Unknown error';
       this.warnings.update(warnings => [...warnings, {
         type: 'upload_failure',
-        message: 'Media upload failed - post created without image'
+        message: `Media upload failed: ${errorReason}`,
+        details: 'Post was created without the image attachment'
       }]);
+      // Reset the error reason after using it
+      this.lastUploadErrorReason = null;
     }
 
     // Detect errors
-    if (output.includes('ERROR') || output.includes('Error')) {
+    if (cleanOutput.includes('ERROR') || cleanOutput.includes('Error')) {
       // Don't set error phase for missing files or upload failures - they're warnings
-      if (!output.includes('Failed to read media file') && 
-          !output.includes('Failed to get image aspect ratio') &&
-          !output.includes('Failed to upload media')) {
+      if (!cleanOutput.includes('Failed to read media file') && 
+          !cleanOutput.includes('Failed to get image aspect ratio') &&
+          !cleanOutput.includes('Failed to upload media')) {
         this.phase.set('error');
         this.splashLoading.show('⚠️ Encountered an issue during migration');
       }
     }
 
     // Detect skipped posts
-    if (output.includes('Skipping post')) {
+    if (cleanOutput.includes('Skipping post')) {
       this.splashLoading.show('⏭️ Skipping incompatible post...');
       this.warnings.update(warnings => [...warnings, {
         type: 'skipped_post',

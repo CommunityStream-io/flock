@@ -1,3 +1,46 @@
+<!-- Warnings Template -->
+<ng-template #warningsTemplate>
+  @if (warningCount() > 0) {
+    <div class="warnings-summary bounce-in">
+      <button class="warnings-toggle" (click)="toggleWarnings()">
+        <fa-icon [icon]="faWarning" class="warning-icon"></fa-icon>
+        <span>{{ warningCount() }} warning{{ warningCount() > 1 ? 's' : '' }}</span>
+        <mat-icon class="expand-icon">{{ showWarnings() ? 'expand_less' : 'expand_more' }}</mat-icon>
+      </button>
+      
+      @if (showWarnings()) {
+        <div class="warnings-list fade-in">
+          @for (warning of warnings(); track $index) {
+            <div class="warning-item" 
+                 [class.warning-missing-file]="warning.type === 'missing_file'"
+                 [class.warning-rate-limit]="warning.type === 'rate_limit'">
+              <mat-icon class="warning-item-icon">
+                @if (warning.type === 'missing_file') {
+                  image_not_supported
+                } @else if (warning.type === 'truncated_caption') {
+                  content_cut
+                } @else if (warning.type === 'rate_limit') {
+                  schedule
+                } @else if (warning.type === 'upload_failure') {
+                  cloud_off
+                } @else {
+                  skip_next
+                }
+              </mat-icon>
+              <div class="warning-content">
+                <span class="warning-message">{{ warning.message }}</span>
+                @if (warning.details) {
+                  <span class="warning-details">{{ warning.details }}</span>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  }
+</ng-template>
+
 <div class="migration-progress-container">
   
   <div class="content-wrapper">
@@ -8,39 +51,7 @@
       <mat-icon class="status-icon success-icon">check_circle</mat-icon>
       <h2 class="status-message success-message">Migration Complete!</h2>
       
-      @if (warningCount() > 0) {
-        <div class="warnings-summary bounce-in">
-          <button class="warnings-toggle" (click)="toggleWarnings()">
-            <fa-icon [icon]="faWarning" class="warning-icon"></fa-icon>
-            <span>{{ warningCount() }} warning{{ warningCount() > 1 ? 's' : '' }}</span>
-            <mat-icon class="expand-icon">{{ showWarnings() ? 'expand_less' : 'expand_more' }}</mat-icon>
-          </button>
-          
-          @if (showWarnings()) {
-            <div class="warnings-list fade-in">
-              @for (warning of warnings(); track $index) {
-                <div class="warning-item" [class.warning-missing-file]="warning.type === 'missing_file'">
-                  <mat-icon class="warning-item-icon">
-                    @if (warning.type === 'missing_file') {
-                      image_not_supported
-                    } @else if (warning.type === 'truncated_caption') {
-                      content_cut
-                    } @else {
-                      skip_next
-                    }
-                  </mat-icon>
-                  <div class="warning-content">
-                    <span class="warning-message">{{ warning.message }}</span>
-                    @if (warning.details) {
-                      <span class="warning-details">{{ warning.details }}</span>
-                    }
-                  </div>
-                </div>
-              }
-            </div>
-          }
-        </div>
-      }
+      <ng-container *ngTemplateOutlet="warningsTemplate"></ng-container>
       
       @if (lastPostUrl()) {
         <a [href]="lastPostUrl()!" target="_blank" rel="noopener noreferrer" mat-raised-button color="primary">
@@ -48,9 +59,7 @@
           <span>View on Bluesky</span>
         </a>
       }
-    } @else {
-      <mat-icon class="migration-icon">hourglass_empty</mat-icon>
-      
+    } @else {      
       <div class="progress-wrapper">
         <mat-progress-bar 
           [mode]="progressMode()"
@@ -68,12 +77,11 @@
           <span class="posts-count">
             <span class="number-highlight">{{ postsCreated() }}</span> posts created
           </span>
-          <span class="loading-indicator">
-            <mat-icon class="small-icon">schedule</mat-icon>
-            Processing...
-          </span>
         }
       </div>
+
+      <!-- Show warnings during migration -->
+      <ng-container *ngTemplateOutlet="warningsTemplate"></ng-container>
 
       @if (lastPostUrl()) {
         <a [href]="lastPostUrl()!" target="_blank" rel="noopener noreferrer" mat-stroked-button color="primary" class="latest-post-link">

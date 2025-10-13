@@ -22,6 +22,8 @@
 /* Icon styling */
 .status-icon, .migration-icon {
   font-size: 4rem;
+  width: 4rem;
+  height: 4rem;
   margin-bottom: 1.5rem;
   display: block;
 }
@@ -107,9 +109,9 @@ mat-progress-bar {
 }
 
 .small-icon {
-  font-size: 1.2rem;
-  width: 1.2rem;
-  height: 1.2rem;
+  font-size: 1.25rem;
+  width: 1.25rem;
+  height: 1.25rem;
 }
 
 /* Latest post link styling */
@@ -156,6 +158,8 @@ mat-progress-bar {
   font-size: 1.5rem;
   width: 1.5rem;
   height: 1.5rem;
+  min-width: 1.5rem;
+  min-height: 1.5rem;
   color: var(--mat-sys-on-error-container);
   transition: transform 0.3s ease;
 }
@@ -178,9 +182,9 @@ mat-progress-bar {
 }
 
 .warning-item-icon {
-  font-size: 1.2rem;
-  width: 1.2rem;
-  height: 1.2rem;
+  font-size: 1.25rem;
+  width: 1.25rem;
+  height: 1.25rem;
   color: var(--mat-sys-error);
   flex-shrink: 0;
   margin-top: 0.1rem;
@@ -216,6 +220,31 @@ mat-progress-bar {
   color: var(--mat-sys-tertiary);
 }
 
+/* Rate limit warnings are critical - use warning color */
+.warning-rate-limit {
+  border-left-color: #ff9800;
+  background: color-mix(in srgb, #ff9800 10%, var(--mat-sys-surface));
+  animation: pulse-border 2s ease-in-out infinite;
+}
+
+.warning-rate-limit .warning-item-icon {
+  color: #ff9800;
+}
+
+.warning-rate-limit .warning-message {
+  font-weight: 600;
+  color: var(--mat-sys-on-surface);
+}
+
+@keyframes pulse-border {
+  0%, 100% {
+    border-left-width: 3px;
+  }
+  50% {
+    border-left-width: 5px;
+  }
+}
+
 /* Scrollbar styling for warnings list */
 .warnings-list::-webkit-scrollbar {
   width: 6px;
@@ -243,7 +272,9 @@ mat-progress-bar {
   }
 
   .status-icon, .migration-icon { 
-    font-size: 3rem; 
+    font-size: 3rem;
+    width: 3rem;
+    height: 3rem;
   }
   
   .status-message { 
