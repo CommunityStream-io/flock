@@ -40,6 +40,8 @@
     "e2e:debug": "cross-env HEADLESS=true DEBUG_TESTS=true wdio run wdio.conf.ts",
     "e2e:validation": "cross-env HEADLESS=true TEST_TAGS=\"@bluesky-auth and @validation\" wdio run wdio.conf.ts",
     "e2e:debug-validation": "cross-env HEADLESS=true DEBUG_TESTS=true TEST_TAGS=\"@bluesky-auth and @validation\" wdio run wdio.conf.ts",
+    "e2e:electron": "wdio run wdio.electron.conf.ts",
+    "e2e:electron:build": "npm run pack:win:dir && wdio run wdio.electron.conf.ts",
     "allure:generate": "npx allure generate allure-results",
     "allure:open": "npx allure open allure-report",
     "allure:serve": "npx allure serve allure-results",
@@ -74,11 +76,19 @@
     "build:native": "node projects/flock-native/scripts/create-icon.js && ng build flock-native --configuration=production",
     "electron:dev": "electron projects/flock-native/electron/main.js",
     "electron:prod": "cross-env ELECTRON_IS_PACKAGED=1 electron projects/flock-native/electron/main.js",
-    "pack:win": "npm run build:native && electron-builder --win",
-    "pack:win:dir": "npm run build:native && electron-builder --win --dir",
-    "pack:mac": "npm run build:native && electron-builder --mac",
-    "pack:linux": "npm run build:native && electron-builder --linux",
-    "pack:all": "npm run build:native && electron-builder -mwl"
+    "pack:win": "npm run clean:electron && npm run build:native && electron-builder --win",
+    "pack:win:dir": "npm run clean:electron && npm run build:native && electron-builder --win --dir",
+    "pack:mac": "npm run clean:electron && npm run build:native && electron-builder --mac",
+    "pack:linux": "npm run clean:electron && npm run build:native && electron-builder --linux",
+    "pack:all": "npm run clean:electron && npm run build:native && electron-builder -mwl",
+    "clean": "npm run clean:dist && npm run clean:coverage && npm run clean:logs",
+    "clean:dist": "rimraf dist",
+    "clean:electron": "rimraf dist/electron",
+    "clean:coverage": "rimraf coverage allure-results allure-report",
+    "clean:logs": "rimraf logs",
+    "clean:node_modules": "rimraf node_modules",
+    "clean:all": "npm run clean && npm run clean:node_modules",
+    "rebuild": "npm run clean && npm install"
   },
   "prettier": {
     "overrides": [
@@ -101,12 +111,14 @@
     "files": [
       "dist/flock-native/**/*",
       "projects/flock-native/electron/**/*",
+      "projects/flock-native/transfer/**/*",
       "node_modules/**/*",
       "package.json"
     ],
     "asarUnpack": [
       "node_modules/@straiforos/instagramtobluesky/**/*",
-      "node_modules/@ffprobe-installer/**/*"
+      "node_modules/@ffprobe-installer/**/*",
+      "projects/flock-native/transfer/**/*"
     ],
     "extraMetadata": {
       "main": "projects/flock-native/electron/main.js"
@@ -238,7 +250,7 @@
     "@wdio/types": "^9.19.1",
     "allure-commandline": "^2.34.1",
     "angular-eslint": "^20.2.0",
-    "chromedriver": "^140.0.3",
+    "chromedriver": "^130.0.4",
     "concurrently": "^9.2.0",
     "cross-env": "^10.0.0",
     "devtools": "^8.42.0",
@@ -259,9 +271,11 @@
     "pino": "^9.9.5",
     "pino-pretty": "^13.1.1",
     "puppeteer": "^24.22.0",
+    "rimraf": "^6.0.1",
     "sharp": "^0.34.4",
     "typescript": "~5.8.2",
     "wait-on": "^8.0.4",
+    "wdio-electron-service": "^9.1.2",
     "webdriverio-mcp": "^1.0.3"
   }
 }

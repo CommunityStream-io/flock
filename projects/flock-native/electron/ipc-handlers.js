@@ -1,5 +1,6 @@
 const { ipcMain, dialog, app } = require('electron');
 const fs = require('fs').promises;
+const fsSync = require('fs');
 const path = require('path');
 const { spawn } = require('child_process');
 const extract = require('extract-zip');
@@ -314,10 +315,20 @@ function setupIpcHandlers(mainWindow) {
       const appPath = app.getAppPath();
       const appRoot = app.isPackaged ? appPath : path.join(appPath, '../../..');
       
+      // Determine the correct Node.js executable
+      // In packaged apps, use process.execPath (Electron's bundled Node.js)
+      // In development, use 'node' from system PATH
+      let nodeExecutable = command;
+      if (command === 'node') {
+        // Use the Electron runtime's Node.js
+        nodeExecutable = process.execPath;
+        console.log('🚀 [ELECTRON MAIN] Using bundled Node.js runtime:', nodeExecutable);
+      }
+      
       console.log('=====================================');
       console.log('🚀 [ELECTRON MAIN] CLI EXECUTION STARTED');
       console.log('🚀 [ELECTRON MAIN] Process ID:', processId);
-      console.log('🚀 [ELECTRON MAIN] Command:', command);
+      console.log('🚀 [ELECTRON MAIN] Command:', command, '→', nodeExecutable);
       console.log('🚀 [ELECTRON MAIN] Args (raw):', args);
       console.log('🚀 [ELECTRON MAIN] App Root:', appRoot);
       console.log('🚀 [ELECTRON MAIN] App Path:', appPath);
@@ -325,16 +336,50 @@ function setupIpcHandlers(mainWindow) {
       console.log('🚀 [ELECTRON MAIN] Working Dir:', options.cwd || appRoot);
       console.log('🚀 [ELECTRON MAIN] Custom Env Vars:', Object.keys(options.env || {}).join(', '));
       
-      // Resolve CLI paths relative to app root
-      // If an arg looks like it's pointing to node_modules or a local path, resolve it
-      const resolvedArgs = args.map(arg => {
-        if (typeof arg === 'string' && !path.isAbsolute(arg) && (arg.includes('node_modules') || arg.includes('/'))) {
-          const resolved = path.join(appRoot, arg);
-          console.log('🚀 [ELECTRON MAIN] Resolved arg:', arg, '→', resolved);
-          return resolved;
-        }
-        return arg;
-      });
+        // Resolve CLI paths relative to app root
+        // If an arg looks like it's pointing to node_modules or a local path, resolve it
+        // In packaged apps, check for .asar.unpacked directory (asarUnpack extracts there)
+        const resolvedArgs = args.map(arg => {
+          if (typeof arg === 'string' && !path.isAbsolute(arg) && (arg.includes('node_modules') || arg.includes('/'))) {
+            // In packaged apps, modules in asarUnpack are extracted to .asar.unpacked
+            if (app.isPackaged) {
+              // The appPath in packaged mode points to the .asar file or its parent
+              // We need to check multiple possible locations
+              const possiblePaths = [];
+              
+              // Option 1: .asar.unpacked next to .asar file
+              if (appPath.includes('.asar')) {
+                possiblePaths.push(path.join(appPath + '.unpacked', arg));
+              } else {
+                // Option 2: app.asar.unpacked in resources folder
+                possiblePaths.push(path.join(appPath, '..', 'app.asar.unpacked', arg));
+                possiblePaths.push(path.join(appPath, 'app.asar.unpacked', arg));
+              }
+              
+              // Option 3: Regular path (fallback)
+              possiblePaths.push(path.join(appRoot, arg));
+              
+              // Try each path and use the first one that exists
+              for (const testPath of possiblePaths) {
+                if (fsSync.existsSync(testPath)) {
+                  console.log('🚀 [ELECTRON MAIN] Resolved arg (unpacked):', arg, '→', testPath);
+                  return testPath;
+                }
+              }
+              
+              // If none exist, log all attempts
+              console.warn('🚀 [ELECTRON MAIN] ⚠️ Could not resolve arg, tried paths:');
+              possiblePaths.forEach(p => console.warn('  -', p));
+              return possiblePaths[possiblePaths.length - 1]; // Return last attempt
+            }
+            
+            // Development mode - simple resolution
+            const resolved = path.join(appRoot, arg);
+            console.log('🚀 [ELECTRON MAIN] Resolved arg:', arg, '→', resolved);
+            return resolved;
+          }
+          return arg;
+        });
       
       // Resolve test data path if it's a relative path
       const mergedEnv = { ...process.env, ...options.env };
@@ -345,12 +390,14 @@ function setupIpcHandlers(mainWindow) {
         mergedEnv.ARCHIVE_FOLDER = resolvedPath;
       }
       
-      console.log('🚀 [ELECTRON MAIN] Final Args:', resolvedArgs);
-      console.log('=====================================');
-      
-      // Spawn the CLI process
-      // Don't use shell:true as it causes ENOENT errors in packaged apps
-      const child = spawn(command, resolvedArgs, {
+        console.log('🚀 [ELECTRON MAIN] Final Args:', resolvedArgs);
+        console.log('🚀 [ELECTRON MAIN] Command to execute:', nodeExecutable);
+        console.log('=====================================');
+        
+        // Spawn the CLI process
+        // Use bundled Node.js runtime (process.execPath) instead of system 'node'
+        // This ensures the app works without requiring Node.js to be installed
+        const child = spawn(nodeExecutable, resolvedArgs, {
         cwd: options.cwd || appRoot,
         env: mergedEnv,
         shell: false, // Direct spawn without shell wrapper
@@ -363,7 +410,8 @@ function setupIpcHandlers(mainWindow) {
       // Handle stdout
       child.stdout.on('data', (data) => {
         const output = data.toString();
-        console.log('CLI stdout:', output);
+        console.log('🚀 [ELECTRON MAIN] CLI stdout:', output);
+        console.log('🚀 [ELECTRON MAIN] Sending cli-output event to renderer');
         mainWindow.webContents.send('cli-output', {
           processId: processId,
           type: 'stdout',
