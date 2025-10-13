@@ -9,6 +9,7 @@ import {
   Upload,
   StepLayout,
   StepRoute,
+  Support,
   uploadValidGuard,
   authValidGuard,
   extractArchiveResolver,
@@ -28,6 +29,11 @@ export const routes: Routes = [
     path: 'licenses',
     component: Licenses,
     title: 'Licenses & Attributions',
+  },
+  {
+    path: 'support',
+    component: Support,
+    title: 'Support Flock',
   },
   {
     path: 'step',

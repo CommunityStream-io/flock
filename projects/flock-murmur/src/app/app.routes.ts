@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { LandingPage, Licenses } from 'shared';
+import { LandingPage, Licenses, Support } from 'shared';
 
 export const routes: Routes = [
   {
@@ -11,6 +11,11 @@ export const routes: Routes = [
     path: 'licenses',
     component: Licenses,
     title: 'Licenses & Attributions',
+  },
+  {
+    path: 'support',
+    component: Support,
+    title: 'Support Flock',
   },
   {
     path: '**',
