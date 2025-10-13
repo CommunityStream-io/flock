@@ -2,6 +2,21 @@
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/H2H51XLXW)
 
+## 📥 **Download Flock Native**
+
+**Desktop App Available Now!** Download the native desktop application for your platform:
+
+[![Download Latest Release](https://img.shields.io/github/v/release/CommunityStream-io/flock?label=Download&style=for-the-badge&logo=github)](https://github.com/CommunityStream-io/flock/releases/latest)
+
+**Supported Platforms:**
+- 🪟 **Windows** - Windows 10 or later (64-bit)
+- 🍎 **macOS** - macOS 10.15+ (Universal: Intel & Apple Silicon)
+- 🐧 **Linux** - Ubuntu 20.04+ (AppImage, DEB, RPM)
+
+📖 **[Installation Guide](INSTALLATION.md)** - Platform-specific installation instructions
+
+---
+
 A **flock** of Angular applications soaring through the social media migration skies! Each variant has its own personality while sharing the same nest of components and services. Built with a unified M3 Material design that keeps our flock flying in perfect formation.
 
 ## 🏗️ **Architecture & Documentation**
@@ -151,7 +166,7 @@ ng build --configuration=development
 
 - **🎭 Mirage Bird (flock-mirage)**: Creates beautiful illusions for development and testing
 - **🌊 Murmuration Bird (flock-murmur)**: Dances gracefully through web browsers with JSZip
-- **🦅 Native Bird (flock-native)**: Soars with full desktop power using Electron and Node.js
+- **🦅 Native Bird (flock-native)**: ⬇️ **[Download available!](https://github.com/CommunityStream-io/flock/releases/latest)** Soars with full desktop power using Electron and Node.js
 - **🔧 Shared Wisdom**: Environment-aware services that adapt to each bird's needs
 - **🧩 Common Nest**: Reusable components that work perfectly in any environment
 - **📊 Flight Tracking**: Real-time migration progress monitoring
