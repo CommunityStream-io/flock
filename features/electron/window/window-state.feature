@@ -1,9 +1,10 @@
-@electron @platform:electron @window
+@electron @core @parallel
 Feature: Window State Management
   As a Flock Native user
   I want the application window to remember my preferences
   So that I have a consistent experience across sessions
   
+  @smoke
   Scenario: Window persists size on restart
     Given the Electron app is running
     When I resize the window to 1400x1000

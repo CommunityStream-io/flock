@@ -1,4 +1,4 @@
-@electron @platform:electron @ipc @smoke
+@electron @integration @smoke @critical @serial
 Feature: CLI Integration via IPC
   As a Flock Native user
   I want the migration CLI to execute successfully via Electron IPC
@@ -8,13 +8,11 @@ Feature: CLI Integration via IPC
     Given the Electron app is running
     And I am on the migration step
 
-  @critical
   Scenario: CLI path is correctly resolved in packaged app
     When I check the CLI path resolution
     Then the CLI executable should exist in the unpacked directory
     And the path should point to "@straiforos/instagramtobluesky/dist/main.js"
     
-  @critical
   Scenario: Execute CLI and receive output
     Given I have valid Bluesky credentials
     And I have selected a test Instagram archive
@@ -23,7 +21,6 @@ Feature: CLI Integration via IPC
     And I should receive a valid process ID
     And I should receive CLI output via IPC events
     
-  @critical
   Scenario: CLI execution completes successfully
     Given I have valid Bluesky credentials
     And I have selected the test video archive

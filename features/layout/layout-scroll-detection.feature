@@ -6,7 +6,7 @@ Feature: Layout Scroll Detection - Prevent Viewport Issues
 
   Background:
 
-  @layout @scroll-detection @viewport @mobile
+  @ui @edge-case @parallel
   Scenario: Step layout should not have scroll issues on mobile devices
     When I navigate to the upload step
     Then the step layout should not have scroll bars
@@ -26,7 +26,7 @@ Feature: Layout Scroll Detection - Prevent Viewport Issues
     And the step layout should not cause page scroll
     And the step navigation footer should be visible without scrolling
 
-  @layout @scroll-detection @viewport @tablet
+  @ui @edge-case @parallel
   Scenario: Step layout should not have scroll issues on tablet devices
     When I resize the browser to tablet size
     And I navigate to the upload step
@@ -47,7 +47,7 @@ Feature: Layout Scroll Detection - Prevent Viewport Issues
     And the step layout should not cause page scroll
     And the step navigation footer should be visible without scrolling
 
-  @layout @scroll-detection @viewport @desktop
+  @ui @edge-case @parallel
   Scenario: Step layout should not have scroll issues on desktop devices
     When I resize the browser to desktop size
     And I navigate to the upload step
@@ -68,7 +68,7 @@ Feature: Layout Scroll Detection - Prevent Viewport Issues
     And the step layout should not cause page scroll
     And the step navigation footer should be visible without scrolling
 
-  @layout @scroll-detection @splash-screen @transitions
+  @ui @edge-case @parallel
   Scenario: Splash screen should prevent step scrolling during transitions
     When I navigate to the upload step
     And the splash screen appears during navigation
@@ -86,7 +86,7 @@ Feature: Layout Scroll Detection - Prevent Viewport Issues
     And the page should return to its original state
     And no scroll issues should remain
 
-  @layout @scroll-detection @splash-screen @transitions
+  @ui @edge-case @parallel
   Scenario: Multiple step transitions should not accumulate scroll issues
     When I navigate to the upload step
     And the splash screen appears and disappears
@@ -100,7 +100,7 @@ Feature: Layout Scroll Detection - Prevent Viewport Issues
     And no layout problems should persist
     And the step layout should maintain proper viewport constraints
 
-  @layout @scroll-detection @splash-screen @transitions
+  @ui @edge-case @parallel
   Scenario: Step layout should handle window resize without scroll issues
     When I navigate to the config step
     And I resize the browser window to mobile size
@@ -121,7 +121,7 @@ Feature: Layout Scroll Detection - Prevent Viewport Issues
     And the step layout should remain fully accessible
     And no scroll issues should be introduced
 
-  @layout @scroll-detection @viewport @responsive
+  @ui @edge-case @parallel
   Scenario: Step layout should maintain fixed viewport across all screen sizes
     When I resize the browser to mobile size
     And I navigate to any step
@@ -144,7 +144,7 @@ Feature: Layout Scroll Detection - Prevent Viewport Issues
     And the step navigation should remain accessible
     And no vertical scrolling should be possible
 
-  @layout @scroll-detection @splash-screen @accessibility
+  @ui @accessibility @edge-case @parallel
   Scenario: Step layout should maintain accessibility during splash screen transitions
     When I navigate to the upload step
     And the splash screen appears during navigation
@@ -163,7 +163,7 @@ Feature: Layout Scroll Detection - Prevent Viewport Issues
     And keyboard navigation should be re-enabled
     And no accessibility issues should remain
 
-  @layout @scroll-detection @viewport @edge-case
+  @ui @edge-case @parallel
   Scenario: Step layout should handle rapid navigation without scroll issues
     When I rapidly navigate between steps
     And multiple splash screens appear and disappear

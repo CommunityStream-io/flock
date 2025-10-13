@@ -1,4 +1,4 @@
-@electron @platform:electron @upload
+@electron @upload @core @parallel
 Feature: Native File Dialog
   As a Flock Native user
   I want to use my operating system's native file picker

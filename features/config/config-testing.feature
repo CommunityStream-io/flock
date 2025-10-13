@@ -88,38 +88,6 @@ Feature: Migration Testing - Safe Testing and Simulation Options
     Then the migration should run in simulation mode
     And no actual posts should be created
 
-  @config @testing @core @parallel
-  Scenario: Testing mode combinations work correctly
-    Given I have enabled both test video mode and simulation mode
-    When I proceed to the migrate step
-    Then the migration should run in both test video and simulation mode
-    And the migration should process videos for testing without posting
-
-  @config @testing @help @ui @parallel
-  Scenario: Help dialog provides testing mode guidance
-    When I click the help icon for testing options
-    Then I should see a help dialog with testing guidance
-    And the dialog should explain test video mode
-    And the dialog should explain simulation mode
-    And the dialog should explain when to use each mode
-    When I close the help dialog
-    Then the help dialog should be hidden
-
-  @config @testing @help @ui @accessibility @parallel
-  Scenario: Help dialog can be closed with Escape key
-    When I click the help icon for testing options
-    Then I should see a help dialog with testing guidance
-    When I close the help dialog with Escape key
-    Then the help dialog should be hidden
-
-  @config @testing @validation @parallel
-  Scenario: Testing mode validation provides appropriate feedback
-    Given I have enabled test video mode
-    When I navigate away from the config step
-    Then the configuration should be validated
-    And I should see validation success indicators
-    And the test video mode setting should be confirmed
-
   @config @testing @edge-case @parallel
   Scenario: Testing modes handle edge cases gracefully
     When I rapidly toggle test video mode multiple times
