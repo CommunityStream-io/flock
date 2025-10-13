@@ -310,30 +310,51 @@ function setupIpcHandlers(mainWindow) {
     try {
       const processId = Date.now().toString();
       
+      // Get the app root directory
+      const appPath = app.getAppPath();
+      const appRoot = app.isPackaged ? appPath : path.join(appPath, '../../..');
+      
       console.log('=====================================');
       console.log('🚀 [ELECTRON MAIN] CLI EXECUTION STARTED');
       console.log('🚀 [ELECTRON MAIN] Process ID:', processId);
       console.log('🚀 [ELECTRON MAIN] Command:', command);
-      console.log('🚀 [ELECTRON MAIN] Args:', args);
-      console.log('🚀 [ELECTRON MAIN] Working Dir:', options.cwd || process.cwd());
+      console.log('🚀 [ELECTRON MAIN] Args (raw):', args);
+      console.log('🚀 [ELECTRON MAIN] App Root:', appRoot);
+      console.log('🚀 [ELECTRON MAIN] App Path:', appPath);
+      console.log('🚀 [ELECTRON MAIN] Is Packaged:', app.isPackaged);
+      console.log('🚀 [ELECTRON MAIN] Working Dir:', options.cwd || appRoot);
       console.log('🚀 [ELECTRON MAIN] Custom Env Vars:', Object.keys(options.env || {}).join(', '));
+      
+      // Resolve CLI paths relative to app root
+      // If an arg looks like it's pointing to node_modules or a local path, resolve it
+      const resolvedArgs = args.map(arg => {
+        if (typeof arg === 'string' && !path.isAbsolute(arg) && (arg.includes('node_modules') || arg.includes('/'))) {
+          const resolved = path.join(appRoot, arg);
+          console.log('🚀 [ELECTRON MAIN] Resolved arg:', arg, '→', resolved);
+          return resolved;
+        }
+        return arg;
+      });
       
       // Resolve test data path if it's a relative path
       const mergedEnv = { ...process.env, ...options.env };
       if (mergedEnv.ARCHIVE_FOLDER && !path.isAbsolute(mergedEnv.ARCHIVE_FOLDER)) {
-        const resolvedPath = path.resolve(process.cwd(), mergedEnv.ARCHIVE_FOLDER);
-        console.log('🚀 [ELECTRON MAIN] Resolving relative path:', mergedEnv.ARCHIVE_FOLDER);
+        const resolvedPath = path.join(appRoot, mergedEnv.ARCHIVE_FOLDER);
+        console.log('🚀 [ELECTRON MAIN] Resolving relative archive path:', mergedEnv.ARCHIVE_FOLDER);
         console.log('🚀 [ELECTRON MAIN] Resolved to:', resolvedPath);
         mergedEnv.ARCHIVE_FOLDER = resolvedPath;
       }
       
+      console.log('🚀 [ELECTRON MAIN] Final Args:', resolvedArgs);
       console.log('=====================================');
       
       // Spawn the CLI process
-      const child = spawn(command, args, {
-        cwd: options.cwd || process.cwd(),
+      // Don't use shell:true as it causes ENOENT errors in packaged apps
+      const child = spawn(command, resolvedArgs, {
+        cwd: options.cwd || appRoot,
         env: mergedEnv,
-        shell: true
+        shell: false, // Direct spawn without shell wrapper
+        windowsHide: true // Hide console window on Windows
       });
 
       // Store the process

@@ -104,6 +104,10 @@
       "node_modules/**/*",
       "package.json"
     ],
+    "asarUnpack": [
+      "node_modules/@straiforos/instagramtobluesky/**/*",
+      "node_modules/@ffprobe-installer/**/*"
+    ],
     "extraMetadata": {
       "main": "projects/flock-native/electron/main.js"
     },
