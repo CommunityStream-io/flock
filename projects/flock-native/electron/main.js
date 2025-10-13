@@ -27,7 +27,8 @@ function createWindow() {
 
   // Load the app
   // Use app.isPackaged to reliably detect production vs development
-  const isDev = !app.isPackaged;
+  // Allow override with ELECTRON_IS_PACKAGED env var for testing
+  const isDev = !app.isPackaged && !process.env.ELECTRON_IS_PACKAGED;
   
   if (isDev) {
     // Development mode - load from dev server

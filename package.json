@@ -73,6 +73,7 @@
     "start:native": "concurrently --kill-others --success first \"ng serve flock-native --port=4201\" \"wait-on http://localhost:4201 && electron projects/flock-native/electron/main.js\"",
     "build:native": "node projects/flock-native/scripts/create-icon.js && ng build flock-native --configuration=production",
     "electron:dev": "electron projects/flock-native/electron/main.js",
+    "electron:prod": "cross-env ELECTRON_IS_PACKAGED=1 electron projects/flock-native/electron/main.js",
     "pack:win": "npm run build:native && electron-builder --win",
     "pack:win:dir": "npm run build:native && electron-builder --win --dir",
     "pack:mac": "npm run build:native && electron-builder --mac",
