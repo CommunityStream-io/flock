@@ -40,8 +40,15 @@
     "e2e:debug": "cross-env HEADLESS=true DEBUG_TESTS=true wdio run wdio.conf.ts",
     "e2e:validation": "cross-env HEADLESS=true TEST_TAGS=\"@bluesky-auth and @validation\" wdio run wdio.conf.ts",
     "e2e:debug-validation": "cross-env HEADLESS=true DEBUG_TESTS=true TEST_TAGS=\"@bluesky-auth and @validation\" wdio run wdio.conf.ts",
-    "e2e:electron": "wdio run wdio.electron.conf.ts",
-    "e2e:electron:build": "npm run pack:win:dir && wdio run wdio.electron.conf.ts",
+    "e2e:electron": "cross-env PLATFORM=electron wdio run wdio.electron.conf.ts",
+    "e2e:electron:build": "npm run pack:win:dir && cross-env PLATFORM=electron wdio run wdio.electron.conf.ts",
+    "e2e:web": "concurrently --kill-others --success first \"ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0\" \"wait-on http://localhost:4200 && cross-env PLATFORM=web wdio run wdio.web.conf.ts\"",
+    "e2e:web:headless": "concurrently --kill-others --success first \"ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0\" \"wait-on http://localhost:4200 && cross-env PLATFORM=web HEADLESS=true wdio run wdio.web.conf.ts\"",
+    "e2e:web:debug": "concurrently --kill-others --success first \"ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0\" \"wait-on http://localhost:4200 && cross-env PLATFORM=web DEBUG=true wdio run wdio.web.conf.ts\"",
+    "e2e:core": "cross-env TEST_TAGS='@core' npm run e2e",
+    "e2e:smoke": "cross-env TEST_TAGS='@smoke' npm run e2e",
+    "e2e:ci:web": "concurrently --kill-others --success first \"ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0\" \"wait-on http://localhost:4200 && cross-env CI=true PLATFORM=web HEADLESS=true wdio run wdio.web.conf.ts\"",
+    "e2e:ci:electron": "cross-env CI=true PLATFORM=electron npm run e2e:electron:build",
     "allure:generate": "npx allure generate allure-results",
     "allure:open": "npx allure open allure-report",
     "allure:serve": "npx allure serve allure-results",
@@ -116,9 +123,9 @@
       "package.json"
     ],
     "asarUnpack": [
-      "node_modules/@straiforos/instagramtobluesky/**/*",
-      "node_modules/@ffprobe-installer/**/*",
-      "projects/flock-native/transfer/**/*"
+      "**/node_modules/@straiforos/instagramtobluesky/**",
+      "**/node_modules/@ffprobe-installer/**",
+      "**/projects/flock-native/transfer/**"
     ],
     "extraMetadata": {
       "main": "projects/flock-native/electron/main.js"

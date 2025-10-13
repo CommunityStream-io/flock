@@ -1,17 +1,10 @@
 import type { Options } from '@wdio/types';
 import { getTimeoutConfig } from './features/support/timeout-config';
-import path from 'path';
 
 // Get timeout configuration based on environment
 const timeouts = getTimeoutConfig(process.env.CI === 'true');
 
-// Determine which Electron build to test
-const electronBuildDir = process.env.ELECTRON_BUILD_DIR || 'dist/electron/win-unpacked';
-const electronAppPath = path.join(process.cwd(), electronBuildDir, 'Flock Native.exe');
-
-console.log('🦅 [WDIO ELECTRON] Testing Electron app at:', electronAppPath);
-
-export const config: Options.Testrunner & { capabilities: any[] } = {
+export const config: Options.Testrunner = {
   //
   // ====================
   // Runner Configuration
@@ -26,7 +19,7 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
   //
   specs: [
     './features/core/**/*.feature',
-    './features/electron/**/*.feature'
+    './features/web/**/*.feature'
   ],
 
   exclude: [],
@@ -36,19 +29,19 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
   // Capabilities
   // ============
   //
-  maxInstances: 1,
+  maxInstances: 5,
 
   capabilities: [
     {
-      maxInstances: 1,
-      browserName: 'electron',
-      'wdio:electron Options': {
-        binary: electronAppPath,
-        args: [
-          '--disable-dev-shm-usage',
-        ],
-      },
-    },
+      maxInstances: 5,
+      browserName: 'chrome',
+      acceptInsecureCerts: true,
+      'goog:chromeOptions': {
+        args: process.env.HEADLESS === 'true' 
+          ? ['--headless', '--disable-gpu', '--no-sandbox', '--disable-dev-shm-usage']
+          : ['--disable-dev-shm-usage']
+      }
+    }
   ],
 
   //
@@ -58,7 +51,7 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
   //
   logLevel: 'info',
   bail: 0,
-  baseUrl: 'app:///', // Electron apps use app:// protocol
+  baseUrl: process.env.BASE_URL || 'http://localhost:4200',
   waitforTimeout: timeouts.implicit,
   connectionRetryTimeout: timeouts.connectionRetry,
   connectionRetryCount: 3,
@@ -66,19 +59,7 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
   //
   // Test runner services
   //
-  services: [
-    [
-      'electron',
-      {
-        appPath: electronAppPath,
-        appArgs: [],
-        chromedriver: {
-          port: 9515,
-          logFileName: 'chromedriver.log',
-        },
-      },
-    ],
-  ],
+  services: ['chromedriver'],
 
   //
   // Framework
@@ -99,6 +80,7 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
 
   //
   // Cucumber Configuration
+  // ==================
   //
   cucumberOpts: {
     require: ['./features/step-definitions/**/*.ts', './features/support/**/*.ts'],
@@ -110,11 +92,9 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
     snippets: true,
     source: true,
     strict: false,
-    // Run core tests + electron tests for current OS
-    // OS tags: @os:windows, @os:macos, @os:linux
-    // A test with no @os tag runs on all OSes
-    // A test with @os:windows only runs on Windows
-    tagExpression: process.env.TEST_TAGS || `(@core or @electron) and not @skip and (not @os or @os:${process.platform === 'win32' ? 'windows' : process.platform === 'darwin' ? 'macos' : 'linux'})`,
+    // Run core tests and web-specific tests
+    // Allow override with TEST_TAGS environment variable
+    tagExpression: process.env.TEST_TAGS || '(@core or @web) and not @skip',
     timeout: timeouts.step,
     ignoreUndefinedDefinitions: false,
   },
@@ -125,13 +105,15 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
   // =====
   //
   before: function (capabilities, specs) {
-    console.log('🦅 [WDIO ELECTRON] Starting Electron test');
-    console.log('🦅 [WDIO ELECTRON] App path:', electronAppPath);
-    console.log('🦅 [WDIO ELECTRON] Capabilities:', JSON.stringify(capabilities, null, 2));
+    console.log('🌐 [WDIO WEB] Starting Web (Mirage) test');
+    console.log('🌐 [WDIO WEB] Base URL:', config.baseUrl);
+    console.log('🌐 [WDIO WEB] Platform:', process.env.PLATFORM || 'web');
+    console.log('🌐 [WDIO WEB] Headless:', process.env.HEADLESS === 'true');
+    console.log('🌐 [WDIO WEB] Tag Expression:', (config.cucumberOpts as any).tagExpression);
   },
 
   beforeScenario: function (world) {
-    console.log('🦅 [WDIO ELECTRON] Scenario:', world.pickle.name);
+    console.log('🌐 [WDIO WEB] Scenario:', world.pickle.name);
   },
 
   afterScenario: async function (world, result, context) {
@@ -146,7 +128,9 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
   },
 
   after: function (result, capabilities, specs) {
-    console.log('🦅 [WDIO ELECTRON] Test completed with status:', result);
+    console.log('🌐 [WDIO WEB] Test completed with status:', result);
   },
 };
+
+
 
