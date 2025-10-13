@@ -37,8 +37,27 @@ function createWindow() {
     mainWindow.webContents.openDevTools();
   } else {
     // Production mode - load from built files
-    mainWindow.loadFile(path.join(__dirname, '../../../dist/flock-native/browser/index.html'));
+    // Use app.getAppPath() to get the correct path in packaged apps
+    const appPath = app.getAppPath();
+    const indexPath = path.join(appPath, 'dist/flock-native/browser/index.html');
+    
+    console.log('🔍 Loading from:', indexPath);
+    mainWindow.loadFile(indexPath).catch(err => {
+      console.error('❌ Failed to load index.html:', err);
+      console.error('📂 App path:', appPath);
+      console.error('📄 Index path:', indexPath);
+    });
   }
+
+  // Handle load failures
+  mainWindow.webContents.on('did-fail-load', (event, errorCode, errorDescription, validatedURL) => {
+    console.error('❌ Page failed to load:', errorDescription, 'URL:', validatedURL);
+  });
+
+  // Log when page loads
+  mainWindow.webContents.on('did-finish-load', () => {
+    console.log('✅ Page loaded successfully');
+  });
 
   // Handle window closed
   mainWindow.on('closed', () => {
