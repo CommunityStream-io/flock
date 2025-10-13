@@ -108,14 +108,18 @@ jobs:
         id: create_release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_NOTES: ${{ steps.generate_notes.outputs.notes }}
         run: |
           TAG_NAME="${{ github.event_name == 'workflow_dispatch' && format('v{0}', github.event.inputs.version) || github.ref_name }}"
+          
+          # Write notes to file to avoid shell escaping issues
+          echo "$RELEASE_NOTES" > release_notes.md
           
           # Create release using gh CLI
           gh release create "$TAG_NAME" \
             --draft \
             --title "Flock Native v${{ steps.get_version.outputs.version }}" \
-            --notes '${{ steps.generate_notes.outputs.notes }}' \
+            --notes-file release_notes.md \
             --repo ${{ github.repository }}
           
           # Get release data for outputs
