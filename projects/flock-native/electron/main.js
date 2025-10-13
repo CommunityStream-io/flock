@@ -26,7 +26,8 @@ function createWindow() {
   setupIpcHandlers(mainWindow);
 
   // Load the app
-  const isDev = process.env.NODE_ENV !== 'production';
+  // Use app.isPackaged to reliably detect production vs development
+  const isDev = !app.isPackaged;
   
   if (isDev) {
     // Development mode - load from dev server
