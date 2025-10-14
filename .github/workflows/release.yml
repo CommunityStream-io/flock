@@ -215,7 +215,7 @@ jobs:
           sleep 2
           
           # Verify tag exists on GitHub before creating release
-          if ! gh api repos/${{ github.repository }}/git/refs/tags/${{ steps.get_version.outputs.version }} >/dev/null 2>&1; then
+          if ! gh api "repos/${{ github.repository }}/git/refs/tags/${TAG_NAME}" >/dev/null 2>&1; then
             echo "⚠️  Tag not yet visible on GitHub API, waiting..."
             sleep 3
           fi
