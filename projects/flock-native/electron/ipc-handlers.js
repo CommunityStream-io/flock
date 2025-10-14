@@ -404,20 +404,8 @@ function setupIpcHandlers(mainWindow, sentryInstance) {
 
       // Use Node's require.resolve to find the package main script
       // This automatically handles both dev and packaged environments
-      let resolvedScriptPath;
-      try {
-        // Try to resolve the CLI executable directly
-        resolvedScriptPath = require.resolve('@straiforos/instagramtobluesky/dist/main.js');
-        console.log('🚀 [ELECTRON MAIN] ✅ Resolved script path via require.resolve:', resolvedScriptPath);
-      } catch (error) {
-        console.warn('🚀 [ELECTRON MAIN] ⚠️ require.resolve failed, falling back to manual resolution:', error.message);
-        
-        // Fallback: try to find the package in node_modules
-        const packagePath = require.resolve('@straiforos/instagramtobluesky/package.json');
-        const packageDir = path.dirname(packagePath);
-        resolvedScriptPath = path.join(packageDir, 'dist', 'main.js');
-        console.log('🚀 [ELECTRON MAIN] Fallback script path:', resolvedScriptPath);
-      }
+      let resolvedScriptPath = require.resolve('@straiforos/instagramtobluesky/dist/main.js');
+      console.log('🚀 [ELECTRON MAIN] ✅ Resolved script path via require.resolve:', resolvedScriptPath);
       
       // Fork the utility process using Electron's API
       // This handles packaged apps correctly without process.execPath issues
