@@ -366,12 +366,17 @@ function setupIpcHandlers(mainWindow, sentryInstance) {
       // In packaged apps, app.getAppPath() points to the app.asar file.
       // Use its directory as the working root, not the .asar file itself.
       const appRoot = app.isPackaged ? path.dirname(appPath) : path.join(appPath, '../../..');
-      const cliRelativePath = 'node_modules/@straiforos/instagramtobluesky/dist/main.js';
       
-      // Try to resolve the CLI path using the same logic as execute-cli
+      // Try to resolve the CLI path using external resources first, then fallback to node_modules
       const possiblePaths = [];
       
       if (app.isPackaged) {
+        // Use external CLI package from extraResources
+        const externalCliPath = path.join(process.resourcesPath, 'cli-package', 'dist', 'main.js');
+        possiblePaths.push(externalCliPath);
+        
+        // Fallback to old node_modules path
+        const cliRelativePath = 'node_modules/@straiforos/instagramtobluesky/dist/main.js';
         if (appPath.includes('.asar')) {
           possiblePaths.push(path.join(appPath + '.unpacked', cliRelativePath));
         } else {
@@ -380,6 +385,8 @@ function setupIpcHandlers(mainWindow, sentryInstance) {
         }
         possiblePaths.push(path.join(appRoot, cliRelativePath));
       } else {
+        // Development mode - use node_modules
+        const cliRelativePath = 'node_modules/@straiforos/instagramtobluesky/dist/main.js';
         possiblePaths.push(path.join(appRoot, cliRelativePath));
       }
       
@@ -456,19 +463,25 @@ function setupIpcHandlers(mainWindow, sentryInstance) {
         console.log('🚀 [ELECTRON MAIN] Resolving script path:', scriptPath);
         
         if (app.isPackaged) {
-          // In packaged apps, modules in asarUnpack are extracted to .asar.unpacked
+          // In packaged apps, try external CLI package first, then fallback to asarUnpack
           const possiblePaths = [];
           
-          // Option 1: .asar.unpacked next to .asar file
+          // Option 1: External CLI package from extraResources
+          if (scriptPath.includes('@straiforos/instagramtobluesky')) {
+            const externalCliPath = path.join(process.resourcesPath, 'cli-package', 'dist', 'main.js');
+            possiblePaths.push(externalCliPath);
+          }
+          
+          // Option 2: .asar.unpacked next to .asar file
           if (appPath.includes('.asar')) {
             possiblePaths.push(path.join(appPath + '.unpacked', scriptPath));
           } else {
-            // Option 2: app.asar.unpacked in resources folder
+            // Option 3: app.asar.unpacked in resources folder
             possiblePaths.push(path.join(appPath, '..', 'app.asar.unpacked', scriptPath));
             possiblePaths.push(path.join(appPath, 'app.asar.unpacked', scriptPath));
           }
           
-          // Option 3: Regular path (fallback)
+          // Option 4: Regular path (fallback)
           possiblePaths.push(path.join(appRoot, scriptPath));
           
           // Try each path and use the first one that exists

@@ -12,38 +12,33 @@ module.exports = async function afterPack(context) {
     const resourcesDir = context.appOutDir && path.join(context.appOutDir, 'resources');
     if (!resourcesDir) return;
 
+    // Check external CLI package from extraResources
+    const externalCliPath = path.join(resourcesDir, 'cli-package');
+    const cliExists = fs.existsSync(externalCliPath);
+    const cliMainExists = fs.existsSync(path.join(externalCliPath, 'dist', 'main.js'));
+    
+    // Check essential asarUnpack modules
     const unpackedDir = path.join(resourcesDir, 'app.asar.unpacked', 'node_modules');
-    const checks = [
+    const essentialChecks = [
       ['@sentry', '@sentry unpacked'],
       ['electron-log', 'electron-log unpacked'],
-      ['@ffprobe-installer', 'ffprobe unpacked'],
-      ['@atproto', 'atproto unpacked'],
-      ['byte-size', 'byte-size unpacked'],
-      ['dotenv', 'dotenv unpacked'],
-      ['fluent-ffmpeg', 'fluent-ffmpeg unpacked'],
-      ['luxon', 'luxon unpacked'],
-      ['multiformats', 'multiformats unpacked'],
-      ['multihashes', 'multihashes unpacked'],
-      ['pino', 'pino unpacked'],
-      ['pino-pretty', 'pino-pretty unpacked'],
-      ['pino-std-serializers', 'pino-std-serializers unpacked'],
-      ['process', 'process unpacked'],
-      ['sharp', 'sharp unpacked'],
-      ['zod', 'zod unpacked'],
-      ['iso-datestring-validator', 'iso-datestring-validator unpacked'],
-      ['graphemer', 'graphemer unpacked'],
-      ['uint8arrays', 'uint8arrays unpacked'],
-      ['await-lock', 'await-lock unpacked'],
-      ['tlds', 'tlds unpacked']
+      ['@ffprobe-installer', 'ffprobe unpacked']
     ];
 
     const results = [];
-    for (const [folder, label] of checks) {
-      results.push({ label, exists: fs.existsSync(path.join(unpackedDir, folder)) });
+    
+    // Add CLI package check
+    results.push({ label: 'CLI package external', exists: cliExists });
+    results.push({ label: 'CLI main.js', exists: cliMainExists });
+    
+    // Add essential unpacked modules
+    for (const [folder, label] of essentialChecks) {
+      const exists = fs.existsSync(path.join(unpackedDir, folder));
+      results.push({ label, exists });
     }
 
     const summary = results.map(r => `${r.exists ? '✅' : '❌'} ${r.label}`).join(' | ');
-    console.log(`🔍 [afterPack] Unpacked verification: ${summary}`);
+    console.log(`🔍 [afterPack] Package verification: ${summary}`);
   } catch (e) {
     console.warn('⚠️ [afterPack] Verification failed:', e && e.message ? e.message : e);
   }
