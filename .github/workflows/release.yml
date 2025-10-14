@@ -46,20 +46,47 @@ jobs:
           echo "previous_tag=$PREVIOUS_TAG" >> $GITHUB_OUTPUT
           echo "Previous tag: $PREVIOUS_TAG"
 
+      - name: Create tag if it doesn't exist
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG_NAME="${{ github.event_name == 'workflow_dispatch' && format('v{0}', github.event.inputs.version) || github.ref_name }}"
+          echo "Checking if tag $TAG_NAME exists..."
+          
+          # Check if tag exists
+          if git rev-parse "$TAG_NAME" >/dev/null 2>&1; then
+            echo "✅ Tag $TAG_NAME already exists"
+          else
+            echo "📝 Creating tag $TAG_NAME..."
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git tag -a "$TAG_NAME" -m "Release $TAG_NAME"
+            git push origin "$TAG_NAME"
+            echo "✅ Tag $TAG_NAME created and pushed"
+          fi
+
       - name: Generate Release Notes
         id: generate_notes
         uses: actions/github-script@v7
         with:
           script: |
-            const { data } = await github.rest.repos.generateReleaseNotes({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              tag_name: '${{ github.event_name == 'workflow_dispatch' && format('v{0}', github.event.inputs.version) || github.ref_name }}',
-              previous_tag_name: '${{ steps.get_previous_tag.outputs.previous_tag }}' || undefined
-            });
+            let body = '';
+            
+            // Try to generate release notes, but handle case where tag doesn't exist yet
+            try {
+              const { data } = await github.rest.repos.generateReleaseNotes({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                tag_name: '${{ github.event_name == 'workflow_dispatch' && format('v{0}', github.event.inputs.version) || github.ref_name }}',
+                previous_tag_name: '${{ steps.get_previous_tag.outputs.previous_tag }}' || undefined
+              });
+              body = data.body;
+            } catch (error) {
+              console.log('Could not auto-generate release notes (tag may not exist yet):', error.message);
+              body = '## What\'s Changed\n\nSee commit history for changes.';
+            }
             
             // Parse and enhance the generated notes
-            let body = data.body;
             
             // Add custom sections
             const customNotes = `
@@ -152,26 +179,50 @@ jobs:
           
           # Build with electron-builder using Wine
           echo "Starting electron-builder..."
-          xvfb-run -a npx electron-builder --win --publish never
+          set -x
+          xvfb-run -a npx electron-builder --win --publish never || {
+            echo "❌ electron-builder failed with exit code $?"
+            echo "📁 Checking what files exist:"
+            find dist -type f -name "*.exe" -o -name "*.zip" || echo "No exe or zip files found"
+            exit 1
+          }
+          set +x
           
           echo "✅ Wine build completed"
 
       - name: Verify build output
         run: |
           echo "📁 Checking build output..."
-          ls -la dist/electron/
+          echo "📂 Contents of dist/electron/:"
+          ls -laR dist/electron/ || echo "dist/electron/ not found"
+          
+          echo ""
+          echo "📦 All .exe and .zip files:"
+          find dist -type f \( -name "*.exe" -o -name "*.zip" \) -exec ls -lh {} \; || echo "No .exe or .zip files found"
+          
+          echo ""
           VERSION="${{ needs.create-release.outputs.version }}"
+          echo "🔍 Looking for version: $VERSION"
+          
           if [ -f "dist/electron/Flock Native Setup $VERSION.exe" ]; then
             echo "✅ Windows NSIS installer found"
             ls -la "dist/electron/Flock Native Setup $VERSION.exe"
+          else
+            echo "⚠️  Expected NSIS installer not found: dist/electron/Flock Native Setup $VERSION.exe"
           fi
+          
           if [ -d "dist/electron/win-unpacked" ]; then
             echo "✅ Windows unpacked build found"
-            ls -la dist/electron/win-unpacked/
+            ls -la dist/electron/win-unpacked/ | head -20
+          else
+            echo "⚠️  Unpacked directory not found"
           fi
+          
           if [ -f "dist/electron/Flock-Native-$VERSION-win.zip" ]; then
             echo "✅ Windows ZIP archive found"
             ls -la "dist/electron/Flock-Native-$VERSION-win.zip"
+          else
+            echo "⚠️  Expected ZIP not found: dist/electron/Flock-Native-$VERSION-win.zip"
           fi
 
       - name: Upload Windows NSIS installer to GitHub Release
