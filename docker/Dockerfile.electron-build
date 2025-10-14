@@ -3,7 +3,8 @@
 
 FROM straiforos/electron-windows-base:latest
 
-# Set environment variables
+# Override NODE_ENV from base image - we need devDependencies for building
+ENV NODE_ENV=
 ENV CI=true
 
 # Set working directory
