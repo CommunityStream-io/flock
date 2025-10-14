@@ -189,16 +189,29 @@ jobs:
         run: |
           TAG_NAME="${{ github.event_name == 'workflow_dispatch' && format('v{0}', github.event.inputs.version) || github.ref_name }}"
           
+          # Configure git
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # Create the tag if it doesn't exist
+          if ! git rev-parse "$TAG_NAME" >/dev/null 2>&1; then
+            echo "📌 Creating tag $TAG_NAME..."
+            git tag -a "$TAG_NAME" -m "Release $TAG_NAME"
+            git push origin "$TAG_NAME"
+            echo "✅ Tag $TAG_NAME created and pushed"
+          else
+            echo "✅ Tag $TAG_NAME already exists"
+          fi
+          
           # Write notes to file to avoid shell escaping issues
           echo "$RELEASE_NOTES" > release_notes.md
           
-          # Create release and let gh CLI create/use the tag
+          # Create release from the tag
           echo "Creating release for $TAG_NAME..."
           gh release create "$TAG_NAME" \
             --draft \
             --title "Flock Native v${{ steps.get_version.outputs.version }}" \
             --notes-file release_notes.md \
-            --target ${{ github.sha }} \
             --repo ${{ github.repository }}
           
           echo "✅ Release created for tag $TAG_NAME"
