@@ -456,6 +456,9 @@ jobs:
     runs-on: ubuntu-latest
     env:
       PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
+      SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+      MIRAGE_SENTRY_DSN: ${{ secrets.MIRAGE_SENTRY_DSN }}
+      NATIVE_SENTRY_DSN: ${{ secrets.NATIVE_SENTRY_DSN }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

@@ -1,6 +1,64 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
+const Sentry = require('@sentry/electron/main');
 const { setupIpcHandlers } = require('./ipc-handlers');
+require('dotenv').config();
+
+// Initialize Sentry as early as possible
+const sentryDsn = process.env.NATIVE_SENTRY_DSN;
+if (sentryDsn) {
+  Sentry.init({
+    dsn: sentryDsn,
+    
+    // Debug mode - logs to console
+    debug: true,
+    
+    // Environment detection
+    environment: app.isPackaged ? 'production' : 'development',
+    
+    // Release version
+    release: 'flock-native@0.4.8',
+    
+    // Sample rate for performance monitoring
+    tracesSampleRate: app.isPackaged ? 0.1 : 1.0,
+    
+    // Filter sensitive data
+    beforeSend(event, hint) {
+      // Remove sensitive environment variables
+      if (event.contexts?.runtime?.env) {
+        const env = event.contexts.runtime.env;
+        delete env.BLUESKY_PASSWORD;
+        delete env.BLUESKY_USERNAME;
+        delete env.NATIVE_SENTRY_DSN;
+        delete env.SENTRY_DSN; // Also filter generic one just in case
+      }
+      
+      // Remove sensitive breadcrumbs
+      if (event.breadcrumbs) {
+        event.breadcrumbs = event.breadcrumbs.filter(breadcrumb => {
+          const msg = breadcrumb.message || '';
+          if (msg.includes('password') || 
+              msg.includes('token') || 
+              msg.includes('BLUESKY_PASSWORD')) {
+            return false;
+          }
+          return true;
+        });
+      }
+      
+      return event;
+    },
+    
+    // Ignore common noise
+    ignoreErrors: [],
+  });
+  
+  console.log('✅ [SENTRY] Initialized for Electron main process');
+  console.log('🔍 [SENTRY] Environment:', app.isPackaged ? 'production' : 'development');
+} else {
+  console.log('🔍 [SENTRY] No NATIVE_SENTRY_DSN found, error tracking disabled');
+  console.log('🔍 [SENTRY] Set NATIVE_SENTRY_DSN environment variable to enable error tracking');
+}
 
 // Keep a global reference to prevent garbage collection
 let mainWindow;
@@ -145,9 +203,31 @@ app.on('ready', () => {
 // Error handling
 process.on('uncaughtException', (error) => {
   console.error('❌ Uncaught Exception:', error);
+  
+  // Send to Sentry
+  if (sentryDsn) {
+    Sentry.captureException(error, {
+      level: 'fatal',
+      tags: {
+        process: 'main',
+        type: 'uncaughtException'
+      }
+    });
+  }
 });
 
 process.on('unhandledRejection', (error) => {
   console.error('❌ Unhandled Rejection:', error);
+  
+  // Send to Sentry
+  if (sentryDsn) {
+    Sentry.captureException(error, {
+      level: 'error',
+      tags: {
+        process: 'main',
+        type: 'unhandledRejection'
+      }
+    });
+  }
 });
 

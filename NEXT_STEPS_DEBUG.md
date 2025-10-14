@@ -79,20 +79,33 @@ Specifically look for:
 - Lines with `[ERROR]`
 - Any other error messages
 
-## Quick Access to Logs
+## 🚨 CRITICAL: Capture Main Process Logs
 
-The main process logs (Electron backend) go to **stdout** which might not be visible in the exe. To see them:
+The main process logs (Electron backend) are **ESSENTIAL** for debugging. They show:
+- Whether utilityProcess is available
+- The actual script path being used
+- Whether NODE_PATH directory exists
+- The exact error when spawn fails
 
-### Option 1: Run from Command Prompt
+### ✅ HOW TO SEE MAIN PROCESS LOGS:
+
+**You MUST run the exe from Command Prompt to see main process output:**
+
 ```cmd
-cd dist\win-unpacked
+cd C:\Users\trifo\Documents\flock\dist\win-unpacked
 "Flock Native.exe"
 ```
 
-Then the main process logs will appear in the terminal.
+Then watch the **command prompt window** for lines starting with:
+- `🚀 [ELECTRON MAIN]` - These are the critical logs
+- `❌ [ELECTRON MAIN]` - Error logs
 
-### Option 2: Check renderer logs only
-The `[DEBUG]` messages I added are specifically sent to the renderer, so they'll show in the DevTools console regardless.
+The **DevTools console (F12)** only shows renderer process logs. We need BOTH to diagnose this!
+
+### What to Send Me:
+
+1. **Command Prompt Output** (main process) - Most important!
+2. **DevTools Console Output** (renderer process)
 
 ## Documentation
 

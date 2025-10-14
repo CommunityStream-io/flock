@@ -2,6 +2,6 @@ import { SentryConfig } from 'shared';
 
 export interface Environment {
   production: boolean;
-  archiveExtractDelay: number;
   sentry?: SentryConfig;
 }
+

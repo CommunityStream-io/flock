@@ -255,6 +255,7 @@
     "@sentry/browser": "^10.19.0",
     "@sentry/electron": "^7.1.1",
     "@straiforos/instagramtobluesky": "^0.7.5",
+    "dotenv": "^17.2.3",
     "extract-zip": "^2.0.1",
     "rxjs": "~7.8.0",
     "sharp": "^0.34.4",
