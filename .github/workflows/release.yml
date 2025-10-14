@@ -196,11 +196,18 @@ jobs:
           # Write notes to file to avoid shell escaping issues
           echo "$RELEASE_NOTES" > release_notes.md
           
-          # Create release using gh CLI
+          # Verify tag exists
+          if ! git rev-parse "$TAG_NAME" >/dev/null 2>&1; then
+            echo "❌ Error: Tag $TAG_NAME does not exist"
+            exit 1
+          fi
+          
+          # Create release using gh CLI with the existing tag
           gh release create "$TAG_NAME" \
             --draft \
             --title "Flock Native v${{ steps.get_version.outputs.version }}" \
             --notes-file release_notes.md \
+            --target "$(git rev-parse $TAG_NAME)" \
             --repo ${{ github.repository }}
           
           # Get release data for outputs
