@@ -32,7 +32,6 @@ RUN xvfb-run wine64 wineboot --init && \
     while pgrep wineserver > /dev/null; do sleep 1; done
 
 # Set environment variables
-ENV NODE_ENV=production
 ENV CI=true
 
 # Set working directory
