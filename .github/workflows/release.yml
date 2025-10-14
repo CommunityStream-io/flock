@@ -184,11 +184,13 @@ jobs:
       - name: Create Tag and Release
         id: create_release
         uses: actions/github-script@v7
+        env:
+          RELEASE_NOTES: ${{ steps.generate_notes.outputs.notes }}
         with:
           script: |
             const version = '${{ steps.get_version.outputs.version }}';
             const tagName = `v${version}`;
-            const releaseNotes = `${{ steps.generate_notes.outputs.notes }}`;
+            const releaseNotes = process.env.RELEASE_NOTES;
             
             console.log(`Creating release for ${tagName}...`);
             
