@@ -1,6 +1,6 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
-const Sentry = require('@sentry/electron/main');
+const { init, IPCMode } = require('@sentry/electron/main');
 const { setupIpcHandlers } = require('./ipc-handlers');
 require('dotenv').config();
 
@@ -9,11 +9,14 @@ require('dotenv').config();
 const sentryDsn = process.env.NATIVE_SENTRY_DSN_MAIN 
   || (!app.isPackaged ? 'https://c525bad84d7baf7a00631c940b44a980@o4506526838620160.ingest.us.sentry.io/4510187648712704' : null);
 if (sentryDsn) {
-  Sentry.init({
+  init({
     dsn: sentryDsn,
     
     // Debug mode - logs to console
     debug: true,
+    
+    // Use protocol-based IPC for robust cross-process context merging
+    ipcMode: IPCMode.Protocol,
     
     // Environment detection
     environment: app.isPackaged ? 'production' : 'development',
