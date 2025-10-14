@@ -156,8 +156,13 @@ jobs:
             fakeroot \
             dpkg \
             rpm \
-            xvfb
+            xvfb \
+            cabextract
           echo "✅ Wine installation completed"
+          
+          # Verify Wine installation
+          wine --version
+          wine64 --version
 
       - name: Setup Wine environment
         run: |
@@ -165,9 +170,22 @@ jobs:
           export WINEARCH=win64
           export WINEPREFIX=/home/runner/.wine
           
-          # Initialize Wine
-          xvfb-run wine64 wineboot --init
-          while pgrep wineserver > /dev/null; do sleep 1; done
+          # Create Wine prefix directory
+          mkdir -p /home/runner/.wine
+          
+          # Initialize Wine with proper error handling
+          echo "Initializing Wine..."
+          xvfb-run -a wine64 wineboot --init || {
+            echo "Wine64 failed, trying wine..."
+            xvfb-run -a wine wineboot --init
+          }
+          
+          # Wait for Wine to finish initializing
+          echo "Waiting for Wine to finish initializing..."
+          while pgrep wineserver > /dev/null; do 
+            echo "Wine server still running, waiting..."
+            sleep 2
+          done
           
           echo "✅ Wine environment initialized"
 
@@ -187,7 +205,8 @@ jobs:
           export WINEPREFIX=/home/runner/.wine
           
           # Build with electron-builder using Wine
-          xvfb-run npx electron-builder --win --publish never
+          echo "Starting electron-builder..."
+          xvfb-run -a npx electron-builder --win --publish never
           
           echo "✅ Wine build completed"
 
