@@ -166,7 +166,8 @@
       "**/node_modules/graphemer/**",
       "**/node_modules/uint8arrays/**",
       "**/node_modules/await-lock/**",
-      "**/node_modules/tlds/**"
+      "**/node_modules/tlds/**",
+      "**/node_modules/pino-std-serializers/**"
     ],
     "extraResources": [],
     "buildDependenciesFromSource": false,

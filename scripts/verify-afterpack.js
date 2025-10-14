@@ -26,6 +26,7 @@ module.exports = async function afterPack(context) {
       ['multihashes', 'multihashes unpacked'],
       ['pino', 'pino unpacked'],
       ['pino-pretty', 'pino-pretty unpacked'],
+      ['pino-std-serializers', 'pino-std-serializers unpacked'],
       ['process', 'process unpacked'],
       ['sharp', 'sharp unpacked'],
       ['zod', 'zod unpacked'],
