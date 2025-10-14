@@ -4,7 +4,6 @@
 FROM straiforos/electron-windows-base:latest
 
 # Set environment variables
-ENV NODE_ENV=production
 ENV CI=true
 
 # Set working directory
@@ -20,15 +19,12 @@ COPY .npmrc ./
 COPY tsconfig*.json ./
 COPY angular.json ./
 
-# Install dependencies
+# Install dependencies (including devDependencies needed for build)
 RUN npm ci
 
 # Copy source code
 COPY projects ./projects
 COPY scripts ./scripts
-
-# Rebuild native dependencies for sharp
-RUN npm rebuild sharp
 
 # Build Angular app
 RUN npm run build:native
