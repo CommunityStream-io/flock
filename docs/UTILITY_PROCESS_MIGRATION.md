@@ -133,6 +133,11 @@ After rebuilding the app, the CLI should:
 5. ✅ Handle errors gracefully
 6. ✅ Exit automatically after completion (2 second grace period)
 
+## Debugging
+
+If the packaged app hangs without returning data, see:
+- **[UTILITY_PROCESS_DEBUG.md](./UTILITY_PROCESS_DEBUG.md)** - Diagnostic guide for spawn/output issues
+
 ## References
 
 - [Electron utilityProcess API](https://www.electronjs.org/docs/latest/api/utility-process)

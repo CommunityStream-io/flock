@@ -432,6 +432,22 @@ function setupIpcHandlers(mainWindow) {
         mergedEnv.ARCHIVE_FOLDER = resolvedPath;
       }
       
+      // Ensure NODE_PATH is set so the utility process can find node_modules
+      // This is crucial for packaged apps where modules are in .asar.unpacked
+      const nodeModulesPath = path.join(appRoot, 'node_modules');
+      if (app.isPackaged && appPath.includes('.asar')) {
+        // In ASAR packaged apps, modules are in .asar.unpacked
+        mergedEnv.NODE_PATH = path.join(appPath + '.unpacked', 'node_modules');
+      } else if (app.isPackaged) {
+        // Non-ASAR packaged apps
+        mergedEnv.NODE_PATH = path.join(appPath, '..', 'app.asar.unpacked', 'node_modules');
+      } else {
+        // Development mode
+        mergedEnv.NODE_PATH = nodeModulesPath;
+      }
+      
+      console.log('🚀 [ELECTRON MAIN] NODE_PATH set to:', mergedEnv.NODE_PATH);
+      
       console.log('🚀 [ELECTRON MAIN] Script:', resolvedScriptPath);
       console.log('🚀 [ELECTRON MAIN] Script exists?', fsSync.existsSync(resolvedScriptPath));
       console.log('🚀 [ELECTRON MAIN] Script args:', scriptArgs);
@@ -482,19 +498,56 @@ function setupIpcHandlers(mainWindow) {
         serviceName: 'Instagram to Bluesky CLI'
       });
 
+      console.log('🚀 [ELECTRON MAIN] utilityProcess.fork() returned:', {
+        hasStdout: !!child.stdout,
+        hasStderr: !!child.stderr,
+        hasPid: !!child.pid,
+        pid: child.pid
+      });
+
       // Store the process
       activeProcesses.set(processId, child);
+      
+      // Send immediate feedback to renderer
+      mainWindow.webContents.send('cli-output', {
+        processId: processId,
+        type: 'stdout',
+        data: `[DEBUG] utilityProcess forked - waiting for spawn event...\n`
+      });
 
+      // Track spawn state
+      let hasSpawned = false;
+      
       // Handle spawn event (utility process successfully started)
       child.on('spawn', () => {
+        hasSpawned = true;
         console.log(`🚀 [ELECTRON MAIN] CLI process ${processId} spawned successfully (PID: ${child.pid})`);
+        mainWindow.webContents.send('cli-output', {
+          processId: processId,
+          type: 'stdout',
+          data: `[DEBUG] Process spawned successfully (PID: ${child.pid})\n`
+        });
       });
+      
+      // Timeout to detect if process never spawns
+      setTimeout(() => {
+        if (!hasSpawned) {
+          console.error(`🚀 [ELECTRON MAIN] ❌ Process ${processId} did not spawn within 5 seconds!`);
+          mainWindow.webContents.send('cli-error', {
+            processId: processId,
+            type: 'error',
+            data: `[ERROR] Process failed to spawn within 5 seconds\n[ERROR] This might indicate a problem with the script path or permissions\n`
+          });
+        }
+      }, 5000);
 
       // Track if migration completed successfully
       let migrationCompleted = false;
       
       // Handle stdout
       if (child.stdout) {
+        console.log('🚀 [ELECTRON MAIN] Setting up stdout handler...');
+        
         child.stdout.on('data', (data) => {
           const output = data.toString();
           console.log('🚀 [ELECTRON MAIN] CLI stdout:', output);
@@ -525,11 +578,25 @@ function setupIpcHandlers(mainWindow) {
         // Handle stdout close
         child.stdout.on('close', () => {
           console.log('🚀 [ELECTRON MAIN] CLI stdout closed');
+          mainWindow.webContents.send('cli-output', {
+            processId: processId,
+            type: 'stdout',
+            data: `[DEBUG] stdout stream closed\n`
+          });
+        });
+      } else {
+        console.error('🚀 [ELECTRON MAIN] ❌ child.stdout is null/undefined!');
+        mainWindow.webContents.send('cli-error', {
+          processId: processId,
+          type: 'error',
+          data: '[DEBUG] Error: child.stdout is null\n'
         });
       }
 
       // Handle stderr
       if (child.stderr) {
+        console.log('🚀 [ELECTRON MAIN] Setting up stderr handler...');
+        
         child.stderr.on('data', (data) => {
           const output = data.toString();
           console.error('🚀 [ELECTRON MAIN] CLI stderr:', output);
@@ -543,6 +610,18 @@ function setupIpcHandlers(mainWindow) {
         // Handle stderr close
         child.stderr.on('close', () => {
           console.log('🚀 [ELECTRON MAIN] CLI stderr closed');
+          mainWindow.webContents.send('cli-output', {
+            processId: processId,
+            type: 'stdout',
+            data: `[DEBUG] stderr stream closed\n`
+          });
+        });
+      } else {
+        console.error('🚀 [ELECTRON MAIN] ❌ child.stderr is null/undefined!');
+        mainWindow.webContents.send('cli-error', {
+          processId: processId,
+          type: 'error',
+          data: '[DEBUG] Error: child.stderr is null\n'
         });
       }
 
@@ -562,12 +641,19 @@ function setupIpcHandlers(mainWindow) {
       // Handle process error (e.g., ENOENT if script doesn't exist)
       child.on('error', (error) => {
         console.error(`🚀 [ELECTRON MAIN] CLI process ${processId} error:`, error);
+        console.error(`🚀 [ELECTRON MAIN] Error details:`, {
+          message: error.message,
+          code: error.code,
+          errno: error.errno,
+          syscall: error.syscall,
+          path: error.path
+        });
         activeProcesses.delete(processId);
         
         mainWindow.webContents.send('cli-error', {
           processId: processId,
           type: 'error',
-          data: error.message
+          data: `[ERROR] ${error.message}\n[ERROR] Code: ${error.code}\n[ERROR] Path: ${error.path || 'N/A'}\n`
         });
       });
 
