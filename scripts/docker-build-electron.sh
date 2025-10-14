@@ -54,11 +54,12 @@ if [ -d "dist/electron" ]; then
 fi
 
 echo ""
-echo -e "${BLUE}🐳 Building Docker image...${NC}"
+echo -e "${BLUE}🐳 Building Linux Docker image with Wine...${NC}"
+echo -e "${YELLOW}   Note: Uses Wine to build Windows apps on Linux containers${NC}"
 docker-compose -f docker/docker-compose.electron-build.yml build
 
 echo ""
-echo -e "${BLUE}🔨 Running Electron build in Docker container...${NC}"
+echo -e "${BLUE}🔨 Running Electron build in Linux Docker container with Wine...${NC}"
 echo -e "${BLUE}   This may take a few minutes...${NC}"
 echo ""
 
@@ -66,18 +67,26 @@ echo ""
 docker-compose -f docker/docker-compose.electron-build.yml up --abort-on-container-exit
 
 # Check if build succeeded
-if [ -f "dist/electron/win-unpacked/Flock Native.exe" ]; then
+if [ -f "dist/electron/Flock Native Setup 0.1.6.exe" ] || [ -f "dist/electron/win-unpacked/Flock Native.exe" ]; then
     echo ""
     echo -e "${GREEN}========================================${NC}"
     echo -e "${GREEN}  ✅ Build Successful!${NC}"
     echo -e "${GREEN}========================================${NC}"
     echo ""
-    echo -e "${GREEN}📁 Output: dist/electron/win-unpacked/Flock Native.exe${NC}"
-    echo ""
     
-    # Show file size
-    FILE_SIZE=$(du -h "dist/electron/win-unpacked/Flock Native.exe" | cut -f1)
-    echo -e "${GREEN}📊 Size: ${FILE_SIZE}${NC}"
+    # Check for NSIS installer first
+    if [ -f "dist/electron/Flock Native Setup 0.1.6.exe" ]; then
+        echo -e "${GREEN}📁 NSIS Installer: dist/electron/Flock Native Setup 0.1.6.exe${NC}"
+        FILE_SIZE=$(du -h "dist/electron/Flock Native Setup 0.1.6.exe" | cut -f1)
+        echo -e "${GREEN}📊 Installer Size: ${FILE_SIZE}${NC}"
+    fi
+    
+    # Check for unpacked build
+    if [ -f "dist/electron/win-unpacked/Flock Native.exe" ]; then
+        echo -e "${GREEN}📁 Unpacked Build: dist/electron/win-unpacked/Flock Native.exe${NC}"
+        FILE_SIZE=$(du -h "dist/electron/win-unpacked/Flock Native.exe" | cut -f1)
+        echo -e "${GREEN}📊 Unpacked Size: ${FILE_SIZE}${NC}"
+    fi
     
     # Check for unpacked CLI
     if [ -d "dist/electron/win-unpacked/resources/app.asar.unpacked" ]; then

@@ -1,6 +1,7 @@
 {
   "name": "flock",
-  "version": "0.1.6",
+  "version": "0.4.8",
+  "description": "Migrate Instagram data to Bluesky with native desktop power",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/flock-mirage/flock.git"
@@ -83,7 +84,7 @@
     "analyze:metrics:latest": "node scripts/analyze-test-metrics.js $(ls -t logs/metrics/test-metrics-*.json | head -1)",
     "analyze:timeouts": "node scripts/analyze-timeout-telemetry.js",
     "analyze:timeouts:latest": "node scripts/analyze-timeout-telemetry.js",
-    "analyze:e2e": "node scripts/analyze-e2e-complexity.js",                                                                 
+    "analyze:e2e": "node scripts/analyze-e2e-complexity.js",
     "analyze:timeouts:ci": "node scripts/analyze-ci-timeouts.js",
     "lint": "ng lint",
     "lint:fix": "ng lint --fix",
@@ -146,6 +147,8 @@
       "**/node_modules/@ffprobe-installer/**",
       "**/projects/flock-native/transfer/**"
     ],
+    "extraResources": [],
+    "buildDependenciesFromSource": false,
     "extraMetadata": {
       "main": "projects/flock-native/electron/main.js"
     },
@@ -251,6 +254,7 @@
     "@straiforos/instagramtobluesky": "^0.7.5",
     "extract-zip": "^2.0.1",
     "rxjs": "~7.8.0",
+    "sharp": "^0.34.4",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"
   },
@@ -298,7 +302,6 @@
     "pino-pretty": "^13.1.1",
     "puppeteer": "^24.22.0",
     "rimraf": "^6.0.1",
-    "sharp": "^0.34.4",
     "typescript": "~5.8.2",
     "wait-on": "^8.0.4",
     "wdio-electron-service": "^9.1.2",
