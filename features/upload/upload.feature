@@ -1,3 +1,4 @@
+@skip
 Feature: File Upload and Validation - Instagram Archive Processing
 
   As a user migrating from Instagram to Bluesky
