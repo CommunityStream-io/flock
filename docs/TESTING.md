@@ -23,6 +23,8 @@ Our testing documentation is organized into focused modules for better navigatio
 - **[Unit Testing](testing/UNIT_TESTING.md)** - Component and service testing with Angular/Jasmine
 - **[E2E Testing](testing/E2E_TESTING.md)** - Full user journey testing with WebdriverIO
 - **[Modular Feature Structure](testing/MODULAR_FEATURE_STRUCTURE.md)** - Organized BDD testing with modular feature files
+- **[Multi-Platform E2E Architecture](testing/MULTI_PLATFORM_E2E_ARCHITECTURE.md)** - Cross-platform testing strategy for Web, Electron, and mobile
+- **[Electron E2E Strategy](testing/ELECTRON_E2E_STRATEGY.md)** - Electron-specific testing approach and considerations
 - **[Coverage](testing/COVERAGE.md)** - Test coverage collection, reporting, and Codecov integration
 - **[Allure Reporting](testing/ALLURE_REPORTING.md)** - Beautiful test reports and analysis
 - **[CI Integration](testing/CI_INTEGRATION.md)** - Automated testing pipeline and deployment
@@ -30,6 +32,8 @@ Our testing documentation is organized into focused modules for better navigatio
 ### **🎯 Quick Navigation**
 - **Getting Started**: Start with [BDD Methodology](testing/BDD_METHODOLOGY.md) to understand our approach
 - **Writing Tests**: Use [Unit Testing](testing/UNIT_TESTING.md) for component tests, [E2E Testing](testing/E2E_TESTING.md) for user workflows
+- **Multi-Platform**: See [Multi-Platform E2E Architecture](testing/MULTI_PLATFORM_E2E_ARCHITECTURE.md) for cross-platform testing
+- **Electron Testing**: Check [Electron E2E Strategy](testing/ELECTRON_E2E_STRATEGY.md) for desktop app testing
 - **Coverage**: Check [Coverage](testing/COVERAGE.md) for coverage collection and reporting
 - **Reports**: See [Allure Reporting](testing/ALLURE_REPORTING.md) for beautiful test reports and analysis
 - **CI/CD**: See [CI Integration](testing/CI_INTEGRATION.md) for automated testing pipeline
@@ -306,6 +310,55 @@ npm run e2e:debug
 # Test with verbose output
 export DEBUG_TESTS=true && npm run test:e2e:headless
 ```
+
+## 🌐 **Multi-Platform E2E Testing**
+
+### **Overview**
+Flock supports testing across multiple application architectures and operating systems:
+- **Web (Mirage)** - Browser-based demo application
+- **Desktop (Electron/Native)** - Native desktop app for Windows, macOS, and Linux
+- **Future: Mobile** - iOS and Android support (planned)
+
+### **Architecture Highlights**
+Our multi-platform testing architecture uses:
+- **Platform Adapter Pattern** - Abstract platform differences behind common interfaces
+- **Shared Core Tests** - Reuse business logic tests across all platforms
+- **Platform-Specific Tests** - Test native features (dialogs, IPC, window management)
+- **Tag-Based Filtering** - Run tests for specific platforms and OS
+
+### **Running Platform-Specific Tests**
+```bash
+# Web (Mirage) tests
+npm run e2e:web
+npm run e2e:web:headless
+
+# Electron (Native) tests
+npm run e2e:electron
+npm run e2e:electron:build  # Build + test
+
+# Platform-specific Electron tests
+npm run e2e:electron:windows
+npm run e2e:electron:macos
+npm run e2e:electron:linux
+
+# Run core tests on specific platform
+TEST_TAGS="@core and @web" npm run e2e:web
+TEST_TAGS="@core and @electron" npm run e2e:electron
+
+# Run platform-specific features
+TEST_TAGS="@electron and @ipc" npm run e2e:electron
+```
+
+### **Key Platform Differences**
+- **File Upload**: Web uses HTML input, Electron uses native OS dialogs
+- **Authentication**: Web uses mock auth, Electron uses real Bluesky API
+- **CLI Integration**: Only available in Electron via IPC
+- **Timing**: Electron has IPC communication delays
+- **Navigation**: Electron manages multiple BrowserWindow instances
+
+### **Documentation**
+- **[Multi-Platform E2E Architecture](testing/MULTI_PLATFORM_E2E_ARCHITECTURE.md)** - Complete architecture and implementation guide
+- **[Electron E2E Strategy](testing/ELECTRON_E2E_STRATEGY.md)** - Electron-specific testing considerations
 
 ## 🧪 **BDD Testing Methodology**
 
@@ -795,13 +848,20 @@ graph LR
     style D fill:#4caf50
 ```
 
-## 🚀 **Future Testing Enhancements**
+## 🚀 **Current & Future Testing Enhancements**
 
-### **Advanced Testing Features**
+### **✅ Implemented Features**
+- **Multi-Platform Testing** - Test across Web (Mirage) and Electron (Native) platforms
+- **Cross-OS Testing** - Support for Windows, macOS, and Linux testing
+- **Platform Adapter Pattern** - Reusable test code across different architectures
+- **Tag-Based Filtering** - Run platform-specific or cross-platform test suites
+
+### **🔜 Planned Testing Features**
 - **Visual Regression** - Screenshot comparison for UI consistency
 - **Performance Testing** - Load time and memory usage testing
 - **Accessibility Testing** - Automated accessibility compliance testing
 - **Cross-Browser Testing** - Test across multiple browser versions
+- **Mobile Testing** - iOS and Android platform support
 
 ### **Testing Infrastructure**
 - **Parallel Execution** - Run tests in parallel for faster execution
@@ -836,9 +896,11 @@ Our testing approach combines the best of both worlds:
 1. **Start with BDD**: Read [BDD Methodology](testing/BDD_METHODOLOGY.md) to understand our approach
 2. **Write Unit Tests**: Use [Unit Testing](testing/UNIT_TESTING.md) for component and service tests
 3. **Add E2E Tests**: Use [E2E Testing](testing/E2E_TESTING.md) for user workflow tests
-4. **Check Coverage**: Use [Coverage](testing/COVERAGE.md) to ensure comprehensive test coverage
-5. **Generate Reports**: Use [Allure Reporting](testing/ALLURE_REPORTING.md) for beautiful test reports
-6. **CI Integration**: See [CI Integration](testing/CI_INTEGRATION.md) for automated testing pipeline
+4. **Multi-Platform Testing**: Read [Multi-Platform E2E Architecture](testing/MULTI_PLATFORM_E2E_ARCHITECTURE.md) for cross-platform testing strategy
+5. **Electron Testing**: See [Electron E2E Strategy](testing/ELECTRON_E2E_STRATEGY.md) for desktop app testing
+6. **Check Coverage**: Use [Coverage](testing/COVERAGE.md) to ensure comprehensive test coverage
+7. **Generate Reports**: Use [Allure Reporting](testing/ALLURE_REPORTING.md) for beautiful test reports
+8. **CI Integration**: See [CI Integration](testing/CI_INTEGRATION.md) for automated testing pipeline
 
 ---
 

@@ -6,7 +6,7 @@ All Docker-based E2E testing components have been successfully implemented and c
 
 ## 🔧 What Was Implemented
 
-### 1. **Simplified Docker Container** (`Dockerfile.test`)
+### 1. **Simplified Docker Container** (`docker/Dockerfile.test`)
 - ✅ Node.js 24.5.0 Alpine (matches CI Node version)
 - ✅ Chromium browser and ChromeDriver pre-installed  
 - ✅ All npm dependencies including devDependencies
@@ -116,7 +116,7 @@ npx wdio run wdio.docker.conf.ts --help
 
 | Component | Status | Location |
 |-----------|---------|----------|
-| Docker Container | ✅ Complete | `Dockerfile.test` |
+| Docker Container | ✅ Complete | `docker/Dockerfile.test` |
 | Docker WebdriverIO Config | ✅ Complete | `wdio.docker.conf.ts` |  
 | NPM Scripts | ✅ Complete | `package.json` |
 | CI Workflow | ✅ Already Configured | `.github/workflows/ci.yml` |

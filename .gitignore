@@ -55,3 +55,4 @@ allure-report-new/
 logs/
 *log
 .env
+projects/flock-native/build

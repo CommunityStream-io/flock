@@ -79,12 +79,15 @@ class TimeoutAnalyzer {
       const data = JSON.parse(await fs.readFile(filePath, 'utf8'));
       this.results.totalFiles++;
       
+      // Ensure shardId is available for the whole function scope
+      let shardId = 'unknown';
+
       if (data.events) {
         this.results.totalEvents += data.events.length;
         this.results.totalTimeouts += data.events.filter(e => !e.success).length;
         
         // Analyze by shard
-        const shardId = data.events[0]?.context?.shardId || 'unknown';
+        shardId = data.events[0]?.context?.shardId ?? 'unknown';
         if (!this.results.shardAnalysis[shardId]) {
           this.results.shardAnalysis[shardId] = {
             totalEvents: 0,
@@ -99,7 +102,7 @@ class TimeoutAnalyzer {
         
         // Analyze operations
         data.events.forEach(event => {
-          const operationKey = `${event.operation}_${event.timeoutType}`;
+          const operationKey = `${event.operation}_${event.timeoutType || 'unknown'}`;
           if (!this.results.shardAnalysis[shardId].operations[operationKey]) {
             this.results.shardAnalysis[shardId].operations[operationKey] = {
               total: 0,
@@ -130,7 +133,7 @@ class TimeoutAnalyzer {
   analyzePatterns(analysis, shardId) {
     if (analysis.patterns) {
       analysis.patterns.forEach(pattern => {
-        const patternKey = `${pattern.operation}_${pattern.timeoutType}`;
+        const patternKey = `${pattern.operation}_${pattern.timeoutType || 'unknown'}`;
         if (!this.results.patternAnalysis[patternKey]) {
           this.results.patternAnalysis[patternKey] = {
             totalFrequency: 0,

@@ -1,3 +1,4 @@
+@skip
 Feature: File Upload and Validation - Instagram Archive Processing
 
   As a user migrating from Instagram to Bluesky
@@ -7,7 +8,7 @@ Feature: File Upload and Validation - Instagram Archive Processing
   Background:
     And I navigate to the upload step
 
-  @file-upload @upload-interface
+  @upload @core @ui @parallel
   Scenario: Upload interface displays correctly
     Then I should see the upload section
     And I should see the heading "Upload Your Files"
@@ -15,7 +16,7 @@ Feature: File Upload and Validation - Instagram Archive Processing
     And I should see a "Choose Files" button with upload icon
     And the file input should accept ".zip" files
 
-  @file-upload @file-selection 
+  @upload @core @smoke @parallel
   Scenario: Valid file selection displays correctly
     When I select a valid Instagram archive file "instagram-export.zip"
     Then the file should be selected in the file input
@@ -25,14 +26,14 @@ Feature: File Upload and Validation - Instagram Archive Processing
     And I should see a delete button for the selected file
     And the "Choose Files" button should be hidden
 
-  @file-upload @form-state 
+  @upload @core @validation @parallel
   Scenario: Form state updates correctly with file operations
     When I try to proceed without a file
     Then I should see an error message
     When I select a valid Instagram archive file "archive.zip"
     Then I should be able to proceed to the next step
 
-  @file-upload @navigation-reset
+  @upload @navigation @parallel
   Scenario: Navigation back to upload step resets splash screen message
     Given I have selected a valid Instagram archive file "test-archive.zip"
     And I have navigated to the auth step

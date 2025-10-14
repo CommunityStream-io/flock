@@ -11,7 +11,7 @@ Feature: Migration Configuration - User-Friendly Settings
     And I have entered valid credentials
     And I navigate to the config step
 
-  @config @migration-settings
+  @config @core @ui @parallel
   Scenario: Configuration form displays correctly
     Then I should see the migration configuration form
     And I should see a date range section
@@ -19,7 +19,7 @@ Feature: Migration Configuration - User-Friendly Settings
     And I should see a simulation mode toggle
     And the form should be initially valid
 
-  @config @migration-settings
+  @config @core @parallel
   Scenario: Default configuration values are set correctly
     Then the start date should be empty
     And the end date should be empty
@@ -27,7 +27,7 @@ Feature: Migration Configuration - User-Friendly Settings
     And the simulation mode should be disabled
     And the form should be initially valid
 
-  @config @migration-settings
+  @config @core @parallel
   Scenario: Configuration settings can be modified
     When I enable test video mode
     Then the test video mode should be enabled
@@ -41,7 +41,7 @@ Feature: Migration Configuration - User-Friendly Settings
     Then the test video mode should be disabled
     And the form should be valid
 
-  @config @migration-settings
+  @config @core @parallel
   Scenario: Configuration changes are saved to service
     When I enable test video mode
     And I enable simulation mode
@@ -49,14 +49,14 @@ Feature: Migration Configuration - User-Friendly Settings
     And the test video mode setting should be stored
     And the simulation mode setting should be stored
 
-  @config @navigation
+  @config @core @smoke @navigation @parallel
   Scenario: Valid configuration allows progression to next step
     Given I have configured valid settings
     When I click the "Next" button
     Then the configuration should be saved
     And I should be navigated to the migrate step
 
-  @config @navigation
+  @config @navigation @parallel
   Scenario: Configuration persists when navigating back
     Given I have configured test video mode
     And I have configured simulation mode
@@ -65,14 +65,14 @@ Feature: Migration Configuration - User-Friendly Settings
     Then the test video mode should still be enabled
     And the simulation mode should still be enabled
 
-  @config @validation
+  @config @validation @parallel
   Scenario: Configuration validation shows appropriate feedback
     Given I have made configuration changes
     When I navigate away from the config step
     Then the configuration should be validated
     And I should see validation success indicators
 
-  @config @help @dialog
+  @config @help @ui @parallel
   Scenario: Help dialog provides configuration guidance
     When I click the help icon for configuration
     Then I should see a help dialog with configuration guidance
@@ -82,14 +82,14 @@ Feature: Migration Configuration - User-Friendly Settings
     When I close the help dialog
     Then the help dialog should be hidden
 
-  @config @help @dialog @escape
+  @config @help @ui @accessibility @parallel
   Scenario: Help dialog can be closed with Escape key
     When I click the help icon for configuration
     Then I should see a help dialog with configuration guidance
     When I close the help dialog with Escape key
     Then the help dialog should be hidden
 
-  @config @navigation @config-guard
+  @config @guards @navigation @parallel
   Scenario: Navigation to previous step is always allowed
     Given I am on the config step page
     When I attempt to navigate to the auth step
@@ -97,7 +97,7 @@ Feature: Migration Configuration - User-Friendly Settings
     And I should be on the auth step
     And no configuration validation should be triggered
 
-  @config @navigation @config-guard
+  @config @guards @navigation @parallel
   Scenario: Navigation to next step requires valid configuration
     Given I am on the config step page
     And I have not configured any settings
@@ -106,7 +106,7 @@ Feature: Migration Configuration - User-Friendly Settings
     And I should be on the migrate step
     And the default configuration should be used
 
-  @config @navigation @config-guard
+  @config @guards @navigation @parallel
   Scenario: Direct URL navigation loads configuration form
     Given I am on the config step page
     When I attempt to navigate to a different URL directly

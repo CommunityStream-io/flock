@@ -94,7 +94,7 @@ if [ "$BUILD_IMAGE" = true ]; then
         print_status $RED "❌ PACKAGE_TOKEN environment variable is required for private packages"
         exit 1
     fi
-    docker build --build-arg PACKAGE_TOKEN="$PACKAGE_TOKEN" -f Dockerfile.test -t flock-e2e-docker:latest .
+    docker build --build-arg PACKAGE_TOKEN="$PACKAGE_TOKEN" -f docker/Dockerfile.test -t flock-e2e-docker:latest .
     if [ $? -eq 0 ]; then
         print_status $GREEN "✅ Docker image built successfully"
     else

@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { App } from './app';
-import { LOGGER, Logger, SplashScreenLoading } from 'shared';
-import { of, BehaviorSubject } from 'rxjs';
+import { LOGGER, Logger, SplashScreenLoading, RouterLoggingService } from 'shared';
+import { BehaviorSubject } from 'rxjs';
 import { provideRouter } from '@angular/router';
 
 describe('App', () => {
@@ -20,10 +20,13 @@ describe('App', () => {
           useValue: { 
             isLoading: new BehaviorSubject(false),
             message: new BehaviorSubject('*flap* *flap* *flap*'),
+            component: new BehaviorSubject(null),
             show: jasmine.createSpy('show'),
-            hide: jasmine.createSpy('hide')
+            hide: jasmine.createSpy('hide'),
+            setComponent: jasmine.createSpy('setComponent')
           } 
-        }
+        },
+        RouterLoggingService
       ]
     }).compileComponents();
   });

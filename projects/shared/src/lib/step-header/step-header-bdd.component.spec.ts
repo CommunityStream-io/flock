@@ -43,23 +43,37 @@ describe('Feature: Dynamic Step Header Display (BDD-Style)', () => {
       ]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(StepHeader);
-    component = fixture.componentInstance;
     mockActivatedRoute = TestBed.inject(ActivatedRoute) as jasmine.SpyObj<ActivatedRoute>;
     mockRouter = TestBed.inject(Router) as jasmine.SpyObj<Router>;
   });
+
+  // Helper function to update route data
+  const updateRouteData = (title: string | null | undefined, description: string | null | undefined) => {
+    Object.defineProperty(mockActivatedRoute, 'snapshot', {
+      value: {
+        title: title || '',
+        data: description !== undefined ? { description: description || '' } : null
+      },
+      writable: true,
+      configurable: true
+    });
+    Object.defineProperty(mockActivatedRoute, 'firstChild', {
+      value: null,
+      writable: true,
+      configurable: true
+    });
+  };
 
   describe('Scenario: Display current route title and description', () => {
     it('Given route has title and description, When component initializes, Then both should be displayed', () => {
       // Given: Route has title and description data
       console.log('🔧 BDD: Setting up route with title and description data');
-      mockActivatedRoute.snapshot = {
-        title: 'Authenticate with Bluesky',
-        data: { description: 'Authenticate with Bluesky to migrate' }
-      } as any;
+      updateRouteData('Authenticate with Bluesky', 'Authenticate with Bluesky to migrate');
 
       // When: Component initializes
       console.log('⚙️ BDD: Component initializes with router data');
+      fixture = TestBed.createComponent(StepHeader);
+      component = fixture.componentInstance;
       component.ngOnInit();
       fixture.detectChanges();
 
@@ -75,13 +89,12 @@ describe('Feature: Dynamic Step Header Display (BDD-Style)', () => {
     it('Given route has only title, When component initializes, Then title should be displayed and description empty', () => {
       // Given: Route has only title, no description
       console.log('🔧 BDD: Setting up route with only title data');
-      mockActivatedRoute.snapshot = {
-        title: 'Upload Data',
-        data: {}
-      } as any;
+      updateRouteData('Upload Data', '');
 
       // When: Component initializes
       console.log('⚙️ BDD: Component initializes with partial router data');
+      fixture = TestBed.createComponent(StepHeader);
+      component = fixture.componentInstance;
       component.ngOnInit();
       fixture.detectChanges();
 
@@ -99,11 +112,10 @@ describe('Feature: Dynamic Step Header Display (BDD-Style)', () => {
     it('Given user navigates to auth step, When navigation completes, Then auth title and description should be displayed', () => {
       // Given: User is navigating to auth step
       console.log('🔧 BDD: Setting up navigation to auth step');
-      mockActivatedRoute.snapshot = {
-        title: 'Authenticate with Bluesky',
-        data: { description: 'Authenticate with Bluesky to migrate' }
-      } as any;
+      updateRouteData('Authenticate with Bluesky', 'Authenticate with Bluesky to migrate');
 
+      fixture = TestBed.createComponent(StepHeader);
+      component = fixture.componentInstance;
       component.ngOnInit();
       fixture.detectChanges();
 
@@ -124,11 +136,10 @@ describe('Feature: Dynamic Step Header Display (BDD-Style)', () => {
     it('Given user navigates to config step, When navigation completes, Then config title and description should be displayed', () => {
       // Given: User is navigating to config step
       console.log('🔧 BDD: Setting up navigation to config step');
-      mockActivatedRoute.snapshot = {
-        title: 'Configuration',
-        data: { description: 'Configure migration settings' }
-      } as any;
+      updateRouteData('Configuration', 'Configure migration settings');
 
+      fixture = TestBed.createComponent(StepHeader);
+      component = fixture.componentInstance;
       component.ngOnInit();
       fixture.detectChanges();
 
@@ -149,20 +160,16 @@ describe('Feature: Dynamic Step Header Display (BDD-Style)', () => {
     it('Given user navigates between multiple steps, When each navigation completes, Then content should update reactively', () => {
       // Given: User starts at upload step
       console.log('🔧 BDD: Setting up multi-step navigation scenario');
-      mockActivatedRoute.snapshot = {
-        title: 'Upload Data',
-        data: { description: 'Upload instagram archive' }
-      } as any;
+      updateRouteData('Upload Data', 'Upload instagram archive');
 
+      fixture = TestBed.createComponent(StepHeader);
+      component = fixture.componentInstance;
       component.ngOnInit();
       fixture.detectChanges();
 
       // When: User navigates to auth step
       console.log('⚙️ BDD: User navigates from upload to auth step');
-      mockActivatedRoute.snapshot = {
-        title: 'Authenticate with Bluesky',
-        data: { description: 'Authenticate with Bluesky to migrate' }
-      } as any;
+      updateRouteData('Authenticate with Bluesky', 'Authenticate with Bluesky to migrate');
       routerEventsSubject.next(new NavigationEnd(1, '/step/auth', '/step/auth'));
       fixture.detectChanges();
 
@@ -175,10 +182,7 @@ describe('Feature: Dynamic Step Header Display (BDD-Style)', () => {
 
       // When: User navigates to config step
       console.log('⚙️ BDD: User navigates from auth to config step');
-      mockActivatedRoute.snapshot = {
-        title: 'Configuration',
-        data: { description: 'Configure migration settings' }
-      } as any;
+      updateRouteData('Configuration', 'Configure migration settings');
       routerEventsSubject.next(new NavigationEnd(2, '/step/config', '/step/config'));
       fixture.detectChanges();
 
@@ -203,14 +207,24 @@ describe('Feature: Dynamic Step Header Display (BDD-Style)', () => {
         firstChild: null
       });
 
-      mockActivatedRoute.firstChild = childRoute;
-      mockActivatedRoute.snapshot = {
-        title: 'Parent Route Title',
-        data: { description: 'Parent Route Description' }
-      } as any;
+      Object.defineProperty(mockActivatedRoute, 'firstChild', {
+        value: childRoute,
+        writable: true,
+        configurable: true
+      });
+      Object.defineProperty(mockActivatedRoute, 'snapshot', {
+        value: {
+          title: 'Parent Route Title',
+          data: { description: 'Parent Route Description' }
+        },
+        writable: true,
+        configurable: true
+      });
 
       // When: Component accesses route data
       console.log('⚙️ BDD: Component accesses nested route data');
+      fixture = TestBed.createComponent(StepHeader);
+      component = fixture.componentInstance;
       component.ngOnInit();
       fixture.detectChanges();
 
@@ -242,14 +256,24 @@ describe('Feature: Dynamic Step Header Display (BDD-Style)', () => {
         firstChild: deepestChild
       });
 
-      mockActivatedRoute.firstChild = middleChild;
-      mockActivatedRoute.snapshot = {
-        title: 'Root Title',
-        data: { description: 'Root Description' }
-      } as any;
+      Object.defineProperty(mockActivatedRoute, 'firstChild', {
+        value: middleChild,
+        writable: true,
+        configurable: true
+      });
+      Object.defineProperty(mockActivatedRoute, 'snapshot', {
+        value: {
+          title: 'Root Title',
+          data: { description: 'Root Description' }
+        },
+        writable: true,
+        configurable: true
+      });
 
       // When: Component accesses nested route data
       console.log('⚙️ BDD: Component traverses deeply nested route structure');
+      fixture = TestBed.createComponent(StepHeader);
+      component = fixture.componentInstance;
       component.ngOnInit();
       fixture.detectChanges();
 
@@ -267,13 +291,12 @@ describe('Feature: Dynamic Step Header Display (BDD-Style)', () => {
     it('Given route with null title, When component initializes, Then should display empty title gracefully', () => {
       // Given: Route with null title
       console.log('🔧 BDD: Setting up route with null title');
-      mockActivatedRoute.snapshot = {
-        title: null,
-        data: { description: 'Valid Description' }
-      } as any;
+      updateRouteData(null, 'Valid Description');
 
       // When: Component initializes
       console.log('⚙️ BDD: Component initializes with null title');
+      fixture = TestBed.createComponent(StepHeader);
+      component = fixture.componentInstance;
       component.ngOnInit();
       fixture.detectChanges();
 
@@ -289,13 +312,12 @@ describe('Feature: Dynamic Step Header Display (BDD-Style)', () => {
     it('Given route with null data object, When component initializes, Then should display empty description gracefully', () => {
       // Given: Route with null data object
       console.log('🔧 BDD: Setting up route with null data object');
-      mockActivatedRoute.snapshot = {
-        title: 'Valid Title',
-        data: null
-      } as any;
+      updateRouteData('Valid Title', null);
 
       // When: Component initializes
       console.log('⚙️ BDD: Component initializes with null data object');
+      fixture = TestBed.createComponent(StepHeader);
+      component = fixture.componentInstance;
       component.ngOnInit();
       fixture.detectChanges();
 
@@ -311,13 +333,12 @@ describe('Feature: Dynamic Step Header Display (BDD-Style)', () => {
     it('Given route with undefined title and description, When component initializes, Then should display empty content gracefully', () => {
       // Given: Route with undefined title and description
       console.log('🔧 BDD: Setting up route with undefined title and description');
-      mockActivatedRoute.snapshot = {
-        title: undefined,
-        data: { description: undefined }
-      } as any;
+      updateRouteData(undefined, undefined);
 
       // When: Component initializes
       console.log('⚙️ BDD: Component initializes with undefined values');
+      fixture = TestBed.createComponent(StepHeader);
+      component = fixture.componentInstance;
       component.ngOnInit();
       fixture.detectChanges();
 
@@ -335,13 +356,12 @@ describe('Feature: Dynamic Step Header Display (BDD-Style)', () => {
     it('Given component is rendered, When inspecting DOM, Then should have correct CSS classes and structure', () => {
       // Given: Component is rendered
       console.log('🔧 BDD: Setting up component for CSS inspection');
-      mockActivatedRoute.snapshot = {
-        title: 'Test Title',
-        data: { description: 'Test Description' }
-      } as any;
+      updateRouteData('Test Title', 'Test Description');
 
       // When: Component is rendered
       console.log('⚙️ BDD: Component renders with styling');
+      fixture = TestBed.createComponent(StepHeader);
+      component = fixture.componentInstance;
       component.ngOnInit();
       fixture.detectChanges();
 
@@ -361,13 +381,12 @@ describe('Feature: Dynamic Step Header Display (BDD-Style)', () => {
     it('Given component renders content, When checking accessibility, Then should have proper semantic HTML structure', () => {
       // Given: Component renders with content
       console.log('🔧 BDD: Setting up component for accessibility inspection');
-      mockActivatedRoute.snapshot = {
-        title: 'Migrate Data',
-        data: { description: 'Start the migration process' }
-      } as any;
+      updateRouteData('Migrate Data', 'Start the migration process');
 
       // When: Component renders
       console.log('⚙️ BDD: Component renders with semantic content');
+      fixture = TestBed.createComponent(StepHeader);
+      component = fixture.componentInstance;
       component.ngOnInit();
       fixture.detectChanges();
 
@@ -387,11 +406,10 @@ describe('Feature: Dynamic Step Header Display (BDD-Style)', () => {
     it('Given navigation events occur rapidly, When multiple NavigationEnd events fire, Then should handle updates efficiently', () => {
       // Given: Component is initialized and ready for navigation events
       console.log('🔧 BDD: Setting up rapid navigation scenario');
-      mockActivatedRoute.snapshot = {
-        title: 'Initial Title',
-        data: { description: 'Initial Description' }
-      } as any;
+      updateRouteData('Initial Title', 'Initial Description');
 
+      fixture = TestBed.createComponent(StepHeader);
+      component = fixture.componentInstance;
       component.ngOnInit();
       fixture.detectChanges();
 
@@ -399,26 +417,17 @@ describe('Feature: Dynamic Step Header Display (BDD-Style)', () => {
       console.log('⚙️ BDD: Firing multiple rapid navigation events');
       
       // First navigation
-      mockActivatedRoute.snapshot = {
-        title: 'First Title',
-        data: { description: 'First Description' }
-      } as any;
+      updateRouteData('First Title', 'First Description');
       routerEventsSubject.next(new NavigationEnd(1, '/step/auth', '/step/auth'));
       fixture.detectChanges();
 
       // Second navigation
-      mockActivatedRoute.snapshot = {
-        title: 'Second Title',
-        data: { description: 'Second Description' }
-      } as any;
+      updateRouteData('Second Title', 'Second Description');
       routerEventsSubject.next(new NavigationEnd(2, '/step/config', '/step/config'));
       fixture.detectChanges();
 
       // Third navigation
-      mockActivatedRoute.snapshot = {
-        title: 'Final Title',
-        data: { description: 'Final Description' }
-      } as any;
+      updateRouteData('Final Title', 'Final Description');
       routerEventsSubject.next(new NavigationEnd(3, '/step/migrate', '/step/migrate'));
       fixture.detectChanges();
 
@@ -434,6 +443,8 @@ describe('Feature: Dynamic Step Header Display (BDD-Style)', () => {
     it('Given observables are subscribed, When component is destroyed, Then should clean up subscriptions', () => {
       // Given: Component has active subscriptions
       console.log('🔧 BDD: Setting up component with active subscriptions');
+      fixture = TestBed.createComponent(StepHeader);
+      component = fixture.componentInstance;
       component.ngOnInit();
       fixture.detectChanges();
 

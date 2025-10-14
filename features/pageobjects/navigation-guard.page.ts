@@ -2,17 +2,17 @@ import Page from './page';
 import { timeouts, timeoutMessages, timeoutOptions } from '../support/timeout-config';
 
 class NavigationGuardPage extends Page {
-    // Snackbar elements
+    // Snackbar elements - using only the working selector
     public get snackbar() {
-        return $('mat-snack-bar-container, .mat-mdc-snack-bar-container');
+        return $('mat-snack-bar-container');
     }
 
     public get snackbarMessage() {
-        return $('.mat-mdc-snack-bar-label, .mat-snack-bar-container simple-snack-bar');
+        return $('mat-snack-bar-container simple-snack-bar');
     }
 
     public get snackbarCloseButton() {
-        return $('.mat-mdc-snack-bar-action button, .mat-snack-bar-action button');
+        return $('mat-snack-bar-container button');
     }
 
     // Error and validation elements
@@ -136,82 +136,30 @@ class NavigationGuardPage extends Page {
         console.log('⏳ Waiting 500ms for snackbar animation...');
         await browser.pause(500);
         
-        // First, inspect what's actually in the DOM
+        // Use the only working selector: mat-snack-bar-container
+        const selector = 'mat-snack-bar-container';
+        
         try {
-            const html = await browser.getPageSource();
+            console.log(`\n🎯 Using working selector: "${selector}"`);
+            const element = await $(selector);
             
-            console.log('📄 DOM Inspection:');
-            console.log(`   - Contains "snack-bar": ${html.includes('snack-bar')}`);
-            console.log(`   - Contains "cdk-overlay": ${html.includes('cdk-overlay')}`);
-            console.log(`   - Contains "mat-mdc": ${html.includes('mat-mdc')}`);
+            const exists = await element.isExisting();
+            console.log(`   - Exists: ${exists}`);
             
-            if (html.includes('snack-bar')) {
-                // Extract actual snackbar HTML
-                const snackbarMatches = html.match(/<[^>]*snack[^>]*bar[^>]*>/gi);
-                if (snackbarMatches) {
-                    console.log('📋 Found snackbar-related tags:');
-                    snackbarMatches.forEach((match, i) => {
-                        console.log(`   ${i + 1}. ${match}`);
-                    });
-                }
+            if (exists) {
+                const isDisplayed = await element.isDisplayed().catch(() => false);
+                console.log(`   - Displayed: ${isDisplayed}`);
             }
             
-            if (html.includes('cdk-overlay-container')) {
-                const overlaySnippet = html.match(/cdk-overlay-container[\s\S]{0,600}/i)?.[0];
-                if (overlaySnippet) {
-                    console.log('📦 Overlay container snippet:');
-                    console.log(overlaySnippet.substring(0, 500));
-                }
-            }
+            await element.waitForDisplayed({ 
+                timeout,
+                interval: 500
+            });
+            
+            console.log(`\n✅ ✅ ✅ SUCCESS! Snackbar found with: "${selector}" ✅ ✅ ✅`);
         } catch (e) {
-            console.log('⚠️  Could not inspect DOM:', e);
-        }
-        
-        // Try multiple selectors for different Material versions and configurations
-        const selectors = [
-            'mat-snack-bar-container',
-            '.mat-mdc-snack-bar-container',
-            '.mat-snack-bar-container',
-            '.cdk-overlay-container mat-snack-bar-container',
-            '.cdk-overlay-container [role="status"]',
-            '.cdk-overlay-container [role="alert"]',
-            'simple-snack-bar'
-        ];
-        
-        let found = false;
-        let lastError: any = null;
-        const perSelectorTimeout = Math.floor(timeout / selectors.length);
-        
-        console.log(`\n🎯 Testing ${selectors.length} selectors (${perSelectorTimeout}ms each):`);
-        
-        for (const selector of selectors) {
-            try {
-                console.log(`\n   🔎 Selector: "${selector}"`);
-                const element = await $(selector);
-                
-                const exists = await element.isExisting();
-                console.log(`      - Exists: ${exists}`);
-                
-                if (exists) {
-                    const isDisplayed = await element.isDisplayed().catch(() => false);
-                    console.log(`      - Displayed: ${isDisplayed}`);
-                }
-                
-                await element.waitForDisplayed({ 
-                    timeout: perSelectorTimeout,
-                    interval: 500
-                });
-                found = true;
-                console.log(`\n✅ ✅ ✅ SUCCESS! Snackbar found with: "${selector}" ✅ ✅ ✅`);
-                break;
-            } catch (e) {
-                lastError = e;
-                console.log(`      ❌ Failed: ${e.message}`);
-            }
-        }
-        
-        if (!found) {
-            console.log('\n❌ ========== SNACKBAR NOT FOUND ==========');
+            console.log(`\n❌ ========== SNACKBAR NOT FOUND ==========`);
+            console.log(`   Error: ${e.message}`);
             
             // Take screenshot for debugging
             const screenshotPath = './logs/analysis/snackbar-not-found-' + Date.now() + '.png';
@@ -223,9 +171,8 @@ class NavigationGuardPage extends Page {
             }
             
             throw new Error(
-                `Snackbar not found with any selector after ${timeout}ms. ` +
-                `Tried ${selectors.length} selectors. ` +
-                `Last error: ${lastError?.message || 'unknown'}`
+                `Snackbar not found with selector "${selector}" after ${timeout}ms. ` +
+                `Error: ${e.message}`
             );
         }
         

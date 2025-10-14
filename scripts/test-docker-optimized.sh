@@ -73,7 +73,7 @@ fi
 # Build base image if requested
 if [ "$BUILD_BASE" = true ]; then
     echo "🏗️  Building base image with Chrome and ChromeDriver..."
-    docker build -f Dockerfile.test --target base -t flock-e2e-base:latest .
+    docker build -f docker/Dockerfile.test --target base -t flock-e2e-base:latest .
     if [ $? -eq 0 ]; then
         echo "✅ Base image built successfully"
     else
@@ -85,7 +85,7 @@ fi
 # Build app image if requested
 if [ "$BUILD_APP" = true ]; then
     echo "🏗️  Building app image with Angular app..."
-    docker build -f Dockerfile.test --target runtime -t flock-e2e-app:latest .
+    docker build -f docker/Dockerfile.test --target runtime -t flock-e2e-app:latest .
     if [ $? -eq 0 ]; then
         echo "✅ App image built successfully"
     else

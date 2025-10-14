@@ -9,9 +9,11 @@ import { Subject } from 'rxjs';
 import { StepLayout } from './step-layout';
 import { StepHeader } from '../step-header/step-header';
 import { StepNavigationComponent } from '../step-navigation/step-navigation';
+import { LOGGER, Logger, ConfigServiceImpl, SplashScreenLoading } from '../';
 
 // Mock components for testing
 @Component({
+  standalone: true,
   selector: 'mock-step-component',
   template: '<div class="mock-step-content">Mock Step Content</div>'
 })
@@ -38,11 +40,22 @@ describe('Feature: Step Layout Integration with Header (BDD-Style)', () => {
         title: 'Test Layout Title',
         data: { description: 'Test Layout Description' }
       },
-      firstChild: null
+      firstChild: {
+        snapshot: {
+          title: 'Test Layout Title',
+          data: { description: 'Test Layout Description' }
+        }
+      }
     });
 
     const routerSpy = jasmine.createSpyObj('Router', ['navigate'], {
       events: routerEventsSubject.asObservable()
+    });
+
+    const mockLogger = jasmine.createSpyObj('Logger', ['log', 'error', 'workflow']);
+    const mockConfigService = jasmine.createSpyObj('ConfigServiceImpl', ['getConfig']);
+    const mockLoading = jasmine.createSpyObj('SplashScreenLoading', ['setComponent'], {
+      isLoading: new Subject()
     });
 
     await TestBed.configureTestingModule({
@@ -50,15 +63,18 @@ describe('Feature: Step Layout Integration with Header (BDD-Style)', () => {
         StepLayout, 
         StepHeader, 
         StepNavigationComponent,
+        MockStepComponent,
         RouterTestingModule.withRoutes([
           { path: 'test', component: MockStepComponent }
         ]),
         NoopAnimationsModule
       ],
-      declarations: [MockStepComponent],
       providers: [
         { provide: ActivatedRoute, useValue: activatedRouteSpy },
-        { provide: Router, useValue: routerSpy }
+        { provide: Router, useValue: routerSpy },
+        { provide: LOGGER, useValue: mockLogger },
+        { provide: ConfigServiceImpl, useValue: mockConfigService },
+        { provide: SplashScreenLoading, useValue: mockLoading }
       ]
     }).compileComponents();
 
@@ -68,14 +84,31 @@ describe('Feature: Step Layout Integration with Header (BDD-Style)', () => {
     mockRouter = TestBed.inject(Router) as jasmine.SpyObj<Router>;
   });
 
+  // Helper function to update route data
+  const updateRouteData = (title: string | null, description: string | null) => {
+    Object.defineProperty(mockActivatedRoute, 'snapshot', {
+      value: {
+        title,
+        data: description ? { description } : null
+      },
+      writable: true
+    });
+    Object.defineProperty(mockActivatedRoute, 'firstChild', {
+      value: {
+        snapshot: {
+          title,
+          data: description ? { description } : null
+        }
+      },
+      writable: true
+    });
+  };
+
   describe('Scenario: Step layout displays header and navigation components', () => {
     it('Given step layout loads, When initialized, Then should display header, content area, and navigation', () => {
       // Given: Step layout is being loaded
       console.log('🔧 BDD: Setting up step layout with all components');
-      mockActivatedRoute.snapshot = {
-        title: 'Upload Data',
-        data: { description: 'Upload instagram archive' }
-      } as any;
+      updateRouteData('Upload Data', 'Upload instagram archive');
 
       // When: Layout initializes
       console.log('⚙️ BDD: Step layout initializes with header and navigation');
@@ -115,11 +148,11 @@ describe('Feature: Step Layout Integration with Header (BDD-Style)', () => {
       
       // Verify header comes before router outlet in DOM order
       const contentChildren = contentArea.nativeElement.children;
-      const headerIndex = Array.from(contentChildren).findIndex(child => 
-        child.tagName.toLowerCase() === 'shared-step-header'
+      const headerIndex = Array.from(contentChildren).findIndex((child: unknown) => 
+        (child as HTMLElement).tagName.toLowerCase() === 'shared-step-header'
       );
-      const outletIndex = Array.from(contentChildren).findIndex(child => 
-        child.tagName.toLowerCase() === 'router-outlet'
+      const outletIndex = Array.from(contentChildren).findIndex((child: unknown) => 
+        (child as HTMLElement).tagName.toLowerCase() === 'router-outlet'
       );
       
       expect(headerIndex).toBeLessThan(outletIndex);
@@ -130,10 +163,7 @@ describe('Feature: Step Layout Integration with Header (BDD-Style)', () => {
     it('Given user navigates to auth step, When navigation completes, Then header should display auth step information', () => {
       // Given: User is navigating to auth step
       console.log('🔧 BDD: Setting up navigation to auth step in layout');
-      mockActivatedRoute.snapshot = {
-        title: 'Authenticate with Bluesky',
-        data: { description: 'Authenticate with Bluesky to migrate' }
-      } as any;
+      updateRouteData('Authenticate with Bluesky', 'Authenticate with Bluesky to migrate');
 
       fixture.detectChanges();
 
@@ -155,19 +185,13 @@ describe('Feature: Step Layout Integration with Header (BDD-Style)', () => {
     it('Given user navigates through multiple steps, When each navigation occurs, Then header should update accordingly', () => {
       // Given: User starts at upload step
       console.log('🔧 BDD: Setting up multi-step navigation in layout');
-      mockActivatedRoute.snapshot = {
-        title: 'Upload Data',
-        data: { description: 'Upload instagram archive' }
-      } as any;
+      updateRouteData('Upload Data', 'Upload instagram archive');
 
       fixture.detectChanges();
 
       // When: User navigates to auth step
       console.log('⚙️ BDD: User navigates to auth step through layout');
-      mockActivatedRoute.snapshot = {
-        title: 'Authenticate with Bluesky',
-        data: { description: 'Authenticate with Bluesky to migrate' }
-      } as any;
+      updateRouteData('Authenticate with Bluesky', 'Authenticate with Bluesky to migrate');
       routerEventsSubject.next(new NavigationEnd(1, '/step/auth', '/step/auth'));
       fixture.detectChanges();
 
@@ -181,10 +205,7 @@ describe('Feature: Step Layout Integration with Header (BDD-Style)', () => {
 
       // When: User navigates to config step
       console.log('⚙️ BDD: User navigates to config step through layout');
-      mockActivatedRoute.snapshot = {
-        title: 'Configuration',
-        data: { description: 'Configure migration settings' }
-      } as any;
+      updateRouteData('Configuration', 'Configure migration settings');
       routerEventsSubject.next(new NavigationEnd(2, '/step/config', '/step/config'));
       fixture.detectChanges();
 
@@ -202,10 +223,7 @@ describe('Feature: Step Layout Integration with Header (BDD-Style)', () => {
     it('Given step route has no title or description, When layout loads, Then should display gracefully with empty header', () => {
       // Given: Step route with missing data
       console.log('🔧 BDD: Setting up step route with missing title and description');
-      mockActivatedRoute.snapshot = {
-        title: null,
-        data: null
-      } as any;
+      updateRouteData(null, null);
 
       // When: Layout loads with missing data
       console.log('⚙️ BDD: Layout loads with missing route data');
@@ -227,10 +245,7 @@ describe('Feature: Step Layout Integration with Header (BDD-Style)', () => {
     it('Given step route has partial data, When layout loads, Then should display available data correctly', () => {
       // Given: Step route with only title, no description
       console.log('🔧 BDD: Setting up step route with partial data');
-      mockActivatedRoute.snapshot = {
-        title: 'Migration Complete',
-        data: {}
-      } as any;
+      updateRouteData('Migration Complete', null);
 
       // When: Layout loads with partial data
       console.log('⚙️ BDD: Layout loads with partial route data');
@@ -270,10 +285,7 @@ describe('Feature: Step Layout Integration with Header (BDD-Style)', () => {
     it('Given header and navigation are present, When checking component integration, Then should have consistent styling', () => {
       // Given: All layout components are present
       console.log('🔧 BDD: Setting up full component integration check');
-      mockActivatedRoute.snapshot = {
-        title: 'Migrate Data',
-        data: { description: 'Start the migration process' }
-      } as any;
+      updateRouteData('Migrate Data', 'Start the migration process');
 
       // When: Checking component integration styling
       console.log('⚙️ BDD: Checking component integration and consistency');
@@ -300,10 +312,7 @@ describe('Feature: Step Layout Integration with Header (BDD-Style)', () => {
     it('Given layout with router outlet, When step component loads, Then should display within layout structure', () => {
       // Given: Layout with router outlet ready for step components
       console.log('🔧 BDD: Setting up layout with router outlet for step components');
-      mockActivatedRoute.snapshot = {
-        title: 'Upload Data',
-        data: { description: 'Upload instagram archive' }
-      } as any;
+      updateRouteData('Upload Data', 'Upload instagram archive');
 
       // When: Step component loads through router outlet
       console.log('⚙️ BDD: Step component loads through layout router outlet');
