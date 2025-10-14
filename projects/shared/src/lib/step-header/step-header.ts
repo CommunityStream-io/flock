@@ -48,6 +48,11 @@ export class StepHeader implements OnInit {
       route = route.firstChild;
     }
 
+    // Handle undefined snapshot gracefully
+    if (!route.snapshot) {
+      return { title: '', description: '' };
+    }
+
     const title = route.snapshot.title || '';
     const description = route.snapshot.data?.['description'] || '';
     

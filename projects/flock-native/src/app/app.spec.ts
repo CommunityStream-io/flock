@@ -16,8 +16,10 @@ describe('App', () => {
   const mockSplashScreen = {
     isLoading: new BehaviorSubject(false),
     message: new BehaviorSubject('Loading...'),
+    component: new BehaviorSubject(null),
     show: jasmine.createSpy('show'),
-    hide: jasmine.createSpy('hide')
+    hide: jasmine.createSpy('hide'),
+    setComponent: jasmine.createSpy('setComponent')
   };
 
   beforeEach(async () => {

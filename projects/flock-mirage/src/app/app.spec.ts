@@ -20,8 +20,10 @@ describe('App', () => {
           useValue: { 
             isLoading: new BehaviorSubject(false),
             message: new BehaviorSubject('*flap* *flap* *flap*'),
+            component: new BehaviorSubject(null),
             show: jasmine.createSpy('show'),
-            hide: jasmine.createSpy('hide')
+            hide: jasmine.createSpy('hide'),
+            setComponent: jasmine.createSpy('setComponent')
           } 
         },
         RouterLoggingService
