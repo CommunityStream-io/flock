@@ -4,7 +4,6 @@ const fsSync = require('fs');
 const path = require('path');
 const extract = require('extract-zip');
 const os = require('os');
-const Sentry = require('@sentry/electron/main');
 require('dotenv').config();
 
 // Store active CLI processes
@@ -14,7 +13,9 @@ const activeProcesses = new Map();
  * Setup all IPC handlers
  * @param {BrowserWindow} mainWindow - The main window instance
  */
-function setupIpcHandlers(mainWindow) {
+function setupIpcHandlers(mainWindow, sentryInstance) {
+  // Use Sentry instance provided by main process; fallback to no-op if missing
+  const Sentry = sentryInstance || { addBreadcrumb() {}, captureException() {}, captureMessage() {} };
   
   // File selection handler
   ipcMain.handle('select-file', async (event) => {
@@ -362,7 +363,9 @@ function setupIpcHandlers(mainWindow) {
   ipcMain.handle('test:resolveCliPath', async (event) => {
     try {
       const appPath = app.getAppPath();
-      const appRoot = app.isPackaged ? appPath : path.join(appPath, '../../..');
+      // In packaged apps, app.getAppPath() points to the app.asar file.
+      // Use its directory as the working root, not the .asar file itself.
+      const appRoot = app.isPackaged ? path.dirname(appPath) : path.join(appPath, '../../..');
       const cliRelativePath = 'node_modules/@straiforos/instagramtobluesky/dist/main.js';
       
       // Try to resolve the CLI path using the same logic as execute-cli
@@ -415,7 +418,9 @@ function setupIpcHandlers(mainWindow) {
       
       // Get the app root directory
       const appPath = app.getAppPath();
-      const appRoot = app.isPackaged ? appPath : path.join(appPath, '../../..');
+      // In packaged apps, app.getAppPath() points to the app.asar file. Use its
+      // directory (resources) as the working root so cwd is a real folder.
+      const appRoot = app.isPackaged ? path.dirname(appPath) : path.join(appPath, '../../..');
       
       console.log('=====================================');
       console.log('🚀 [ELECTRON MAIN] CLI EXECUTION STARTED');
@@ -497,17 +502,13 @@ function setupIpcHandlers(mainWindow) {
         mergedEnv.ARCHIVE_FOLDER = resolvedPath;
       }
       
-      // Ensure NODE_PATH is set so the utility process can find node_modules
-      // This is crucial for packaged apps where modules are in .asar.unpacked
+      // Ensure NODE_PATH points to unpacked node_modules for simple resolution
       const nodeModulesPath = path.join(appRoot, 'node_modules');
       if (app.isPackaged && appPath.includes('.asar')) {
-        // In ASAR packaged apps, modules are in .asar.unpacked
         mergedEnv.NODE_PATH = path.join(appPath + '.unpacked', 'node_modules');
       } else if (app.isPackaged) {
-        // Non-ASAR packaged apps
         mergedEnv.NODE_PATH = path.join(appPath, '..', 'app.asar.unpacked', 'node_modules');
       } else {
-        // Development mode
         mergedEnv.NODE_PATH = nodeModulesPath;
       }
       
@@ -521,7 +522,6 @@ function setupIpcHandlers(mainWindow) {
       if (mergedEnv.NODE_PATH) {
         console.log('🚀 [ELECTRON MAIN] NODE_PATH exists?', fsSync.existsSync(mergedEnv.NODE_PATH));
         if (fsSync.existsSync(mergedEnv.NODE_PATH)) {
-          // Check if the required module exists
           const cliModulePath = path.join(mergedEnv.NODE_PATH, '@straiforos/instagramtobluesky');
           console.log('🚀 [ELECTRON MAIN] CLI module path:', cliModulePath);
           console.log('🚀 [ELECTRON MAIN] CLI module exists?', fsSync.existsSync(cliModulePath));
@@ -604,7 +604,7 @@ function setupIpcHandlers(mainWindow) {
         env: mergedEnv,
         stdio: 'pipe', // Capture stdout/stderr
         serviceName: 'Instagram to Bluesky CLI',
-        // Add explicit execArgv to ensure Node.js compatibility
+        // Keep execution simple: no preloads
         execArgv: []
       };
       
@@ -615,6 +615,12 @@ function setupIpcHandlers(mainWindow) {
         hasEnv: !!forkOptions.env,
         envKeys: Object.keys(forkOptions.env || {}).slice(0, 10)
       });
+      try {
+        const stats = fsSync.statSync(forkOptions.cwd);
+        console.log('🚀 [ELECTRON MAIN] CWD exists and is directory?', stats.isDirectory());
+      } catch (e) {
+        console.warn('🚀 [ELECTRON MAIN] CWD invalid (will cause spawn issues):', e && e.message ? e.message : e);
+      }
       
       const child = utilityProcess.fork(resolvedScriptPath, scriptArgs, forkOptions);
 
@@ -682,10 +688,10 @@ function setupIpcHandlers(mainWindow) {
         });
       });
       
-      // Timeout to detect if process never spawns
+      // Timeout to detect if process never spawns (15s for slower environments)
       setTimeout(() => {
         if (!hasSpawned) {
-          console.error(`🚀 [ELECTRON MAIN] ❌ Process ${processId} did not spawn within 5 seconds!`);
+          console.error(`🚀 [ELECTRON MAIN] ❌ Process ${processId} did not spawn within 15 seconds!`);
           
           // Capture in Sentry with full diagnostic context
           Sentry.captureException(new Error('utilityProcess failed to spawn'), {
@@ -712,7 +718,7 @@ function setupIpcHandlers(mainWindow) {
             data: `[ERROR] Process failed to spawn within 5 seconds\n[ERROR] This might indicate a problem with the script path or permissions\n`
           });
         }
-      }, 5000);
+      }, 15000);
 
       // Track if migration completed successfully
       let migrationCompleted = false;

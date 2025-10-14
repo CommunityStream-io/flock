@@ -27,6 +27,8 @@ services:
         echo '🐳 Starting Electron Windows build in Docker with Wine...' &&
         echo '📦 Cleaning old build artifacts...' &&
         rm -rf /app/dist/electron/* &&
+        echo '📦 Installing dependencies inside container (npm ci)...' &&
+        npm ci &&
         echo '🔨 Building Electron app with NSIS installer...' &&
         xvfb-run npx electron-builder --win --publish never --config.directories.output=/app/dist/electron &&
         echo '✅ Build complete! Check dist/electron/' &&

@@ -118,7 +118,8 @@
     "clean:logs": "rimraf logs",
     "clean:node_modules": "rimraf node_modules",
     "clean:all": "node scripts/clean.js && npm run clean:node_modules",
-    "rebuild": "npm run clean:all && npm install"
+    "rebuild": "npm run clean:all && npm install",
+    "logs:tail": "bash scripts/find-electron-log.sh 200"
   },
   "prettier": {
     "overrides": [
@@ -141,7 +142,6 @@
     "files": [
       "dist/flock-native/**/*",
       "projects/flock-native/electron/**/*",
-      "projects/flock-native/transfer/**/*",
       "node_modules/**/*",
       "package.json"
     ],
@@ -149,13 +149,14 @@
       "**/node_modules/@straiforos/instagramtobluesky/**",
       "**/node_modules/@ffprobe-installer/**",
       "**/node_modules/@sentry/**",
-      "**/projects/flock-native/transfer/**"
+      "**/node_modules/electron-log/**"
     ],
     "extraResources": [],
     "buildDependenciesFromSource": false,
     "extraMetadata": {
       "main": "projects/flock-native/electron/main.js"
     },
+    "afterPack": "scripts/verify-afterpack.js",
     "win": {
       "target": [
         {
@@ -260,6 +261,7 @@
     "@sentry/electron": "^7.1.1",
     "@straiforos/instagramtobluesky": "^0.7.5",
     "dotenv": "^17.2.3",
+    "electron-log": "^5.1.0",
     "extract-zip": "^2.0.1",
     "rxjs": "~7.8.0",
     "sharp": "^0.34.4",
