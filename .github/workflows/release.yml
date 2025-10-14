@@ -222,8 +222,11 @@ jobs:
               prerelease: false
             });
             
+            // Note: Draft releases show "untagged-*" URLs until published
+            // This is expected GitHub behavior and will resolve to the proper tag URL on publish
             console.log(`✅ Release created: ${release.html_url}`);
-            console.log(`Upload URL: ${release.upload_url}`);
+            console.log(`📎 Upload URL: ${release.upload_url}`);
+            console.log(`ℹ️  Draft releases show as "untagged" until published - this is normal`);
             
             // Set outputs
             core.setOutput('upload_url', release.upload_url);
