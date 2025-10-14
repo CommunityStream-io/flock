@@ -310,11 +310,11 @@ jobs:
             echo "⚠️  Unpacked directory not found"
           fi
           
-          if [ -f "dist/electron/Flock-Native-$VERSION-win.zip" ]; then
+          if [ -f "dist/electron/Flock Native-$VERSION-win.zip" ]; then
             echo "✅ Windows ZIP archive found"
-            ls -la "dist/electron/Flock-Native-$VERSION-win.zip"
+            ls -la "dist/electron/Flock Native-$VERSION-win.zip"
           else
-            echo "⚠️  Expected ZIP not found: dist/electron/Flock-Native-$VERSION-win.zip"
+            echo "⚠️  Expected ZIP not found: dist/electron/Flock Native-$VERSION-win.zip"
           fi
 
       - name: Upload Windows NSIS installer to GitHub Release
@@ -334,7 +334,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.create-release.outputs.upload_url }}
-          asset_path: dist/electron/Flock-Native-${{ needs.create-release.outputs.version }}-win.zip
+          asset_path: dist/electron/Flock Native-${{ needs.create-release.outputs.version }}-win.zip
           asset_name: Flock-Native-${{ needs.create-release.outputs.version }}-win.zip
           asset_content_type: application/zip
         continue-on-error: true
