@@ -1,0 +1,42 @@
+# Base Docker image for building Electron Windows apps
+# This image contains Wine, Node.js, and all dependencies needed for Windows builds
+
+FROM node:20-bullseye
+
+# Install Wine and dependencies for Windows builds on Linux
+RUN dpkg --add-architecture i386 && \
+    apt-get update && \
+    apt-get install -y \
+    wine \
+    wine32 \
+    wine64 \
+    mono-devel \
+    fakeroot \
+    dpkg \
+    rpm \
+    xvfb \
+    python3 \
+    make \
+    g++ \
+    libvips-dev \
+    cabextract \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set Wine architecture
+ENV WINEARCH=win64
+ENV WINEPREFIX=/root/.wine
+
+# Initialize Wine
+RUN xvfb-run wine64 wineboot --init && \
+    while pgrep wineserver > /dev/null; do sleep 1; done
+
+# Set environment variables
+ENV NODE_ENV=production
+ENV CI=true
+
+# Set working directory
+WORKDIR /app
+
+# Default command
+CMD ["bash"]

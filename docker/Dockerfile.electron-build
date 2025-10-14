@@ -1,30 +1,7 @@
 # Dockerfile for building Electron Windows app
 # This avoids Windows file locking issues by building in an isolated container
 
-FROM node:20-bullseye
-
-# Install Wine and dependencies for Windows builds on Linux
-RUN dpkg --add-architecture i386 && \
-    apt-get update && \
-    apt-get install -y \
-    wine \
-    wine32 \
-    wine64 \
-    mono-devel \
-    fakeroot \
-    dpkg \
-    rpm \
-    xvfb \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
-
-# Set Wine architecture
-ENV WINEARCH=win64
-ENV WINEPREFIX=/root/.wine
-
-# Initialize Wine
-RUN xvfb-run wine64 wineboot --init && \
-    while pgrep wineserver > /dev/null; do sleep 1; done
+FROM straiforos/electron-windows-base:latest
 
 # Set environment variables
 ENV NODE_ENV=production
@@ -49,6 +26,9 @@ RUN npm ci
 # Copy source code
 COPY projects ./projects
 COPY scripts ./scripts
+
+# Rebuild native dependencies for sharp
+RUN npm rebuild sharp
 
 # Build Angular app
 RUN npm run build:native

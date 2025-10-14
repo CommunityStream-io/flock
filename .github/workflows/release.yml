@@ -143,51 +143,22 @@ jobs:
           node-version: '24.5.0'
           cache: 'npm'
 
-      - name: Install Wine and dependencies
-        run: |
-          echo "🍷 Installing Wine and dependencies for Windows builds..."
-          sudo dpkg --add-architecture i386
-          sudo apt-get update
-          sudo apt-get install -y \
-            wine \
-            wine32 \
-            wine64 \
-            mono-devel \
-            fakeroot \
-            dpkg \
-            rpm \
-            xvfb \
-            cabextract
-          echo "✅ Wine installation completed"
-          
-          # Verify Wine installation
-          wine --version
-          wine64 --version
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-      - name: Setup Wine environment
+      - name: Install Docker Compose
         run: |
-          echo "🍷 Setting up Wine environment..."
-          export WINEARCH=win64
-          export WINEPREFIX=/home/runner/.wine
-          
-          # Create Wine prefix directory
-          mkdir -p /home/runner/.wine
-          
-          # Initialize Wine with proper error handling
-          echo "Initializing Wine..."
-          xvfb-run -a wine64 wineboot --init || {
-            echo "Wine64 failed, trying wine..."
-            xvfb-run -a wine wineboot --init
-          }
-          
-          # Wait for Wine to finish initializing
-          echo "Waiting for Wine to finish initializing..."
-          while pgrep wineserver > /dev/null; do 
-            echo "Wine server still running, waiting..."
-            sleep 2
-          done
-          
-          echo "✅ Wine environment initialized"
+          echo "🐳 Installing Docker Compose..."
+          sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+          docker-compose --version
+          echo "✅ Docker Compose installed"
+
+      - name: Pull Electron Windows base image
+        run: |
+          echo "🐳 Pulling Electron Windows base image..."
+          docker pull straiforos/electron-windows-base:latest
+          echo "✅ Base image pulled successfully"
 
       - name: Install dependencies
         run: npm ci
@@ -195,20 +166,21 @@ jobs:
       - name: Build Angular app
         run: npm run build:native
 
-      - name: Build Windows app with Wine
+      - name: Build Windows app with Docker
         run: |
-          echo "🍷 Building Windows app using Wine..."
+          echo "🐳 Building Windows app using Docker..."
           echo "📦 PACKAGE_TOKEN is set: ${PACKAGE_TOKEN:+yes}"
           
-          # Set Wine environment
-          export WINEARCH=win64
-          export WINEPREFIX=/home/runner/.wine
+          # Build using Docker Compose
+          docker-compose -f docker/docker-compose.electron-build.yml build
           
-          # Build with electron-builder using Wine
-          echo "Starting electron-builder..."
-          xvfb-run -a npx electron-builder --win --publish never
+          # Run the build
+          docker-compose -f docker/docker-compose.electron-build.yml up --abort-on-container-exit
           
-          echo "✅ Wine build completed"
+          # Cleanup
+          docker-compose -f docker/docker-compose.electron-build.yml down
+          
+          echo "✅ Docker build completed"
 
       - name: Verify build output
         run: |
