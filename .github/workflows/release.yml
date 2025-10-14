@@ -100,7 +100,7 @@ jobs:
             echo "✅ Package.json version already matches release version"
           fi
 
-      - name: Delete existing tag if present (for clean release creation)
+      - name: Verify tag exists
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -108,15 +108,11 @@ jobs:
           VERSION="${{ steps.get_version.outputs.version }}"
           TAG_NAME="v${VERSION}"
           
-          # If triggered by tag push, delete the tag so gh release create can recreate it
-          if [ "${{ github.event_name }}" = "push" ] && [ "${{ github.ref_type }}" = "tag" ]; then
-            echo "🗑️  Deleting existing tag $TAG_NAME to let gh release create it..."
-            git push origin :refs/tags/$TAG_NAME || true
-            # Wait for deletion to propagate
-            sleep 2
-            echo "✅ Tag deleted, gh release create will recreate it"
+          echo "Checking for tag $TAG_NAME..."
+          if git rev-parse "$TAG_NAME" >/dev/null 2>&1; then
+            echo "✅ Tag $TAG_NAME exists"
           else
-            echo "ℹ️  Manual trigger, will create tag if needed"
+            echo "ℹ️  Tag $TAG_NAME will be created by gh release create"
           fi
 
       - name: Generate Release Notes
