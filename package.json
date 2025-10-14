@@ -1,6 +1,6 @@
 {
   "name": "flock",
-  "version": "0.1.6",
+  "version": "0.2.2",
   "description": "Migrate Instagram data to Bluesky with native desktop power",
   "repository": {
     "type": "git",
@@ -84,7 +84,7 @@
     "analyze:metrics:latest": "node scripts/analyze-test-metrics.js $(ls -t logs/metrics/test-metrics-*.json | head -1)",
     "analyze:timeouts": "node scripts/analyze-timeout-telemetry.js",
     "analyze:timeouts:latest": "node scripts/analyze-timeout-telemetry.js",
-    "analyze:e2e": "node scripts/analyze-e2e-complexity.js",                                                                 
+    "analyze:e2e": "node scripts/analyze-e2e-complexity.js",
     "analyze:timeouts:ci": "node scripts/analyze-ci-timeouts.js",
     "lint": "ng lint",
     "lint:fix": "ng lint --fix",

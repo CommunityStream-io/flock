@@ -74,12 +74,26 @@ jobs:
             git config user.name "github-actions[bot]"
             git config user.email "github-actions[bot]@users.noreply.github.com"
             
+            # Determine the branch to push to
+            if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+              # For manual triggers, use the current branch
+              BRANCH="${{ github.ref_name }}"
+            else
+              # For tag pushes, find the branch the tag points to or use main
+              BRANCH=$(git branch -r --contains HEAD | grep -v HEAD | head -1 | sed 's|origin/||' | xargs)
+              if [ -z "$BRANCH" ]; then
+                BRANCH="main"
+              fi
+            fi
+            
+            echo "📤 Pushing version bump to branch: $BRANCH"
+            
             # Commit and push the version bump
             git add package.json package-lock.json
             git commit -m "chore: bump version to $VERSION for release"
-            git push origin HEAD:${{ github.ref_name }}
+            git push origin HEAD:refs/heads/$BRANCH
             
-            echo "✅ Package.json updated and committed to $VERSION"
+            echo "✅ Package.json updated and committed to $VERSION on branch $BRANCH"
           else
             echo "✅ Package.json version already matches release version"
           fi
