@@ -143,6 +143,11 @@ jobs:
           node-version: '24.5.0'
           cache: 'npm'
 
+      - name: Enable Windows long paths
+        run: |
+          git config --system core.longpaths true
+          echo "Enabled Windows long path support"
+
       - name: Install dependencies
         run: npm ci
 
