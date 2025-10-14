@@ -160,7 +160,13 @@
       "**/node_modules/pino/**",
       "**/node_modules/pino-pretty/**",
       "**/node_modules/process/**",
-      "**/node_modules/sharp/**"
+      "**/node_modules/sharp/**",
+      "**/node_modules/zod/**",
+      "**/node_modules/iso-datestring-validator/**",
+      "**/node_modules/graphemer/**",
+      "**/node_modules/uint8arrays/**",
+      "**/node_modules/await-lock/**",
+      "**/node_modules/tlds/**"
     ],
     "extraResources": [],
     "buildDependenciesFromSource": false,

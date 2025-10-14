@@ -27,7 +27,13 @@ module.exports = async function afterPack(context) {
       ['pino', 'pino unpacked'],
       ['pino-pretty', 'pino-pretty unpacked'],
       ['process', 'process unpacked'],
-      ['sharp', 'sharp unpacked']
+      ['sharp', 'sharp unpacked'],
+      ['zod', 'zod unpacked'],
+      ['iso-datestring-validator', 'iso-datestring-validator unpacked'],
+      ['graphemer', 'graphemer unpacked'],
+      ['uint8arrays', 'uint8arrays unpacked'],
+      ['await-lock', 'await-lock unpacked'],
+      ['tlds', 'tlds unpacked']
     ];
 
     const results = [];
