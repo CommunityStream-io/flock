@@ -32,10 +32,8 @@ All Docker-based E2E testing components have been successfully implemented and c
 - ✅ Proper volume mounting for artifact collection
 - ✅ Allure artifact upload configured for each shard
 
-### 5. **Validation & Monitoring Tools**
+### 5. **Validation Tools**
 - ✅ `scripts/validate-allure-setup.js` - Validates Allure configuration
-- ✅ `scripts/monitor-ci.js` - Provides GitHub Actions monitoring URLs
-- ✅ `scripts/check-build-status.js` - Comprehensive CI status checker
 
 ## 📊 Current Configuration Status
 
@@ -101,12 +99,6 @@ If you need to investigate locally:
 ```bash
 # Validate Allure setup
 node scripts/validate-allure-setup.js
-
-# Check build status  
-node scripts/check-build-status.js
-
-# Monitor CI progress
-node scripts/monitor-ci.js
 
 # Test WebdriverIO config loading
 npx wdio run wdio.docker.conf.ts --help

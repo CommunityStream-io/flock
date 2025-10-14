@@ -4,7 +4,7 @@
 		"ghcr.io/devcontainers-extra/features/angular-cli:2": {},
 		"ghcr.io/kreemer/features/chrometesting:1": {}
 	},
-	"postStartCommand": "npm install && npx ng build shared && ./install-webdriverio-extension.sh",
+	"postStartCommand": "npm install && npx ng build shared && ./scripts/install-webdriverio-extension.sh",
 	"customizations": {
 		"vscode": {
 			"extensions": [
