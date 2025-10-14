@@ -26,6 +26,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
+          ref: ${{ github.ref }}  # Checkout the actual ref (tag) that triggered this
           fetch-depth: 0  # Fetch all history for release notes generation
           fetch-tags: true  # Explicitly fetch all tags
 
