@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { App } from './app';
-import { LOGGER, Logger, SplashScreenLoading } from 'shared';
-import { of, BehaviorSubject } from 'rxjs';
+import { LOGGER, Logger, SplashScreenLoading, RouterLoggingService } from 'shared';
+import { BehaviorSubject } from 'rxjs';
 import { provideRouter } from '@angular/router';
 
 describe('App', () => {
@@ -23,18 +23,19 @@ describe('App', () => {
             show: jasmine.createSpy('show'),
             hide: jasmine.createSpy('hide')
           } 
-        }
+        },
+        RouterLoggingService
       ]
     }).compileComponents();
   });
 
-  xit('should create the app', () => {
+  it('should create the app', () => {
     const fixture = TestBed.createComponent(App);
     const app = fixture.componentInstance;
     expect(app).toBeTruthy();
   });
 
-  xit('should render title', () => {
+  it('should render title', () => {
     const fixture = TestBed.createComponent(App);
     const app = fixture.componentInstance;
     expect(app.title).toBe('flock-mirage');
