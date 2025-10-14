@@ -1,4 +1,4 @@
-// Electron-builder afterPack hook to verify unpacked modules
+// Electron-builder afterPack hook to verify unpacked modules ensuring the cli has all the dependencies it needs
 // Docs: https://www.electron.build/configuration/configuration#afterpack
 
 const fs = require('fs');
@@ -16,7 +16,18 @@ module.exports = async function afterPack(context) {
     const checks = [
       ['@sentry', '@sentry unpacked'],
       ['electron-log', 'electron-log unpacked'],
-      ['@ffprobe-installer', 'ffprobe unpacked']
+      ['@ffprobe-installer', 'ffprobe unpacked'],
+      ['@atproto', 'atproto unpacked'],
+      ['byte-size', 'byte-size unpacked'],
+      ['dotenv', 'dotenv unpacked'],
+      ['fluent-ffmpeg', 'fluent-ffmpeg unpacked'],
+      ['luxon', 'luxon unpacked'],
+      ['multiformats', 'multiformats unpacked'],
+      ['multihashes', 'multihashes unpacked'],
+      ['pino', 'pino unpacked'],
+      ['pino-pretty', 'pino-pretty unpacked'],
+      ['process', 'process unpacked'],
+      ['sharp', 'sharp unpacked']
     ];
 
     const results = [];
