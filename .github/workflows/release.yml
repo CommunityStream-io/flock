@@ -137,45 +137,86 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Docker Buildx
-        uses: docker/setup-buildx-action@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24.5.0'
+          cache: 'npm'
 
-      - name: Build Windows app using Docker
+      - name: Install Wine and dependencies
         run: |
-          echo "🐳 Building Windows app using Docker to avoid long path issues..."
+          echo "🍷 Installing Wine and dependencies for Windows builds..."
+          sudo dpkg --add-architecture i386
+          sudo apt-get update
+          sudo apt-get install -y \
+            wine \
+            wine32 \
+            wine64 \
+            mono-devel \
+            fakeroot \
+            dpkg \
+            rpm \
+            xvfb
+          echo "✅ Wine installation completed"
+
+      - name: Setup Wine environment
+        run: |
+          echo "🍷 Setting up Wine environment..."
+          export WINEARCH=win64
+          export WINEPREFIX=/home/runner/.wine
+          
+          # Initialize Wine
+          xvfb-run wine64 wineboot --init
+          while pgrep wineserver > /dev/null; do sleep 1; done
+          
+          echo "✅ Wine environment initialized"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Angular app
+        run: npm run build:native
+
+      - name: Build Windows app with Wine
+        run: |
+          echo "🍷 Building Windows app using Wine..."
           echo "📦 PACKAGE_TOKEN is set: ${PACKAGE_TOKEN:+yes}"
           
-          # Build using Docker Compose
-          docker-compose -f docker/docker-compose.electron-build.yml build
+          # Set Wine environment
+          export WINEARCH=win64
+          export WINEPREFIX=/home/runner/.wine
           
-          # Run the build
-          docker-compose -f docker/docker-compose.electron-build.yml up --abort-on-container-exit
+          # Build with electron-builder using Wine
+          xvfb-run npx electron-builder --win --publish never
           
-          # Cleanup
-          docker-compose -f docker/docker-compose.electron-build.yml down
-          
-          echo "✅ Docker build completed"
+          echo "✅ Wine build completed"
 
       - name: Verify build output
         run: |
           echo "📁 Checking build output..."
           ls -la dist/electron/
+          VERSION="${{ needs.create-release.outputs.version }}"
+          if [ -f "dist/electron/Flock Native Setup $VERSION.exe" ]; then
+            echo "✅ Windows NSIS installer found"
+            ls -la "dist/electron/Flock Native Setup $VERSION.exe"
+          fi
           if [ -d "dist/electron/win-unpacked" ]; then
             echo "✅ Windows unpacked build found"
             ls -la dist/electron/win-unpacked/
-          else
-            echo "❌ Windows unpacked build not found"
-            exit 1
+          fi
+          if [ -f "dist/electron/Flock-Native-$VERSION-win.zip" ]; then
+            echo "✅ Windows ZIP archive found"
+            ls -la "dist/electron/Flock-Native-$VERSION-win.zip"
           fi
 
-      - name: Upload Windows artifacts to GitHub Release
+      - name: Upload Windows NSIS installer to GitHub Release
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.create-release.outputs.upload_url }}
-          asset_path: dist/electron/Flock-Native-Setup-0.1.6.exe
-          asset_name: Flock-Native-Setup-0.1.6.exe
+          asset_path: dist/electron/Flock Native Setup ${{ needs.create-release.outputs.version }}.exe
+          asset_name: Flock-Native-Setup-${{ needs.create-release.outputs.version }}.exe
           asset_content_type: application/octet-stream
         continue-on-error: true
 
@@ -185,8 +226,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.create-release.outputs.upload_url }}
-          asset_path: dist/electron/Flock-Native-0.1.6-win.zip
-          asset_name: Flock-Native-0.1.6-win.zip
+          asset_path: dist/electron/Flock-Native-${{ needs.create-release.outputs.version }}-win.zip
+          asset_name: Flock-Native-${{ needs.create-release.outputs.version }}-win.zip
           asset_content_type: application/zip
         continue-on-error: true
 

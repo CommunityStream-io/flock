@@ -24,11 +24,11 @@ services:
       - PACKAGE_TOKEN=${PACKAGE_TOKEN}
     command: >
       sh -c "
-        echo '🐳 Starting Electron Windows build in Docker...' &&
+        echo '🐳 Starting Electron Windows build in Docker with Wine...' &&
         echo '📦 Cleaning old build artifacts...' &&
         rm -rf /app/dist/electron/* &&
         echo '🔨 Building Electron app with NSIS installer...' &&
-        npx electron-builder --win --publish never --config.directories.output=/app/dist/electron &&
+        xvfb-run npx electron-builder --win --publish never --config.directories.output=/app/dist/electron &&
         echo '✅ Build complete! Check dist/electron/' &&
         ls -la /app/dist/electron/
       "

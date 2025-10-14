@@ -14,6 +14,7 @@ RUN dpkg --add-architecture i386 && \
     fakeroot \
     dpkg \
     rpm \
+    xvfb \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -22,8 +23,12 @@ ENV WINEARCH=win64
 ENV WINEPREFIX=/root/.wine
 
 # Initialize Wine
-RUN wine64 wineboot --init && \
+RUN xvfb-run wine64 wineboot --init && \
     while pgrep wineserver > /dev/null; do sleep 1; done
+
+# Set environment variables
+ENV NODE_ENV=production
+ENV CI=true
 
 # Set working directory
 WORKDIR /app
@@ -44,8 +49,6 @@ RUN npm ci
 # Copy source code
 COPY projects ./projects
 COPY scripts ./scripts
-COPY features ./features
-COPY wdio*.ts ./
 
 # Build Angular app
 RUN npm run build:native
