@@ -413,13 +413,13 @@ jobs:
         with:
           script: |
             const version = '${{ needs.create-release.outputs.version }}';
-            const tagName = `v${version}`;
+            const releaseId = '${{ needs.create-release.outputs.release_id }}';
             
-            // Get the release by tag
-            const { data: release } = await github.rest.repos.getReleaseByTag({
+            // Get the release by ID (works with draft releases showing "untagged" URLs)
+            const { data: release } = await github.rest.repos.getRelease({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              tag: tagName
+              release_id: releaseId
             });
             
             // Update release body with build completion note
