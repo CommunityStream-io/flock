@@ -131,34 +131,13 @@ jobs:
     name: Build Windows
     needs: create-release
     runs-on: ubuntu-latest
+    container:
+      image: straiforos/electron-windows-base:latest
     env:
       PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '24.5.0'
-          cache: 'npm'
-
-      - name: Setup Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Install Docker Compose
-        run: |
-          echo "🐳 Installing Docker Compose..."
-          sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-          sudo chmod +x /usr/local/bin/docker-compose
-          docker-compose --version
-          echo "✅ Docker Compose installed"
-
-      - name: Pull Electron Windows base image
-        run: |
-          echo "🐳 Pulling Electron Windows base image..."
-          docker pull straiforos/electron-windows-base:latest
-          echo "✅ Base image pulled successfully"
 
       - name: Install dependencies
         run: npm ci
@@ -166,21 +145,16 @@ jobs:
       - name: Build Angular app
         run: npm run build:native
 
-      - name: Build Windows app with Docker
+      - name: Build Windows app
         run: |
-          echo "🐳 Building Windows app using Docker..."
+          echo "🍷 Building Windows app using Wine..."
           echo "📦 PACKAGE_TOKEN is set: ${PACKAGE_TOKEN:+yes}"
           
-          # Build using Docker Compose
-          docker-compose -f docker/docker-compose.electron-build.yml build
+          # Build with electron-builder using Wine
+          echo "Starting electron-builder..."
+          xvfb-run -a npx electron-builder --win --publish never
           
-          # Run the build
-          docker-compose -f docker/docker-compose.electron-build.yml up --abort-on-container-exit
-          
-          # Cleanup
-          docker-compose -f docker/docker-compose.electron-build.yml down
-          
-          echo "✅ Docker build completed"
+          echo "✅ Wine build completed"
 
       - name: Verify build output
         run: |
