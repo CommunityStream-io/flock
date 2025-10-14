@@ -54,6 +54,36 @@ jobs:
           echo "previous_tag=$PREVIOUS_TAG" >> $GITHUB_OUTPUT
           echo "Previous tag: $PREVIOUS_TAG"
 
+      - name: Check and bump package.json version
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION="${{ steps.get_version.outputs.version }}"
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
+          
+          echo "📦 Current package.json version: $CURRENT_VERSION"
+          echo "🎯 Target release version: $VERSION"
+          
+          if [ "$CURRENT_VERSION" != "$VERSION" ]; then
+            echo "⚠️  Version mismatch detected! Updating package.json..."
+            
+            # Update package.json version
+            npm version "$VERSION" --no-git-tag-version --allow-same-version
+            
+            # Configure git
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            
+            # Commit and push the version bump
+            git add package.json package-lock.json
+            git commit -m "chore: bump version to $VERSION for release"
+            git push origin HEAD:${{ github.ref_name }}
+            
+            echo "✅ Package.json updated and committed to $VERSION"
+          else
+            echo "✅ Package.json version already matches release version"
+          fi
+
       - name: Create tag if it doesn't exist
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
