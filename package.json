@@ -145,9 +145,7 @@
       "node_modules/**/*",
       "package.json"
     ],
-    "asarUnpack": [
-      "**/*.node"
-    ],
+    "asar": false,
     "extraResources": [],
     "buildDependenciesFromSource": false,
     "extraMetadata": {
@@ -156,19 +154,7 @@
     "win": {
       "target": [
         {
-          "target": "nsis",
-          "arch": [
-            "x64"
-          ]
-        },
-        {
           "target": "portable",
-          "arch": [
-            "x64"
-          ]
-        },
-        {
-          "target": "zip",
           "arch": [
             "x64"
           ]
@@ -178,14 +164,6 @@
       "publisherName": "CommunityStream.io",
       "sign": null,
       "signDlls": false
-    },
-    "nsis": {
-      "oneClick": false,
-      "perMachine": false,
-      "allowToChangeInstallationDirectory": true,
-      "createDesktopShortcut": true,
-      "createStartMenuShortcut": true,
-      "shortcutName": "Flock Native"
     },
     "mac": {
       "category": "public.app-category.utilities",

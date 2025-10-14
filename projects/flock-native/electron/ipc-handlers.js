@@ -393,50 +393,6 @@ function setupIpcHandlers(mainWindow, sentryInstance) {
         }
       });
       
-      // Resolve the Instagram to Bluesky package main script path
-      let resolvedScriptPath;
-      
-      if (app.isPackaged) {
-        // In packaged apps, try external CLI package first, then fallback to asarUnpack
-        const possiblePaths = [];
-        
-        // Option 1: External CLI package from extraResources
-        const externalCliPath = path.join(process.resourcesPath, 'cli-package', 'dist', 'main.js');
-        possiblePaths.push(externalCliPath);
-        
-        // Option 2: .asar.unpacked next to .asar file
-        if (appPath.includes('.asar')) {
-          possiblePaths.push(path.join(appPath + '.unpacked', 'node_modules', '@straiforos', 'instagramtobluesky', 'dist', 'main.js'));
-        } else {
-          // Option 3: app.asar.unpacked in resources folder
-          possiblePaths.push(path.join(appPath, '..', 'app.asar.unpacked', 'node_modules', '@straiforos', 'instagramtobluesky', 'dist', 'main.js'));
-          possiblePaths.push(path.join(appPath, 'app.asar.unpacked', 'node_modules', '@straiforos', 'instagramtobluesky', 'dist', 'main.js'));
-        }
-        
-        // Option 4: Regular path (fallback)
-        possiblePaths.push(path.join(appRoot, 'node_modules', '@straiforos', 'instagramtobluesky', 'dist', 'main.js'));
-        
-        // Try each path and use the first one that exists
-        for (const testPath of possiblePaths) {
-          if (fsSync.existsSync(testPath)) {
-            console.log('🚀 [ELECTRON MAIN] ✅ Resolved script path:', testPath);
-            resolvedScriptPath = testPath;
-            break;
-          }
-        }
-        
-        if (!resolvedScriptPath) {
-          // None of the paths worked
-          console.warn('🚀 [ELECTRON MAIN] ⚠️ Could not resolve script path, tried:');
-          possiblePaths.forEach(p => console.warn('  -', p));
-          resolvedScriptPath = possiblePaths[0]; // Use first attempt
-        }
-      } else {
-        // Development mode - simple resolution
-        resolvedScriptPath = path.join(appRoot, 'node_modules', '@straiforos', 'instagramtobluesky', 'dist', 'main.js');
-        console.log('🚀 [ELECTRON MAIN] Resolved script path (dev):', resolvedScriptPath);
-      }
-      
       // Resolve test data path if it's a relative path
       const mergedEnv = { ...process.env, ...options.env };
       if (mergedEnv.ARCHIVE_FOLDER && !path.isAbsolute(mergedEnv.ARCHIVE_FOLDER)) {
@@ -446,6 +402,22 @@ function setupIpcHandlers(mainWindow, sentryInstance) {
         mergedEnv.ARCHIVE_FOLDER = resolvedPath;
       }
 
+      // Use Node's require.resolve to find the package main script
+      // This automatically handles both dev and packaged environments
+      let resolvedScriptPath;
+      try {
+        // Try to resolve the CLI executable directly
+        resolvedScriptPath = require.resolve('@straiforos/instagramtobluesky/dist/main.js');
+        console.log('🚀 [ELECTRON MAIN] ✅ Resolved script path via require.resolve:', resolvedScriptPath);
+      } catch (error) {
+        console.warn('🚀 [ELECTRON MAIN] ⚠️ require.resolve failed, falling back to manual resolution:', error.message);
+        
+        // Fallback: try to find the package in node_modules
+        const packagePath = require.resolve('@straiforos/instagramtobluesky/package.json');
+        const packageDir = path.dirname(packagePath);
+        resolvedScriptPath = path.join(packageDir, 'dist', 'main.js');
+        console.log('🚀 [ELECTRON MAIN] Fallback script path:', resolvedScriptPath);
+      }
       
       // Fork the utility process using Electron's API
       // This handles packaged apps correctly without process.execPath issues
