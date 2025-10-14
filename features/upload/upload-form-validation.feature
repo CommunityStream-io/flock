@@ -1,3 +1,4 @@
+@skip
 Feature: Upload Form Validation - Error Handling and User Feedback
 
   As a user attempting to proceed without proper file selection

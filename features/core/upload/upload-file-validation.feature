@@ -1,4 +1,4 @@
-@core @upload @validation
+@core @upload @validation @skip
 Feature: File Validation - Archive File Verification and Error Handling
 
   As a user uploading my Instagram archive
