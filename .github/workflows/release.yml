@@ -130,42 +130,72 @@ jobs:
   build-windows:
     name: Build Windows
     needs: create-release
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     env:
       PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '24.5.0'
-          cache: 'npm'
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-      - name: Enable Windows long paths
+      - name: Build Windows app using Docker
         run: |
-          git config --system core.longpaths true
-          echo "Enabled Git long path support"
+          echo "🐳 Building Windows app using Docker to avoid long path issues..."
+          echo "📦 PACKAGE_TOKEN is set: ${PACKAGE_TOKEN:+yes}"
           
-          # Enable Windows long path support via registry
-          reg add "HKLM\SYSTEM\CurrentControlSet\Control\FileSystem" /v LongPathsEnabled /t REG_DWORD /d 1 /f
-          echo "Enabled Windows long path support via registry"
+          # Build using Docker Compose
+          docker-compose -f docker/docker-compose.electron-build.yml build
           
-          # Set environment variable for current session
-          [Environment]::SetEnvironmentVariable("LongPathsEnabled", "1", "Machine")
-          echo "Set LongPathsEnabled environment variable"
+          # Run the build
+          docker-compose -f docker/docker-compose.electron-build.yml up --abort-on-container-exit
+          
+          # Cleanup
+          docker-compose -f docker/docker-compose.electron-build.yml down
+          
+          echo "✅ Docker build completed"
 
-      - name: Install dependencies
-        run: npm ci
+      - name: Verify build output
+        run: |
+          echo "📁 Checking build output..."
+          ls -la dist/electron/
+          if [ -d "dist/electron/win-unpacked" ]; then
+            echo "✅ Windows unpacked build found"
+            ls -la dist/electron/win-unpacked/
+          else
+            echo "❌ Windows unpacked build not found"
+            exit 1
+          fi
 
-      - name: Build Angular app
-        run: npm run build:native
-
-      - name: Build and publish Windows installers
-        run: npx electron-builder --win --publish always
+      - name: Upload Windows artifacts to GitHub Release
+        uses: actions/upload-release-asset@v1
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create-release.outputs.upload_url }}
+          asset_path: dist/electron/Flock-Native-Setup-0.1.6.exe
+          asset_name: Flock-Native-Setup-0.1.6.exe
+          asset_content_type: application/octet-stream
+        continue-on-error: true
+
+      - name: Upload Windows ZIP to GitHub Release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create-release.outputs.upload_url }}
+          asset_path: dist/electron/Flock-Native-0.1.6-win.zip
+          asset_name: Flock-Native-0.1.6-win.zip
+          asset_content_type: application/zip
+        continue-on-error: true
+
+      - name: Upload Windows build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-build-artifacts
+          path: dist/electron/
+          retention-days: 30
 
   build-macos:
     name: Build macOS
