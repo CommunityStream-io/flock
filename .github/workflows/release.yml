@@ -100,25 +100,23 @@ jobs:
             echo "✅ Package.json version already matches release version"
           fi
 
-      - name: Create tag if it doesn't exist
+      - name: Delete existing tag if present (for clean release creation)
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # Use the normalized version from the previous step
           VERSION="${{ steps.get_version.outputs.version }}"
           TAG_NAME="v${VERSION}"
-          echo "Checking if tag $TAG_NAME exists..."
           
-          # Check if tag exists
-          if git rev-parse "$TAG_NAME" >/dev/null 2>&1; then
-            echo "✅ Tag $TAG_NAME already exists"
+          # If triggered by tag push, delete the tag so gh release create can recreate it
+          if [ "${{ github.event_name }}" = "push" ] && [ "${{ github.ref_type }}" = "tag" ]; then
+            echo "🗑️  Deleting existing tag $TAG_NAME to let gh release create it..."
+            git push origin :refs/tags/$TAG_NAME || true
+            # Wait for deletion to propagate
+            sleep 2
+            echo "✅ Tag deleted, gh release create will recreate it"
           else
-            echo "📝 Creating tag $TAG_NAME..."
-            git config user.name "github-actions[bot]"
-            git config user.email "github-actions[bot]@users.noreply.github.com"
-            git tag -a "$TAG_NAME" -m "Release $TAG_NAME"
-            git push origin "$TAG_NAME"
-            echo "✅ Tag $TAG_NAME created and pushed"
+            echo "ℹ️  Manual trigger, will create tag if needed"
           fi
 
       - name: Generate Release Notes
@@ -198,34 +196,12 @@ jobs:
           # Write notes to file to avoid shell escaping issues
           echo "$RELEASE_NOTES" > release_notes.md
           
-          # Verify tag exists locally and on remote
-          echo "Verifying tag $TAG_NAME..."
-          git fetch origin tag "$TAG_NAME" --no-tags || true
-          
-          if ! git rev-parse "$TAG_NAME" >/dev/null 2>&1; then
-            echo "❌ Error: Tag $TAG_NAME does not exist locally"
-            exit 1
-          fi
-          
-          TAG_COMMIT=$(git rev-parse $TAG_NAME)
-          echo "✅ Tag $TAG_NAME found at commit $TAG_COMMIT"
-          
-          # Wait a moment for GitHub to sync the tag
-          echo "Waiting for GitHub to sync tag..."
-          sleep 2
-          
-          # Verify tag exists on GitHub before creating release
-          if ! gh api "repos/${{ github.repository }}/git/refs/tags/${TAG_NAME}" >/dev/null 2>&1; then
-            echo "⚠️  Tag not yet visible on GitHub API, waiting..."
-            sleep 3
-          fi
-          
-          # Create release using gh CLI with explicit target commitish
+          # Create release and let gh CLI create/use the tag
+          echo "Creating release for $TAG_NAME..."
           gh release create "$TAG_NAME" \
             --draft \
             --title "Flock Native v${{ steps.get_version.outputs.version }}" \
             --notes-file release_notes.md \
-            --target "$TAG_COMMIT" \
             --repo ${{ github.repository }}
           
           echo "✅ Release created for tag $TAG_NAME"
