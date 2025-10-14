@@ -27,6 +27,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0  # Fetch all history for release notes generation
+          fetch-tags: true  # Explicitly fetch all tags
 
       - name: Get version from tag
         id: get_version
@@ -196,18 +197,22 @@ jobs:
           # Write notes to file to avoid shell escaping issues
           echo "$RELEASE_NOTES" > release_notes.md
           
-          # Verify tag exists
+          # Verify tag exists and fetch it explicitly
+          echo "Fetching tag $TAG_NAME..."
+          git fetch origin tag "$TAG_NAME" --no-tags || true
+          
           if ! git rev-parse "$TAG_NAME" >/dev/null 2>&1; then
             echo "❌ Error: Tag $TAG_NAME does not exist"
             exit 1
           fi
           
-          # Create release using gh CLI with the existing tag
+          echo "✅ Tag $TAG_NAME found at commit $(git rev-parse $TAG_NAME)"
+          
+          # Create release using gh CLI (tag already exists, no need for --target)
           gh release create "$TAG_NAME" \
             --draft \
             --title "Flock Native v${{ steps.get_version.outputs.version }}" \
             --notes-file release_notes.md \
-            --target "$(git rev-parse $TAG_NAME)" \
             --repo ${{ github.repository }}
           
           # Get release data for outputs
