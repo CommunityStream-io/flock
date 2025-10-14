@@ -108,7 +108,7 @@ export interface ElectronAPI {
   readFile(filePath: string): Promise<FileReadResult>;
   
   // CLI execution (using utilityProcess.fork)
-  executeCLI(scriptPath: string, args?: string[], options?: CLIOptions): Promise<CLIExecutionResult>;
+  executeCLI(options?: CLIOptions): Promise<CLIExecutionResult>;
   cancelCLI(processId: string): Promise<CLICancellationResult>;
   
   // Progress monitoring

@@ -12,24 +12,16 @@ module.exports = async function afterPack(context) {
     const resourcesDir = context.appOutDir && path.join(context.appOutDir, 'resources');
     if (!resourcesDir) return;
 
-    // Check external CLI package from extraResources
-    const externalCliPath = path.join(resourcesDir, 'cli-package');
-    const cliExists = fs.existsSync(externalCliPath);
-    const cliMainExists = fs.existsSync(path.join(externalCliPath, 'dist', 'main.js'));
-    
     // Check essential asarUnpack modules
     const unpackedDir = path.join(resourcesDir, 'app.asar.unpacked', 'node_modules');
     const essentialChecks = [
       ['@sentry', '@sentry unpacked'],
       ['electron-log', 'electron-log unpacked'],
-      ['@ffprobe-installer', 'ffprobe unpacked']
+      ['@ffprobe-installer', 'ffprobe unpacked'],
+      ['sharp', 'sharp unpacked']
     ];
 
     const results = [];
-    
-    // Add CLI package check
-    results.push({ label: 'CLI package external', exists: cliExists });
-    results.push({ label: 'CLI main.js', exists: cliMainExists });
     
     // Add essential unpacked modules
     for (const [folder, label] of essentialChecks) {

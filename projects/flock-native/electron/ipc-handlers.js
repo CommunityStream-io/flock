@@ -359,67 +359,10 @@ function setupIpcHandlers(mainWindow, sentryInstance) {
     }
   });
 
-  // Test helper: CLI path resolution (for E2E tests)
-  ipcMain.handle('test:resolveCliPath', async (event) => {
-    try {
-      const appPath = app.getAppPath();
-      // In packaged apps, app.getAppPath() points to the app.asar file.
-      // Use its directory as the working root, not the .asar file itself.
-      const appRoot = app.isPackaged ? path.dirname(appPath) : path.join(appPath, '../../..');
-      
-      // Try to resolve the CLI path using external resources first, then fallback to node_modules
-      const possiblePaths = [];
-      
-      if (app.isPackaged) {
-        // Use external CLI package from extraResources
-        const externalCliPath = path.join(process.resourcesPath, 'cli-package', 'dist', 'main.js');
-        possiblePaths.push(externalCliPath);
-        
-        // Fallback to old node_modules path
-        const cliRelativePath = 'node_modules/@straiforos/instagramtobluesky/dist/main.js';
-        if (appPath.includes('.asar')) {
-          possiblePaths.push(path.join(appPath + '.unpacked', cliRelativePath));
-        } else {
-          possiblePaths.push(path.join(appPath, '..', 'app.asar.unpacked', cliRelativePath));
-          possiblePaths.push(path.join(appPath, 'app.asar.unpacked', cliRelativePath));
-        }
-        possiblePaths.push(path.join(appRoot, cliRelativePath));
-      } else {
-        // Development mode - use node_modules
-        const cliRelativePath = 'node_modules/@straiforos/instagramtobluesky/dist/main.js';
-        possiblePaths.push(path.join(appRoot, cliRelativePath));
-      }
-      
-      // Find first existing path
-      let resolvedPath = null;
-      for (const testPath of possiblePaths) {
-        if (fsSync.existsSync(testPath)) {
-          resolvedPath = testPath;
-          break;
-        }
-      }
-      
-      return {
-        success: true,
-        exists: resolvedPath !== null,
-        path: resolvedPath || possiblePaths[0],
-        triedPaths: possiblePaths,
-        isPackaged: app.isPackaged
-      };
-    } catch (error) {
-      console.error('❌ [ELECTRON MAIN] Failed to resolve CLI path:', error);
-      return {
-        success: false,
-        exists: false,
-        error: error.message
-      };
-    }
-  });
-
   // CLI execution handler
   // Uses utilityProcess.fork() - the proper Electron API for Node.js child processes
   // Reference: https://www.electronjs.org/docs/latest/api/utility-process
-  ipcMain.handle('execute-cli', async (event, scriptPath, args = [], options = {}) => {
+  ipcMain.handle('execute-cli', async (event, options = {}) => {
     try {
       const processId = Date.now().toString();
       
@@ -433,8 +376,6 @@ function setupIpcHandlers(mainWindow, sentryInstance) {
       console.log('🚀 [ELECTRON MAIN] CLI EXECUTION STARTED');
       console.log('🚀 [ELECTRON MAIN] Process ID:', processId);
       console.log('🚀 [ELECTRON MAIN] Execution Method: utilityProcess.fork()');
-      console.log('🚀 [ELECTRON MAIN] Script Path (raw):', scriptPath);
-      console.log('🚀 [ELECTRON MAIN] Script Args:', args);
       console.log('🚀 [ELECTRON MAIN] App Root:', appRoot);
       console.log('🚀 [ELECTRON MAIN] App Path:', appPath);
       console.log('🚀 [ELECTRON MAIN] Is Packaged:', app.isPackaged);
@@ -448,62 +389,52 @@ function setupIpcHandlers(mainWindow, sentryInstance) {
         level: 'info',
         data: {
           processId: processId,
-          scriptPath: scriptPath,
           isPackaged: app.isPackaged
         }
       });
       
-      // Resolve the script path
-      // In packaged apps, check for .asar.unpacked directory (asarUnpack extracts there)
-      const scriptArgs = args;
+      // Resolve the Instagram to Bluesky package main script path
+      let resolvedScriptPath;
       
-      let resolvedScriptPath = scriptPath;
-      
-      if (scriptPath && !path.isAbsolute(scriptPath)) {
-        console.log('🚀 [ELECTRON MAIN] Resolving script path:', scriptPath);
+      if (app.isPackaged) {
+        // In packaged apps, try external CLI package first, then fallback to asarUnpack
+        const possiblePaths = [];
         
-        if (app.isPackaged) {
-          // In packaged apps, try external CLI package first, then fallback to asarUnpack
-          const possiblePaths = [];
-          
-          // Option 1: External CLI package from extraResources
-          if (scriptPath.includes('@straiforos/instagramtobluesky')) {
-            const externalCliPath = path.join(process.resourcesPath, 'cli-package', 'dist', 'main.js');
-            possiblePaths.push(externalCliPath);
-          }
-          
-          // Option 2: .asar.unpacked next to .asar file
-          if (appPath.includes('.asar')) {
-            possiblePaths.push(path.join(appPath + '.unpacked', scriptPath));
-          } else {
-            // Option 3: app.asar.unpacked in resources folder
-            possiblePaths.push(path.join(appPath, '..', 'app.asar.unpacked', scriptPath));
-            possiblePaths.push(path.join(appPath, 'app.asar.unpacked', scriptPath));
-          }
-          
-          // Option 4: Regular path (fallback)
-          possiblePaths.push(path.join(appRoot, scriptPath));
-          
-          // Try each path and use the first one that exists
-          for (const testPath of possiblePaths) {
-            if (fsSync.existsSync(testPath)) {
-              console.log('🚀 [ELECTRON MAIN] ✅ Resolved script path:', testPath);
-              resolvedScriptPath = testPath;
-              break;
-            }
-          }
-          
-          if (resolvedScriptPath === scriptPath) {
-            // None of the paths worked
-            console.warn('🚀 [ELECTRON MAIN] ⚠️ Could not resolve script path, tried:');
-            possiblePaths.forEach(p => console.warn('  -', p));
-            resolvedScriptPath = possiblePaths[0]; // Use first attempt
-          }
+        // Option 1: External CLI package from extraResources
+        const externalCliPath = path.join(process.resourcesPath, 'cli-package', 'dist', 'main.js');
+        possiblePaths.push(externalCliPath);
+        
+        // Option 2: .asar.unpacked next to .asar file
+        if (appPath.includes('.asar')) {
+          possiblePaths.push(path.join(appPath + '.unpacked', 'node_modules', '@straiforos', 'instagramtobluesky', 'dist', 'main.js'));
         } else {
-          // Development mode - simple resolution
-          resolvedScriptPath = path.join(appRoot, scriptPath);
-          console.log('🚀 [ELECTRON MAIN] Resolved script path (dev):', resolvedScriptPath);
+          // Option 3: app.asar.unpacked in resources folder
+          possiblePaths.push(path.join(appPath, '..', 'app.asar.unpacked', 'node_modules', '@straiforos', 'instagramtobluesky', 'dist', 'main.js'));
+          possiblePaths.push(path.join(appPath, 'app.asar.unpacked', 'node_modules', '@straiforos', 'instagramtobluesky', 'dist', 'main.js'));
         }
+        
+        // Option 4: Regular path (fallback)
+        possiblePaths.push(path.join(appRoot, 'node_modules', '@straiforos', 'instagramtobluesky', 'dist', 'main.js'));
+        
+        // Try each path and use the first one that exists
+        for (const testPath of possiblePaths) {
+          if (fsSync.existsSync(testPath)) {
+            console.log('🚀 [ELECTRON MAIN] ✅ Resolved script path:', testPath);
+            resolvedScriptPath = testPath;
+            break;
+          }
+        }
+        
+        if (!resolvedScriptPath) {
+          // None of the paths worked
+          console.warn('🚀 [ELECTRON MAIN] ⚠️ Could not resolve script path, tried:');
+          possiblePaths.forEach(p => console.warn('  -', p));
+          resolvedScriptPath = possiblePaths[0]; // Use first attempt
+        }
+      } else {
+        // Development mode - simple resolution
+        resolvedScriptPath = path.join(appRoot, 'node_modules', '@straiforos', 'instagramtobluesky', 'dist', 'main.js');
+        console.log('🚀 [ELECTRON MAIN] Resolved script path (dev):', resolvedScriptPath);
       }
       
       // Resolve test data path if it's a relative path
@@ -514,84 +445,7 @@ function setupIpcHandlers(mainWindow, sentryInstance) {
         console.log('🚀 [ELECTRON MAIN] Resolved to:', resolvedPath);
         mergedEnv.ARCHIVE_FOLDER = resolvedPath;
       }
-      
-      // Ensure NODE_PATH points to unpacked node_modules for simple resolution
-      const nodeModulesPath = path.join(appRoot, 'node_modules');
-      if (app.isPackaged && appPath.includes('.asar')) {
-        mergedEnv.NODE_PATH = path.join(appPath + '.unpacked', 'node_modules');
-      } else if (app.isPackaged) {
-        mergedEnv.NODE_PATH = path.join(appPath, '..', 'app.asar.unpacked', 'node_modules');
-      } else {
-        mergedEnv.NODE_PATH = nodeModulesPath;
-      }
-      
-      console.log('🚀 [ELECTRON MAIN] NODE_PATH set to:', mergedEnv.NODE_PATH);
-      
-      console.log('🚀 [ELECTRON MAIN] Script:', resolvedScriptPath);
-      console.log('🚀 [ELECTRON MAIN] Script exists?', fsSync.existsSync(resolvedScriptPath));
-      console.log('🚀 [ELECTRON MAIN] Script args:', scriptArgs);
-      
-      // Check if NODE_PATH directory exists
-      if (mergedEnv.NODE_PATH) {
-        console.log('🚀 [ELECTRON MAIN] NODE_PATH exists?', fsSync.existsSync(mergedEnv.NODE_PATH));
-        if (fsSync.existsSync(mergedEnv.NODE_PATH)) {
-          const cliModulePath = path.join(mergedEnv.NODE_PATH, '@straiforos/instagramtobluesky');
-          console.log('🚀 [ELECTRON MAIN] CLI module path:', cliModulePath);
-          console.log('🚀 [ELECTRON MAIN] CLI module exists?', fsSync.existsSync(cliModulePath));
-        }
-      }
-      
-      console.log('=====================================');
-      
-      // Verify the script exists before trying to fork
-      if (!fsSync.existsSync(resolvedScriptPath)) {
-        console.error('❌ [ELECTRON MAIN] Script file does not exist!');
-        console.error('❌ [ELECTRON MAIN] Looking for:', resolvedScriptPath);
-        console.error('❌ [ELECTRON MAIN] This will cause ENOENT error');
-        
-        // List what actually exists in the parent directory
-        const parentDir = path.dirname(resolvedScriptPath);
-        if (fsSync.existsSync(parentDir)) {
-          console.log('🔍 [ELECTRON MAIN] Parent directory exists, contents:');
-          const contents = fsSync.readdirSync(parentDir);
-          contents.slice(0, 10).forEach(item => console.log('   -', item));
-          if (contents.length > 10) {
-            console.log(`   ... (${contents.length - 10} more items)`);
-          }
-        } else {
-          console.error('❌ [ELECTRON MAIN] Parent directory does not exist:', parentDir);
-          
-          // Walk up the tree to find what exists
-          let checkPath = resolvedScriptPath;
-          let depth = 0;
-          while (depth < 10 && !fsSync.existsSync(checkPath)) {
-            checkPath = path.dirname(checkPath);
-            depth++;
-          }
-          console.log('🔍 [ELECTRON MAIN] Closest existing path:', checkPath);
-          if (fsSync.existsSync(checkPath)) {
-            const contents = fsSync.readdirSync(checkPath);
-            console.log('🔍 [ELECTRON MAIN] Contents:');
-            contents.slice(0, 10).forEach(item => console.log('   -', item));
-          }
-        }
-      } else {
-        // Script exists - verify it's readable and looks like valid JS
-        try {
-          const stats = fsSync.statSync(resolvedScriptPath);
-          console.log('🔍 [ELECTRON MAIN] Script file stats:', {
-            size: stats.size,
-            mode: stats.mode.toString(8),
-            isFile: stats.isFile()
-          });
-          
-          // Read first line to verify it's a JS file
-          const firstBytes = fsSync.readFileSync(resolvedScriptPath, { encoding: 'utf8', flag: 'r' }).slice(0, 500);
-          console.log('🔍 [ELECTRON MAIN] Script starts with:', firstBytes.slice(0, 100));
-        } catch (readError) {
-          console.error('❌ [ELECTRON MAIN] Error reading script file:', readError.message);
-        }
-      }
+
       
       // Fork the utility process using Electron's API
       // This handles packaged apps correctly without process.execPath issues
@@ -635,7 +489,7 @@ function setupIpcHandlers(mainWindow, sentryInstance) {
         console.warn('🚀 [ELECTRON MAIN] CWD invalid (will cause spawn issues):', e && e.message ? e.message : e);
       }
       
-      const child = utilityProcess.fork(resolvedScriptPath, scriptArgs, forkOptions);
+      const child = utilityProcess.fork(resolvedScriptPath, [], forkOptions);
 
       console.log('🚀 [ELECTRON MAIN] utilityProcess.fork() returned:', {
         childType: typeof child,

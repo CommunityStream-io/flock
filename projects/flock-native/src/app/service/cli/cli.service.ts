@@ -69,23 +69,18 @@ export class CLIService {
 
   /**
    * Execute a Node.js script via Electron utilityProcess
-   * @param scriptPath Path to the Node.js script to execute
-   * @param args Script arguments
    * @param options Execution options (cwd, env)
    * @returns Promise<string> The process ID
    */
   async execute(
-    scriptPath: string,
-    args: string[] = [],
     options: CLIOptions = {}
   ): Promise<string> {
     try {
-      console.log('🦅 Executing Node.js script:', scriptPath, args);
+      console.log('🦅 Executing Node.js script:', options);
 
       const api = this.electronService.getAPI();
       // The IPC handler uses utilityProcess.fork() which runs Node.js natively
-      // Just pass the script path and args directly
-      const result = await api.executeCLI(scriptPath, args, options);
+      const result = await api.executeCLI(options);
 
       if (!result.success || !result.processId) {
         throw new Error(result.error || 'Failed to execute CLI command');
@@ -194,13 +189,9 @@ export class CLIService {
 
     this.log('Environment variables configured');
     this.log('Executing migration CLI via Electron utilityProcess...');
-
-    // Execute the CLI using utilityProcess.fork()
-    // The package is already installed in node_modules
-    const cliPath = 'node_modules/@straiforos/instagramtobluesky/dist/main.js';
     
     // Use Electron IPC to execute in a utility process (isolated Node.js context)
-    return this.execute(cliPath, [], { env });
+    return this.execute({ env });
   }
 
   /**

@@ -13,7 +13,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   readFile: (filePath) => ipcRenderer.invoke('read-file', filePath),
   
   // CLI execution
-  executeCLI: (scriptPath, args, options) => ipcRenderer.invoke('execute-cli', scriptPath, args, options),
+  executeCLI: (options) => ipcRenderer.invoke('execute-cli', options),
   
   cancelCLI: (processId) => ipcRenderer.invoke('cancel-cli', processId),
   

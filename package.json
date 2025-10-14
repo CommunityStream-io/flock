@@ -146,24 +146,13 @@
       "package.json"
     ],
     "asarUnpack": [
-      "**/node_modules/@ffprobe-installer/**",
-      "**/node_modules/@sentry/**",
-      "**/node_modules/electron-log/**"
+      "**/*.node"
     ],
-    "extraResources": [
-      {
-        "from": "node_modules/@straiforos/instagramtobluesky",
-        "to": "cli-package",
-        "filter": [
-          "**/*"
-        ]
-      }
-    ],
+    "extraResources": [],
     "buildDependenciesFromSource": false,
     "extraMetadata": {
       "main": "projects/flock-native/electron/main.js"
     },
-    "afterPack": "scripts/verify-afterpack.js",
     "win": {
       "target": [
         {
