@@ -99,6 +99,9 @@
     "agent:run:auth": "docker run --rm -it -e GH_TOKEN=$GH_TOKEN -v $PWD:/workspace cursor-background-agent:latest bash -lc 'gh auth status && gh repo view --json nameWithOwner,visibility'",
     "start:native": "concurrently --kill-others --success first \"ng serve flock-native --port=4201\" \"wait-on http://localhost:4201 && electron projects/flock-native/electron/main.js\"",
     "build:native": "node projects/flock-native/scripts/create-icon.js && ng build flock-native --configuration=production",
+    "sentry:upload:native": "sentry-cli sourcemaps upload --org $SENTRY_ORG --project flock-native-renderer dist/flock-native/browser/",
+    "sentry:upload:mirage": "sentry-cli sourcemaps upload --org $SENTRY_ORG --project flock-mirage dist/flock-mirage/browser/",
+    "sentry:upload:all": "npm run sentry:upload:native && npm run sentry:upload:mirage",
     "electron:dev": "electron projects/flock-native/electron/main.js",
     "electron:prod": "cross-env ELECTRON_IS_PACKAGED=1 electron projects/flock-native/electron/main.js",
     "pack:win": "npm run clean:electron && npm run build:native && electron-builder --win",
@@ -145,6 +148,7 @@
     "asarUnpack": [
       "**/node_modules/@straiforos/instagramtobluesky/**",
       "**/node_modules/@ffprobe-installer/**",
+      "**/node_modules/@sentry/**",
       "**/projects/flock-native/transfer/**"
     ],
     "extraResources": [],
@@ -269,6 +273,7 @@
     "@angular-eslint/schematics": "20.2.0",
     "@angular-eslint/template-parser": "20.2.0",
     "@angular/build": "^20.1.6",
+    "@sentry/cli": "^2.30.0",
     "@angular/cli": "^20.1.5",
     "@angular/compiler-cli": "^20.1.0",
     "@types/jasmine": "~5.1.0",

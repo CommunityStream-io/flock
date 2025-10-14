@@ -5,7 +5,9 @@ const { setupIpcHandlers } = require('./ipc-handlers');
 require('dotenv').config();
 
 // Initialize Sentry as early as possible
-const sentryDsn = process.env.NATIVE_SENTRY_DSN;
+// Use NATIVE_SENTRY_DSN_MAIN for main process, or fall back to dev DSN in development
+const sentryDsn = process.env.NATIVE_SENTRY_DSN_MAIN 
+  || (!app.isPackaged ? 'https://c525bad84d7baf7a00631c940b44a980@o4506526838620160.ingest.us.sentry.io/4510187648712704' : null);
 if (sentryDsn) {
   Sentry.init({
     dsn: sentryDsn,
@@ -55,9 +57,10 @@ if (sentryDsn) {
   
   console.log('✅ [SENTRY] Initialized for Electron main process');
   console.log('🔍 [SENTRY] Environment:', app.isPackaged ? 'production' : 'development');
+  console.log('🔍 [SENTRY] Using:', process.env.NATIVE_SENTRY_DSN_MAIN ? 'production DSN' : 'development DSN');
 } else {
-  console.log('🔍 [SENTRY] No NATIVE_SENTRY_DSN found, error tracking disabled');
-  console.log('🔍 [SENTRY] Set NATIVE_SENTRY_DSN environment variable to enable error tracking');
+  console.log('🔍 [SENTRY] No NATIVE_SENTRY_DSN_MAIN found, error tracking disabled');
+  console.log('🔍 [SENTRY] Set NATIVE_SENTRY_DSN_MAIN environment variable to enable error tracking in production');
 }
 
 // Keep a global reference to prevent garbage collection

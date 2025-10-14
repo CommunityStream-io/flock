@@ -319,14 +319,143 @@ Sentry.setContext('migration', {
 - **Data residency**: Choose EU region when creating project
 - **User consent**: Can disable Sentry based on user preferences
 
+## CI/CD Integration
+
+### GitHub Secrets Configuration
+
+For production builds in CI/CD, you need to configure the following secrets in your GitHub repository:
+
+**Go to:** Repository Settings → Secrets and variables → Actions → New repository secret
+
+**Required Secrets:**
+
+1. **`NATIVE_SENTRY_DSN`** - For flock-native renderer process (Angular app in Electron)
+   - Get from: Sentry project "flock-native-renderer"
+   - Format: `https://xxx@xxx.ingest.sentry.io/xxx`
+
+2. **`NATIVE_SENTRY_DSN_MAIN`** - For Electron main process
+   - Get from: Sentry project "flock-native-main"
+   - Format: `https://xxx@xxx.ingest.sentry.io/xxx`
+
+3. **`MIRAGE_SENTRY_DSN`** - For flock-mirage web app
+   - Get from: Sentry project "flock-mirage"
+   - Format: `https://xxx@xxx.ingest.sentry.io/xxx`
+
+4. **`SENTRY_AUTH_TOKEN`** - For uploading source maps
+   - Get from: Sentry → Settings → Auth Tokens → Create New Token
+   - Permissions needed: `project:releases`, `project:write`
+
+5. **`SENTRY_ORG`** - Your Sentry organization slug
+   - Get from: Sentry URL (e.g., `https://sentry.io/organizations/YOUR-ORG/`)
+   - Format: Just the slug (e.g., `your-org`)
+
+### How It Works
+
+The CI/CD pipeline automatically:
+
+1. **Builds** the applications with production configuration
+2. **Injects** Sentry DSNs from secrets into the built files
+3. **Uploads** source maps to Sentry (on main branch only)
+
+**Build-Time Replacement:**
+
+Production environment files contain placeholders like `${NATIVE_SENTRY_DSN}` which are replaced with actual values by `scripts/inject-sentry-dsn.js` during the build process.
+
+**Source Map Upload:**
+
+After successful builds on the main branch, source maps are automatically uploaded to Sentry so you get readable stack traces in production.
+
+### Local Development
+
+For local development, the apps use separate development DSNs that are safe to commit:
+
+- **flock-native renderer**: Uses dev DSN from `environment.ts`
+- **flock-native main**: Uses dev DSN or `NATIVE_SENTRY_DSN_MAIN` if set
+- **flock-mirage**: Uses dev DSN from `environment.ts`
+
+You can override these locally by setting environment variables before running:
+
+```bash
+# Windows PowerShell
+$env:NATIVE_SENTRY_DSN_MAIN="https://your-dsn@sentry.io/project"
+npm run start:native
+
+# Windows CMD
+set NATIVE_SENTRY_DSN_MAIN=https://your-dsn@sentry.io/project
+npm run start:native
+
+# Linux/Mac
+export NATIVE_SENTRY_DSN_MAIN="https://your-dsn@sentry.io/project"
+npm run start:native
+```
+
+### Testing Production Builds Locally
+
+To test the packaged Electron app with Sentry:
+
+```bash
+# 1. Build the app
+npm run pack:win:dir
+
+# 2. Set environment variable
+set NATIVE_SENTRY_DSN_MAIN=https://your-dsn@sentry.io/project
+
+# 3. Run the packaged app
+cd dist\electron\win-unpacked
+"Flock Native.exe"
+```
+
+### Troubleshooting CI/CD
+
+**"Sentry DSN not found"**
+- Check that GitHub secrets are correctly named (case-sensitive)
+- Verify the secret values don't have extra spaces or quotes
+- Make sure the build job has access to the secrets
+
+**"Source maps upload failed"**
+- Verify `SENTRY_AUTH_TOKEN` has correct permissions
+- Check that `SENTRY_ORG` matches your organization slug
+- Ensure the Sentry project names match exactly
+
+**"Electron app crashes on startup"**
+- This was caused by `@sentry/electron` being packaged in asar
+- Now fixed by adding `@sentry/**` to `asarUnpack` in package.json
+- Reinstall and rebuild if you still see this issue
+
+**"Source maps not working"**
+- Source maps are only uploaded on main branch
+- Check the CI logs for upload errors
+- Verify the release version matches between app and Sentry
+
+### Sentry Project Setup
+
+Create **three separate projects** in Sentry:
+
+1. **flock-native-renderer**
+   - Platform: Angular
+   - For: Electron renderer process (Angular UI)
+
+2. **flock-native-main**
+   - Platform: Electron
+   - For: Electron main process (Node.js)
+
+3. **flock-mirage**
+   - Platform: Angular
+   - For: Web application
+
+Each project will receive errors separately, making it easier to identify where issues occur.
+
 ## Next Steps
 
 1. Sign up for Sentry account
-2. Get your DSN
-3. Add to environment variables
-4. Initialize in your app
-5. Test by triggering an error
-6. View in Sentry dashboard
+2. Create three projects (flock-native-renderer, flock-native-main, flock-mirage)
+3. Get DSNs for each project
+4. Add GitHub Secrets (for CI/CD)
+5. Set local environment variables (for development)
+6. Initialize in your app
+7. Test by triggering an error
+8. View in Sentry dashboard
+9. Verify source maps are working
 
 For more advanced configuration, see the [Sentry Angular docs](https://docs.sentry.io/platforms/javascript/guides/angular/).
 
