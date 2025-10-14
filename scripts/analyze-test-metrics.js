@@ -28,7 +28,13 @@ class TestMetricsAnalyzer {
         // Find the most recent metrics file in logs/metrics directory
         const files = glob.sync('logs/metrics/test-metrics-*.json');
         if (files.length === 0) {
-          throw new Error('No metrics files found in logs/metrics directory. Run tests first to generate metrics.');
+          console.log('⚠️  No metrics files found in logs/metrics directory.');
+          console.log('This could mean:');
+          console.log('  - Tests have not run yet');
+          console.log('  - Tests failed before generating metrics');
+          console.log('  - Artifacts were not downloaded from CI');
+          console.log('\n✅ Skipping metrics analysis (this is expected in some scenarios)');
+          return false; // Return false to indicate no metrics loaded
         }
         this.metricsFile = files.sort().pop();
         console.log(`📊 Using metrics file: ${this.metricsFile}`);
@@ -42,8 +48,14 @@ class TestMetricsAnalyzer {
       }
 
       console.log(`📊 Loaded metrics for ${this.metrics.length} tests`);
+      return true; // Return true to indicate metrics loaded successfully
     } catch (error) {
       console.error('❌ Failed to load metrics:', error.message);
+      // Exit with code 0 if no metrics found (graceful), code 1 for actual errors
+      if (error.message.includes('ENOENT') || error.message.includes('No metrics files found')) {
+        console.log('✅ Exiting gracefully (no metrics available)');
+        process.exit(0);
+      }
       process.exit(1);
     }
   }
@@ -337,8 +349,12 @@ async function main() {
   const metricsFile = process.argv[2];
   const analyzer = new TestMetricsAnalyzer(metricsFile);
   
-  await analyzer.loadMetrics();
-  analyzer.generateReport();
+  const metricsLoaded = await analyzer.loadMetrics();
+  if (metricsLoaded) {
+    analyzer.generateReport();
+  }
+  // Exit gracefully even if no metrics were loaded
+  process.exit(0);
 }
 
 if (require.main === module) {

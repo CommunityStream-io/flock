@@ -100,7 +100,7 @@ relevantEnvVars.forEach(envVar => {
 
 // Check if Docker files exist
 console.log('\n🔍 Checking Docker configuration...');
-const dockerFiles = ['Dockerfile.test', 'wdio.docker.conf.ts'];
+const dockerFiles = ['docker/Dockerfile.test', 'wdio.docker.conf.ts'];
 dockerFiles.forEach(dockerFile => {
   if (fs.existsSync(dockerFile)) {
     console.log(`✅ ${dockerFile} exists`);

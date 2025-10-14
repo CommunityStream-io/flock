@@ -4,7 +4,7 @@ Feature: Flock Landing Page - Birds of a Feather Migrate Together
   I want to understand the migration process and start my journey
   So that I can preserve my social media memories in a decentralized platform
 
-  @landing-page @navigation
+  @web @landing @core @smoke @parallel
   Scenario: Landing page displays migration information and process
     And I am on the landing page
     Then I should see the main title "Flock: Birds of a Feather Migrate Together"
@@ -12,7 +12,7 @@ Feature: Flock Landing Page - Birds of a Feather Migrate Together
     And I should see the migration journey explanation
     And I should see three process steps numbered 1, 2, and 3
 
-  @landing-page @process-steps
+  @web @landing @ui @parallel
   Scenario: Process steps show correct migration workflow
     Given I am on the landing page
     Then I should see step 1 titled "Upload Your Nest"
@@ -22,7 +22,7 @@ Feature: Flock Landing Page - Birds of a Feather Migrate Together
     And I should see step 3 titled "Launch to Bluesky"
     And step 3 should describe "Watch your memories soar to their new home in the fediverse"
 
-  @landing-page @benefits
+  @web @landing @ui @parallel
   Scenario: Benefits section highlights key advantages
     Given I am on the landing page
     Then I should see "Why Choose Flock?" section
@@ -33,7 +33,7 @@ Feature: Flock Landing Page - Birds of a Feather Migrate Together
     And I should see a "Fast & Efficient" benefit card
     And the "Fast & Efficient" card should mention "Swift as a swallow! Optimized processing"
 
-  @landing-page @call-to-action
+  @web @landing @navigation @parallel
   Scenario: Call-to-action buttons guide user to next steps
     Given I am on the landing page
     Then I should see a "Begin Your Journey" button

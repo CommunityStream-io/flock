@@ -203,6 +203,26 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
   // methods to it. If one of them returns with a promise, WebdriverIO will wait until that promise got
   // resolved to continue.
   
+  // Ensure artifact directories exist before any workers start
+  onPrepare: async function (config, capabilities) {
+    try {
+      const fs = require('fs').promises;
+      const path = require('path');
+      const dirs = [
+        'allure-results',
+        path.join('logs'),
+        path.join('logs', 'metrics'),
+      ];
+      for (const dir of dirs) {
+        try {
+          await fs.mkdir(dir, { recursive: true });
+        } catch {}
+      }
+    } catch (e) {
+      // Non-fatal: directory prep failed; tests can still run
+    }
+  },
+
   // Import hooks for metrics collection - using individual function imports
   before: async function (capabilities, specs, browser) {
     const { before } = await import('./features/support/webdriverio-hooks');

@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Sharded E2E Test Runner
-# Mimics CI workflow with separate log files for each shard
+# Sharded E2E Test Runner with Tag Support
+# Supports the new tag hierarchy: @smoke, @core, @web, @electron, @auth, @upload, @config, etc.
 
 # Set environment variable for sharded tests to reduce logging
 export SHARDED_TESTS=true
@@ -15,6 +15,8 @@ SKIP_ALLURE=false
 TRACK_PERFORMANCE=false
 ANALYZE_TIMEOUTS=true
 FAIL_FAST=false  # Default to false - run all shards even if one fails
+TEST_TAGS=""     # Default: run all tests (no tag filter)
+PLATFORM=""      # Default: auto-detect or use default platform
 
 while [[ $# -gt 0 ]]; do
     case $1 in
@@ -38,26 +40,88 @@ while [[ $# -gt 0 ]]; do
             FAIL_FAST=true
             shift
             ;;
+        --tags)
+            TEST_TAGS="$2"
+            shift 2
+            ;;
+        --platform)
+            PLATFORM="$2"
+            shift 2
+            ;;
+        --smoke)
+            TEST_TAGS="@smoke"
+            shift
+            ;;
+        --core)
+            TEST_TAGS="@core"
+            shift
+            ;;
+        --web)
+            PLATFORM="web"
+            TEST_TAGS="@web or @core"
+            shift
+            ;;
+        --electron)
+            PLATFORM="electron"
+            TEST_TAGS="@electron or @core"
+            shift
+            ;;
+        --auth)
+            TEST_TAGS="@auth"
+            shift
+            ;;
+        --upload)
+            TEST_TAGS="@upload"
+            shift
+            ;;
+        --config)
+            TEST_TAGS="@config"
+            shift
+            ;;
+        --regression)
+            TEST_TAGS="@regression or not @skip"
+            shift
+            ;;
         --help|-h)
-            echo "Sharded E2E Test Runner with Allure Integration"
+            echo "Sharded E2E Test Runner with Tag Support"
             echo ""
             echo "Usage: $0 [options]"
             echo ""
             echo "Options:"
-            echo "  --serve-allure        Automatically serve Allure report after completion"
-            echo "  --skip-allure         Skip Allure report generation and serving"
-            echo "  --track-performance   Enable detailed performance timing tracking"
+            echo "  --serve-allure          Automatically serve Allure report after completion"
+            echo "  --skip-allure           Skip Allure report generation and serving"
+            echo "  --track-performance     Enable detailed performance timing tracking"
             echo "  --skip-timeout-analysis Skip timeout telemetry analysis"
-            echo "  --fail-fast           Stop all shards on first failure (default: false)"
-            echo "  --help, -h            Show this help message"
+            echo "  --fail-fast             Stop all shards on first failure (default: false)"
+            echo ""
+            echo "Tag Options (NEW):"
+            echo "  --tags \"<expression>\"   Run tests matching tag expression (e.g., '@smoke and @auth')"
+            echo "  --platform <platform>   Run tests for specific platform (web, electron)"
+            echo "  --smoke                 Run smoke tests (@smoke) - fastest feedback (~3 min)"
+            echo "  --core                  Run core tests (@core) - essential functionality (~8 min)"
+            echo "  --web                   Run web platform tests (@web or @core)"
+            echo "  --electron              Run electron platform tests (@electron or @core)"
+            echo "  --auth                  Run authentication tests (@auth)"
+            echo "  --upload                Run upload tests (@upload)"
+            echo "  --config                Run configuration tests (@config)"
+            echo "  --regression            Run full regression suite (@regression or not @skip)"
             echo ""
             echo "Examples:"
-            echo "  $0                           # Run all shards to completion"
-            echo "  $0 --fail-fast               # Stop on first shard failure"
-            echo "  $0 --serve-allure            # Run tests and automatically serve report"
-            echo "  $0 --skip-allure             # Run tests without Allure reports"
-            echo "  $0 --track-performance       # Run with detailed performance tracking"
-            echo "  $0 --fail-fast --serve-allure  # Fail fast with automatic report serving"
+            echo "  $0                                    # Run all tests (no tag filter)"
+            echo "  $0 --smoke                            # Run smoke tests only"
+            echo "  $0 --core --fail-fast                 # Run core tests, stop on failure"
+            echo "  $0 --web --serve-allure               # Run web tests with report"
+            echo "  $0 --config --skip-allure             # Run config tests without Allure"
+            echo "  $0 --tags '@auth and @validation'     # Run auth validation tests"
+            echo "  $0 --tags '@config and @smoke'        # Run config smoke tests"
+            echo "  $0 --regression --track-performance   # Full regression with performance tracking"
+            echo ""
+            echo "Tag Hierarchy:"
+            echo "  Suite Level:  @smoke, @core, @regression, @integration"
+            echo "  Platform:     @web, @electron"
+            echo "  Feature:      @auth, @upload, @config"
+            echo "  Execution:    @parallel, @serial"
+            echo "  Special:      @accessibility, @performance, @ui, @edge-case"
             exit 0
             ;;
         *)
@@ -70,6 +134,16 @@ done
 
 echo "=== SHARDED E2E TEST RUNNER ==="
 echo "Starting sharded test execution..."
+if [ -n "$TEST_TAGS" ]; then
+    echo "🏷️  Tag filter: $TEST_TAGS"
+else
+    echo "🏷️  Tag filter: None (running all tests)"
+fi
+if [ -n "$PLATFORM" ]; then
+    echo "🖥️  Platform: $PLATFORM"
+else
+    echo "🖥️  Platform: Auto-detect"
+fi
 
 # Create organized log directories and clean up old logs
 mkdir -p logs/servers logs/shards logs/exits
@@ -264,7 +338,25 @@ run_shard() {
         allure_env="SKIP_ALLURE_REPORTER=true"
     fi
     
-    npx cross-env CI=true HEADLESS=true BASE_URL=http://localhost:${port} SHARDED_TESTS=true DEBUG_TESTS=false TIMEOUT_TELEMETRY=true ${allure_env} wdio run wdio.conf.ts --shard=${shard_num}/${total_shards} > "${log_file}" 2> "logs/shards/shard-${shard_num}.browser.log"
+    # Add tag filter if specified
+    local tag_env=""
+    if [ -n "$TEST_TAGS" ]; then
+        tag_env="TEST_TAGS=\"$TEST_TAGS\""
+    fi
+    
+    # Add platform if specified
+    local platform_env=""
+    local config_file="wdio.conf.ts"
+    if [ -n "$PLATFORM" ]; then
+        platform_env="PLATFORM=$PLATFORM"
+        if [ "$PLATFORM" = "web" ]; then
+            config_file="wdio.web.conf.ts"
+        elif [ "$PLATFORM" = "electron" ]; then
+            config_file="wdio.electron.conf.ts"
+        fi
+    fi
+    
+    npx cross-env CI=true HEADLESS=true BASE_URL=http://localhost:${port} SHARDED_TESTS=true DEBUG_TESTS=false TIMEOUT_TELEMETRY=true ${allure_env} ${tag_env} ${platform_env} wdio run ${config_file} --shard=${shard_num}/${total_shards} > "${log_file}" 2> "logs/shards/shard-${shard_num}.browser.log"
     
     local exit_code=$?
     local end_time=$(date +%s)
@@ -443,9 +535,21 @@ generate_summary() {
 }
 
 # Main execution
-TOTAL_SHARDS=3  # Use 3 shards for testing - reduced to avoid ChromeDriver issues
+# Adjust shard count based on test scope
+if [ "$TEST_TAGS" = "@smoke" ]; then
+    TOTAL_SHARDS=2  # Smoke tests are fast, use fewer shards
+elif [ "$TEST_TAGS" = "@core" ]; then
+    TOTAL_SHARDS=3  # Core tests benefit from 3 shards
+elif [ "$TEST_TAGS" = "@regression or not @skip" ] || [ -z "$TEST_TAGS" ]; then
+    TOTAL_SHARDS=4  # Full regression or all tests use 4 shards
+else
+    TOTAL_SHARDS=3  # Default to 3 shards for other test sets
+fi
 
 echo "Running ${TOTAL_SHARDS} shards in parallel, each with its own server..."
+if [ -n "$TEST_TAGS" ]; then
+    echo "Each shard will run tests matching: $TEST_TAGS"
+fi
 
 # Pre-download ChromeDriver to avoid rate limiting during shard startup
 echo "=== PRE-DOWNLOADING CHROMEDRIVER ==="
@@ -588,6 +692,12 @@ else
 fi
 
 echo "=== SHARDED TEST EXECUTION COMPLETE ==="
+if [ -n "$TEST_TAGS" ]; then
+    echo "🏷️  Executed tests with tags: $TEST_TAGS"
+fi
+if [ -n "$PLATFORM" ]; then
+    echo "🖥️  Platform: $PLATFORM"
+fi
 echo "Check organized logs in logs/ directory for detailed results:"
 echo "  📁 logs/servers/ - Angular dev server logs for each shard"
 echo "  📁 logs/shards/  - Test execution logs, timing metrics, and browser logs"
@@ -596,7 +706,7 @@ if [ "$SKIP_ALLURE" = false ]; then
     echo "  📁 allure-results/ - Individual shard Allure results"
     echo "  📁 allure-results-combined/ - Combined Allure results"
 fi
-echo "Each shard ran on its own port: 4201-4219"
+echo "Each shard ran on its own port: 4201-42$((TOTAL_SHARDS + 1))9"
 echo ""
 
 # Handle Allure report serving based on options

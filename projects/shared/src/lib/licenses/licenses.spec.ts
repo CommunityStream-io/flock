@@ -22,7 +22,7 @@ describe('Licenses', () => {
 
   it('should render page title', () => {
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('mat-card-title')?.textContent).toContain('Licenses & Attributions');
+    expect(compiled.textContent).toContain('Licenses & Attributions');
   });
 
   it('should render butterfly animation attribution', () => {
@@ -39,16 +39,14 @@ describe('Licenses', () => {
 
   it('should render project license section', () => {
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.textContent).toContain('Project License');
+    expect(compiled.textContent).toContain('Open Source License');
     expect(compiled.textContent).toContain('MIT License');
   });
 
-  it('should render developer support section with Ko-fi iframe', () => {
+  it('should render developer support section', () => {
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.textContent).toContain('Support the Developer');
-    const iframe = compiled.querySelector('iframe#kofiframe');
-    expect(iframe).toBeTruthy();
-    expect(iframe?.getAttribute('src')).toContain('ko-fi.com/straiforce');
+    expect(compiled.textContent).toContain('Support Development');
+    expect(compiled.textContent).toContain('Help keep Flock free & open source');
   });
 
   it('should have working links to external resources', () => {

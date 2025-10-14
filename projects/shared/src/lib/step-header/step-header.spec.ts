@@ -67,73 +67,98 @@ describe('StepHeader Component Unit Tests', () => {
   });
 
   describe('Route Data Extraction', () => {
-    it('should extract title from route snapshot', () => {
-      mockActivatedRoute.snapshot = {
-        title: 'Unit Test Title',
-        data: { description: 'Unit Test Description' }
-      } as any;
+    it('should extract title from route snapshot', (done) => {
+      // Update the mock before component initialization
+      Object.defineProperty(mockActivatedRoute, 'snapshot', {
+        value: {
+          title: 'Unit Test Title',
+          data: { description: 'Unit Test Description' }
+        },
+        writable: true,
+        configurable: true
+      });
 
       component.ngOnInit();
-      fixture.detectChanges();
-
+      
       component.title$.subscribe(title => {
         expect(title).toBe('Unit Test Title');
+        done();
       });
     });
 
-    it('should extract description from route data', () => {
-      mockActivatedRoute.snapshot = {
-        title: 'Unit Test Title',
-        data: { description: 'Unit Test Description' }
-      } as any;
+    it('should extract description from route data', (done) => {
+      // Update the mock before component initialization
+      Object.defineProperty(mockActivatedRoute, 'snapshot', {
+        value: {
+          title: 'Unit Test Title',
+          data: { description: 'Unit Test Description' }
+        },
+        writable: true,
+        configurable: true
+      });
 
       component.ngOnInit();
-      fixture.detectChanges();
 
       component.description$.subscribe(description => {
         expect(description).toBe('Unit Test Description');
+        done();
       });
     });
 
-    it('should handle missing title gracefully', () => {
-      mockActivatedRoute.snapshot = {
-        title: null,
-        data: { description: 'Description Only' }
-      } as any;
+    it('should handle missing title gracefully', (done) => {
+      // Update the mock before component initialization
+      Object.defineProperty(mockActivatedRoute, 'snapshot', {
+        value: {
+          title: null,
+          data: { description: 'Description Only' }
+        },
+        writable: true,
+        configurable: true
+      });
 
       component.ngOnInit();
-      fixture.detectChanges();
 
       component.title$.subscribe(title => {
         expect(title).toBe('');
+        done();
       });
     });
 
-    it('should handle missing description gracefully', () => {
-      mockActivatedRoute.snapshot = {
-        title: 'Title Only',
-        data: {}
-      } as any;
+    it('should handle missing description gracefully', (done) => {
+      // Update the mock before component initialization
+      Object.defineProperty(mockActivatedRoute, 'snapshot', {
+        value: {
+          title: 'Title Only',
+          data: {}
+        },
+        writable: true,
+        configurable: true
+      });
 
       component.ngOnInit();
-      fixture.detectChanges();
 
       component.description$.subscribe(description => {
         expect(description).toBe('');
+        done();
       });
     });
 
-    it('should handle null data object gracefully', () => {
-      mockActivatedRoute.snapshot = {
-        title: 'Title Only',
-        data: null
-      } as any;
+    it('should handle null data object gracefully', (done) => {
+      // Update the mock before component initialization
+      Object.defineProperty(mockActivatedRoute, 'snapshot', {
+        value: {
+          title: 'Title Only',
+          data: null
+        },
+        writable: true,
+        configurable: true
+      });
 
       component.ngOnInit();
-      fixture.detectChanges();
 
       component.description$.subscribe(description => {
         expect(description).toBe('');
+        done();
       });
     });
   });
@@ -148,11 +173,19 @@ describe('StepHeader Component Unit Tests', () => {
         firstChild: null
       });
 
-      mockActivatedRoute.firstChild = childRoute;
-      mockActivatedRoute.snapshot = {
-        title: 'Parent Title',
-        data: { description: 'Parent Description' }
-      } as any;
+      Object.defineProperty(mockActivatedRoute, 'firstChild', {
+        value: childRoute,
+        writable: true,
+        configurable: true
+      });
+      Object.defineProperty(mockActivatedRoute, 'snapshot', {
+        value: {
+          title: 'Parent Title',
+          data: { description: 'Parent Description' }
+        },
+        writable: true,
+        configurable: true
+      });
 
       component.ngOnInit();
       fixture.detectChanges();
@@ -183,7 +216,11 @@ describe('StepHeader Component Unit Tests', () => {
         firstChild: deepestChild
       });
 
-      mockActivatedRoute.firstChild = middleChild;
+      Object.defineProperty(mockActivatedRoute, 'firstChild', {
+        value: middleChild,
+        writable: true,
+        configurable: true
+      });
 
       component.ngOnInit();
       fixture.detectChanges();
@@ -199,53 +236,75 @@ describe('StepHeader Component Unit Tests', () => {
   });
 
   describe('Router Events Handling', () => {
-    it('should update observables when NavigationEnd event fires', () => {
+    it('should update observables when NavigationEnd event fires', (done) => {
       component.ngOnInit();
-      fixture.detectChanges();
+      
+      // Skip the initial value and wait for the NavigationEnd event
+      let emitCount = 0;
+      component.title$.subscribe(title => {
+        emitCount++;
+        if (emitCount === 2) {
+          expect(title).toBe('Updated Title');
+          done();
+        }
+      });
 
-      mockActivatedRoute.snapshot = {
-        title: 'Updated Title',
-        data: { description: 'Updated Description' }
-      } as any;
+      // Update the route snapshot and trigger navigation
+      Object.defineProperty(mockActivatedRoute, 'snapshot', {
+        value: {
+          title: 'Updated Title',
+          data: { description: 'Updated Description' }
+        },
+        writable: true,
+        configurable: true
+      });
 
       routerEventsSubject.next(new NavigationEnd(1, '/test', '/test'));
-      fixture.detectChanges();
-
-      component.title$.subscribe(title => {
-        expect(title).toBe('Updated Title');
-      });
-
-      component.description$.subscribe(description => {
-        expect(description).toBe('Updated Description');
-      });
     });
 
-    it('should filter out non-NavigationEnd events', () => {
+    it('should filter out non-NavigationEnd events', (done) => {
+      const initialTitle = 'Test Title';
+      Object.defineProperty(mockActivatedRoute, 'snapshot', {
+        value: {
+          title: initialTitle,
+          data: { description: 'Initial Description' }
+        },
+        writable: true,
+        configurable: true
+      });
+
       component.ngOnInit();
-      fixture.detectChanges();
 
-      const initialTitle = 'Initial Title';
-      mockActivatedRoute.snapshot = {
-        title: initialTitle,
-        data: { description: 'Initial Description' }
-      } as any;
-
-      // Send non-NavigationEnd event
-      routerEventsSubject.next({ type: 'SomeOtherEvent' });
-      fixture.detectChanges();
-
+      let emitCount = 0;
       component.title$.subscribe(title => {
+        emitCount++;
         expect(title).toBe(initialTitle);
+        
+        // Only one emission should occur (the initial startWith, no emission from the other event)
+        if (emitCount === 1) {
+          // Send non-NavigationEnd event
+          routerEventsSubject.next({ type: 'SomeOtherEvent' });
+          
+          // Wait a bit and verify no additional emissions
+          setTimeout(() => {
+            expect(emitCount).toBe(1);
+            done();
+          }, 100);
+        }
       });
     });
   });
 
   describe('Template Rendering', () => {
     it('should render title and description in correct elements', () => {
-      mockActivatedRoute.snapshot = {
-        title: 'Rendered Title',
-        data: { description: 'Rendered Description' }
-      } as any;
+      Object.defineProperty(mockActivatedRoute, 'snapshot', {
+        value: {
+          title: 'Rendered Title',
+          data: { description: 'Rendered Description' }
+        },
+        writable: true,
+        configurable: true
+      });
 
       component.ngOnInit();
       fixture.detectChanges();
@@ -258,10 +317,14 @@ describe('StepHeader Component Unit Tests', () => {
     });
 
     it('should use async pipe correctly for observables', () => {
-      mockActivatedRoute.snapshot = {
-        title: 'Async Title',
-        data: { description: 'Async Description' }
-      } as any;
+      Object.defineProperty(mockActivatedRoute, 'snapshot', {
+        value: {
+          title: 'Async Title',
+          data: { description: 'Async Description' }
+        },
+        writable: true,
+        configurable: true
+      });
 
       component.ngOnInit();
       fixture.detectChanges();
@@ -275,7 +338,11 @@ describe('StepHeader Component Unit Tests', () => {
 
   describe('Edge Cases and Error Handling', () => {
     it('should handle undefined route snapshot gracefully', () => {
-      mockActivatedRoute.snapshot = undefined as any;
+      Object.defineProperty(mockActivatedRoute, 'snapshot', {
+        value: undefined,
+        writable: true,
+        configurable: true
+      });
 
       expect(() => {
         component.ngOnInit();
@@ -283,39 +350,59 @@ describe('StepHeader Component Unit Tests', () => {
       }).not.toThrow();
     });
 
-    it('should handle route with undefined title and data properties', () => {
-      mockActivatedRoute.snapshot = {
-        title: undefined,
-        data: undefined
-      } as any;
+    it('should handle route with undefined title and data properties', (done) => {
+      Object.defineProperty(mockActivatedRoute, 'snapshot', {
+        value: {
+          title: undefined,
+          data: undefined
+        },
+        writable: true,
+        configurable: true
+      });
 
       component.ngOnInit();
-      fixture.detectChanges();
+
+      let checkedTitle = false;
+      let checkedDescription = false;
 
       component.title$.subscribe(title => {
         expect(title).toBe('');
+        checkedTitle = true;
+        if (checkedTitle && checkedDescription) done();
       });
 
       component.description$.subscribe(description => {
         expect(description).toBe('');
+        checkedDescription = true;
+        if (checkedTitle && checkedDescription) done();
       });
     });
 
-    it('should handle empty string values correctly', () => {
-      mockActivatedRoute.snapshot = {
-        title: '',
-        data: { description: '' }
-      } as any;
+    it('should handle empty string values correctly', (done) => {
+      Object.defineProperty(mockActivatedRoute, 'snapshot', {
+        value: {
+          title: '',
+          data: { description: '' }
+        },
+        writable: true,
+        configurable: true
+      });
 
       component.ngOnInit();
-      fixture.detectChanges();
+
+      let checkedTitle = false;
+      let checkedDescription = false;
 
       component.title$.subscribe(title => {
         expect(title).toBe('');
+        checkedTitle = true;
+        if (checkedTitle && checkedDescription) done();
       });
 
       component.description$.subscribe(description => {
         expect(description).toBe('');
+        checkedDescription = true;
+        if (checkedTitle && checkedDescription) done();
       });
     });
   });

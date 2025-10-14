@@ -45,7 +45,9 @@ class CITimeoutAnalyzer {
         console.log('   - Tests completed without timeouts');
         console.log('   - Timeout telemetry not properly enabled');
         console.log('   - Files not uploaded as artifacts');
-        return;
+        console.log('   - Tests failed before generating telemetry');
+        console.log('\n✅ Skipping timeout analysis (this is expected in some scenarios)');
+        process.exit(0);
       }
       
       // Analyze each file
@@ -341,6 +343,8 @@ ${this.results.recommendations.slice(0, 3).map((rec, index) =>
 async function main() {
   const analyzer = new CITimeoutAnalyzer();
   await analyzer.analyze();
+  // Exit successfully
+  process.exit(0);
 }
 
 // Run if called directly

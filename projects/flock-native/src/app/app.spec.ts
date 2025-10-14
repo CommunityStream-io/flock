@@ -1,7 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { App } from './app';
-import { LOGGER } from 'shared';
+import { LOGGER, SplashScreenLoading, RouterLoggingService } from 'shared';
+import { BehaviorSubject } from 'rxjs';
 
 describe('App', () => {
   const mockLogger = {
@@ -12,12 +13,23 @@ describe('App', () => {
     instrument: jasmine.createSpy('instrument').and.returnValue(Promise.resolve()),
   };
 
+  const mockSplashScreen = {
+    isLoading: new BehaviorSubject(false),
+    message: new BehaviorSubject('Loading...'),
+    component: new BehaviorSubject(null),
+    show: jasmine.createSpy('show'),
+    hide: jasmine.createSpy('hide'),
+    setComponent: jasmine.createSpy('setComponent')
+  };
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [App],
       providers: [
         provideRouter([]),
-        { provide: LOGGER, useValue: mockLogger }
+        { provide: LOGGER, useValue: mockLogger },
+        { provide: SplashScreenLoading, useValue: mockSplashScreen },
+        RouterLoggingService
       ]
     }).compileComponents();
   });

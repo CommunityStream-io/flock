@@ -7,7 +7,7 @@ Feature: File Validation - Archive File Verification and Error Handling
   Background:
     And I navigate to the upload step
 
-  @file-upload @file-validation 
+  @upload @core @validation @parallel
   Scenario: File validation provides feedback
     When I select a valid Instagram archive file "valid-archive.zip"
     Then the file validation should succeed

@@ -9,7 +9,7 @@ Feature: Username Validation - Bluesky Username Format Enforcement
     And I select a valid Instagram archive file "valid-archive.zip"
     And I navigate to the auth step
 
-  @bluesky-auth @validation
+  @auth @core @validation @parallel
   Scenario: Username validation enforces proper format
     When I enter a username with @ symbol
     Then the username field should show an error

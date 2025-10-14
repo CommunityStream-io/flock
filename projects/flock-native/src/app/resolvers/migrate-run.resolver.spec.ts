@@ -123,8 +123,16 @@ describe('nativeMigrateRunResolver', () => {
         username: '@user.bsky.social',
         password: 'test-password'
       });
-      (mockConfigService as any).testMode = 'none';
-      (mockConfigService as any).archivePath = null;
+      Object.defineProperty(mockConfigService, 'testMode', { 
+        value: 'none', 
+        writable: true,
+        configurable: true 
+      });
+      Object.defineProperty(mockConfigService, 'archivePath', { 
+        value: null, 
+        writable: true,
+        configurable: true 
+      });
 
       const result = await executeResolver();
       

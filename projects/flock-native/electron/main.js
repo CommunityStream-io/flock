@@ -12,6 +12,7 @@ function createWindow() {
     height: 900,
     minWidth: 800,
     minHeight: 600,
+    // show: false, // Temporarily commented out for debugging
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: false,
@@ -38,6 +39,8 @@ function createWindow() {
     // Open DevTools in development
     mainWindow.webContents.openDevTools();
   } else {
+    // Open DevTools in production for debugging (TEMPORARY)
+    mainWindow.webContents.openDevTools();
     // Production mode - load from built files
     const appPath = app.getAppPath();
     let indexPath;
@@ -52,7 +55,11 @@ function createWindow() {
       indexPath = path.join(projectRoot, 'dist/flock-native/browser/index.html');
     }
     
-    console.log('🔍 Loading from:', indexPath);
+    console.log('🔍 [PROD] Loading from:', indexPath);
+    console.log('🔍 [PROD] App path:', appPath);
+    console.log('🔍 [PROD] Is packaged:', app.isPackaged);
+    console.log('🔍 [PROD] process.execPath:', process.execPath);
+    
     mainWindow.loadFile(indexPath).catch(err => {
       console.error('❌ Failed to load index.html:', err);
       console.error('📂 App path:', appPath);
@@ -64,6 +71,26 @@ function createWindow() {
   mainWindow.webContents.on('did-fail-load', (event, errorCode, errorDescription, validatedURL) => {
     console.error('❌ Page failed to load:', errorDescription, 'URL:', validatedURL);
   });
+
+  // Show window when ready to prevent flash of unstyled content
+  let windowShown = false;
+  
+  mainWindow.once('ready-to-show', () => {
+    if (!windowShown) {
+      console.log('✅ Window ready to show');
+      mainWindow.show();
+      windowShown = true;
+    }
+  });
+  
+  // Fallback: show window after 3 seconds if ready-to-show doesn't fire
+  setTimeout(() => {
+    if (!windowShown && mainWindow && !mainWindow.isDestroyed()) {
+      console.log('⚠️ Fallback: showing window after timeout');
+      mainWindow.show();
+      windowShown = true;
+    }
+  }, 3000);
 
   // Log when page loads
   mainWindow.webContents.on('did-finish-load', () => {
