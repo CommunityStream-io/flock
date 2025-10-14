@@ -1,6 +1,7 @@
 {
   "name": "flock",
   "version": "0.1.6",
+  "description": "Migrate Instagram data to Bluesky with native desktop power",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/flock-mirage/flock.git"
@@ -146,6 +147,8 @@
       "**/node_modules/@ffprobe-installer/**",
       "**/projects/flock-native/transfer/**"
     ],
+    "extraResources": [],
+    "buildDependenciesFromSource": false,
     "extraMetadata": {
       "main": "projects/flock-native/electron/main.js"
     },

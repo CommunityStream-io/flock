@@ -146,7 +146,15 @@ jobs:
       - name: Enable Windows long paths
         run: |
           git config --system core.longpaths true
-          echo "Enabled Windows long path support"
+          echo "Enabled Git long path support"
+          
+          # Enable Windows long path support via registry
+          reg add "HKLM\SYSTEM\CurrentControlSet\Control\FileSystem" /v LongPathsEnabled /t REG_DWORD /d 1 /f
+          echo "Enabled Windows long path support via registry"
+          
+          # Set environment variable for current session
+          [Environment]::SetEnvironmentVariable("LongPathsEnabled", "1", "Machine")
+          echo "Set LongPathsEnabled environment variable"
 
       - name: Install dependencies
         run: npm ci
