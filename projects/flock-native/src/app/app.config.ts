@@ -12,6 +12,7 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideHttpClient } from '@angular/common/http';
 
 import { routes } from './app.routes';
+import { environment } from '../environments/environment';
 import {
   FILE_PROCESSOR,
   LOGGER,
@@ -20,7 +21,8 @@ import {
   SplashScreenLoading,
   StepReuseStrategy,
   Migration,
-  RouterLoggingService
+  RouterLoggingService,
+  TEST_MODES_ENABLED
 } from 'shared';
 import { NativeFileProcessor } from './service/native-file-processor/native-file-processor';
 import { ConsoleLogger } from './service/console-logger/console-logger';
@@ -54,5 +56,7 @@ export const appConfig: ApplicationConfig = {
     { provide: MIGRATION, useExisting: Migration },
     RouterLoggingService,
     ExtractionProgressService,
+    // Provide TEST_MODES_ENABLED for shared library consumers
+    { provide: TEST_MODES_ENABLED, useValue: !environment.production && !!environment.enableTestModes },
   ],
 };

@@ -134,6 +134,12 @@ function createWindow() {
     
     // Open DevTools in development
     mainWindow.webContents.openDevTools();
+    // Expose dev-only flags to renderer
+    mainWindow.webContents.once('dom-ready', () => {
+      try {
+        mainWindow.webContents.executeJavaScript(`window.TEST_MODES_ENABLED = true;`);
+      } catch (_) {}
+    });
   } else {
     // Production mode - load from built files
     const appPath = app.getAppPath();
@@ -158,6 +164,12 @@ function createWindow() {
       console.error('❌ Failed to load index.html:', err);
       console.error('📂 App path:', appPath);
       console.error('📄 Index path:', indexPath);
+    });
+    // Ensure dev-only flags are disabled in production
+    mainWindow.webContents.once('dom-ready', () => {
+      try {
+        mainWindow.webContents.executeJavaScript(`window.TEST_MODES_ENABLED = false;`);
+      } catch (_) {}
     });
   }
 

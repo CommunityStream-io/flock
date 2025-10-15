@@ -1,4 +1,5 @@
 import { Injectable, inject } from '@angular/core';
+import { environment } from '../../../environments/environment';
 import { Subject, Observable } from 'rxjs';
 import { LOGGER, Logger } from 'shared';
 import { ElectronService } from '../electron/electron.service';
@@ -148,6 +149,14 @@ export class CLIService {
     this.log('Simulate mode:', options.simulate ? 'ON' : 'OFF');
     this.log('Test mode:', options.testMode || 'none');
 
+    // Only allow test modes in development builds when explicitly enabled
+    const testModesAllowed = !environment.production && !!environment.enableTestModes;
+    const requestedTestMode = options.testMode && options.testMode !== 'none' ? options.testMode : 'none';
+    const effectiveTestMode: 'none' | 'video' | 'mixed' = testModesAllowed ? (requestedTestMode as any) : 'none';
+    if (!testModesAllowed && requestedTestMode !== 'none') {
+      this.log('Test modes disabled in this build; ignoring requested test mode');
+    }
+
     // Strip @ prefix from username if present
     // AT Protocol expects identifier without @ prefix
     const username = options.blueskyHandle.startsWith('@') 
@@ -164,7 +173,7 @@ export class CLIService {
     };
 
     // Add test mode - override archive folder with test data
-    if (options.testMode === 'video') {
+    if (effectiveTestMode === 'video') {
       // Don't use TEST_VIDEO_MODE env var - it has hardcoded paths in the CLI
       // Instead, just point ARCHIVE_FOLDER to our local test data
       // The main process will resolve this to the correct absolute path
@@ -172,7 +181,7 @@ export class CLIService {
       this.log('Test video mode enabled - using local test data');
       this.log('Test data path: projects/flock-native/transfer/test_video');
       this.log('Note: Not using TEST_VIDEO_MODE env var (CLI has hardcoded paths)');
-    } else if (options.testMode === 'mixed') {
+    } else if (effectiveTestMode === 'mixed') {
       env['ARCHIVE_FOLDER'] = 'projects/flock-native/transfer/test_mixed_media';
       this.log('Test mixed media mode enabled - using local test data');
       this.log('Test data path: projects/flock-native/transfer/test_mixed_media');
