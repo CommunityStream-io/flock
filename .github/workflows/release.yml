@@ -143,9 +143,7 @@ jobs:
             ## 📦 Downloads
             
             ### Windows
-            - **Installer**: \`Flock-Native-Setup-${{ steps.get_version.outputs.version }}.exe\` (Recommended)
             - **Portable**: \`Flock-Native-${{ steps.get_version.outputs.version }}.exe\` (No installation required)
-            - **ZIP Archive**: \`Flock-Native-${{ steps.get_version.outputs.version }}-win.zip\`
             
             ### macOS
             - **DMG (Intel x64)**: \`Flock-Native-${{ steps.get_version.outputs.version }}-x64.dmg\`
