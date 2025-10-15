@@ -42,6 +42,9 @@ export class SentryLogger implements Logger {
       Sentry.init({
         dsn: sentryDsn,
         
+        // Debug mode - logs to console
+        debug: true,
+        
         // Set environment (development, staging, production)
         environment: this.config?.environment || this.getEnvironment(),
         
