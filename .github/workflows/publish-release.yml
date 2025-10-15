@@ -41,15 +41,50 @@ jobs:
             const tagName = version.startsWith('v') ? version : `v${version}`;
             
             try {
-              const { data: release } = await github.rest.repos.getReleaseByTag({
+              // Get all releases and filter for draft releases
+              const { data: releases } = await github.rest.repos.listReleases({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                tag: tagName
+                per_page: 100
               });
               
-              console.log(`Found release: ${release.name}`);
-              console.log(`Draft: ${release.draft}`);
-              console.log(`Assets: ${release.assets.length}`);
+              console.log(`Found ${releases.length} total releases, filtering for draft releases...`);
+              
+              // Filter for draft releases only
+              const draftReleases = releases.filter(r => r.draft);
+              console.log(`Found ${draftReleases.length} draft releases`);
+              
+              if (draftReleases.length === 0) {
+                throw new Error(`No draft releases found. Available releases: ${releases.map(r => `${r.name} (${r.tag_name || 'untagged'})`).join(', ')}`);
+              }
+              
+              // Find release by tag name first, then by name pattern, then use most recent
+              let release = draftReleases.find(r => r.tag_name === tagName);
+              
+              if (!release) {
+                console.log(`No draft release found with tag_name ${tagName}, searching by name pattern...`);
+                const namePattern = new RegExp(`Flock Native v?${version.replace(/^v/, '')}`, 'i');
+                release = draftReleases.find(r => 
+                  namePattern.test(r.name) || r.name.includes(version)
+                );
+              }
+              
+              if (!release) {
+                console.log(`No draft release found by name pattern, using most recent draft...`);
+                // Sort by created_at and take the most recent
+                draftReleases.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+                release = draftReleases[0];
+                console.log(`Using most recent draft release: ${release.name} (${release.tag_name || 'untagged'})`);
+              } else {
+                console.log(`Found draft release: ${release.name} (${release.tag_name || 'untagged'})`);
+              }
+              
+              console.log(`Release details:`);
+              console.log(`- Name: ${release.name}`);
+              console.log(`- Tag: ${release.tag_name || 'untagged'}`);
+              console.log(`- Draft: ${release.draft}`);
+              console.log(`- Assets: ${release.assets.length}`);
+              console.log(`- URL: ${release.html_url}`);
               
               if (!release.draft) {
                 core.setFailed(`Release ${tagName} is already published!`);
@@ -113,11 +148,12 @@ jobs:
             const version = '${{ github.event.inputs.version }}';
             const tagName = version.startsWith('v') ? version : `v${version}`;
             
-            // Get the release again to get updated data
-            const { data: release } = await github.rest.repos.getReleaseByTag({
+            // Get the release again to get updated data using the release ID
+            const releaseId = '${{ needs.validate.outputs.release_id }}';
+            const { data: release } = await github.rest.repos.getRelease({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              tag: tagName
+              release_id: releaseId
             });
             
             // Update release body with publish info
