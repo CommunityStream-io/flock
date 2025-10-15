@@ -82,11 +82,15 @@ The `vercel.json` file configures:
 
 ### Function Limits
 
-| Function | Max Duration | Memory |
-|----------|--------------|--------|
-| `/api/upload` | 300s (5 min) | 1024MB |
-| `/api/migrate` | 900s (15 min) | 3008MB |
-| `/api/progress` | 30s | 512MB |
+| Function | Max Duration | Memory | Notes |
+|----------|--------------|--------|-------|
+| `/api/upload` | 300s (5 min) | 1024MB | |
+| `/api/migrate` | 300s (5 min) | 3008MB | ⚠️ Free tier limit. Upgrade to Pro for 900s |
+| `/api/progress` | 30s | 512MB | |
+
+**⚠️ Important:** The migration function is currently limited to 300 seconds (5 minutes) due to Vercel's free tier restrictions. This may cause timeouts for large archives with many posts. To handle larger migrations:
+- Upgrade to Vercel Pro plan (allows up to 900 seconds)
+- Or use the native desktop app (Flock Native) for large archives
 
 ## 🔧 Local Development
 

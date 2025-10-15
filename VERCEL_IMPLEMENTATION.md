@@ -35,7 +35,7 @@ This implementation transforms Flock Murmur from a browser-only Angular SPA into
    - Authenticates with Bluesky
    - Processes posts with rate limiting
    - Updates progress in real-time
-   - Timeout: 900s, Memory: 3008MB
+   - Timeout: 300s, Memory: 3008MB (⚠️ Free tier limit, upgrade to Pro for 900s)
 
 6. **api/progress.ts**
    - Tracks migration progress
@@ -220,8 +220,10 @@ vercel --prod
 | Function | Timeout | Memory | Purpose |
 |----------|---------|--------|---------|
 | /api/upload | 300s | 1024MB | File upload |
-| /api/migrate | 900s | 3008MB | Migration processing |
+| /api/migrate | 300s | 3008MB | Migration processing (⚠️ Free tier limit) |
 | /api/progress | 30s | 512MB | Status tracking |
+
+**⚠️ Note:** The migrate function is limited to 300s on Vercel's free tier. Upgrade to Pro plan for 900s timeout to handle larger archives.
 
 ## 🔒 Security
 

@@ -21,7 +21,7 @@ graph TB
         
         subgraph "Edge Functions"
             C[Upload Handler<br/>300s, 1024MB]
-            D[Migration Processor<br/>900s, 3008MB]
+            D[Migration Processor<br/>300s, 3008MB<br/>⚠️ Free tier]
             E[Progress Tracker<br/>30s, 512MB]
         end
         
@@ -318,7 +318,7 @@ graph TB
     subgraph "Migration Function"
         D[Request: 500MB]
         E[Memory: 3008MB]
-        F[Time: 900s]
+        F[Time: 300s<br/>⚠️ Free tier]
         D --> E
         E --> F
     end
@@ -362,11 +362,12 @@ graph TB
 ## Key Metrics
 
 | Component | Metric | Value |
+| Component | Metric | Value |
 |-----------|--------|-------|
 | Upload Function | Max Duration | 300s |
 | Upload Function | Max Memory | 1024MB |
 | Upload Function | Max File Size | 500MB |
-| Migration Function | Max Duration | 900s |
+| Migration Function | Max Duration | 300s (⚠️ Free tier, Pro allows 900s) |
 | Migration Function | Max Memory | 3008MB |
 | Migration Function | Posts/Batch | 1 post per 3s |
 | Progress Function | Max Duration | 30s |

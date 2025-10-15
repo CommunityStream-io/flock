@@ -6,6 +6,11 @@ import { BlueskyMigrator } from './lib/bluesky-migrator';
 /**
  * Migration Handler - Processes Instagram archive and migrates to Bluesky
  * This is a long-running function that handles the entire migration process
+ * 
+ * TODO: Current maxDuration is 300s (Vercel free tier limit)
+ * Upgrade to Pro plan to increase to 900s for handling larger archives
+ * Free tier: 300s max, Pro tier: up to 900s
+ * Large archives with many posts may timeout on free tier
  */
 export default async function handler(
   req: VercelRequest,
