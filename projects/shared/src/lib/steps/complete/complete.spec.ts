@@ -29,7 +29,10 @@ describe('Complete', () => {
   describe('shareOnSocial', () => {
     it('should use Web Share API when available', async () => {
       const mockShare = jasmine.createSpy('share').and.returnValue(Promise.resolve());
-      spyOnProperty(navigator, 'share', 'get').and.returnValue(mockShare);
+      Object.defineProperty(navigator, 'share', {
+        value: mockShare,
+        configurable: true
+      });
 
       component.shareOnSocial();
 
@@ -41,9 +44,15 @@ describe('Complete', () => {
     });
 
     it('should fallback to clipboard when Web Share API is not available', async () => {
-      spyOnProperty(navigator, 'share', 'get').and.returnValue(undefined);
+      Object.defineProperty(navigator, 'share', {
+        value: undefined,
+        configurable: true
+      });
       const mockClipboard = jasmine.createSpy('writeText').and.returnValue(Promise.resolve());
-      spyOnProperty(navigator, 'clipboard', 'get').and.returnValue({ writeText: mockClipboard } as any);
+      Object.defineProperty(navigator, 'clipboard', {
+        value: { writeText: mockClipboard },
+        configurable: true
+      });
       spyOn(window, 'alert');
 
       component.shareOnSocial();
