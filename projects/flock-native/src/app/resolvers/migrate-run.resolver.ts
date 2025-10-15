@@ -4,6 +4,7 @@ import { LOGGER, Logger, SplashScreenLoading, ConfigServiceImpl } from 'shared';
 import { catchError, finalize, from, Observable, of, tap } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CLIService } from '../service/cli/cli.service';
+import { environment } from '../../environments/environment';
 import { MigrationProgressComponent } from '../components/migration-progress/migration-progress.component';
 
 /**
@@ -68,7 +69,9 @@ export const nativeMigrateRunResolver: ResolveFn<Observable<boolean>> = () => {
       
       // Get configuration from config service
       const credentials = configService.getBlueskyCredentials();
-      const testMode = configService.testMode;
+      const testModesAllowed = !environment.production && !!environment.enableTestModes;
+      const requestedTestMode = configService.testMode;
+      const testMode = testModesAllowed ? requestedTestMode : 'none';
       const archivePath = configService.archivePath;
       
       logger.log('🦅 [MIGRATE] Test mode:', testMode);
@@ -78,9 +81,8 @@ export const nativeMigrateRunResolver: ResolveFn<Observable<boolean>> = () => {
         throw new Error('Bluesky credentials not found. Please authenticate first.');
       }
 
-      // In test mode, we don't need the archive path from upload
-      // The CLI service will set it to the test data path
-      if (testMode === 'none' && !archivePath) {
+      // In production, require a real archive path (no test modes)
+      if (environment.production && !archivePath) {
         throw new Error('Archive not extracted. Please return to upload step.');
       }
       

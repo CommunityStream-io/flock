@@ -8,6 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
+import { TEST_MODES_ENABLED } from '../../services';
 import { Subject, takeUntil, tap } from 'rxjs';
 import { LOGGER, Logger } from '../../services';
 import { ConfigServiceImpl } from '../../services/config';
@@ -38,6 +39,11 @@ export class Config implements OnInit, OnDestroy {
   private dialog = inject(MatDialog);
 
   private destroy$ = new Subject<void>();
+
+  /**
+   * Whether to show test mode toggles (dev-only). Provided by host app.
+   */
+  public readonly showTestModes = inject(TEST_MODES_ENABLED, { optional: true }) ?? false;
 
   /**
    * Form group for configuration settings
@@ -94,7 +100,7 @@ export class Config implements OnInit, OnDestroy {
     // Initialize form state
     this.updateFormState();
 
-    // Set up radio-button-style behavior for test modes
+    // Set up radio-button-style behavior for test modes (dev-only)
     this.setupTestModeRadioBehavior();
 
     // Subscribe to form value changes

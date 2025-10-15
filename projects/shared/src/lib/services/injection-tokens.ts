@@ -10,4 +10,8 @@ export const FILE_PROCESSOR = new InjectionToken('FileProcessor');
 export const INSTAGRAM = new InjectionToken('Instagram');
 export const MIGRATION = new InjectionToken('Migration');
 export const LOGGER = new InjectionToken('Logger');
+/**
+ * Whether dev-only test modes (video/mixed) are enabled in this build
+ */
+export const TEST_MODES_ENABLED = new InjectionToken<boolean>('TestModesEnabled');
 

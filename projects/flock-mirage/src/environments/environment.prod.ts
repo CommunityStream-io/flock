@@ -2,6 +2,7 @@ import { Environment } from './environment.interface';
 
 export const environment: Environment = {
   production: true,
+  enableTestModes: false,
   archiveExtractDelay: 5000, // in ms
   sentry: {
     dsn: '${MIRAGE_SENTRY_DSN}', // Replaced at build time by CI/CD
