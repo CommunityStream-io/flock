@@ -317,7 +317,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.create-release.outputs.upload_url }}
-          asset_path: dist/electron/Flock Native ${{ needs.create-release.outputs.version }}.exe
+          asset_path: dist/electron/Flock-Native-${{ needs.create-release.outputs.version }}.exe
           asset_name: Flock-Native-${{ needs.create-release.outputs.version }}.exe
           asset_content_type: application/octet-stream
         continue-on-error: true
