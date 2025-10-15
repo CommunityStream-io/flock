@@ -9,9 +9,18 @@ ENV CI=true
 # Set working directory
 WORKDIR /app
 
-# Accept GitHub package token as build argument
+# Accept GitHub package token and Sentry args as build arguments
 ARG PACKAGE_TOKEN
+ARG NATIVE_SENTRY_DSN
+ARG NATIVE_SENTRY_DSN_MAIN
+ARG SENTRY_AUTH_TOKEN
+ARG SENTRY_ORG
+
 ENV PACKAGE_TOKEN=${PACKAGE_TOKEN}
+ENV NATIVE_SENTRY_DSN=${NATIVE_SENTRY_DSN}
+ENV NATIVE_SENTRY_DSN_MAIN=${NATIVE_SENTRY_DSN_MAIN}
+ENV SENTRY_AUTH_TOKEN=${SENTRY_AUTH_TOKEN}
+ENV SENTRY_ORG=${SENTRY_ORG}
 
 # Copy package files first for better caching
 COPY package*.json ./
@@ -26,8 +35,10 @@ RUN npm ci
 COPY projects ./projects
 COPY scripts ./scripts
 
-# Build Angular app
-RUN npm run build:native
+# Build Angular app and inject Sentry DSNs
+RUN npm run build:native && \
+    node scripts/inject-sentry-dsn.js && \
+    node scripts/generate-sentry-config.js
 
 # The electron-builder command will be run via docker-compose
 # to allow for volume mounting of the output

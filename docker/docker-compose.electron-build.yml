@@ -8,6 +8,10 @@ services:
       args:
         # Pass GitHub package token from host environment
         PACKAGE_TOKEN: ${PACKAGE_TOKEN}
+        NATIVE_SENTRY_DSN: ${NATIVE_SENTRY_DSN}
+        NATIVE_SENTRY_DSN_MAIN: ${NATIVE_SENTRY_DSN_MAIN}
+        SENTRY_AUTH_TOKEN: ${SENTRY_AUTH_TOKEN}
+        SENTRY_ORG: ${SENTRY_ORG}
     container_name: flock-electron-builder
     volumes:
       # Mount output directory to host
@@ -22,6 +26,11 @@ services:
       - ELECTRON_CACHE=/app/.electron-cache
       # Pass GitHub package token
       - PACKAGE_TOKEN=${PACKAGE_TOKEN}
+      # Pass Sentry variables
+      - NATIVE_SENTRY_DSN=${NATIVE_SENTRY_DSN}
+      - NATIVE_SENTRY_DSN_MAIN=${NATIVE_SENTRY_DSN_MAIN}
+      - SENTRY_AUTH_TOKEN=${SENTRY_AUTH_TOKEN}
+      - SENTRY_ORG=${SENTRY_ORG}
     command: >
       sh -c "
         echo '🐳 Starting Electron Windows build in Docker with Wine...' &&
