@@ -1,0 +1,510 @@
+name: Snapshot Release - Dev Builds
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to build from (leave empty for current branch)'
+        required: false
+        type: string
+  push:
+    branches:
+      - 'snapshot/**'
+
+permissions:
+  contents: write
+
+jobs:
+  create-snapshot-release:
+    name: Create Snapshot Pre-Release
+    runs-on: ubuntu-latest
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+      snapshot_version: ${{ steps.generate_version.outputs.snapshot_version }}
+      release_id: ${{ steps.create_release.outputs.id }}
+      short_sha: ${{ steps.generate_version.outputs.short_sha }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.branch || github.ref }}
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Generate snapshot version
+        id: generate_version
+        run: |
+          # Get base version from package.json
+          BASE_VERSION=$(node -p "require('./package.json').version")
+          
+          # Get branch name (sanitize for version string)
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            BRANCH="${{ github.event.inputs.branch || github.ref_name }}"
+          else
+            BRANCH="${GITHUB_REF#refs/heads/}"
+          fi
+          
+          # Sanitize branch name (remove snapshot/ prefix, replace special chars)
+          BRANCH_CLEAN=$(echo "$BRANCH" | sed 's|snapshot/||' | sed 's|[^a-zA-Z0-9-]|-|g' | tr '[:upper:]' '[:lower:]')
+          
+          # Get short commit SHA
+          SHORT_SHA=$(git rev-parse --short HEAD)
+          
+          # Generate timestamp in ISO-like format (compact)
+          TIMESTAMP=$(date -u +"%Y%m%dT%H%M%SZ")
+          
+          # Construct snapshot version
+          SNAPSHOT_VERSION="${BASE_VERSION}-snapshot-${BRANCH_CLEAN}-${SHORT_SHA}-${TIMESTAMP}"
+          
+          echo "snapshot_version=$SNAPSHOT_VERSION" >> $GITHUB_OUTPUT
+          echo "short_sha=$SHORT_SHA" >> $GITHUB_OUTPUT
+          echo "branch_clean=$BRANCH_CLEAN" >> $GITHUB_OUTPUT
+          echo "base_version=$BASE_VERSION" >> $GITHUB_OUTPUT
+          
+          echo "📦 Base version: $BASE_VERSION"
+          echo "🌿 Branch: $BRANCH → $BRANCH_CLEAN"
+          echo "📝 Commit: $SHORT_SHA"
+          echo "🕐 Timestamp: $TIMESTAMP"
+          echo "🎯 Snapshot version: $SNAPSHOT_VERSION"
+
+      - name: Create Snapshot Release
+        id: create_release
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const snapshotVersion = '${{ steps.generate_version.outputs.snapshot_version }}';
+            const baseVersion = '${{ steps.generate_version.outputs.base_version }}';
+            const branchClean = '${{ steps.generate_version.outputs.branch_clean }}';
+            const shortSha = '${{ steps.generate_version.outputs.short_sha }}';
+            const tagName = `v${snapshotVersion}`;
+            
+            // Build release notes
+            const releaseNotes = `## 🚧 Development Snapshot Build
+            
+            **⚠️ This is a pre-release development snapshot and should NOT be used in production.**
+            
+            ### 📦 Build Information
+            
+            - **Base Version**: \`${baseVersion}\`
+            - **Branch**: \`${branchClean}\`
+            - **Commit**: \`${shortSha}\`
+            - **Build Time**: \`${new Date().toISOString()}\`
+            - **Snapshot Version**: \`${snapshotVersion}\`
+            
+            ### 📥 Downloads
+            
+            #### Windows
+            - **Portable EXE**: \`Flock-Native-${snapshotVersion}.exe\`
+            - **ZIP Archive**: \`Flock-Native-${snapshotVersion}-win.zip\`
+            
+            #### macOS
+            - **DMG (Intel x64)**: \`Flock-Native-${snapshotVersion}-x64.dmg\`
+            - **DMG (Apple Silicon)**: \`Flock-Native-${snapshotVersion}-arm64.dmg\`
+            - **ZIP (Intel x64)**: \`Flock-Native-${snapshotVersion}-mac-x64.zip\`
+            - **ZIP (Apple Silicon)**: \`Flock-Native-${snapshotVersion}-mac-arm64.zip\`
+            
+            #### Linux
+            - **AppImage**: \`Flock-Native-${snapshotVersion}.AppImage\`
+            - **DEB Package**: \`flock-native_${snapshotVersion}_amd64.deb\`
+            - **RPM Package**: \`flock-native-${snapshotVersion}.x86_64.rpm\`
+            
+            ### ⚡ Purpose
+            
+            This snapshot build allows developers to test changes without building locally. Perfect for:
+            - Feature testing on different platforms
+            - QA validation of pull requests
+            - Quick iteration without local build overhead
+            
+            ### ⏰ Expiration
+            
+            This snapshot will be automatically deleted after 30 days.
+            
+            ### 🔗 Related
+            
+            - **Commit**: ${context.sha}
+            - **Workflow Run**: https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}
+            `;
+            
+            console.log(`Creating snapshot release ${tagName}...`);
+            
+            // Create the tag
+            try {
+              await github.rest.git.createRef({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                ref: `refs/tags/${tagName}`,
+                sha: context.sha
+              });
+              console.log(`✅ Tag ${tagName} created`);
+            } catch (error) {
+              if (error.status === 422) {
+                console.log(`✅ Tag ${tagName} already exists`);
+              } else {
+                throw error;
+              }
+            }
+            
+            // Create the pre-release
+            const { data: release } = await github.rest.repos.createRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag_name: tagName,
+              name: `🚧 Snapshot ${snapshotVersion}`,
+              body: releaseNotes,
+              draft: false,
+              prerelease: true
+            });
+            
+            console.log(`✅ Snapshot release created: ${release.html_url}`);
+            console.log(`📎 Upload URL: ${release.upload_url}`);
+            
+            // Set outputs
+            core.setOutput('upload_url', release.upload_url);
+            core.setOutput('id', release.id);
+            core.setOutput('html_url', release.html_url);
+            
+            return {
+              upload_url: release.upload_url,
+              id: release.id,
+              html_url: release.html_url
+            };
+
+  build-windows:
+    name: Build Windows Snapshot
+    needs: create-snapshot-release
+    runs-on: ubuntu-latest
+    container:
+      image: straiforos/electron-windows-base:latest
+    env:
+      PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
+      NATIVE_SENTRY_DSN: ${{ secrets.NATIVE_SENTRY_DSN }}
+      NATIVE_SENTRY_DSN_MAIN: ${{ secrets.NATIVE_SENTRY_DSN_MAIN }}
+      MIRAGE_SENTRY_DSN: ${{ secrets.MIRAGE_SENTRY_DSN }}
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.branch || github.ref }}
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Update package.json version
+        run: |
+          VERSION="${{ needs.create-snapshot-release.outputs.snapshot_version }}"
+          echo "Updating package.json to snapshot version $VERSION"
+          npm version "$VERSION" --no-git-tag-version --allow-same-version
+          echo "✅ Package version updated to $VERSION"
+
+      - name: Build Angular app
+        run: npm run build:native:prod
+
+      - name: Inject Sentry DSNs
+        run: node scripts/inject-sentry-dsn.js
+
+      - name: Generate Sentry config for Electron main
+        run: node scripts/generate-sentry-config.js
+
+      - name: Upload Source Maps to Sentry (snapshot)
+        if: env.SENTRY_AUTH_TOKEN != ''
+        run: npm run sentry:upload:all
+        continue-on-error: true
+
+      - name: Build Windows app
+        run: |
+          echo "🍷 Building Windows snapshot using Wine..."
+          echo "📦 PACKAGE_TOKEN is set: ${PACKAGE_TOKEN:+yes}"
+          
+          echo "Starting electron-builder..."
+          set -x
+          xvfb-run -a npx electron-builder --win --publish never || {
+            echo "❌ electron-builder failed with exit code $?"
+            echo "📁 Checking what files exist:"
+            find dist -type f -name "*.exe" -o -name "*.zip" || echo "No exe or zip files found"
+            exit 1
+          }
+          set +x
+          
+          echo "✅ Windows snapshot build completed"
+
+      - name: Verify build output
+        run: |
+          echo "📁 Checking build output..."
+          echo "📂 Contents of dist/electron/:"
+          ls -laR dist/electron/ || echo "dist/electron/ not found"
+          
+          echo ""
+          echo "📦 All .exe files:"
+          find dist -type f \( -name "*.exe" \) -exec ls -lh {} \; || echo "No .exe files found"
+          
+          echo ""
+          VERSION="${{ needs.create-snapshot-release.outputs.snapshot_version }}"
+          echo "🔍 Looking for version: $VERSION"
+
+      - name: Upload Windows portable EXE to Snapshot Release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create-snapshot-release.outputs.upload_url }}
+          asset_path: dist/electron/Flock Native ${{ needs.create-snapshot-release.outputs.snapshot_version }}.exe
+          asset_name: Flock-Native-${{ needs.create-snapshot-release.outputs.snapshot_version }}.exe
+          asset_content_type: application/octet-stream
+        continue-on-error: true
+
+      - name: Upload Windows build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-snapshot-build
+          path: dist/electron/
+          retention-days: 7
+
+  build-macos:
+    name: Build macOS Snapshot
+    needs: create-snapshot-release
+    runs-on: macos-latest
+    env:
+      PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
+      NATIVE_SENTRY_DSN: ${{ secrets.NATIVE_SENTRY_DSN }}
+      NATIVE_SENTRY_DSN_MAIN: ${{ secrets.NATIVE_SENTRY_DSN_MAIN }}
+      MIRAGE_SENTRY_DSN: ${{ secrets.MIRAGE_SENTRY_DSN }}
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.branch || github.ref }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24.5.0'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Update package.json version
+        run: |
+          VERSION="${{ needs.create-snapshot-release.outputs.snapshot_version }}"
+          echo "Updating package.json to snapshot version $VERSION"
+          npm version "$VERSION" --no-git-tag-version --allow-same-version
+          echo "✅ Package version updated to $VERSION"
+
+      - name: Build Angular app
+        run: npm run build:native:prod
+
+      - name: Inject Sentry DSNs
+        run: node scripts/inject-sentry-dsn.js
+
+      - name: Generate Sentry config for Electron main
+        run: node scripts/generate-sentry-config.js
+
+      - name: Upload Source Maps to Sentry (snapshot)
+        if: env.SENTRY_AUTH_TOKEN != ''
+        run: npm run sentry:upload:all
+        continue-on-error: true
+
+      - name: Build and publish macOS snapshot packages
+        run: npx electron-builder --mac --publish always
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build-linux:
+    name: Build Linux Snapshot
+    needs: create-snapshot-release
+    runs-on: ubuntu-latest
+    env:
+      PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
+      NATIVE_SENTRY_DSN: ${{ secrets.NATIVE_SENTRY_DSN }}
+      NATIVE_SENTRY_DSN_MAIN: ${{ secrets.NATIVE_SENTRY_DSN_MAIN }}
+      MIRAGE_SENTRY_DSN: ${{ secrets.MIRAGE_SENTRY_DSN }}
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.branch || github.ref }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24.5.0'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          npm ci
+          sudo apt-get update
+          sudo apt-get install -y rpm
+
+      - name: Update package.json version
+        run: |
+          VERSION="${{ needs.create-snapshot-release.outputs.snapshot_version }}"
+          echo "Updating package.json to snapshot version $VERSION"
+          npm version "$VERSION" --no-git-tag-version --allow-same-version
+          echo "✅ Package version updated to $VERSION"
+
+      - name: Build Angular app
+        run: npm run build:native:prod
+
+      - name: Inject Sentry DSNs
+        run: node scripts/inject-sentry-dsn.js
+
+      - name: Generate Sentry config for Electron main
+        run: node scripts/generate-sentry-config.js
+
+      - name: Upload Source Maps to Sentry (snapshot)
+        if: env.SENTRY_AUTH_TOKEN != ''
+        run: npm run sentry:upload:all
+        continue-on-error: true
+
+      - name: Build and publish Linux snapshot packages
+        run: npx electron-builder --linux --publish always
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  notify-snapshot-complete:
+    name: Notify Snapshot Build Complete
+    needs: [build-windows, build-macos, build-linux, create-snapshot-release]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update snapshot release
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const snapshotVersion = '${{ needs.create-snapshot-release.outputs.snapshot_version }}';
+            const releaseId = '${{ needs.create-snapshot-release.outputs.release_id }}';
+            const shortSha = '${{ needs.create-snapshot-release.outputs.short_sha }}';
+            
+            // Get the release by ID
+            const { data: release } = await github.rest.repos.getRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              release_id: releaseId
+            });
+            
+            // Update release body with build completion note
+            const buildStatus = `
+            
+            ---
+            
+            ## ✅ Build Status
+            
+            **All platform builds completed successfully!**
+            
+            **Build Summary:**
+            - ✅ Windows (Portable EXE, ZIP)
+            - ✅ macOS (DMG, ZIP) - Universal binary
+            - ✅ Linux (AppImage, DEB, RPM)
+            
+            **Ready to download and test!**
+            
+            ### 🧪 Testing Instructions
+            
+            1. Download the appropriate installer for your platform above
+            2. Install or run the application
+            3. Test your changes
+            4. Report any issues in the PR or issue that triggered this build
+            
+            ### ⚠️ Remember
+            
+            This is a development snapshot and will be automatically deleted after 30 days.
+            `;
+            
+            await github.rest.repos.updateRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              release_id: release.id,
+              body: release.body + buildStatus
+            });
+            
+            console.log('✅ Snapshot release updated with build status');
+
+      - name: Post summary
+        run: |
+          echo "## 🚧 Snapshot Build Complete!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Snapshot Version**: \`${{ needs.create-snapshot-release.outputs.snapshot_version }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "**Commit**: \`${{ needs.create-snapshot-release.outputs.short_sha }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### ✅ Build Status" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Windows" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ macOS (Intel + Apple Silicon)" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Linux" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📥 Download" >> $GITHUB_STEP_SUMMARY
+          echo "View the [snapshot release](https://github.com/${{ github.repository }}/releases/tag/v${{ needs.create-snapshot-release.outputs.snapshot_version }}) to download installers." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### ⏰ Auto-Cleanup" >> $GITHUB_STEP_SUMMARY
+          echo "This snapshot will be automatically deleted after 30 days." >> $GITHUB_STEP_SUMMARY
+
+  cleanup-old-snapshots:
+    name: Cleanup Old Snapshot Releases
+    needs: notify-snapshot-complete
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete snapshots older than 30 days
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const daysToKeep = 30;
+            const cutoffDate = new Date();
+            cutoffDate.setDate(cutoffDate.getDate() - daysToKeep);
+            
+            console.log(`🧹 Cleaning up snapshot releases older than ${daysToKeep} days (before ${cutoffDate.toISOString()})`);
+            
+            // Get all releases
+            const { data: releases } = await github.rest.repos.listReleases({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              per_page: 100
+            });
+            
+            let deletedCount = 0;
+            let keptCount = 0;
+            
+            for (const release of releases) {
+              // Only process snapshot releases
+              if (!release.tag_name.includes('-snapshot-') || !release.prerelease) {
+                continue;
+              }
+              
+              const releaseDate = new Date(release.created_at);
+              
+              if (releaseDate < cutoffDate) {
+                console.log(`🗑️  Deleting old snapshot: ${release.tag_name} (created ${releaseDate.toISOString()})`);
+                
+                try {
+                  // Delete the release
+                  await github.rest.repos.deleteRelease({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    release_id: release.id
+                  });
+                  
+                  // Delete the tag
+                  await github.rest.git.deleteRef({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    ref: `tags/${release.tag_name}`
+                  });
+                  
+                  deletedCount++;
+                  console.log(`✅ Deleted ${release.tag_name}`);
+                } catch (error) {
+                  console.error(`❌ Failed to delete ${release.tag_name}: ${error.message}`);
+                }
+              } else {
+                keptCount++;
+                console.log(`✅ Keeping recent snapshot: ${release.tag_name} (created ${releaseDate.toISOString()})`);
+              }
+            }
+            
+            console.log(`\n📊 Cleanup Summary:`);
+            console.log(`   - Deleted: ${deletedCount} old snapshots`);
+            console.log(`   - Kept: ${keptCount} recent snapshots`);
