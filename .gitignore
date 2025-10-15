@@ -56,3 +56,7 @@ logs/
 *log
 .env
 projects/flock-native/build
+
+# Vercel
+.vercel
+.vercel/output
