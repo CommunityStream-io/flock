@@ -163,7 +163,9 @@
         }
       ],
       "icon": "projects/flock-native/build/icon.ico",
-      "publisherName": "CommunityStream.io",
+      "signtoolOptions": {
+        "publisherName": "CommunityStream.io"
+      },
       "sign": null,
       "signDlls": false
     },

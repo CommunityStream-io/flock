@@ -58,7 +58,7 @@ jobs:
 
       - name: Check and bump package.json version
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
         run: |
           VERSION="${{ steps.get_version.outputs.version }}"
           CURRENT_VERSION=$(node -p "require('./package.json').version")
@@ -102,7 +102,7 @@ jobs:
 
       - name: Verify tag exists
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
         run: |
           # Use the normalized version from the previous step
           VERSION="${{ steps.get_version.outputs.version }}"
@@ -328,7 +328,7 @@ jobs:
       - name: Upload Windows portable EXE to GitHub Release
         uses: actions/upload-release-asset@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
         with:
           upload_url: ${{ needs.create-release.outputs.upload_url }}
           asset_path: dist/electron/Flock Native ${{ needs.create-release.outputs.version }}.exe
@@ -384,7 +384,7 @@ jobs:
       - name: Build and publish macOS packages
         run: npx electron-builder --mac --publish always
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
 
   build-linux:
     name: Build Linux
@@ -430,7 +430,7 @@ jobs:
       - name: Build and publish Linux packages
         run: npx electron-builder --linux --publish always
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
 
   notify-build-complete:
     name: Notify Build Complete
