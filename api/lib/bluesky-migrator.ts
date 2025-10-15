@@ -1,9 +1,19 @@
 import { kv } from '@vercel/kv';
+// TODO: Import and use the actual library utilities when available
+// import { 
+//   BlueskyClient,
+//   uploadMediaAndEmbed,
+//   PostRecordImpl
+// } from '@straiforos/instagramtobluesky';
 
 /**
  * Bluesky Migrator
  * Handles authentication and migration to Bluesky
- * Integrates with @straiforos/instagramtobluesky patterns
+ * 
+ * NOTE: This is a temporary implementation that should be replaced with
+ * the actual @straiforos/instagramtobluesky library's BlueskyClient and
+ * related utilities. The library provides proper rate limiting, media handling,
+ * and error recovery that should be used instead of this custom implementation.
  */
 export class BlueskyMigrator {
   private credentials: { username: string; password: string };
@@ -25,6 +35,8 @@ export class BlueskyMigrator {
 
   /**
    * Authenticate with Bluesky
+   * 
+   * TODO: Replace with library's BlueskyClient authentication
    */
   async authenticate(): Promise<void> {
     try {
@@ -60,6 +72,8 @@ export class BlueskyMigrator {
 
   /**
    * Migrate posts to Bluesky
+   * 
+   * TODO: Use library's migration logic with proper error handling and rate limiting
    */
   async migratePosts(posts: any[]): Promise<{
     success: number;
@@ -157,6 +171,8 @@ export class BlueskyMigrator {
 
   /**
    * Create a post on Bluesky
+   * 
+   * TODO: Replace with library's uploadMediaAndEmbed and post creation utilities
    */
   private async createBlueskyPost(post: any): Promise<void> {
     try {
@@ -178,6 +194,8 @@ export class BlueskyMigrator {
 
   /**
    * Upload media to Bluesky
+   * 
+   * TODO: Use library's uploadMediaAndEmbed function
    */
   private async uploadMedia(media: any[]): Promise<any[]> {
     const blobs: any[] = [];

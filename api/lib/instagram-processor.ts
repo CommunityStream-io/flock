@@ -1,10 +1,20 @@
 import AdmZip from 'adm-zip';
 import { kv } from '@vercel/kv';
+// TODO: Import and use the actual library processors when available
+// import { 
+//   InstagramMediaProcessor, 
+//   MediaProcessResult,
+//   InstagramExportedPost
+// } from '@straiforos/instagramtobluesky';
 
 /**
  * Instagram Archive Processor
  * Processes Instagram archive data in a serverless environment
- * Integrates with @straiforos/instagramtobluesky patterns
+ * 
+ * NOTE: This is a temporary implementation that should be replaced with
+ * the actual @straiforos/instagramtobluesky library processors.
+ * The library's InstagramMediaProcessor and related utilities should be
+ * used instead of this custom implementation.
  */
 export class InstagramArchiveProcessor {
   private sessionId: string;
@@ -18,6 +28,8 @@ export class InstagramArchiveProcessor {
   /**
    * Extract and process Instagram archive
    * Returns array of processed posts ready for migration
+   * 
+   * TODO: Replace with library's InstagramMediaProcessor.processArchive()
    */
   async extractAndProcessArchive(): Promise<any[]> {
     try {
@@ -50,6 +62,8 @@ export class InstagramArchiveProcessor {
 
   /**
    * Process posts and extract media
+   * 
+   * TODO: Replace with library's sortPostsByCreationTime and related utilities
    */
   private async processPosts(postsData: any, zip: AdmZip): Promise<any[]> {
     const posts: any[] = [];
@@ -74,6 +88,8 @@ export class InstagramArchiveProcessor {
 
   /**
    * Process individual post
+   * 
+   * TODO: Use library's InstagramExportedPost type and processing logic
    */
   private async processPost(post: any, zip: AdmZip): Promise<any | null> {
     try {
@@ -100,6 +116,8 @@ export class InstagramArchiveProcessor {
 
   /**
    * Extract caption from post
+   * 
+   * TODO: Use library's decodeUTF8 utility for proper text handling
    */
   private extractCaption(post: any): string {
     if (post.title) {
