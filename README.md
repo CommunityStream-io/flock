@@ -25,6 +25,22 @@ A **flock** of Angular applications soaring through the social media migration s
 - **[🚀 Development](docs/DEVELOPMENT.md)** - Getting your wings and taking flight
 - **[🧪 Testing](docs/TESTING.md)** - How our flock stays healthy and strong
 - **[🎨 Styling](docs/STYLING.md)** - The flock's beautiful plumage
+- **[☁️ Vercel Deployment](docs/VERCEL_DEPLOYMENT.md)** - Deploy Flock Murmur to the cloud
+
+### 🌊 **Flock Murmur - Web Deployment**
+
+Flock Murmur can now be deployed to Vercel with serverless edge functions for powerful cloud-based migration!
+
+- **[⚡ Quick Start](QUICKSTART.md)** - Get started with Vercel deployment in 5 minutes
+- **[📋 Implementation Details](VERCEL_IMPLEMENTATION.md)** - Complete technical implementation guide
+- **[🔌 API Integration](projects/flock-murmur/API_INTEGRATION.md)** - How to use the API service
+
+**Key Features:**
+- ✅ Serverless edge functions for processing
+- ✅ Real-time progress tracking
+- ✅ 500MB file upload support
+- ✅ Rate-limited Bluesky posting
+- ✅ Automatic session management
 
 ## 🦜 **Meet the Flock**
 
