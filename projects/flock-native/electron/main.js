@@ -135,8 +135,6 @@ function createWindow() {
     // Open DevTools in development
     mainWindow.webContents.openDevTools();
   } else {
-    // Open DevTools in production for debugging (TEMPORARY)
-    mainWindow.webContents.openDevTools();
     // Production mode - load from built files
     const appPath = app.getAppPath();
     let indexPath;
