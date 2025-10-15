@@ -58,7 +58,7 @@ jobs:
 
       - name: Check and bump package.json version
         env:
-          GH_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           VERSION="${{ steps.get_version.outputs.version }}"
           CURRENT_VERSION=$(node -p "require('./package.json').version")
@@ -102,7 +102,7 @@ jobs:
 
       - name: Verify tag exists
         env:
-          GH_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # Use the normalized version from the previous step
           VERSION="${{ steps.get_version.outputs.version }}"
@@ -246,7 +246,6 @@ jobs:
     needs: create-release
     runs-on: windows-latest
     env:
-      PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
       NATIVE_SENTRY_DSN: ${{ secrets.NATIVE_SENTRY_DSN }}
       NATIVE_SENTRY_DSN_MAIN: ${{ secrets.NATIVE_SENTRY_DSN_MAIN }}
       MIRAGE_SENTRY_DSN: ${{ secrets.MIRAGE_SENTRY_DSN }}
@@ -295,7 +294,7 @@ jobs:
           Write-Host "✅ Native Windows build completed"
         shell: pwsh
         env:
-          GH_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Verify build output
         run: |
@@ -330,7 +329,7 @@ jobs:
       - name: Upload Windows portable EXE to GitHub Release
         uses: actions/upload-release-asset@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.create-release.outputs.upload_url }}
           asset_path: dist/electron/Flock Native ${{ needs.create-release.outputs.version }}.exe
@@ -350,7 +349,6 @@ jobs:
     needs: create-release
     runs-on: macos-latest
     env:
-      PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
       NATIVE_SENTRY_DSN: ${{ secrets.NATIVE_SENTRY_DSN }}
       NATIVE_SENTRY_DSN_MAIN: ${{ secrets.NATIVE_SENTRY_DSN_MAIN }}
       MIRAGE_SENTRY_DSN: ${{ secrets.MIRAGE_SENTRY_DSN }}
@@ -386,14 +384,13 @@ jobs:
       - name: Build and publish macOS packages
         run: npx electron-builder --mac --publish always
         env:
-          GH_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   build-linux:
     name: Build Linux
     needs: create-release
     runs-on: ubuntu-latest
     env:
-      PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
       NATIVE_SENTRY_DSN: ${{ secrets.NATIVE_SENTRY_DSN }}
       NATIVE_SENTRY_DSN_MAIN: ${{ secrets.NATIVE_SENTRY_DSN_MAIN }}
       MIRAGE_SENTRY_DSN: ${{ secrets.MIRAGE_SENTRY_DSN }}
@@ -432,7 +429,7 @@ jobs:
       - name: Build and publish Linux packages
         run: npx electron-builder --linux --publish always
         env:
-          GH_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   notify-build-complete:
     name: Notify Build Complete
