@@ -6,7 +6,7 @@
 
 **Desktop App Available Now!** Download the native desktop application for your platform:
 
-[![Download Latest Release](https://img.shields.io/github/v/release/CommunityStream-io/flock?label=Download&style=for-the-badge&logo=github)](https://github.com/CommunityStream-io/flock/releases/latest)
+[![Download  Version](https://img.shields.io/github/package-json/v/CommunityStream-io/flock?label=Download&style=for-the-badge&logo=github)](https://github.com/CommunityStream-io/flock/releases/latest)
 
 **Supported Platforms:**
 - 🪟 **Windows** - Windows 10 or later (64-bit)
