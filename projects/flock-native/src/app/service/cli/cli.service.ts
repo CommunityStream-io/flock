@@ -188,6 +188,11 @@ export class CLIService {
       this.log('Note: Using proper archive structure (not CLI test mode)');
     }
 
+    // Important: In production builds, local transfer test data
+    // is excluded from the packaged Electron bundle.
+    // When test modes are disabled (production), ARCHIVE_FOLDER
+    // must point to a real user archive path.
+
     // Add optional date filters
     if (options.dateFrom) {
       env['MIN_DATE'] = options.dateFrom;

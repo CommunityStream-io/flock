@@ -393,7 +393,7 @@ function setupIpcHandlers(mainWindow, sentryInstance) {
         }
       });
       
-      // Resolve test data path if it's a relative path
+      // Resolve archive path if it's a relative path (dev-only test data lives in repo)
       const mergedEnv = { ...process.env, ...options.env };
       if (mergedEnv.ARCHIVE_FOLDER && !path.isAbsolute(mergedEnv.ARCHIVE_FOLDER)) {
         const resolvedPath = path.join(appRoot, mergedEnv.ARCHIVE_FOLDER);
