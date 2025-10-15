@@ -275,6 +275,8 @@ jobs:
         if: env.SENTRY_AUTH_TOKEN != ''
         run: npm run sentry:upload:all
         continue-on-error: true
+        env:
+          SENTRY_RELEASE: ${{ needs.create-release.outputs.version }}
 
       - name: Build Windows app
         run: |
@@ -362,6 +364,8 @@ jobs:
         if: env.SENTRY_AUTH_TOKEN != ''
         run: npm run sentry:upload:all
         continue-on-error: true
+        env:
+          SENTRY_RELEASE: ${{ needs.create-release.outputs.version }}
 
       - name: Build and publish macOS packages
         run: npx electron-builder --mac --publish always
@@ -399,6 +403,8 @@ jobs:
         if: env.SENTRY_AUTH_TOKEN != ''
         run: npm run sentry:upload:all
         continue-on-error: true
+        env:
+          SENTRY_RELEASE: ${{ needs.create-release.outputs.version }}
 
       - name: Build and publish Linux packages
         run: npx electron-builder --linux --publish always
