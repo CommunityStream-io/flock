@@ -271,16 +271,6 @@ jobs:
       - name: Build Angular app
         run: npm run build:native:prod
 
-<<<<<<< HEAD
-=======
-      - name: Upload Source Maps to Sentry
-        if: env.SENTRY_AUTH_TOKEN != ''
-        run: npm run sentry:upload:all
-        continue-on-error: true
-        env:
-          SENTRY_RELEASE: ${{ needs.create-release.outputs.version }}
-
->>>>>>> origin/main
       - name: Build Windows app
         run: |
           Write-Host "🪟 Building Windows app natively..."
@@ -363,16 +353,6 @@ jobs:
       - name: Build Angular app
         run: npm run build:native:prod
 
-<<<<<<< HEAD
-=======
-      - name: Upload Source Maps to Sentry
-        if: env.SENTRY_AUTH_TOKEN != ''
-        run: npm run sentry:upload:all
-        continue-on-error: true
-        env:
-          SENTRY_RELEASE: ${{ needs.create-release.outputs.version }}
-
->>>>>>> origin/main
       - name: Build and publish macOS packages
         run: npx electron-builder --mac --publish always
         env:
@@ -405,16 +385,6 @@ jobs:
       - name: Build Angular app
         run: npm run build:native:prod
 
-<<<<<<< HEAD
-=======
-      - name: Upload Source Maps to Sentry
-        if: env.SENTRY_AUTH_TOKEN != ''
-        run: npm run sentry:upload:all
-        continue-on-error: true
-        env:
-          SENTRY_RELEASE: ${{ needs.create-release.outputs.version }}
-
->>>>>>> origin/main
       - name: Build and publish Linux packages
         run: npx electron-builder --linux --publish always
         env:
