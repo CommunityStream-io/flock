@@ -168,10 +168,11 @@ jobs:
             - **macOS**: macOS 10.15 (Catalina) or later (Universal: Intel & Apple Silicon)
             - **Linux**: Ubuntu 20.04+ or equivalent
             
-            ## ⚠️ Known Issues
+            ## 🔐 Code Signing
             
-            - Windows SmartScreen and macOS Gatekeeper may show warnings (app is not yet code-signed)
-            - This is expected for unsigned applications
+            - **Windows**: Signed with Azure Trusted Signing (Microsoft-trusted certificate)
+            - **macOS**: Not yet code-signed (Gatekeeper warnings expected)
+            - **Linux**: Not applicable
             
             ## 💬 Feedback
             
@@ -247,6 +248,12 @@ jobs:
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
       PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
+      # Azure Trusted Signing credentials
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+      AZURE_CERT_PROFILE_NAME: ${{ secrets.AZURE_CERT_PROFILE_NAME }}
+      AZURE_SIGNING_ACCOUNT_NAME: ${{ secrets.AZURE_SIGNING_ACCOUNT_NAME }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -271,9 +278,14 @@ jobs:
       - name: Build Angular app
         run: npm run build:native:prod
 
-      - name: Build Windows app
+      - name: Build and Sign Windows app
         run: |
           Write-Host "🪟 Building Windows app natively..."
+          if ($env:AZURE_TENANT_ID) {
+            Write-Host "🔐 Azure Trusted Signing enabled"
+          } else {
+            Write-Host "⚠️  Azure Trusted Signing not configured - building unsigned"
+          }
           Write-Host "📦 Running npm run pack:win"
           npm run pack:win
           Write-Host "✅ Native Windows build completed"
@@ -281,33 +293,59 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Verify build output
+      - name: Verify build output and code signature
         run: |
           Write-Host "📁 Checking build output..."
-          Write-Host "📂 Contents of dist/electron/:"
-          if (Test-Path "dist/electron") {
-            Get-ChildItem -Path "dist/electron" -Recurse | Select-Object FullName, Length
-          } else {
-            Write-Host "dist/electron/ not found"
-          }
-          
-          Write-Host ""
-          Write-Host "📦 All .exe files:"
-          if (Test-Path "dist/electron") {
-            Get-ChildItem -Path "dist" -Recurse -Filter "*.exe" | Select-Object FullName, Length
-          } else {
-            Write-Host "No .exe files found"
-          }
-          
-          Write-Host ""
           $VERSION = "${{ needs.create-release.outputs.version }}"
-          Write-Host "🔍 Looking for version: $VERSION"
-
+          $EXE_FILE = "dist/electron/Flock Native $VERSION.exe"
+          
+          Write-Host ""
+          Write-Host "📦 Looking for executable: $EXE_FILE"
+          
+          if (Test-Path $EXE_FILE) {
+            Write-Host "✅ Executable found"
+            $fileInfo = Get-Item $EXE_FILE
+            Write-Host "   Size: $([math]::Round($fileInfo.Length / 1MB, 2)) MB"
+            
+            Write-Host ""
+            Write-Host "🔍 Verifying code signature..."
+            
+            # Check if file is signed
+            $signature = Get-AuthenticodeSignature $EXE_FILE
+            
+            if ($signature.Status -eq "Valid") {
+              Write-Host "✅ Code signature is VALID"
+              Write-Host "   Signer: $($signature.SignerCertificate.Subject)"
+              Write-Host "   Status: $($signature.Status)"
+              Write-Host "   Hash Algorithm: $($signature.HashAlgorithm)"
+              
+              if ($signature.TimeStamperCertificate) {
+                Write-Host "   Timestamp: $($signature.TimeStamperCertificate.NotBefore)"
+              }
+              
+              Write-Host ""
+              Write-Host "🎉 Azure Trusted Signing successful!"
+            } elseif ($signature.Status -eq "NotSigned") {
+              Write-Host "⚠️  Executable is NOT SIGNED"
+              Write-Host "   This may indicate Azure signing failed or was skipped"
+              Write-Host "   Check earlier build logs for signing errors"
+            } else {
+              Write-Host "⚠️  Signature status: $($signature.Status)"
+              Write-Host "   Status Message: $($signature.StatusMessage)"
+            }
+          } else {
+            Write-Host "❌ Executable not found: $EXE_FILE"
+            Write-Host ""
+            Write-Host "📂 Contents of dist/electron/:"
+            if (Test-Path "dist/electron") {
+              Get-ChildItem -Path "dist/electron" -Recurse | Select-Object FullName, Length
+            }
+            exit 1
+          }
+          
+          Write-Host ""
           if (Test-Path "dist/electron/win-unpacked") {
             Write-Host "✅ Windows unpacked build found"
-            Get-ChildItem -Path "dist/electron/win-unpacked" | Select-Object Name, Length | Format-Table
-          } else {
-            Write-Host "⚠️  Unpacked directory not found"
           }
         shell: pwsh
 

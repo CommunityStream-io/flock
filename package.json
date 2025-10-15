@@ -166,7 +166,7 @@
       "signtoolOptions": {
         "publisherName": "CommunityStream.io"
       },
-      "sign": null,
+      "sign": "./scripts/azure-sign.js",
       "signDlls": false
     },
     "mac": {
@@ -258,6 +258,8 @@
     "@angular/build": "^20.1.6",
     "@angular/cli": "^20.1.5",
     "@angular/compiler-cli": "^20.1.0",
+    "@azure/code-signing": "^1.0.0",
+    "@azure/identity": "^4.0.0",
     "@sentry/cli": "^2.30.0",
     "@types/jasmine": "~5.1.0",
     "@types/node": "^24.3.0",
