@@ -5,7 +5,7 @@ import { By } from '@angular/platform-browser';
 import { of } from 'rxjs';
 
 import { Config } from './config';
-import { LOGGER, ConfigServiceImpl, Logger } from '../../services';
+import { LOGGER, ConfigServiceImpl, Logger, TEST_MODES_ENABLED } from '../../services';
 
 /**
  * BDD-Style Unit Tests for Config Component
@@ -36,7 +36,8 @@ describe('Feature: Migration Configuration (BDD-Style)', () => {
       imports: [Config, NoopAnimationsModule, MatDialogModule],
       providers: [
         { provide: LOGGER, useValue: mockLogger },
-        { provide: ConfigServiceImpl, useValue: mockConfigService }
+        { provide: ConfigServiceImpl, useValue: mockConfigService },
+        { provide: TEST_MODES_ENABLED, useValue: true }
       ]
     })
     .compileComponents();
