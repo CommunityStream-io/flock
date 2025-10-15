@@ -224,9 +224,12 @@
   "private": true,
   "dependencies": {
     "@angular/animations": "^20.1.7",
+    "@angular/build": "^20.1.6",
     "@angular/cdk": "^20.1.6",
+    "@angular/cli": "^20.1.5",
     "@angular/common": "^20.1.0",
     "@angular/compiler": "^20.1.0",
+    "@angular/compiler-cli": "^20.1.0",
     "@angular/core": "^20.1.0",
     "@angular/forms": "^20.1.0",
     "@angular/material": "^20.1.6",
@@ -252,6 +255,7 @@
     "rxjs": "~7.8.0",
     "sharp": "^0.34.4",
     "tslib": "^2.3.0",
+    "typescript": "~5.8.2",
     "zone.js": "~0.15.0"
   },
   "devDependencies": {
@@ -260,9 +264,6 @@
     "@angular-eslint/eslint-plugin-template": "20.2.0",
     "@angular-eslint/schematics": "20.2.0",
     "@angular-eslint/template-parser": "20.2.0",
-    "@angular/build": "^20.1.6",
-    "@angular/cli": "^20.1.5",
-    "@angular/compiler-cli": "^20.1.0",
     "@sentry/cli": "^2.30.0",
     "@types/adm-zip": "^0.5.5",
     "@types/formidable": "^3.4.5",
@@ -301,7 +302,6 @@
     "pino-pretty": "^13.1.1",
     "puppeteer": "^24.22.0",
     "rimraf": "^6.0.1",
-    "typescript": "~5.8.2",
     "wait-on": "^8.0.4",
     "wdio-electron-service": "^9.1.2",
     "webdriverio-mcp": "^1.0.3"
