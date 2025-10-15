@@ -249,6 +249,11 @@ jobs:
       image: straiforos/electron-windows-base:latest
     env:
       PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
+      NATIVE_SENTRY_DSN: ${{ secrets.NATIVE_SENTRY_DSN }}
+      NATIVE_SENTRY_DSN_MAIN: ${{ secrets.NATIVE_SENTRY_DSN_MAIN }}
+      MIRAGE_SENTRY_DSN: ${{ secrets.MIRAGE_SENTRY_DSN }}
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -264,7 +269,18 @@ jobs:
           echo "✅ Package version updated to $VERSION"
 
       - name: Build Angular app
-        run: npm run build:native
+        run: npm run build:native:prod
+
+      - name: Inject Sentry DSNs
+        run: node scripts/inject-sentry-dsn.js
+
+      - name: Generate Sentry config for Electron main
+        run: node scripts/generate-sentry-config.js
+
+      - name: Upload Source Maps to Sentry
+        if: env.SENTRY_AUTH_TOKEN != ''
+        run: npm run sentry:upload:all
+        continue-on-error: true
 
       - name: Build Windows app
         run: |
@@ -329,6 +345,11 @@ jobs:
     runs-on: macos-latest
     env:
       PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
+      NATIVE_SENTRY_DSN: ${{ secrets.NATIVE_SENTRY_DSN }}
+      NATIVE_SENTRY_DSN_MAIN: ${{ secrets.NATIVE_SENTRY_DSN_MAIN }}
+      MIRAGE_SENTRY_DSN: ${{ secrets.MIRAGE_SENTRY_DSN }}
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -343,7 +364,18 @@ jobs:
         run: npm ci
 
       - name: Build Angular app
-        run: npm run build:native
+        run: npm run build:native:prod
+
+      - name: Inject Sentry DSNs
+        run: node scripts/inject-sentry-dsn.js
+
+      - name: Generate Sentry config for Electron main
+        run: node scripts/generate-sentry-config.js
+
+      - name: Upload Source Maps to Sentry
+        if: env.SENTRY_AUTH_TOKEN != ''
+        run: npm run sentry:upload:all
+        continue-on-error: true
 
       - name: Build and publish macOS packages
         run: npx electron-builder --mac --publish always
@@ -356,6 +388,11 @@ jobs:
     runs-on: ubuntu-latest
     env:
       PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
+      NATIVE_SENTRY_DSN: ${{ secrets.NATIVE_SENTRY_DSN }}
+      NATIVE_SENTRY_DSN_MAIN: ${{ secrets.NATIVE_SENTRY_DSN_MAIN }}
+      MIRAGE_SENTRY_DSN: ${{ secrets.MIRAGE_SENTRY_DSN }}
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -373,7 +410,18 @@ jobs:
           sudo apt-get install -y rpm
 
       - name: Build Angular app
-        run: npm run build:native
+        run: npm run build:native:prod
+
+      - name: Inject Sentry DSNs
+        run: node scripts/inject-sentry-dsn.js
+
+      - name: Generate Sentry config for Electron main
+        run: node scripts/generate-sentry-config.js
+
+      - name: Upload Source Maps to Sentry
+        if: env.SENTRY_AUTH_TOKEN != ''
+        run: npm run sentry:upload:all
+        continue-on-error: true
 
       - name: Build and publish Linux packages
         run: npx electron-builder --linux --publish always
