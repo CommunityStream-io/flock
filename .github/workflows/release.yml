@@ -244,9 +244,6 @@ jobs:
     needs: create-release
     runs-on: windows-latest
     env:
-      NATIVE_SENTRY_DSN: ${{ secrets.NATIVE_SENTRY_DSN }}
-      NATIVE_SENTRY_DSN_MAIN: ${{ secrets.NATIVE_SENTRY_DSN_MAIN }}
-      MIRAGE_SENTRY_DSN: ${{ secrets.MIRAGE_SENTRY_DSN }}
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
     steps:
@@ -272,12 +269,6 @@ jobs:
 
       - name: Build Angular app
         run: npm run build:native:prod
-
-      - name: Inject Sentry DSNs
-        run: node scripts/inject-sentry-dsn.js
-
-      - name: Generate Sentry config for Electron main
-        run: node scripts/generate-sentry-config.js
 
       - name: Upload Source Maps to Sentry
         if: env.SENTRY_AUTH_TOKEN != ''
@@ -347,9 +338,6 @@ jobs:
     needs: create-release
     runs-on: macos-latest
     env:
-      NATIVE_SENTRY_DSN: ${{ secrets.NATIVE_SENTRY_DSN }}
-      NATIVE_SENTRY_DSN_MAIN: ${{ secrets.NATIVE_SENTRY_DSN_MAIN }}
-      MIRAGE_SENTRY_DSN: ${{ secrets.MIRAGE_SENTRY_DSN }}
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
     steps:
@@ -368,12 +356,6 @@ jobs:
       - name: Build Angular app
         run: npm run build:native:prod
 
-      - name: Inject Sentry DSNs
-        run: node scripts/inject-sentry-dsn.js
-
-      - name: Generate Sentry config for Electron main
-        run: node scripts/generate-sentry-config.js
-
       - name: Upload Source Maps to Sentry
         if: env.SENTRY_AUTH_TOKEN != ''
         run: npm run sentry:upload:all
@@ -389,9 +371,6 @@ jobs:
     needs: create-release
     runs-on: ubuntu-latest
     env:
-      NATIVE_SENTRY_DSN: ${{ secrets.NATIVE_SENTRY_DSN }}
-      NATIVE_SENTRY_DSN_MAIN: ${{ secrets.NATIVE_SENTRY_DSN_MAIN }}
-      MIRAGE_SENTRY_DSN: ${{ secrets.MIRAGE_SENTRY_DSN }}
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
     steps:
@@ -412,12 +391,6 @@ jobs:
 
       - name: Build Angular app
         run: npm run build:native:prod
-
-      - name: Inject Sentry DSNs
-        run: node scripts/inject-sentry-dsn.js
-
-      - name: Generate Sentry config for Electron main
-        run: node scripts/generate-sentry-config.js
 
       - name: Upload Source Maps to Sentry
         if: env.SENTRY_AUTH_TOKEN != ''

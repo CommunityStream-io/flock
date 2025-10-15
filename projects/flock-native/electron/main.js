@@ -42,11 +42,9 @@ try {
 }
 
 // Initialize Sentry as early as possible
-// Use env var first; in packaged builds, fall back to generated config; in dev use hardcoded DSN
-const devDsn = 'https://c525bad84d7baf7a00631c940b44a980@o4506526838620160.ingest.us.sentry.io/4510187648712704';
-const sentryDsn = process.env.NATIVE_SENTRY_DSN_MAIN
-  || (app.isPackaged ? (sentryConfig && sentryConfig.mainDsn) : devDsn);
-if (sentryDsn && typeof init === 'function' && IPCMode) {
+// Always use hardcoded DSN for proof-of-life testing
+const sentryDsn = 'https://c525bad84d7baf7a00631c940b44a980@o4506526838620160.ingest.us.sentry.io/4510187648712704';
+if (sentryDsn) {
   init({
     dsn: sentryDsn,
     
