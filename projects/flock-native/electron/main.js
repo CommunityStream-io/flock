@@ -102,13 +102,26 @@ if (sentryDsn && typeof init === 'function' && IPCMode) {
 let mainWindow;
 
 function createWindow() {
-  // Create the browser window
+  // Create a frameless splash window that shows immediately
+  let splashWindow = new BrowserWindow({
+    width: 420,
+    height: 320,
+    frame: false,
+    transparent: true,
+    resizable: false,
+    alwaysOnTop: true,
+    skipTaskbar: true,
+    show: true
+  });
+  splashWindow.loadFile(path.join(__dirname, 'splash.html')).catch(() => {});
+
+  // Create the browser window (hidden until ready)
   mainWindow = new BrowserWindow({
     width: 1200,
     height: 900,
     minWidth: 800,
     minHeight: 600,
-    // show: false, // Temporarily commented out for debugging
+    show: false,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: false,
@@ -161,30 +174,42 @@ function createWindow() {
     });
   }
 
+  // Track when the main window has been shown
+  let windowShown = false;
+
   // Handle load failures
   mainWindow.webContents.on('did-fail-load', (event, errorCode, errorDescription, validatedURL) => {
     console.error('❌ Page failed to load:', errorDescription, 'URL:', validatedURL);
+    try { if (splashWindow && !splashWindow.isDestroyed()) splashWindow.destroy(); } catch (_) {}
+    if (!windowShown && mainWindow && !mainWindow.isDestroyed()) {
+      mainWindow.show();
+      windowShown = true;
+    }
+    if (isDev) {
+      try { mainWindow.webContents.openDevTools(); } catch (_) {}
+    }
   });
 
   // Show window when ready to prevent flash of unstyled content
-  let windowShown = false;
   
   mainWindow.once('ready-to-show', () => {
     if (!windowShown) {
       console.log('✅ Window ready to show');
+      try { if (splashWindow && !splashWindow.isDestroyed()) splashWindow.destroy(); } catch (_) {}
       mainWindow.show();
       windowShown = true;
     }
   });
   
-  // Fallback: show window after 3 seconds if ready-to-show doesn't fire
+  // Fallback: show window after 10 seconds if ready-to-show doesn't fire
   setTimeout(() => {
     if (!windowShown && mainWindow && !mainWindow.isDestroyed()) {
       console.log('⚠️ Fallback: showing window after timeout');
+      try { if (splashWindow && !splashWindow.isDestroyed()) splashWindow.destroy(); } catch (_) {}
       mainWindow.show();
       windowShown = true;
     }
-  }, 3000);
+  }, 10000);
 
   // Log when page loads
   mainWindow.webContents.on('did-finish-load', () => {
