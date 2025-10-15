@@ -1,6 +1,8 @@
-# Electron Windows Base Docker Image
+# Electron Docker Build Images
 
-This directory contains Docker configurations for building Electron Windows applications using Wine on Linux containers.
+This directory contains Docker configurations for building Electron applications.
+
+> **Note:** As of 2025, the Windows builds in CI/CD use native Windows runners instead of Wine-based Linux containers for better performance and faster application startup. The Wine-based setup is maintained for local development on Linux/macOS if needed.
 
 ## Files
 
@@ -105,12 +107,27 @@ To update the base image with new dependencies:
 
 ## CI/CD Integration
 
-The base image works well with CI/CD systems:
+### Current Setup (Recommended)
 
-- **GitHub Actions** - Use `ubuntu-latest` runner
+- **Windows builds**: Native `windows-latest` runners on GitHub Actions
+- **macOS builds**: Native `macos-latest` runners on GitHub Actions  
+- **Linux builds**: Native `ubuntu-latest` runners on GitHub Actions
+
+### Legacy Wine-based Setup (Local Development)
+
+The Wine-based Docker images can still be used for local development:
+
+- **GitHub Actions** - Use `ubuntu-latest` runner with Wine container
 - **GitLab CI** - Use `docker` executor
 - **Jenkins** - Use Docker pipeline
 - **Azure DevOps** - Use Docker tasks
+
+For local development, use:
+```bash
+npm run pack:win:docker
+```
+
+This uses the Wine-based Docker setup locally, while CI/CD uses native Windows runners.
 
 ## License
 

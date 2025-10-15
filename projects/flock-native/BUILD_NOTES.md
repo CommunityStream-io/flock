@@ -32,6 +32,13 @@ GitHub Actions has proper permissions and will build successfully. This is the p
 ### Production Builds
 All production builds are handled by GitHub Actions (`.github/workflows/release.yml`) which runs on GitHub's infrastructure with proper permissions. Local builds are only needed for testing.
 
+**CI/CD Build Strategy:**
+- **Windows**: Native `windows-latest` runners (no Wine) for faster application startup
+- **macOS**: Native `macos-latest` runners for universal binaries
+- **Linux**: Native `ubuntu-latest` runners for AppImage, DEB, RPM packages
+
+The Windows builds no longer use Wine-based containers, resulting in better runtime performance and faster application startup times.
+
 ## Build Commands
 
 ### Full Production Build (all platforms)

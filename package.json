@@ -1,6 +1,6 @@
 {
   "name": "flock",
-  "version": "0.5.1",
+  "version": "0.5.5",
   "description": "Migrate Instagram data to Bluesky with native desktop power",
   "repository": {
     "type": "git",
@@ -163,7 +163,9 @@
         }
       ],
       "icon": "projects/flock-native/build/icon.ico",
-      "publisherName": "CommunityStream.io",
+      "signtoolOptions": {
+        "publisherName": "CommunityStream.io"
+      },
       "sign": null,
       "signDlls": false
     },

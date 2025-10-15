@@ -244,11 +244,8 @@ jobs:
   build-windows:
     name: Build Windows
     needs: create-release
-    runs-on: ubuntu-latest
-    container:
-      image: straiforos/electron-windows-base:latest
+    runs-on: windows-latest
     env:
-      PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
       NATIVE_SENTRY_DSN: ${{ secrets.NATIVE_SENTRY_DSN }}
       NATIVE_SENTRY_DSN_MAIN: ${{ secrets.NATIVE_SENTRY_DSN_MAIN }}
       MIRAGE_SENTRY_DSN: ${{ secrets.MIRAGE_SENTRY_DSN }}
@@ -258,15 +255,22 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24.5.0'
+          cache: 'npm'
+
       - name: Install dependencies
         run: npm ci
 
       - name: Update package.json version
         run: |
-          VERSION="${{ needs.create-release.outputs.version }}"
-          echo "Updating package.json to version $VERSION"
+          $VERSION = "${{ needs.create-release.outputs.version }}"
+          Write-Host "Updating package.json to version $VERSION"
           npm version "$VERSION" --no-git-tag-version --allow-same-version
-          echo "✅ Package version updated to $VERSION"
+          Write-Host "✅ Package version updated to $VERSION"
+        shell: pwsh
 
       - name: Build Angular app
         run: npm run build:native:prod
@@ -284,42 +288,43 @@ jobs:
 
       - name: Build Windows app
         run: |
-          echo "🍷 Building Windows app using Wine..."
-          echo "📦 PACKAGE_TOKEN is set: ${PACKAGE_TOKEN:+yes}"
-          
-          # Build with electron-builder using Wine
-          echo "Starting electron-builder..."
-          set -x
-          xvfb-run -a npx electron-builder --win --publish never || {
-            echo "❌ electron-builder failed with exit code $?"
-            echo "📁 Checking what files exist:"
-            find dist -type f -name "*.exe" -o -name "*.zip" || echo "No exe or zip files found"
-            exit 1
-          }
-          set +x
-          
-          echo "✅ Wine build completed"
+          Write-Host "🪟 Building Windows app natively..."
+          Write-Host "📦 Running npm run pack:win"
+          npm run pack:win
+          Write-Host "✅ Native Windows build completed"
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Verify build output
         run: |
-          echo "📁 Checking build output..."
-          echo "📂 Contents of dist/electron/:"
-          ls -laR dist/electron/ || echo "dist/electron/ not found"
+          Write-Host "📁 Checking build output..."
+          Write-Host "📂 Contents of dist/electron/:"
+          if (Test-Path "dist/electron") {
+            Get-ChildItem -Path "dist/electron" -Recurse | Select-Object FullName, Length
+          } else {
+            Write-Host "dist/electron/ not found"
+          }
           
-          echo ""
-          echo "📦 All .exe files:"
-          find dist -type f \( -name "*.exe" \) -exec ls -lh {} \; || echo "No .exe files found"
+          Write-Host ""
+          Write-Host "📦 All .exe files:"
+          if (Test-Path "dist/electron") {
+            Get-ChildItem -Path "dist" -Recurse -Filter "*.exe" | Select-Object FullName, Length
+          } else {
+            Write-Host "No .exe files found"
+          }
           
-          echo ""
-          VERSION="${{ needs.create-release.outputs.version }}"
-          echo "🔍 Looking for version: $VERSION"
+          Write-Host ""
+          $VERSION = "${{ needs.create-release.outputs.version }}"
+          Write-Host "🔍 Looking for version: $VERSION"
 
-          if [ -d "dist/electron/win-unpacked" ]; then
-            echo "✅ Windows unpacked build found"
-            ls -la dist/electron/win-unpacked/ | head -20
-          else
-            echo "⚠️  Unpacked directory not found"
-          fi
+          if (Test-Path "dist/electron/win-unpacked") {
+            Write-Host "✅ Windows unpacked build found"
+            Get-ChildItem -Path "dist/electron/win-unpacked" | Select-Object Name, Length | Format-Table
+          } else {
+            Write-Host "⚠️  Unpacked directory not found"
+          }
+        shell: pwsh
 
       - name: Upload Windows portable EXE to GitHub Release
         uses: actions/upload-release-asset@v1
@@ -344,7 +349,6 @@ jobs:
     needs: create-release
     runs-on: macos-latest
     env:
-      PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
       NATIVE_SENTRY_DSN: ${{ secrets.NATIVE_SENTRY_DSN }}
       NATIVE_SENTRY_DSN_MAIN: ${{ secrets.NATIVE_SENTRY_DSN_MAIN }}
       MIRAGE_SENTRY_DSN: ${{ secrets.MIRAGE_SENTRY_DSN }}
@@ -387,7 +391,6 @@ jobs:
     needs: create-release
     runs-on: ubuntu-latest
     env:
-      PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
       NATIVE_SENTRY_DSN: ${{ secrets.NATIVE_SENTRY_DSN }}
       NATIVE_SENTRY_DSN_MAIN: ${{ secrets.NATIVE_SENTRY_DSN_MAIN }}
       MIRAGE_SENTRY_DSN: ${{ secrets.MIRAGE_SENTRY_DSN }}
