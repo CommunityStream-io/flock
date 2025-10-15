@@ -6,4 +6,5 @@ export interface Environment {
   apiBaseUrl: string;
   blueskyApiUrl: string;
   enableTestModes?: boolean;
+  vercelAnalytics?: boolean;
 }

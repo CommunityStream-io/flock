@@ -40,5 +40,8 @@
   },
   "outputDirectory": "dist/flock-murmur/browser",
   "installCommand": "npm install --legacy-peer-deps",
-  "buildCommand": "npm run build:murmur"
+  "buildCommand": "npm run build:murmur",
+  "analytics": {
+    "enabled": true
+  }
 }

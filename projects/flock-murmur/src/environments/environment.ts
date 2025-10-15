@@ -4,5 +4,6 @@ export const environment: Environment = {
   production: false,
   apiBaseUrl: 'http://localhost:3000/api',
   blueskyApiUrl: 'https://bsky.social/xrpc',
-  enableTestModes: true
+  enableTestModes: true,
+  vercelAnalytics: false
 };

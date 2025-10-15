@@ -37,18 +37,30 @@ export default async function handler(
 
   try {
     const { sessionId, config } = req.body;
+    
+    // Log migration start
+    console.log('[Migrate] Migration request received', {
+      sessionId,
+      hasConfig: !!config,
+      hasCredentials: !!config?.blueskyCredentials,
+      timestamp: new Date().toISOString()
+    });
 
     if (!sessionId) {
+      console.error('[Migrate] Missing session ID');
       return res.status(400).json({ error: 'Session ID is required' });
     }
 
     if (!config?.blueskyCredentials) {
+      console.error('[Migrate] Missing Bluesky credentials');
       return res.status(400).json({ error: 'Bluesky credentials are required' });
     }
 
     // Validate upload exists
+    console.log('[Migrate] Validating upload for session:', sessionId);
     const uploadMeta = await kv.get(`upload:${sessionId}`);
     if (!uploadMeta) {
+      console.error('[Migrate] Upload not found for session:', sessionId);
       return res.status(404).json({ 
         error: 'Upload not found',
         message: 'No upload found for this session. Please upload an archive first.'
@@ -56,8 +68,10 @@ export default async function handler(
     }
 
     // Get uploaded file data
+    console.log('[Migrate] Retrieving file data for session:', sessionId);
     const fileData = await kv.get(`upload:data:${sessionId}`);
     if (!fileData || typeof fileData !== 'string') {
+      console.error('[Migrate] Upload data not found or corrupted');
       return res.status(404).json({ 
         error: 'Upload data not found',
         message: 'Upload data is missing or corrupted.'
@@ -65,6 +79,7 @@ export default async function handler(
     }
 
     // Initialize progress tracking
+    console.log('[Migrate] Initializing progress tracking');
     await kv.set(`progress:${sessionId}`, {
       status: 'starting',
       phase: 'initialization',
@@ -76,6 +91,7 @@ export default async function handler(
     });
 
     // Decode file data
+    console.log('[Migrate] Decoding archive buffer');
     const archiveBuffer = Buffer.from(fileData, 'base64');
 
     // Process archive
