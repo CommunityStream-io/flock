@@ -148,8 +148,10 @@ jobs:
             - **ZIP Archive**: \`Flock-Native-${{ steps.get_version.outputs.version }}-win.zip\`
             
             ### macOS
-            - **DMG**: \`Flock-Native-${{ steps.get_version.outputs.version }}-universal.dmg\` (Recommended)
-            - **ZIP Archive**: \`Flock-Native-${{ steps.get_version.outputs.version }}-mac.zip\`
+            - **DMG (Intel x64)**: \`Flock-Native-${{ steps.get_version.outputs.version }}-x64.dmg\`
+            - **DMG (Apple Silicon)**: \`Flock-Native-${{ steps.get_version.outputs.version }}-arm64.dmg\`
+            - **ZIP (Intel x64)**: \`Flock-Native-${{ steps.get_version.outputs.version }}-mac-x64.zip\`
+            - **ZIP (Apple Silicon)**: \`Flock-Native-${{ steps.get_version.outputs.version }}-mac-arm64.zip\`
             
             ### Linux
             - **AppImage**: \`Flock-Native-${{ steps.get_version.outputs.version }}.AppImage\` (Universal, no installation)
@@ -289,54 +291,29 @@ jobs:
           ls -laR dist/electron/ || echo "dist/electron/ not found"
           
           echo ""
-          echo "📦 All .exe and .zip files:"
-          find dist -type f \( -name "*.exe" -o -name "*.zip" \) -exec ls -lh {} \; || echo "No .exe or .zip files found"
+          echo "📦 All .exe files:"
+          find dist -type f \( -name "*.exe" \) -exec ls -lh {} \; || echo "No .exe files found"
           
           echo ""
           VERSION="${{ needs.create-release.outputs.version }}"
           echo "🔍 Looking for version: $VERSION"
-          
-          if [ -f "dist/electron/Flock Native Setup $VERSION.exe" ]; then
-            echo "✅ Windows NSIS installer found"
-            ls -la "dist/electron/Flock Native Setup $VERSION.exe"
-          else
-            echo "⚠️  Expected NSIS installer not found: dist/electron/Flock Native Setup $VERSION.exe"
-          fi
-          
+
           if [ -d "dist/electron/win-unpacked" ]; then
             echo "✅ Windows unpacked build found"
             ls -la dist/electron/win-unpacked/ | head -20
           else
             echo "⚠️  Unpacked directory not found"
           fi
-          
-          if [ -f "dist/electron/Flock Native-$VERSION-win.zip" ]; then
-            echo "✅ Windows ZIP archive found"
-            ls -la "dist/electron/Flock Native-$VERSION-win.zip"
-          else
-            echo "⚠️  Expected ZIP not found: dist/electron/Flock Native-$VERSION-win.zip"
-          fi
 
-      - name: Upload Windows NSIS installer to GitHub Release
+      - name: Upload Windows portable EXE to GitHub Release
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.create-release.outputs.upload_url }}
-          asset_path: dist/electron/Flock Native Setup ${{ needs.create-release.outputs.version }}.exe
-          asset_name: Flock-Native-Setup-${{ needs.create-release.outputs.version }}.exe
+          asset_path: dist/electron/Flock Native ${{ needs.create-release.outputs.version }}.exe
+          asset_name: Flock-Native-${{ needs.create-release.outputs.version }}.exe
           asset_content_type: application/octet-stream
-        continue-on-error: true
-
-      - name: Upload Windows ZIP to GitHub Release
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ needs.create-release.outputs.upload_url }}
-          asset_path: dist/electron/Flock Native-${{ needs.create-release.outputs.version }}-win.zip
-          asset_name: Flock-Native-${{ needs.create-release.outputs.version }}-win.zip
-          asset_content_type: application/zip
         continue-on-error: true
 
       - name: Upload Windows build artifacts
