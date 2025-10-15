@@ -235,6 +235,7 @@
     "@angular/router": "^20.1.0",
     "@fortawesome/angular-fontawesome": "^3.0.0",
     "@fortawesome/fontawesome-svg-core": "^7.1.0",
+    "@fortawesome/free-brands-svg-icons": "^7.1.0",
     "@fortawesome/free-solid-svg-icons": "^7.1.0",
     "@sentry/angular": "^10.19.0",
     "@sentry/browser": "^10.19.0",

@@ -5,6 +5,8 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faBluesky } from '@fortawesome/free-brands-svg-icons';
 import { Butterfly } from '../butterfly/butterfly';
 
 /**
@@ -26,10 +28,13 @@ import { Butterfly } from '../butterfly/butterfly';
     MatButtonModule, 
     MatIconModule,
     MatDividerModule,
+    FontAwesomeModule,
     Butterfly
   ],
   templateUrl: './licenses.html',
   styleUrl: './licenses.css'
 })
-export class Licenses {}
+export class Licenses {
+  faBluesky = faBluesky;
+}
 
