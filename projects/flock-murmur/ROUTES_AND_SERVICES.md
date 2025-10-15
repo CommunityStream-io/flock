@@ -107,8 +107,8 @@ Automatically tracks page views and user interactions:
 
 - **Installation**: Added via `@vercel/analytics` package
 - **Initialization**: Injected in `main.ts`
-- **Configuration**: Enabled in `vercel.json`
-- **Dashboard**: View metrics in Vercel dashboard
+- **Configuration**: Enabled automatically when package is installed (not in `vercel.json`)
+- **Dashboard**: View metrics in Vercel dashboard after deployment
 
 **Tracked Events:**
 - Page views
