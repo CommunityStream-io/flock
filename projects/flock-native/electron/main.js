@@ -100,15 +100,41 @@ if (sentryDsn && typeof init === 'function' && IPCMode) {
 
 // Keep a global reference to prevent garbage collection
 let mainWindow;
+let splashWindow;
+
+function createSplashWindow() {
+  // Create a minimal splash window that shows immediately
+  splashWindow = new BrowserWindow({
+    width: 420,
+    height: 320,
+    frame: false,
+    transparent: true,
+    resizable: false,
+    alwaysOnTop: true,
+    skipTaskbar: true,
+    show: true,
+    webPreferences: {
+      nodeIntegration: false,
+      contextIsolation: true
+    }
+  });
+
+  splashWindow.loadFile(path.join(__dirname, 'splash.html'));
+  
+  // Prevent splash from being garbage collected
+  splashWindow.on('closed', () => {
+    splashWindow = null;
+  });
+}
 
 function createWindow() {
-  // Create the browser window
+  // Create the browser window (hidden initially)
   mainWindow = new BrowserWindow({
     width: 1200,
     height: 900,
     minWidth: 800,
     minHeight: 600,
-    // show: false, // Temporarily commented out for debugging
+    show: false, // Hide until ready to prevent flash
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: false,
@@ -164,6 +190,15 @@ function createWindow() {
   // Handle load failures
   mainWindow.webContents.on('did-fail-load', (event, errorCode, errorDescription, validatedURL) => {
     console.error('❌ Page failed to load:', errorDescription, 'URL:', validatedURL);
+    // Destroy splash and show main window even on error
+    if (splashWindow && !splashWindow.isDestroyed()) {
+      splashWindow.destroy();
+    }
+    if (mainWindow && !mainWindow.isDestroyed()) {
+      mainWindow.show();
+      // Open DevTools to help debug
+      mainWindow.webContents.openDevTools();
+    }
   });
 
   // Show window when ready to prevent flash of unstyled content
@@ -172,19 +207,27 @@ function createWindow() {
   mainWindow.once('ready-to-show', () => {
     if (!windowShown) {
       console.log('✅ Window ready to show');
+      // Destroy splash window
+      if (splashWindow && !splashWindow.isDestroyed()) {
+        splashWindow.destroy();
+      }
       mainWindow.show();
       windowShown = true;
     }
   });
   
-  // Fallback: show window after 3 seconds if ready-to-show doesn't fire
+  // Fallback: show window after 10 seconds if ready-to-show doesn't fire
   setTimeout(() => {
     if (!windowShown && mainWindow && !mainWindow.isDestroyed()) {
       console.log('⚠️ Fallback: showing window after timeout');
+      // Destroy splash window
+      if (splashWindow && !splashWindow.isDestroyed()) {
+        splashWindow.destroy();
+      }
       mainWindow.show();
       windowShown = true;
     }
-  }, 3000);
+  }, 10000);
 
   // Log when page loads
   mainWindow.webContents.on('did-finish-load', () => {
@@ -259,6 +302,10 @@ app.whenReady().then(() => {
     console.error('❌ [LOG] Failed to load electron-log (non-fatal):', e && e.message ? e.message : e);
   }
 
+  // Show splash screen immediately for instant feedback
+  createSplashWindow();
+  
+  // Create main window (hidden initially)
   createWindow();
 
   app.on('activate', () => {
