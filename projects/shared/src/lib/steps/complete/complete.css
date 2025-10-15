@@ -17,11 +17,61 @@
     color: var(--mat-sys-on-surface-variant, var(--mat-app-on-surface-variant));
 }
 
+.share-section {
+    margin-top: 2rem;
+    padding: 2rem;
+    background: var(--mat-sys-primary-container, rgba(103, 80, 164, 0.12));
+    border-radius: 12px;
+    text-align: center;
+}
+
+.share-title {
+    font-size: 1.5rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
+    color: var(--mat-sys-on-primary-container, var(--mat-app-on-primary-container));
+}
+
+.share-description {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+    color: var(--mat-sys-on-primary-container, var(--mat-app-on-primary-container));
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.6;
+}
+
+.share-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.share-button {
+    font-size: 1rem;
+    padding: 0.75rem 2rem;
+    min-width: 250px;
+}
+
+.share-button mat-icon {
+    margin-right: 0.5rem;
+}
+
+.share-message {
+    font-size: 0.875rem;
+    color: var(--mat-sys-on-primary-container, var(--mat-app-on-primary-container));
+    font-style: italic;
+    margin: 0;
+}
+
 .support-section {
-    margin-top: 3rem;
+    margin-top: 2rem;
     padding: 2rem;
     background: var(--mat-sys-surface-container-low, rgba(0, 0, 0, 0.05));
     border-radius: 12px;
+    text-align: center;
 }
 
 .support-title {
@@ -29,33 +79,50 @@
     font-weight: 500;
     margin-bottom: 1rem;
     color: var(--mat-sys-on-surface, var(--mat-app-on-surface));
-    text-align: center;
 }
 
 .support-description {
     font-size: 1rem;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
     color: var(--mat-sys-on-surface-variant, var(--mat-app-on-surface-variant));
-    text-align: center;
     max-width: 600px;
     margin-left: auto;
     margin-right: auto;
+    line-height: 1.6;
 }
 
-.kofi-widget {
-    max-width: 600px;
-    margin: 0 auto;
-    border-radius: 8px;
-    overflow: hidden;
+.support-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.kofi-button {
+    display: inline-block;
+    transition: transform 0.2s ease;
+}
+
+.kofi-button:hover {
+    transform: scale(1.05);
+}
+
+.kofi-button img {
+    display: block;
 }
 
 @media (max-width: 768px) {
+    .complete-step {
+        padding: 1rem;
+    }
+
+    .share-section,
     .support-section {
         padding: 1.5rem;
     }
-    
-    .kofi-widget iframe {
-        height: 600px;
+
+    .share-button {
+        min-width: 200px;
+        font-size: 0.875rem;
     }
 }
 

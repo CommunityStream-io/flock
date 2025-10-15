@@ -1,20 +1,49 @@
 <section class="complete-step">
   <shared-completion-summary></shared-completion-summary>
   
+  <div class="share-section">
+    <h3 class="share-title">🌐 Share the Open Web!</h3>
+    <p class="share-description">
+      Help spread the word about the Fediverse and encourage your friends and family 
+      to join an open and free internet that is owned by the creators.
+    </p>
+    <div class="share-actions">
+      <button 
+        mat-raised-button 
+        color="primary"
+        class="share-button"
+        (click)="shareOnSocial()"
+      >
+        <mat-icon>share</mat-icon>
+        Share Your Migration Journey
+      </button>
+      <p class="share-message">
+        Let others know about the benefits of decentralized social media and the freedom it brings!
+      </p>
+    </div>
+  </div>
+
   <div class="support-section">
     <h3 class="support-title">❤️ Enjoyed using Flock?</h3>
     <p class="support-description">
       If Flock helped you migrate to Bluesky, consider supporting its development!
       Your support helps keep this tool free and open source for everyone.
     </p>
-    <div class="kofi-widget">
-      <iframe 
-        id='kofiframe' 
-        src='https://ko-fi.com/straiforce/?hidefeed=true&widget=true&embed=true&preview=true' 
-        style='border:none;width:100%;padding:4px;background:#f9f9f9;' 
-        height='712' 
-        title='straiforce'
-      ></iframe>
+    <div class="support-actions">
+      <a 
+        href='https://ko-fi.com/straiforce' 
+        target='_blank'
+        rel="noopener noreferrer"
+        class="kofi-button"
+      >
+        <img 
+          height='36' 
+          style='border:0px;height:36px;' 
+          src='https://storage.ko-fi.com/cdn/kofi2.png?v=3' 
+          border='0' 
+          alt='Buy Me a Coffee at ko-fi.com' 
+        />
+      </a>
     </div>
   </div>
 </section>
