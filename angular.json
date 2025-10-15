@@ -311,6 +311,7 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
+            "outputPath": "dist/flock-murmur",
             "browser": "projects/flock-murmur/src/main.ts",
             "polyfills": [
               "zone.js"

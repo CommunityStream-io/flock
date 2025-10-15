@@ -1,0 +1,46 @@
+# Dependencies
+node_modules
+.pnp
+.pnp.js
+
+# Testing
+coverage
+.nyc_output
+allure-results
+allure-report
+logs
+
+# Build artifacts
+dist
+!dist/flock-murmur/browser
+.angular
+.vscode
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Electron specific
+projects/flock-native/electron
+projects/flock-native/build
+
+# Misc
+.DS_Store
+*.log
+npm-debug.log*
+.idea
+
+# E2E tests
+test
+features
+wdio.*.conf.ts
+
+# Documentation
+docs
+*.md
+!README.md
+
+# Other projects
+projects/flock-native
+projects/flock-mirage

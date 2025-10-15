@@ -1,0 +1,44 @@
+{
+  "version": 2,
+  "name": "flock-murmur",
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/$1"
+    },
+    {
+      "src": "/(.*\\.(js|css|png|jpg|jpeg|gif|svg|ico|webp|woff|woff2|ttf|eot))",
+      "dest": "/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
+    }
+  ],
+  "functions": {
+    "api/upload.ts": {
+      "maxDuration": 300,
+      "memory": 1024
+    },
+    "api/migrate.ts": {
+      "maxDuration": 900,
+      "memory": 3008
+    },
+    "api/progress.ts": {
+      "maxDuration": 30,
+      "memory": 512
+    }
+  },
+  "env": {
+    "NODE_ENV": "production",
+    "BLUESKY_API_URL": "https://bsky.social/xrpc"
+  },
+  "build": {
+    "env": {
+      "NODE_ENV": "production"
+    }
+  },
+  "outputDirectory": "dist/flock-murmur/browser",
+  "installCommand": "npm install --legacy-peer-deps",
+  "buildCommand": "npm run build:murmur"
+}
