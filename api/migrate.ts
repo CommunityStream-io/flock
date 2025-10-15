@@ -58,7 +58,7 @@ export default async function handler(
 
     // Validate upload exists
     console.log('[Migrate] Validating upload for session:', sessionId);
-    const uploadMeta = await kv.get(`upload:${sessionId}`);
+    const uploadMeta: any = await kv.get(`upload:${sessionId}`);
     if (!uploadMeta) {
       console.error('[Migrate] Upload not found for session:', sessionId);
       return res.status(404).json({ 
@@ -67,16 +67,30 @@ export default async function handler(
       });
     }
 
-    // Get uploaded file data
-    console.log('[Migrate] Retrieving file data for session:', sessionId);
-    const fileData = await kv.get(`upload:data:${sessionId}`);
-    if (!fileData || typeof fileData !== 'string') {
-      console.error('[Migrate] Upload data not found or corrupted');
+    // Get Blob URL from metadata
+    console.log('[Migrate] Retrieving file from Blob storage');
+    const blobUrl = uploadMeta.blobUrl;
+    if (!blobUrl) {
+      console.error('[Migrate] Blob URL not found in metadata');
       return res.status(404).json({ 
         error: 'Upload data not found',
         message: 'Upload data is missing or corrupted.'
       });
     }
+
+    // Fetch file from Blob storage
+    console.log('[Migrate] Fetching archive from Blob:', blobUrl);
+    const blobResponse = await fetch(blobUrl);
+    if (!blobResponse.ok) {
+      console.error('[Migrate] Failed to fetch from Blob storage');
+      return res.status(500).json({
+        error: 'Failed to retrieve archive',
+        message: 'Could not download archive from Blob storage.'
+      });
+    }
+
+    const archiveBuffer = Buffer.from(await blobResponse.arrayBuffer());
+    console.log('[Migrate] Archive fetched from Blob storage, size:', archiveBuffer.length);
 
     // Initialize progress tracking
     console.log('[Migrate] Initializing progress tracking');
@@ -89,10 +103,6 @@ export default async function handler(
     }, {
       ex: 7200 // Expire in 2 hours
     });
-
-    // Decode file data
-    console.log('[Migrate] Decoding archive buffer');
-    const archiveBuffer = Buffer.from(fileData, 'base64');
 
     // Process archive
     const processor = new InstagramArchiveProcessor(sessionId, archiveBuffer);
