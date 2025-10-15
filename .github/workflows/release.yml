@@ -317,26 +317,15 @@ jobs:
             echo "⚠️  Expected ZIP not found: dist/electron/Flock Native-$VERSION-win.zip"
           fi
 
-      - name: Upload Windows NSIS installer to GitHub Release
+      - name: Upload Windows portable EXE to GitHub Release
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.create-release.outputs.upload_url }}
-          asset_path: dist/electron/Flock Native Setup ${{ needs.create-release.outputs.version }}.exe
-          asset_name: Flock-Native-Setup-${{ needs.create-release.outputs.version }}.exe
+          asset_path: dist/electron/Flock Native ${{ needs.create-release.outputs.version }}.exe
+          asset_name: Flock-Native-${{ needs.create-release.outputs.version }}.exe
           asset_content_type: application/octet-stream
-        continue-on-error: true
-
-      - name: Upload Windows ZIP to GitHub Release
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ needs.create-release.outputs.upload_url }}
-          asset_path: dist/electron/Flock Native-${{ needs.create-release.outputs.version }}-win.zip
-          asset_name: Flock-Native-${{ needs.create-release.outputs.version }}-win.zip
-          asset_content_type: application/zip
         continue-on-error: true
 
       - name: Upload Windows build artifacts
