@@ -294,6 +294,8 @@ jobs:
           npm run pack:win
           Write-Host "✅ Native Windows build completed"
         shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
 
       - name: Verify build output
         run: |
