@@ -99,6 +99,9 @@
     "agent:run:auth": "docker run --rm -it -e GH_TOKEN=$GH_TOKEN -v $PWD:/workspace cursor-background-agent:latest bash -lc 'gh auth status && gh repo view --json nameWithOwner,visibility'",
     "start:native": "concurrently --kill-others --success first \"ng serve flock-native --port=4201\" \"wait-on http://localhost:4201 && electron projects/flock-native/electron/main.js\"",
     "build:native": "node projects/flock-native/scripts/create-icon.js && ng build flock-native --configuration=production",
+    "sentry:upload:native": "sentry-cli sourcemaps upload --org $SENTRY_ORG --project flock-native-renderer dist/flock-native/browser/",
+    "sentry:upload:mirage": "sentry-cli sourcemaps upload --org $SENTRY_ORG --project flock-mirage dist/flock-mirage/browser/",
+    "sentry:upload:all": "npm run sentry:upload:native && npm run sentry:upload:mirage",
     "electron:dev": "electron projects/flock-native/electron/main.js",
     "electron:prod": "cross-env ELECTRON_IS_PACKAGED=1 electron projects/flock-native/electron/main.js",
     "pack:win": "npm run clean:electron && npm run build:native && electron-builder --win",
@@ -115,7 +118,8 @@
     "clean:logs": "rimraf logs",
     "clean:node_modules": "rimraf node_modules",
     "clean:all": "node scripts/clean.js && npm run clean:node_modules",
-    "rebuild": "npm run clean:all && npm install"
+    "rebuild": "npm run clean:all && npm install",
+    "logs:tail": "bash scripts/find-electron-log.sh 200"
   },
   "prettier": {
     "overrides": [
@@ -138,15 +142,10 @@
     "files": [
       "dist/flock-native/**/*",
       "projects/flock-native/electron/**/*",
-      "projects/flock-native/transfer/**/*",
       "node_modules/**/*",
       "package.json"
     ],
-    "asarUnpack": [
-      "**/node_modules/@straiforos/instagramtobluesky/**",
-      "**/node_modules/@ffprobe-installer/**",
-      "**/projects/flock-native/transfer/**"
-    ],
+    "asar": false,
     "extraResources": [],
     "buildDependenciesFromSource": false,
     "extraMetadata": {
@@ -155,19 +154,7 @@
     "win": {
       "target": [
         {
-          "target": "nsis",
-          "arch": [
-            "x64"
-          ]
-        },
-        {
           "target": "portable",
-          "arch": [
-            "x64"
-          ]
-        },
-        {
-          "target": "zip",
           "arch": [
             "x64"
           ]
@@ -177,14 +164,6 @@
       "publisherName": "CommunityStream.io",
       "sign": null,
       "signDlls": false
-    },
-    "nsis": {
-      "oneClick": false,
-      "perMachine": false,
-      "allowToChangeInstallationDirectory": true,
-      "createDesktopShortcut": true,
-      "createStartMenuShortcut": true,
-      "shortcutName": "Flock Native"
     },
     "mac": {
       "category": "public.app-category.utilities",
@@ -251,7 +230,12 @@
     "@fortawesome/angular-fontawesome": "^3.0.0",
     "@fortawesome/fontawesome-svg-core": "^7.1.0",
     "@fortawesome/free-solid-svg-icons": "^7.1.0",
-    "@straiforos/instagramtobluesky": "^0.7.5",
+    "@sentry/angular": "^10.19.0",
+    "@sentry/browser": "^10.19.0",
+    "@sentry/electron": "^7.1.1",
+    "@straiforos/instagramtobluesky": "^0.7.8",
+    "dotenv": "^17.2.3",
+    "electron-log": "^5.1.0",
     "extract-zip": "^2.0.1",
     "rxjs": "~7.8.0",
     "sharp": "^0.34.4",
@@ -267,6 +251,7 @@
     "@angular/build": "^20.1.6",
     "@angular/cli": "^20.1.5",
     "@angular/compiler-cli": "^20.1.0",
+    "@sentry/cli": "^2.30.0",
     "@types/jasmine": "~5.1.0",
     "@types/node": "^24.3.0",
     "@typescript-eslint/eslint-plugin": "7.11.0",

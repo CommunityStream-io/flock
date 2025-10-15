@@ -162,6 +162,20 @@ ng build --configuration=production
 ng build --configuration=development
 ```
 
+## 🪵 **Logs & Troubleshooting**
+
+The Electron main process uses electron-log to persist logs to disk and prints the absolute log file path on startup.
+
+- Windows: `%APPDATA%/Flock Native/logs/main.log`
+- macOS: `~/Library/Logs/Flock Native/main.log`
+- Linux: `~/.config/Flock Native/logs/main.log`
+
+Tip: On startup, look for the line:
+
+```
+electron-log initialized. File: <absolute path>
+```
+
 ## 🦜 **What Each Bird Does Best**
 
 - **🎭 Mirage Bird (flock-mirage)**: Creates beautiful illusions for development and testing

@@ -1,10 +1,10 @@
-const { ipcMain, dialog, app } = require('electron');
+const { ipcMain, dialog, app, utilityProcess } = require('electron');
 const fs = require('fs').promises;
 const fsSync = require('fs');
 const path = require('path');
-const { spawn, fork } = require('child_process');
 const extract = require('extract-zip');
 const os = require('os');
+require('dotenv').config();
 
 // Store active CLI processes
 const activeProcesses = new Map();
@@ -13,7 +13,9 @@ const activeProcesses = new Map();
  * Setup all IPC handlers
  * @param {BrowserWindow} mainWindow - The main window instance
  */
-function setupIpcHandlers(mainWindow) {
+function setupIpcHandlers(mainWindow, sentryInstance) {
+  // Use Sentry instance provided by main process; fallback to no-op if missing
+  const Sentry = sentryInstance || { addBreadcrumb() {}, captureException() {}, captureMessage() {} };
   
   // File selection handler
   ipcMain.handle('select-file', async (event) => {
@@ -34,6 +36,17 @@ function setupIpcHandlers(mainWindow) {
       const filePath = result.filePaths[0];
       const stats = await fs.stat(filePath);
 
+      // Sentry: Track file selection
+      Sentry.addBreadcrumb({
+        category: 'file-selection',
+        message: 'User selected archive file',
+        level: 'info',
+        data: {
+          fileName: path.basename(filePath),
+          fileSize: stats.size
+        }
+      });
+      
       return {
         success: true,
         filePath: filePath,
@@ -107,6 +120,18 @@ function setupIpcHandlers(mainWindow) {
     try {
       console.log('🦅 [EXTRACT] Starting archive extraction');
       console.log('🦅 [EXTRACT] Source file:', filePath);
+      
+      // Sentry: Track extraction start
+      Sentry.captureMessage('Archive extraction started', {
+        level: 'info',
+        tags: {
+          component: 'extract-archive',
+          operation: 'extract'
+        },
+        extra: {
+          filePath: path.basename(filePath)
+        }
+      });
       
       // If no output path provided, use temp directory
       const targetPath = outputPath || path.join(os.tmpdir(), 'flock-native-extract', Date.now().toString());
@@ -265,6 +290,20 @@ function setupIpcHandlers(mainWindow) {
         outputPath: archiveFolder,
         duration: duration
       });
+      
+      // Sentry: Track extraction success
+      Sentry.captureMessage('Archive extraction completed', {
+        level: 'info',
+        tags: {
+          component: 'extract-archive',
+          operation: 'extract',
+          status: 'success'
+        },
+        extra: {
+          duration: duration,
+          hasArchiveFolder: !!archiveFolder
+        }
+      });
 
       return {
         success: true,
@@ -275,6 +314,20 @@ function setupIpcHandlers(mainWindow) {
       const duration = ((Date.now() - startTime) / 1000).toFixed(2);
       console.error('❌ [EXTRACT] Error extracting archive:', error);
       console.error('❌ [EXTRACT] Failed after', duration, 'seconds');
+      
+      // Sentry: Track extraction failure
+      Sentry.captureException(error, {
+        level: 'error',
+        tags: {
+          component: 'extract-archive',
+          operation: 'extract',
+          status: 'failed'
+        },
+        extra: {
+          duration: duration,
+          errorMessage: error.message
+        }
+      });
       
       mainWindow.webContents.send('progress', {
         type: 'extraction',
@@ -306,122 +359,39 @@ function setupIpcHandlers(mainWindow) {
     }
   });
 
-  // Test helper: CLI path resolution (for E2E tests)
-  ipcMain.handle('test:resolveCliPath', async (event) => {
-    try {
-      const appPath = app.getAppPath();
-      const appRoot = app.isPackaged ? appPath : path.join(appPath, '../../..');
-      const cliRelativePath = 'node_modules/@straiforos/instagramtobluesky/dist/main.js';
-      
-      // Try to resolve the CLI path using the same logic as execute-cli
-      const possiblePaths = [];
-      
-      if (app.isPackaged) {
-        if (appPath.includes('.asar')) {
-          possiblePaths.push(path.join(appPath + '.unpacked', cliRelativePath));
-        } else {
-          possiblePaths.push(path.join(appPath, '..', 'app.asar.unpacked', cliRelativePath));
-          possiblePaths.push(path.join(appPath, 'app.asar.unpacked', cliRelativePath));
-        }
-        possiblePaths.push(path.join(appRoot, cliRelativePath));
-      } else {
-        possiblePaths.push(path.join(appRoot, cliRelativePath));
-      }
-      
-      // Find first existing path
-      let resolvedPath = null;
-      for (const testPath of possiblePaths) {
-        if (fsSync.existsSync(testPath)) {
-          resolvedPath = testPath;
-          break;
-        }
-      }
-      
-      return {
-        success: true,
-        exists: resolvedPath !== null,
-        path: resolvedPath || possiblePaths[0],
-        triedPaths: possiblePaths,
-        isPackaged: app.isPackaged
-      };
-    } catch (error) {
-      console.error('❌ [ELECTRON MAIN] Failed to resolve CLI path:', error);
-      return {
-        success: false,
-        exists: false,
-        error: error.message
-      };
-    }
-  });
-
   // CLI execution handler
-  ipcMain.handle('execute-cli', async (event, command, args = [], options = {}) => {
+  // Uses utilityProcess.fork() - the proper Electron API for Node.js child processes
+  // Reference: https://www.electronjs.org/docs/latest/api/utility-process
+  ipcMain.handle('execute-cli', async (event, options = {}) => {
     try {
       const processId = Date.now().toString();
       
       // Get the app root directory
       const appPath = app.getAppPath();
-      const appRoot = app.isPackaged ? appPath : path.join(appPath, '../../..');
-      
-      // For Node.js scripts, we'll use fork() which uses Electron's built-in Node.js
-      // This is more reliable than trying to spawn with process.execPath
-      const useNodeFork = command === 'node';
+      // In packaged apps, app.getAppPath() points to the app.asar file. Use its
+      // directory (resources) as the working root so cwd is a real folder.
+      const appRoot = app.isPackaged ? path.dirname(appPath) : path.join(appPath, '../../..');
       
       console.log('=====================================');
       console.log('🚀 [ELECTRON MAIN] CLI EXECUTION STARTED');
       console.log('🚀 [ELECTRON MAIN] Process ID:', processId);
-      console.log('🚀 [ELECTRON MAIN] Execution Method:', useNodeFork ? 'fork (Node.js)' : 'spawn');
-      console.log('🚀 [ELECTRON MAIN] Args (raw):', args);
+      console.log('🚀 [ELECTRON MAIN] Execution Method: utilityProcess.fork()');
       console.log('🚀 [ELECTRON MAIN] App Root:', appRoot);
       console.log('🚀 [ELECTRON MAIN] App Path:', appPath);
       console.log('🚀 [ELECTRON MAIN] Is Packaged:', app.isPackaged);
       console.log('🚀 [ELECTRON MAIN] Working Dir:', options.cwd || appRoot);
       console.log('🚀 [ELECTRON MAIN] Custom Env Vars:', Object.keys(options.env || {}).join(', '));
       
-        // Resolve CLI paths relative to app root
-        // If an arg looks like it's pointing to node_modules or a local path, resolve it
-        // In packaged apps, check for .asar.unpacked directory (asarUnpack extracts there)
-        const resolvedArgs = args.map(arg => {
-          if (typeof arg === 'string' && !path.isAbsolute(arg) && (arg.includes('node_modules') || arg.includes('/'))) {
-            // In packaged apps, modules in asarUnpack are extracted to .asar.unpacked
-            if (app.isPackaged) {
-              // The appPath in packaged mode points to the .asar file or its parent
-              // We need to check multiple possible locations
-              const possiblePaths = [];
-              
-              // Option 1: .asar.unpacked next to .asar file
-              if (appPath.includes('.asar')) {
-                possiblePaths.push(path.join(appPath + '.unpacked', arg));
-              } else {
-                // Option 2: app.asar.unpacked in resources folder
-                possiblePaths.push(path.join(appPath, '..', 'app.asar.unpacked', arg));
-                possiblePaths.push(path.join(appPath, 'app.asar.unpacked', arg));
-              }
-              
-              // Option 3: Regular path (fallback)
-              possiblePaths.push(path.join(appRoot, arg));
-              
-              // Try each path and use the first one that exists
-              for (const testPath of possiblePaths) {
-                if (fsSync.existsSync(testPath)) {
-                  console.log('🚀 [ELECTRON MAIN] Resolved arg (unpacked):', arg, '→', testPath);
-                  return testPath;
-                }
-              }
-              
-              // If none exist, log all attempts
-              console.warn('🚀 [ELECTRON MAIN] ⚠️ Could not resolve arg, tried paths:');
-              possiblePaths.forEach(p => console.warn('  -', p));
-              return possiblePaths[possiblePaths.length - 1]; // Return last attempt
-            }
-            
-            // Development mode - simple resolution
-            const resolved = path.join(appRoot, arg);
-            console.log('🚀 [ELECTRON MAIN] Resolved arg:', arg, '→', resolved);
-            return resolved;
-          }
-          return arg;
-        });
+      // Sentry breadcrumb
+      Sentry.addBreadcrumb({
+        category: 'ipc',
+        message: 'CLI execution started',
+        level: 'info',
+        data: {
+          processId: processId,
+          isPackaged: app.isPackaged
+        }
+      });
       
       // Resolve test data path if it's a relative path
       const mergedEnv = { ...process.env, ...options.env };
@@ -431,71 +401,271 @@ function setupIpcHandlers(mainWindow) {
         console.log('🚀 [ELECTRON MAIN] Resolved to:', resolvedPath);
         mergedEnv.ARCHIVE_FOLDER = resolvedPath;
       }
+
+      // Use Node's require.resolve to find the package main script
+      // This automatically handles both dev and packaged environments
+      let resolvedScriptPath = require.resolve('@straiforos/instagramtobluesky/dist/main.js');
+      console.log('🚀 [ELECTRON MAIN] ✅ Resolved script path via require.resolve:', resolvedScriptPath);
       
-        console.log('🚀 [ELECTRON MAIN] Final Args:', resolvedArgs);
-        console.log('=====================================');
-        
-        // Create the child process
-        let child;
-        
-        if (useNodeFork && resolvedArgs.length > 0) {
-          // Use fork() for Node.js scripts - this uses Electron's built-in Node.js
-          // fork(modulePath, args, options)
-          const scriptPath = resolvedArgs[0];
-          const scriptArgs = resolvedArgs.slice(1);
-          
-          console.log('🚀 [ELECTRON MAIN] Using fork() to execute Node.js script');
-          console.log('🚀 [ELECTRON MAIN] Script:', scriptPath);
-          console.log('🚀 [ELECTRON MAIN] Script args:', scriptArgs);
-          
-          child = fork(scriptPath, scriptArgs, {
-            cwd: options.cwd || appRoot,
-            env: mergedEnv,
-            silent: true, // Capture stdout/stderr
-            windowsHide: true // Hide console window on Windows
-          });
-        } else {
-          // Use spawn() for other commands
-          console.log('🚀 [ELECTRON MAIN] Using spawn() for command:', command);
-          
-          child = spawn(command, resolvedArgs, {
-            cwd: options.cwd || appRoot,
-            env: mergedEnv,
-            shell: false,
-            windowsHide: true
-          });
+      // Fork the utility process using Electron's API
+      // This handles packaged apps correctly without process.execPath issues
+      console.log('🚀 [ELECTRON MAIN] Forking utility process...');
+      console.log('🚀 [ELECTRON MAIN] utilityProcess available?', typeof utilityProcess);
+      console.log('🚀 [ELECTRON MAIN] utilityProcess.fork available?', typeof utilityProcess.fork);
+      
+      // Sentry breadcrumb
+      Sentry.addBreadcrumb({
+        category: 'utilityProcess',
+        message: 'Attempting to fork utility process',
+        level: 'info',
+        data: {
+          scriptPath: resolvedScriptPath,
+          scriptExists: fsSync.existsSync(resolvedScriptPath),
+          nodePath: mergedEnv.NODE_PATH
         }
+      });
+      
+      // Build fork options
+      const forkOptions = {
+        cwd: options.cwd || appRoot,
+        env: mergedEnv,
+        stdio: 'pipe', // Capture stdout/stderr
+        serviceName: 'Instagram to Bluesky CLI',
+        // Keep execution simple: no preloads
+        execArgv: []
+      };
+      
+      console.log('🚀 [ELECTRON MAIN] Fork options:', {
+        cwd: forkOptions.cwd,
+        stdio: forkOptions.stdio,
+        serviceName: forkOptions.serviceName,
+        hasEnv: !!forkOptions.env,
+        envKeys: Object.keys(forkOptions.env || {}).slice(0, 10)
+      });
+      try {
+        const stats = fsSync.statSync(forkOptions.cwd);
+        console.log('🚀 [ELECTRON MAIN] CWD exists and is directory?', stats.isDirectory());
+      } catch (e) {
+        console.warn('🚀 [ELECTRON MAIN] CWD invalid (will cause spawn issues):', e && e.message ? e.message : e);
+      }
+      
+      const child = utilityProcess.fork(resolvedScriptPath, [], forkOptions);
+
+      console.log('🚀 [ELECTRON MAIN] utilityProcess.fork() returned:', {
+        childType: typeof child,
+        hasStdout: !!child.stdout,
+        hasStderr: !!child.stderr,
+        hasPid: !!child.pid,
+        pid: child.pid,
+        hasKill: typeof child.kill === 'function',
+        hasOn: typeof child.on === 'function'
+      });
+      
+      // Log Electron's Node.js path for debugging
+      console.log('🚀 [ELECTRON MAIN] process.execPath:', process.execPath);
+      console.log('🚀 [ELECTRON MAIN] process.versions.node:', process.versions.node);
+      console.log('🚀 [ELECTRON MAIN] process.versions.electron:', process.versions.electron);
 
       // Store the process
       activeProcesses.set(processId, child);
+      
+      // Send comprehensive diagnostic info to renderer
+      const diagnosticInfo = [
+        `[DEBUG] utilityProcess forked - waiting for spawn event...`,
+        `[DEBUG] Is Packaged: ${app.isPackaged}`,
+        `[DEBUG] App Path: ${appPath}`,
+        `[DEBUG] App Root: ${appRoot}`,
+        `[DEBUG] Script Path: ${resolvedScriptPath}`,
+        `[DEBUG] Script Exists: ${fsSync.existsSync(resolvedScriptPath)}`,
+        `[DEBUG] Working Dir: ${forkOptions.cwd}`,
+        `[DEBUG] NODE_PATH: ${mergedEnv.NODE_PATH}`,
+        `[DEBUG] NODE_PATH Exists: ${mergedEnv.NODE_PATH ? fsSync.existsSync(mergedEnv.NODE_PATH) : 'N/A'}`,
+        ``
+      ].join('\n');
+      
+      mainWindow.webContents.send('cli-output', {
+        processId: processId,
+        type: 'stdout',
+        data: diagnosticInfo
+      });
 
-      // Handle stdout
-      child.stdout.on('data', (data) => {
-        const output = data.toString();
-        console.log('🚀 [ELECTRON MAIN] CLI stdout:', output);
-        console.log('🚀 [ELECTRON MAIN] Sending cli-output event to renderer');
+      // Track spawn state
+      let hasSpawned = false;
+      
+      // Handle spawn event (utility process successfully started)
+      child.on('spawn', () => {
+        hasSpawned = true;
+        console.log(`🚀 [ELECTRON MAIN] CLI process ${processId} spawned successfully (PID: ${child.pid})`);
+        
+        // Sentry breadcrumb - success!
+        Sentry.addBreadcrumb({
+          category: 'utilityProcess',
+          message: 'Process spawned successfully',
+          level: 'info',
+          data: {
+            processId: processId,
+            pid: child.pid
+          }
+        });
+        
         mainWindow.webContents.send('cli-output', {
           processId: processId,
           type: 'stdout',
-          data: output
+          data: `[DEBUG] Process spawned successfully (PID: ${child.pid})\n`
         });
       });
+      
+      // Timeout to detect if process never spawns (15s for slower environments)
+      setTimeout(() => {
+        if (!hasSpawned) {
+          console.error(`🚀 [ELECTRON MAIN] ❌ Process ${processId} did not spawn within 15 seconds!`);
+          
+          // Capture in Sentry with full diagnostic context
+          Sentry.captureException(new Error('utilityProcess failed to spawn'), {
+            level: 'error',
+            tags: {
+              component: 'utilityProcess',
+              processId: processId,
+              isPackaged: app.isPackaged
+            },
+            extra: {
+              scriptPath: resolvedScriptPath,
+              scriptExists: fsSync.existsSync(resolvedScriptPath),
+              nodePath: mergedEnv.NODE_PATH,
+              nodePathExists: mergedEnv.NODE_PATH ? fsSync.existsSync(mergedEnv.NODE_PATH) : false,
+              cwd: forkOptions.cwd,
+              appPath: appPath,
+              appRoot: appRoot
+            }
+          });
+          
+          mainWindow.webContents.send('cli-error', {
+            processId: processId,
+            type: 'error',
+            data: `[ERROR] Process failed to spawn within 5 seconds\n[ERROR] This might indicate a problem with the script path or permissions\n`
+          });
+        }
+      }, 15000);
 
-      // Handle stderr
-      child.stderr.on('data', (data) => {
-        const output = data.toString();
-        console.error('CLI stderr:', output);
+      // Track if migration completed successfully
+      let migrationCompleted = false;
+      
+      // Handle stdout
+      if (child.stdout) {
+        console.log('🚀 [ELECTRON MAIN] Setting up stdout handler...');
+        
+        child.stdout.on('data', (data) => {
+          const output = data.toString();
+          console.log('🚀 [ELECTRON MAIN] CLI stdout:', output);
+          
+          // Detect completion messages
+          // Look for the CLI's actual completion message: "Total import time"
+          if (output.includes('Total import time')) {
+            console.log('🚀 [ELECTRON MAIN] ✅ Migration completion detected');
+            migrationCompleted = true;
+            
+            // Force kill the process after a grace period if it doesn't exit naturally
+            // Some CLI scripts don't call process.exit() and have open handles
+            setTimeout(() => {
+              if (activeProcesses.has(processId)) {
+                console.log('🚀 [ELECTRON MAIN] ⚠️ Process did not exit naturally, force killing...');
+                child.kill();
+              }
+            }, 2000); // 2 second grace period
+          }
+          
+          mainWindow.webContents.send('cli-output', {
+            processId: processId,
+            type: 'stdout',
+            data: output
+          });
+        });
+        
+        // Handle stdout close
+        child.stdout.on('close', () => {
+          console.log('🚀 [ELECTRON MAIN] CLI stdout closed');
+          mainWindow.webContents.send('cli-output', {
+            processId: processId,
+            type: 'stdout',
+            data: `[DEBUG] stdout stream closed\n`
+          });
+        });
+      } else {
+        console.error('🚀 [ELECTRON MAIN] ❌ child.stdout is null/undefined!');
         mainWindow.webContents.send('cli-error', {
           processId: processId,
-          type: 'stderr',
-          data: output
+          type: 'error',
+          data: '[DEBUG] Error: child.stdout is null\n'
         });
-      });
+      }
+
+      // Handle stderr
+      if (child.stderr) {
+        console.log('🚀 [ELECTRON MAIN] Setting up stderr handler...');
+        
+        child.stderr.on('data', (data) => {
+          const output = data.toString();
+          console.error('🚀 [ELECTRON MAIN] CLI stderr:', output);
+          mainWindow.webContents.send('cli-error', {
+            processId: processId,
+            type: 'stderr',
+            data: output
+          });
+        });
+        
+        // Handle stderr close
+        child.stderr.on('close', () => {
+          console.log('🚀 [ELECTRON MAIN] CLI stderr closed');
+          mainWindow.webContents.send('cli-output', {
+            processId: processId,
+            type: 'stdout',
+            data: `[DEBUG] stderr stream closed\n`
+          });
+        });
+      } else {
+        console.error('🚀 [ELECTRON MAIN] ❌ child.stderr is null/undefined!');
+        mainWindow.webContents.send('cli-error', {
+          processId: processId,
+          type: 'error',
+          data: '[DEBUG] Error: child.stderr is null\n'
+        });
+      }
 
       // Handle process exit
-      child.on('close', (code) => {
-        console.log(`CLI process ${processId} exited with code ${code}`);
+      child.on('exit', (code) => {
+        console.log(`🚀 [ELECTRON MAIN] CLI process ${processId} exited with code ${code}`);
+        console.log(`🚀 [ELECTRON MAIN] Migration completed: ${migrationCompleted ? 'YES' : 'NO'}`);
         activeProcesses.delete(processId);
+        
+        // Sentry: Track migration completion
+        if (migrationCompleted && code === 0) {
+          Sentry.captureMessage('Migration completed successfully', {
+            level: 'info',
+            tags: {
+              component: 'utilityProcess',
+              operation: 'migrate',
+              status: 'success'
+            },
+            extra: {
+              processId: processId,
+              exitCode: code
+            }
+          });
+        } else if (code !== 0) {
+          Sentry.captureMessage('Migration process exited with error', {
+            level: 'warning',
+            tags: {
+              component: 'utilityProcess',
+              operation: 'migrate',
+              status: 'failed'
+            },
+            extra: {
+              processId: processId,
+              exitCode: code,
+              migrationCompleted: migrationCompleted
+            }
+          });
+        }
         
         mainWindow.webContents.send('cli-output', {
           processId: processId,
@@ -504,15 +674,39 @@ function setupIpcHandlers(mainWindow) {
         });
       });
 
-      // Handle process error
+      // Handle process error (e.g., ENOENT if script doesn't exist)
       child.on('error', (error) => {
-        console.error(`CLI process ${processId} error:`, error);
+        console.error(`🚀 [ELECTRON MAIN] CLI process ${processId} error:`, error);
+        console.error(`🚀 [ELECTRON MAIN] Error details:`, {
+          message: error.message,
+          code: error.code,
+          errno: error.errno,
+          syscall: error.syscall,
+          path: error.path
+        });
+        
+        // Capture in Sentry
+        Sentry.captureException(error, {
+          level: 'error',
+          tags: {
+            component: 'utilityProcess',
+            errorCode: error.code,
+            processId: processId
+          },
+          extra: {
+            scriptPath: resolvedScriptPath,
+            syscall: error.syscall,
+            errno: error.errno,
+            cwd: forkOptions.cwd
+          }
+        });
+        
         activeProcesses.delete(processId);
         
         mainWindow.webContents.send('cli-error', {
           processId: processId,
           type: 'error',
-          data: error.message
+          data: `[ERROR] ${error.message}\n[ERROR] Code: ${error.code}\n[ERROR] Path: ${error.path || 'N/A'}\n`
         });
       });
 

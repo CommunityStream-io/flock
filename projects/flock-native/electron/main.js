@@ -1,6 +1,102 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
+const { createRequire } = require('module');
+// Lazy-load electron-log to avoid startup crash if not present/packed
+let log = null;
+// Lazy Sentry load to prevent crash if package not found in packaged app
+let Sentry = null;
+let init = null;
+let IPCMode = null;
 const { setupIpcHandlers } = require('./ipc-handlers');
+require('dotenv').config();
+
+// Try resolve/load Sentry early for diagnostics (before any init)
+try {
+  // Resolve modules relative to the app root (inside app.asar when packaged)
+  const appRoot = (() => {
+    try {
+      return app.getAppPath();
+    } catch (_) {
+      return __dirname;
+    }
+  })();
+  const appRequire = createRequire(path.join(appRoot, '/'));
+  const resolvedPath = appRequire.resolve('@sentry/electron/main');
+  console.log('🔍 [SENTRY] Resolved @sentry/electron/main at:', resolvedPath);
+  const sentryMain = appRequire('@sentry/electron/main');
+  Sentry = sentryMain;
+  init = sentryMain.init;
+  IPCMode = sentryMain.IPCMode;
+} catch (err) {
+  console.error('❌ [SENTRY] Cannot resolve/load @sentry/electron/main:', err && err.message ? err.message : err);
+}
+
+// Initialize Sentry as early as possible
+// Use NATIVE_SENTRY_DSN_MAIN for main process, or fall back to dev DSN in development
+const sentryDsn = process.env.NATIVE_SENTRY_DSN_MAIN 
+  || (!app.isPackaged ? 'https://c525bad84d7baf7a00631c940b44a980@o4506526838620160.ingest.us.sentry.io/4510187648712704' : null);
+if (sentryDsn && typeof init === 'function' && IPCMode) {
+  init({
+    dsn: sentryDsn,
+    
+    // Debug mode - logs to console
+    debug: true,
+    
+    // Use protocol-based IPC for robust cross-process context merging
+    ipcMode: IPCMode.Protocol,
+    
+    // Environment detection
+    environment: app.isPackaged ? 'production' : 'development',
+    
+    // Release version
+    release: 'flock-native@0.4.8',
+    
+    // Sample rate for performance monitoring
+    tracesSampleRate: app.isPackaged ? 0.1 : 1.0,
+    
+    // Filter sensitive data
+    beforeSend(event, hint) {
+      // Remove sensitive environment variables
+      if (event.contexts?.runtime?.env) {
+        const env = event.contexts.runtime.env;
+        delete env.BLUESKY_PASSWORD;
+        delete env.BLUESKY_USERNAME;
+        delete env.NATIVE_SENTRY_DSN;
+        delete env.SENTRY_DSN; // Also filter generic one just in case
+      }
+      
+      // Remove sensitive breadcrumbs
+      if (event.breadcrumbs) {
+        event.breadcrumbs = event.breadcrumbs.filter(breadcrumb => {
+          const msg = breadcrumb.message || '';
+          if (msg.includes('password') || 
+              msg.includes('token') || 
+              msg.includes('BLUESKY_PASSWORD')) {
+            return false;
+          }
+          return true;
+        });
+      }
+      
+      return event;
+    },
+    
+    // Ignore common noise
+    ignoreErrors: [],
+  });
+  
+  console.log('✅ [SENTRY] Initialized for Electron main process');
+  console.log('🔍 [SENTRY] Environment:', app.isPackaged ? 'production' : 'development');
+  console.log('🔍 [SENTRY] Using:', process.env.NATIVE_SENTRY_DSN_MAIN ? 'production DSN' : 'development DSN');
+} else {
+  if (!sentryDsn) {
+    console.log('🔍 [SENTRY] No NATIVE_SENTRY_DSN_MAIN found, error tracking disabled');
+    console.log('🔍 [SENTRY] Set NATIVE_SENTRY_DSN_MAIN environment variable to enable error tracking in production');
+  }
+  if (!init) {
+    console.log('🔍 [SENTRY] init function unavailable (module not loaded). Skipping Sentry init.');
+  }
+}
 
 // Keep a global reference to prevent garbage collection
 let mainWindow;
@@ -23,8 +119,8 @@ function createWindow() {
     icon: path.join(__dirname, '../public/icon.png')
   });
 
-  // Setup IPC handlers
-  setupIpcHandlers(mainWindow);
+  // Setup IPC handlers (pass Sentry instance if available)
+  setupIpcHandlers(mainWindow, Sentry);
 
   // Load the app
   // Use app.isPackaged to reliably detect production vs development
@@ -39,8 +135,6 @@ function createWindow() {
     // Open DevTools in development
     mainWindow.webContents.openDevTools();
   } else {
-    // Open DevTools in production for debugging (TEMPORARY)
-    mainWindow.webContents.openDevTools();
     // Production mode - load from built files
     const appPath = app.getAppPath();
     let indexPath;
@@ -113,6 +207,58 @@ function createWindow() {
 
 // This method will be called when Electron has finished initialization
 app.whenReady().then(() => {
+  // Configure electron-log (lazy)
+  try {
+    const appRoot = app.getAppPath();
+    const appRequire = createRequire(path.join(appRoot, '/'));
+    // Prefer explicit main entry; fallback to package root
+    try {
+      const resolvedMain = appRequire.resolve('electron-log/main');
+      console.log('🔍 [LOG] Resolved electron-log (main) at:', resolvedMain);
+      log = appRequire('electron-log/main');
+    } catch (_) {
+      const resolvedRoot = appRequire.resolve('electron-log');
+      console.log('🔍 [LOG] Resolved electron-log at:', resolvedRoot);
+      log = appRequire('electron-log');
+    }
+    if (log && typeof log.initialize === 'function') {
+      log.initialize();
+    }
+    const level = process.env.ELECTRON_LOG_LEVEL || 'silly';
+    if (log && log.transports && log.transports.file) {
+      // Force a stable path under userData so our script can tail it
+      try {
+        const logsDir = path.join(app.getPath('userData'), 'logs');
+        if (require('fs').existsSync(logsDir) === false) {
+          require('fs').mkdirSync(logsDir, { recursive: true });
+        }
+        log.transports.file.resolvePath = () => path.join(logsDir, 'main.log');
+      } catch (_) {}
+      log.transports.file.level = level;
+    }
+    if (log && log.transports && log.transports.console) {
+      log.transports.console.level = level;
+    }
+    if (log && typeof log.catchErrors === 'function') {
+      log.catchErrors({ showDialog: false });
+    }
+    // Mirror console methods to electron-log
+    const originalLog = console.log;
+    const originalWarn = console.warn;
+    const originalError = console.error;
+    console.log = (...a) => { try { log && log.log && log.log(...a); } catch (_) {} originalLog(...a); };
+    console.warn = (...a) => { try { log && log.warn && log.warn(...a); } catch (_) {} originalWarn(...a); };
+    console.error = (...a) => { try { log && log.error && log.error(...a); } catch (_) {} originalError(...a); };
+    try {
+      const filePath = log && log.transports && log.transports.file && log.transports.file.getFile ? log.transports.file.getFile().path : 'unknown';
+      console.log('🔍 [LOG] electron-log initialized. File:', filePath);
+    } catch (_) {
+      console.log('🔍 [LOG] electron-log initialized.');
+    }
+  } catch (e) {
+    console.error('❌ [LOG] Failed to load electron-log (non-fatal):', e && e.message ? e.message : e);
+  }
+
   createWindow();
 
   app.on('activate', () => {
@@ -145,9 +291,31 @@ app.on('ready', () => {
 // Error handling
 process.on('uncaughtException', (error) => {
   console.error('❌ Uncaught Exception:', error);
+  
+  // Send to Sentry
+  if (sentryDsn && Sentry && typeof Sentry.captureException === 'function') {
+    Sentry.captureException(error, {
+      level: 'fatal',
+      tags: {
+        process: 'main',
+        type: 'uncaughtException'
+      }
+    });
+  }
 });
 
 process.on('unhandledRejection', (error) => {
   console.error('❌ Unhandled Rejection:', error);
+  
+  // Send to Sentry
+  if (sentryDsn && Sentry && typeof Sentry.captureException === 'function') {
+    Sentry.captureException(error, {
+      level: 'error',
+      tags: {
+        process: 'main',
+        type: 'unhandledRejection'
+      }
+    });
+  }
 });
 

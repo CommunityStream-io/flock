@@ -456,6 +456,11 @@ jobs:
     runs-on: ubuntu-latest
     env:
       PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
+      NATIVE_SENTRY_DSN: ${{ secrets.NATIVE_SENTRY_DSN }}
+      NATIVE_SENTRY_DSN_MAIN: ${{ secrets.NATIVE_SENTRY_DSN_MAIN }}
+      MIRAGE_SENTRY_DSN: ${{ secrets.MIRAGE_SENTRY_DSN }}
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -476,4 +481,16 @@ jobs:
         run: npx ng build --project=shared
 
       - name: Build flock-mirage app
-        run: npx ng build --project=flock-mirage --configuration=development
+        run: npx ng build --project=flock-mirage --configuration=production
+
+      - name: Build flock-native app
+        run: npx ng build --project=flock-native --configuration=production
+
+      - name: Inject Sentry DSNs into builds
+        run: node scripts/inject-sentry-dsn.js
+        continue-on-error: true
+
+      - name: Upload Source Maps to Sentry
+        if: github.ref == 'refs/heads/main' && env.SENTRY_AUTH_TOKEN != ''
+        run: npm run sentry:upload:all
+        continue-on-error: true

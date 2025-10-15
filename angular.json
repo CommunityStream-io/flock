@@ -86,7 +86,18 @@
                   "maximumError": "20kB"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "sourceMap": {
+                "scripts": true,
+                "styles": false,
+                "hidden": true
+              },
+              "fileReplacements": [
+                {
+                  "replace": "projects/flock-native/src/environments/environment.ts",
+                  "with": "projects/flock-native/src/environments/environment.prod.ts"
+                }
+              ]
             },
             "development": {
               "optimization": false,
@@ -185,6 +196,11 @@
                 }
               ],
               "outputHashing": "all",
+              "sourceMap": {
+                "scripts": true,
+                "styles": false,
+                "hidden": true
+              },
               "fileReplacements": [
                 {
                   "replace": "projects/flock-mirage/src/environments/environment.ts",
