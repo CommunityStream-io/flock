@@ -36,10 +36,10 @@ class SentryManager {
       return true;
     }
 
-    // In development, disable by default for faster startup
+    // In development, enable by default (can be disabled with SENTRY_DISABLED=true)
     if (!app.isPackaged && process.env.NODE_ENV !== 'production') {
-      console.log('🔍 [SENTRY] Disabled in development mode (set ENABLE_SENTRY=true to enable)');
-      return false;
+      console.log('🔍 [SENTRY] Enabled in development mode (set SENTRY_DISABLED=true to disable)');
+      return true;
     }
 
     // In production, enable by default
