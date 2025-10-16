@@ -225,6 +225,7 @@
   },
   "private": true,
   "dependencies": {
+    "@angular/cli": "^20.1.5",
     "@angular/animations": "^20.1.7",
     "@angular/cdk": "^20.1.6",
     "@angular/common": "^20.1.0",
@@ -257,7 +258,6 @@
     "@angular-eslint/schematics": "20.2.0",
     "@angular-eslint/template-parser": "20.2.0",
     "@angular/build": "^20.1.6",
-    "@angular/cli": "^20.1.5",
     "@angular/compiler-cli": "^20.1.0",
     "@sentry/cli": "^2.30.0",
     "@types/jasmine": "~5.1.0",
