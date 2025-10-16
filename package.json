@@ -43,6 +43,7 @@
     "e2e:regression": "concurrently --kill-others --success first \"ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0\" \"wait-on http://localhost:4200 && cross-env HEADLESS=true TEST_TAGS='@regression or not @skip' wdio run wdio.conf.ts\"",
     "e2e:ci:web": "concurrently --kill-others --success first \"ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0\" \"wait-on http://localhost:4200 && cross-env CI=true PLATFORM=web HEADLESS=true wdio run wdio.web.conf.ts\"",
     "e2e:ci:electron": "cross-env CI=true PLATFORM=electron npm run e2e:electron:build",
+    "test:e2e:shard": "mkdir -p logs/metrics logs/drivers allure-results && timeout 300 concurrently --kill-others --success first \"./node_modules/.bin/ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0\" \"wait-on http://localhost:4200 && cross-env CI=true HEADLESS=true SHARDED_TESTS=true wdio run wdio.conf.ts --shard=${SHARD}/${TOTAL_SHARDS}\"",
     
     "allure:generate": "npx allure generate allure-results",
     "allure:open": "npx allure open allure-report",
