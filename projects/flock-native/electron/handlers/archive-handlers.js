@@ -56,11 +56,11 @@ function setupArchiveHandlers(mainWindow, Sentry, performanceTracker) {
 
       // Track directory setup phase
       const targetPath = await perfContext.trackAsync('setup-directory', async () => {
-        const outputPath = outputPath || path.join(os.tmpdir(), 'flock-native-extract', Date.now().toString());
-        console.log('🦅 [EXTRACT] Target directory:', outputPath);
+        const finalOutputPath = outputPath || path.join(os.tmpdir(), 'flock-native-extract', Date.now().toString());
+        console.log('🦅 [EXTRACT] Target directory:', finalOutputPath);
         
-        await fs.mkdir(outputPath, { recursive: true });
-        return outputPath;
+        await fs.mkdir(finalOutputPath, { recursive: true });
+        return finalOutputPath;
       });
 
       // Send progress update
