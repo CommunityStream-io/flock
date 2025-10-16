@@ -166,14 +166,14 @@ ng build --configuration=development
 
 The Electron main process uses electron-log to persist logs to disk and prints the absolute log file path on startup.
 
-- Windows: `%APPDATA%/Electron/logs/main.log`
-- macOS: `~/Library/Application Support/Electron/logs/main.log`
-- Linux: `~/.config/Electron/logs/main.log`
+- Windows: `%APPDATA%/flock/logs/main.log`
+- macOS: `~/Library/Application Support/flock/logs/main.log`
+- Linux: `~/.config/flock/logs/main.log`
 
 ### **Live Log Monitoring**
 To follow logs in real-time during testing:
 ```bash
-tail -f ~/Library/Application\ Support/Electron/logs/main.log
+tail -f ~/Library/Application\ Support/flock/logs/main.log
 ```
 
 Tip: On startup, look for the line:
