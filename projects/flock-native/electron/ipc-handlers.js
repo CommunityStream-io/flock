@@ -19,18 +19,26 @@ const { setupSystemHandlers } = require('./handlers/system-handlers');
  * Setup all IPC handlers
  * @param {BrowserWindow} mainWindow - The main window instance
  * @param {Object} sentryInstance - Sentry instance for error tracking
+ * @param {PerformanceTracker} performanceTracker - Performance tracker instance
  */
-function setupIpcHandlers(mainWindow, sentryInstance) {
+function setupIpcHandlers(mainWindow, sentryInstance, performanceTracker) {
   // Use Sentry instance provided by main process; fallback to no-op if missing
   const Sentry = sentryInstance || { addBreadcrumb() {}, captureException() {}, captureMessage() {} };
+  
+  // Use performance tracker if provided; fallback to no-op if missing
+  const tracker = performanceTracker || {
+    startOperation: () => 'noop',
+    endOperation: () => {},
+    startChildOperation: () => 'noop'
+  };
 
   console.log('🔧 [IPC] Setting up modular IPC handlers...');
 
-  // Register all handler modules
-  setupFileHandlers(mainWindow, Sentry);
-  setupArchiveHandlers(mainWindow, Sentry);
-  setupCliHandlers(mainWindow, Sentry);
-  setupSystemHandlers(mainWindow, Sentry);
+  // Register all handler modules with performance tracking
+  setupFileHandlers(mainWindow, Sentry, tracker);
+  setupArchiveHandlers(mainWindow, Sentry, tracker);
+  setupCliHandlers(mainWindow, Sentry, tracker);
+  setupSystemHandlers(mainWindow, Sentry, tracker);
 
   console.log('✅ [IPC] All IPC handlers registered successfully');
 }

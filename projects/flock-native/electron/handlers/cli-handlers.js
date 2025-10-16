@@ -1,6 +1,7 @@
 const { ipcMain, app, utilityProcess } = require('electron');
 const fsSync = require('fs');
 const path = require('path');
+const { wrapIpcHandler, createPerformanceContext } = require('./performance-wrapper');
 
 /**
  * CLI Execution and Management Handlers
@@ -19,12 +20,13 @@ const activeProcesses = new Map();
  * Setup CLI-related IPC handlers
  * @param {BrowserWindow} mainWindow - The main window instance
  * @param {Object} Sentry - Sentry instance for error tracking
+ * @param {PerformanceTracker} performanceTracker - Performance tracker instance
  */
-function setupCliHandlers(mainWindow, Sentry) {
+function setupCliHandlers(mainWindow, Sentry, performanceTracker) {
   // CLI execution handler
   // Uses utilityProcess.fork() - the proper Electron API for Node.js child processes
   // Reference: https://www.electronjs.org/docs/latest/api/utility-process
-  ipcMain.handle('execute-cli', async (event, options = {}) => {
+  ipcMain.handle('execute-cli', wrapIpcHandler('execute-cli', async (event, options = {}) => {
     try {
       const processId = Date.now().toString();
 
@@ -384,10 +386,10 @@ function setupCliHandlers(mainWindow, Sentry) {
         error: error.message
       };
     }
-  });
+  }, performanceTracker));
 
   // CLI cancellation handler
-  ipcMain.handle('cancel-cli', async (event, processId) => {
+  ipcMain.handle('cancel-cli', wrapIpcHandler('cancel-cli', async (event, processId) => {
     try {
       const process = activeProcesses.get(processId);
       if (process) {
@@ -403,7 +405,7 @@ function setupCliHandlers(mainWindow, Sentry) {
         error: error.message
       };
     }
-  });
+  }, performanceTracker));
 
   console.log('✅ CLI handlers registered');
 }

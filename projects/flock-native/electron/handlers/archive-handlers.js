@@ -3,6 +3,7 @@ const fs = require('fs').promises;
 const path = require('path');
 const extract = require('extract-zip');
 const os = require('os');
+const { wrapIpcHandler, createPerformanceContext } = require('./performance-wrapper');
 
 /**
  * Archive Extraction Handlers
@@ -17,12 +18,18 @@ const os = require('os');
  * Setup archive-related IPC handlers
  * @param {BrowserWindow} mainWindow - The main window instance
  * @param {Object} Sentry - Sentry instance for error tracking
+ * @param {PerformanceTracker} performanceTracker - Performance tracker instance
  */
-function setupArchiveHandlers(mainWindow, Sentry) {
-  // Archive extraction handler
-  ipcMain.handle('extract-archive', async (event, filePath, outputPath) => {
-    const startTime = Date.now();
-
+function setupArchiveHandlers(mainWindow, Sentry, performanceTracker) {
+  // Archive extraction handler with performance tracking
+  ipcMain.handle('extract-archive', wrapIpcHandler('extract-archive', async (event, filePath, outputPath) => {
+    const parentOpId = performanceTracker.startOperation('extract-archive', 'ipc-handler', {
+      filePath: path.basename(filePath),
+      hasOutputPath: !!outputPath
+    });
+    
+    const perfContext = createPerformanceContext(performanceTracker, parentOpId);
+    
     try {
       console.log('🦅 [EXTRACT] Starting archive extraction');
       console.log('🦅 [EXTRACT] Source file:', filePath);
@@ -39,18 +46,22 @@ function setupArchiveHandlers(mainWindow, Sentry) {
         }
       });
 
-      // If no output path provided, use temp directory
-      const targetPath = outputPath || path.join(os.tmpdir(), 'flock-native-extract', Date.now().toString());
-      console.log('🦅 [EXTRACT] Target directory:', targetPath);
-
-      // Get file stats for progress reporting
-      const fileStats = await fs.stat(filePath);
+      // Track file validation phase
+      const fileStats = await perfContext.trackAsync('validate-file', async () => {
+        return await fs.stat(filePath);
+      });
+      
       const fileSizeMB = (fileStats.size / (1024 * 1024)).toFixed(2);
       console.log(`🦅 [EXTRACT] Archive size: ${fileSizeMB} MB`);
 
-      // Ensure target directory exists
-      console.log('🦅 [EXTRACT] Creating target directory...');
-      await fs.mkdir(targetPath, { recursive: true });
+      // Track directory setup phase
+      const targetPath = await perfContext.trackAsync('setup-directory', async () => {
+        const outputPath = outputPath || path.join(os.tmpdir(), 'flock-native-extract', Date.now().toString());
+        console.log('🦅 [EXTRACT] Target directory:', outputPath);
+        
+        await fs.mkdir(outputPath, { recursive: true });
+        return outputPath;
+      });
 
       // Send progress update
       mainWindow.webContents.send('progress', {
@@ -61,38 +72,41 @@ function setupArchiveHandlers(mainWindow, Sentry) {
         targetPath: targetPath
       });
 
-      console.log('🦅 [EXTRACT] Extracting ZIP archive...');
+      // Track extraction phase
+      await perfContext.trackAsync('extract-zip', async () => {
+        console.log('🦅 [EXTRACT] Extracting ZIP archive...');
 
-      // Extract the archive with progress
-      await extract(filePath, {
-        dir: targetPath,
-        onEntry: (entry, zipfile) => {
-          // Log every 10th file to avoid console spam
-          if (zipfile.entryCount && zipfile.entriesRead % 10 === 0) {
-            const progress = Math.round((zipfile.entriesRead / zipfile.entryCount) * 100);
-            console.log(`🦅 [EXTRACT] Progress: ${progress}% (${zipfile.entriesRead}/${zipfile.entryCount} files)`);
+        // Extract the archive with progress
+        await extract(filePath, {
+          dir: targetPath,
+          onEntry: (entry, zipfile) => {
+            // Log every 10th file to avoid console spam
+            if (zipfile.entryCount && zipfile.entriesRead % 10 === 0) {
+              const progress = Math.round((zipfile.entriesRead / zipfile.entryCount) * 100);
+              console.log(`🦅 [EXTRACT] Progress: ${progress}% (${zipfile.entriesRead}/${zipfile.entryCount} files)`);
 
-            mainWindow.webContents.send('progress', {
-              type: 'extraction',
-              status: 'progress',
-              message: `Extracting files... ${progress}%`,
-              percentage: progress,
-              filesProcessed: zipfile.entriesRead,
-              totalFiles: zipfile.entryCount
-            });
+              mainWindow.webContents.send('progress', {
+                type: 'extraction',
+                status: 'progress',
+                message: `Extracting files... ${progress}%`,
+                percentage: progress,
+                filesProcessed: zipfile.entriesRead,
+                totalFiles: zipfile.entryCount
+              });
+            }
           }
-        }
+        });
       });
 
-      const duration = ((Date.now() - startTime) / 1000).toFixed(2);
-      console.log(`🦅 [EXTRACT] Extraction completed in ${duration} seconds`);
       console.log(`🦅 [EXTRACT] Files extracted to: ${targetPath}`);
 
-      // Instagram archives have a wrapper folder - find the actual archive folder
-      // Structure: temp-folder/instagram-username-date/your_instagram_activity/media/posts_1.json
-      console.log('🦅 [EXTRACT] Looking for Instagram archive folder...');
-      const extractedContents = await fs.readdir(targetPath);
-      console.log('🦅 [EXTRACT] Extracted contents:', extractedContents);
+      // Track archive structure detection phase
+      const archiveStructure = await perfContext.trackAsync('detect-structure', async () => {
+        // Instagram archives have a wrapper folder - find the actual archive folder
+        // Structure: temp-folder/instagram-username-date/your_instagram_activity/media/posts_1.json
+        console.log('🦅 [EXTRACT] Looking for Instagram archive folder...');
+        const extractedContents = await fs.readdir(targetPath);
+        console.log('🦅 [EXTRACT] Extracted contents:', extractedContents);
 
       // Helper function to recursively search for a file
       async function findFile(dir, filename, maxDepth = 5, currentDepth = 0) {
@@ -263,13 +277,23 @@ function setupArchiveHandlers(mainWindow, Sentry) {
         }
       }
 
+      return {
+        archiveFolder,
+        hasPostsJson: !!postsJsonPath,
+        structure: {
+          hasActivityFolder: foundInstagramFolder ? true : false,
+          hasMediaFolder: foundInstagramFolder ? true : false,
+          hasInstagramFolders: foundInstagramFolder ? true : false
+        }
+      };
+    });
+
       // Send completion update
       mainWindow.webContents.send('progress', {
         type: 'extraction',
         status: 'complete',
-        message: `Extraction complete (${duration}s)`,
-        outputPath: archiveFolder,
-        duration: duration
+        message: `Extraction complete`,
+        outputPath: archiveStructure.archiveFolder
       });
 
       // Sentry: Track extraction success
@@ -281,20 +305,26 @@ function setupArchiveHandlers(mainWindow, Sentry) {
           status: 'success'
         },
         extra: {
-          duration: duration,
-          hasArchiveFolder: !!archiveFolder
+          hasArchiveFolder: !!archiveStructure.archiveFolder,
+          hasPostsJson: archiveStructure.hasPostsJson
         }
+      });
+
+      performanceTracker.endOperation(parentOpId, {
+        success: true,
+        fileSizeMB: parseFloat(fileSizeMB),
+        hasArchiveFolder: !!archiveStructure.archiveFolder,
+        hasPostsJson: archiveStructure.hasPostsJson
       });
 
       return {
         success: true,
-        outputPath: archiveFolder,
-        duration: duration
+        outputPath: archiveStructure.archiveFolder,
+        fileSizeMB: parseFloat(fileSizeMB),
+        hasPostsJson: archiveStructure.hasPostsJson
       };
     } catch (error) {
-      const duration = ((Date.now() - startTime) / 1000).toFixed(2);
       console.error('❌ [EXTRACT] Error extracting archive:', error);
-      console.error('❌ [EXTRACT] Failed after', duration, 'seconds');
 
       // Sentry: Track extraction failure
       Sentry.captureException(error, {
@@ -305,7 +335,6 @@ function setupArchiveHandlers(mainWindow, Sentry) {
           status: 'failed'
         },
         extra: {
-          duration: duration,
           errorMessage: error.message
         }
       });
@@ -316,12 +345,18 @@ function setupArchiveHandlers(mainWindow, Sentry) {
         message: error.message
       });
 
+      performanceTracker.endOperation(parentOpId, {
+        success: false,
+        error: error.message,
+        errorType: error.constructor.name
+      });
+
       return {
         success: false,
         error: error.message
       };
     }
-  });
+  }, performanceTracker));
 
   console.log('✅ Archive handlers registered');
 }

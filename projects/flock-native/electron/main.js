@@ -2,11 +2,12 @@ const { app } = require('electron');
 require('dotenv').config();
 
 // Import modular components
-const SentrySetup = require('./sentry-setup');
+const SentryManager = require('./sentry-manager');
 const LoggingSetup = require('./logging-setup');
 const WindowManager = require('./window-manager');
 const AppLifecycleManager = require('./app-lifecycle');
 const { setupIpcHandlers } = require('./ipc-handlers');
+const PerformanceTracker = require('./performance-tracker');
 
 /**
  * Main Electron Process Entry Point
@@ -20,10 +21,11 @@ const { setupIpcHandlers } = require('./ipc-handlers');
  */
 class ElectronApp {
   constructor() {
-    this.sentrySetup = null;
+    this.sentryManager = null;
     this.loggingSetup = null;
     this.windowManager = null;
     this.lifecycleManager = null;
+    this.performanceTracker = null;
   }
 
   /**
@@ -33,25 +35,73 @@ class ElectronApp {
     console.log('🚀 [MAIN] Initializing Electron application...');
 
     try {
+      // Create performance tracker first
+      this.createPerformanceTracker();
+      
+      // Track startup performance
+      const startupOpId = this.performanceTracker.startOperation('app-startup', 'startup', {
+        timestamp: Date.now(),
+        platform: process.platform,
+        arch: process.arch,
+        nodeVersion: process.version,
+        electronVersion: process.versions.electron
+      });
+
       // Initialize Sentry first (for error tracking)
+      const sentryOpId = this.performanceTracker.startChildOperation(startupOpId, 'sentry-init');
       await this.initializeSentry();
+      this.performanceTracker.endOperation(sentryOpId);
 
       // Initialize logging (for debugging)
+      const loggingOpId = this.performanceTracker.startChildOperation(startupOpId, 'logging-init');
       await this.initializeLogging();
+      this.performanceTracker.endOperation(loggingOpId);
 
       // Initialize window manager
+      const windowOpId = this.performanceTracker.startChildOperation(startupOpId, 'window-manager-init');
       this.initializeWindowManager();
+      this.performanceTracker.endOperation(windowOpId);
 
       // Initialize lifecycle manager
+      const lifecycleOpId = this.performanceTracker.startChildOperation(startupOpId, 'lifecycle-init');
       this.initializeLifecycleManager();
+      this.performanceTracker.endOperation(lifecycleOpId);
 
       // Setup IPC handlers
+      const ipcOpId = this.performanceTracker.startChildOperation(startupOpId, 'ipc-init');
       this.setupIpcHandlers();
+      this.performanceTracker.endOperation(ipcOpId);
+
+      // Complete startup tracking
+      this.performanceTracker.endOperation(startupOpId, { 
+        success: true,
+        components: {
+          sentry: this.sentrySetup ? 'initialized' : 'failed',
+          logging: this.loggingSetup ? 'initialized' : 'failed',
+          windowManager: this.windowManager ? 'initialized' : 'failed',
+          lifecycleManager: this.lifecycleManager ? 'initialized' : 'failed'
+        }
+      });
 
       console.log('✅ [MAIN] Electron application initialization complete');
 
     } catch (error) {
       console.error('❌ [MAIN] Failed to initialize Electron application:', error);
+      
+      // Track startup failure
+      if (this.performanceTracker) {
+        const startupOps = this.performanceTracker.getActiveOperations();
+        for (const op of startupOps) {
+          if (op.category === 'startup') {
+            this.performanceTracker.endOperation(op.id, { 
+              success: false, 
+              error: error.message,
+              errorType: error.constructor.name
+            });
+          }
+        }
+      }
+      
       throw error;
     }
   }
@@ -62,13 +112,13 @@ class ElectronApp {
   async initializeSentry() {
     console.log('🔍 [MAIN] Initializing Sentry...');
 
-    this.sentrySetup = new SentrySetup();
-    const success = await this.sentrySetup.initialize();
+    this.sentryManager = new SentryManager();
+    const success = await this.sentryManager.initialize();
 
     if (success) {
       console.log('✅ [MAIN] Sentry initialized successfully');
     } else {
-      console.warn('⚠️ [MAIN] Sentry initialization failed, continuing without error tracking');
+      console.warn('⚠️ [MAIN] Sentry initialization skipped or failed, continuing without error tracking');
     }
   }
 
@@ -78,7 +128,7 @@ class ElectronApp {
   async initializeLogging() {
     console.log('📝 [MAIN] Initializing logging system...');
 
-    this.loggingSetup = new LoggingSetup(this.sentrySetup?.getSentry());
+    this.loggingSetup = new LoggingSetup(this.sentryManager?.getSentry());
     const success = await this.loggingSetup.initialize();
 
     if (success) {
@@ -105,7 +155,7 @@ class ElectronApp {
     console.log('🔄 [MAIN] Initializing lifecycle manager...');
 
     this.lifecycleManager = new AppLifecycleManager(
-      this.sentrySetup?.getSentry(),
+      this.sentryManager?.getSentry(),
       this.windowManager
     );
 
@@ -126,8 +176,8 @@ class ElectronApp {
       this.windowManager.createMainWindow = () => {
         const window = originalCreateWindow();
 
-        // Setup IPC handlers with the window and Sentry instance
-        setupIpcHandlers(window, this.sentrySetup?.getSentry());
+        // Setup IPC handlers with the window, Sentry instance, and performance tracker
+        setupIpcHandlers(window, this.sentryManager?.getSentry(), this.performanceTracker);
 
         return window;
       };
@@ -137,16 +187,45 @@ class ElectronApp {
   }
 
   /**
+   * Create performance tracker
+   */
+  createPerformanceTracker() {
+    if (!this.performanceTracker) {
+      this.performanceTracker = new PerformanceTracker(
+        this.sentryManager?.getSentry(),
+        this.loggingSetup?.getLogger()
+      );
+    }
+    return this.performanceTracker;
+  }
+
+  /**
+   * Get performance tracker instance
+   */
+  getPerformanceTracker() {
+    return this.performanceTracker;
+  }
+
+  /**
    * Get application status
    */
   getStatus() {
     return {
-      sentry: this.sentrySetup ? 'initialized' : 'not initialized',
+      sentry: this.sentryManager ? this.sentryManager.getStatus() : 'not initialized',
       logging: this.loggingSetup ? 'initialized' : 'not initialized',
       windowManager: this.windowManager ? 'initialized' : 'not initialized',
       lifecycleManager: this.lifecycleManager ? 'initialized' : 'not initialized',
-      appStatus: this.lifecycleManager?.getAppStatus() || 'not available'
+      performanceTracker: this.performanceTracker ? 'initialized' : 'not initialized',
+      appStatus: this.lifecycleManager?.getAppStatus() || 'not available',
+      performanceSummary: this.performanceTracker ? this.performanceTracker.getSummary() : null
     };
+  }
+
+  /**
+   * Get Sentry manager instance
+   */
+  getSentryManager() {
+    return this.sentryManager;
   }
 }
 

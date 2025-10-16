@@ -1,6 +1,7 @@
 const { ipcMain, dialog } = require('electron');
 const fs = require('fs').promises;
 const path = require('path');
+const { wrapIpcHandler, createPerformanceContext } = require('./performance-wrapper');
 
 /**
  * File Selection and Validation Handlers
@@ -15,10 +16,11 @@ const path = require('path');
  * Setup file-related IPC handlers
  * @param {BrowserWindow} mainWindow - The main window instance
  * @param {Object} Sentry - Sentry instance for error tracking
+ * @param {PerformanceTracker} performanceTracker - Performance tracker instance
  */
-function setupFileHandlers(mainWindow, Sentry) {
+function setupFileHandlers(mainWindow, Sentry, performanceTracker) {
   // File selection handler
-  ipcMain.handle('select-file', async (event) => {
+  ipcMain.handle('select-file', wrapIpcHandler('select-file', async (event) => {
     try {
       const result = await dialog.showOpenDialog(mainWindow, {
         properties: ['openFile'],
@@ -61,10 +63,10 @@ function setupFileHandlers(mainWindow, Sentry) {
         error: error.message
       };
     }
-  });
+  }, performanceTracker));
 
   // Archive validation handler
-  ipcMain.handle('validate-archive', async (event, filePath) => {
+  ipcMain.handle('validate-archive', wrapIpcHandler('validate-archive', async (event, filePath) => {
     try {
       // Check if file exists
       await fs.access(filePath);
@@ -111,10 +113,10 @@ function setupFileHandlers(mainWindow, Sentry) {
         timestamp: new Date()
       };
     }
-  });
+  }, performanceTracker));
 
   // Read file handler
-  ipcMain.handle('read-file', async (event, filePath) => {
+  ipcMain.handle('read-file', wrapIpcHandler('read-file', async (event, filePath) => {
     try {
       const content = await fs.readFile(filePath, 'utf8');
       return {
@@ -128,7 +130,7 @@ function setupFileHandlers(mainWindow, Sentry) {
         error: error.message
       };
     }
-  });
+  }, performanceTracker));
 
   console.log('✅ File handlers registered');
 }
