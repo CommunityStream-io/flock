@@ -69,13 +69,10 @@ class AppLifecycleManager {
     app.on('window-all-closed', () => {
       console.log('🪟 [LIFECYCLE] All windows closed');
 
-      // On macOS, keep app running even when all windows are closed
-      if (process.platform !== 'darwin') {
-        console.log('🚪 [LIFECYCLE] Quitting application (non-macOS)');
-        app.quit();
-      } else {
-        console.log('🍎 [LIFECYCLE] Keeping app alive on macOS');
-      }
+      // For portable apps, quit completely on all platforms
+      // This is appropriate for migration tools and utilities
+      console.log('🚪 [LIFECYCLE] Quitting application (portable app behavior)');
+      app.quit();
     });
   }
 
