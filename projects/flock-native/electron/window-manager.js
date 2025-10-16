@@ -171,6 +171,17 @@ class WindowManager {
     // Handle new window requests
     this.mainWindow.webContents.setWindowOpenHandler(({ url }) => {
       console.log('🪟 [WINDOW] New window request for:', url);
+      
+      // Open external URLs in the default browser
+      if (url.startsWith('http://') || url.startsWith('https://')) {
+        const { shell } = require('electron');
+        shell.openExternal(url).catch((error) => {
+          console.error('❌ [WINDOW] Failed to open external URL:', error);
+        });
+        console.log('🌐 [WINDOW] Opening external URL in default browser');
+      }
+      
+      // Always deny opening new Electron windows
       return { action: 'deny' };
     });
   }
