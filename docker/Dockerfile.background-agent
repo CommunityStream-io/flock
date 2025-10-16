@@ -25,11 +25,11 @@ RUN useradd -m -u 1000 -s /bin/bash agent
 WORKDIR /workspace
 
 # Copy entrypoint
-COPY scripts/cursor-agent-entrypoint.sh /usr/local/bin/cursor-agent-entrypoint
-RUN chmod +x /usr/local/bin/cursor-agent-entrypoint
+# COPY scripts/cursor-agent-entrypoint.sh /usr/local/bin/cursor-agent-entrypoint
+# RUN chmod +x /usr/local/bin/cursor-agent-entrypoint
 
 USER agent
 
-ENTRYPOINT ["/usr/bin/tini", "--", "/usr/local/bin/cursor-agent-entrypoint"]
+ENTRYPOINT ["/usr/bin/tini", "--", "bash"]
 CMD ["bash", "-lc", "sleep infinity"]
 
