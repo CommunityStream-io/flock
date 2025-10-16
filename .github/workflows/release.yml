@@ -248,7 +248,6 @@ jobs:
       SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
       PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
       ENABLE_SENTRY: true
-      NODE_ENV: production
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -330,7 +329,6 @@ jobs:
       SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
       PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
       ENABLE_SENTRY: true
-      NODE_ENV: production
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -361,7 +359,6 @@ jobs:
       SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
       PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
       ENABLE_SENTRY: true
-      NODE_ENV: production
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -395,7 +392,6 @@ jobs:
       SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
       SENTRY_RELEASE: ${{ needs.create-release.outputs.version }}
       ENABLE_SENTRY: true
-      NODE_ENV: production
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
