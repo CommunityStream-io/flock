@@ -231,18 +231,22 @@ wdio.electron.linux.conf.ts   ◄── Linux-specific
 
 ```
 ┌──────────┬─────────────┬──────────────┬─────────────────┐
-│ Platform │ Runner      │ Architecture │ Build Output    │
+│ Platform │ Runner      │ Architecture │ E2E Build       │
 ├──────────┼─────────────┼──────────────┼─────────────────┤
-│ Windows  │ windows-    │ x64          │ .exe            │
-│          │ latest      │              │                 │
+│ Windows  │ windows-    │ x64          │ unpacked dir    │
+│          │ latest      │              │ (.exe in dir)   │
 ├──────────┼─────────────┼──────────────┼─────────────────┤
-│ macOS    │ macos-13    │ x64 (Intel)  │ .dmg, .zip      │
-│ (Intel)  │             │              │                 │
+│ macOS    │ macos-13    │ x64 (Intel)  │ unpacked dir    │
+│ (Intel)  │             │              │ (.app in dir)   │
 ├──────────┼─────────────┼──────────────┼─────────────────┤
-│ macOS    │ macos-      │ arm64        │ .dmg, .zip      │
-│ (ARM)    │ latest      │ (M1/M2)      │                 │
+│ macOS    │ macos-      │ arm64        │ unpacked dir    │
+│ (ARM)    │ latest      │ (M1/M2)      │ (.app in dir)   │
 ├──────────┼─────────────┼──────────────┼─────────────────┤
-│ Linux    │ ubuntu-     │ x64          │ .AppImage,      │
-│          │ latest      │              │ .deb, .rpm      │
+│ Linux    │ ubuntu-     │ x64          │ unpacked dir    │
+│          │ latest      │              │ (binary in dir) │
 └──────────┴─────────────┴──────────────┴─────────────────┘
+
+Note: E2E tests use unpacked builds (--dir flag) for faster testing.
+Production builds (.exe, .dmg, .AppImage, .deb, .rpm) are created
+separately for distribution.
 ```
