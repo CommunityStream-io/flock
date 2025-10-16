@@ -19,14 +19,6 @@ class SentrySetup {
    */
   async initialize() {
     try {
-      // Try to load build-time Sentry config (generated in CI) for packaged apps
-      try {
-        this.sentryConfig = require('./sentry-config');
-        console.log('🔍 [SENTRY] Loaded build-time sentry-config.js');
-      } catch (_) {
-        console.log('🔍 [SENTRY] No build-time sentry-config.js found');
-      }
-
       // Try resolve/load Sentry early for diagnostics (before any init)
       try {
         // Resolve modules relative to the app root (inside app.asar when packaged)

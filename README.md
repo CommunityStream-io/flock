@@ -166,14 +166,19 @@ ng build --configuration=development
 
 The Electron main process uses electron-log to persist logs to disk and prints the absolute log file path on startup.
 
-- Windows: `%APPDATA%/Flock Native/logs/main.log`
-- macOS: `~/Library/Logs/Flock Native/main.log`
-- Linux: `~/.config/Flock Native/logs/main.log`
+- Windows: `%APPDATA%/Electron/logs/main.log`
+- macOS: `~/Library/Application Support/Electron/logs/main.log`
+- Linux: `~/.config/Electron/logs/main.log`
+
+### **Live Log Monitoring**
+To follow logs in real-time during testing:
+```bash
+tail -f ~/Library/Application\ Support/Electron/logs/main.log
+```
 
 Tip: On startup, look for the line:
-
 ```
-electron-log initialized. File: <absolute path>
+📁 [LOG] Log file location: <absolute path>
 ```
 
 ## 🦜 **What Each Bird Does Best**
@@ -181,6 +186,10 @@ electron-log initialized. File: <absolute path>
 - **🎭 Mirage Bird (flock-mirage)**: Creates beautiful illusions for development and testing
 - **🌊 Murmuration Bird (flock-murmur)**: Dances gracefully through web browsers with JSZip
 - **🦅 Native Bird (flock-native)**: ⬇️ **[Download available!](https://github.com/CommunityStream-io/flock/releases/latest)** Soars with full desktop power using Electron and Node.js
+  - ✅ **Enhanced Archive Extraction** - Smart Instagram archive detection with robust fallback logic
+  - ✅ **Large File Support** - Successfully processes archives with 5000+ files
+  - ✅ **Real-time Progress** - Live extraction and migration progress tracking
+  - ✅ **Comprehensive Logging** - Detailed logs for troubleshooting and monitoring
 - **🔧 Shared Wisdom**: Environment-aware services that adapt to each bird's needs
 - **🧩 Common Nest**: Reusable components that work perfectly in any environment
 - **📊 Flight Tracking**: Real-time migration progress monitoring
