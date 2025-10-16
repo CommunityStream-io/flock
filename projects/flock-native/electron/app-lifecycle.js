@@ -34,11 +34,47 @@ class AppLifecycleManager {
       // Log system information
       this.logSystemInfo();
 
-      // Create main window
+      // Create main window with performance tracking
       if (this.windowManager) {
-        this.windowManager.createMainWindow();
-        this.windowManager.setupWindowHandlers();
-        this.windowManager.loadApplication();
+        // Get performance tracker from main process
+        const { getPerformanceTracker } = require('./main');
+        const performanceTracker = getPerformanceTracker ? getPerformanceTracker() : null;
+        
+        if (performanceTracker) {
+          // Track window lifecycle phases
+          const windowLifecycleOpId = performanceTracker.startOperation('window-lifecycle', 'window', {
+            timestamp: Date.now(),
+            platform: process.platform
+          });
+
+          // Track window creation
+          const createOpId = performanceTracker.startChildOperation(windowLifecycleOpId, 'create-window');
+          this.windowManager.createMainWindow();
+          performanceTracker.endOperation(createOpId);
+
+          // Track window handlers setup
+          const handlersOpId = performanceTracker.startChildOperation(windowLifecycleOpId, 'setup-handlers');
+          this.windowManager.setupWindowHandlers();
+          performanceTracker.endOperation(handlersOpId);
+
+          // Track application loading
+          const loadOpId = performanceTracker.startChildOperation(windowLifecycleOpId, 'load-application');
+          this.windowManager.loadApplication();
+          performanceTracker.endOperation(loadOpId);
+
+          // Complete window lifecycle tracking
+          performanceTracker.endOperation(windowLifecycleOpId, {
+            success: true,
+            windowCreated: true,
+            handlersSetup: true,
+            applicationLoaded: true
+          });
+        } else {
+          // Fallback without performance tracking
+          this.windowManager.createMainWindow();
+          this.windowManager.setupWindowHandlers();
+          this.windowManager.loadApplication();
+        }
       }
     });
   }

@@ -75,15 +75,21 @@ class WindowManager {
 
     console.log('🌐 [WINDOW] Loading from dev server:', devUrl);
 
+    // Track file loading performance
+    const startTime = Date.now();
+    this.pageLoadStartTime = startTime; // Store for event handlers
+
     this.mainWindow.loadURL(devUrl).then(() => {
-      console.log('✅ [WINDOW] Development content loaded successfully');
+      const loadTime = Date.now() - startTime;
+      console.log(`✅ [WINDOW] Development content loaded successfully in ${loadTime}ms`);
 
       // Open DevTools in development
       if (process.env.OPEN_DEVTOOLS !== 'false') {
         this.mainWindow.webContents.openDevTools();
       }
     }).catch((error) => {
-      console.error('❌ [WINDOW] Failed to load development content:', error);
+      const loadTime = Date.now() - startTime;
+      console.error(`❌ [WINDOW] Failed to load development content after ${loadTime}ms:`, error);
     });
   }
 
@@ -114,10 +120,16 @@ class WindowManager {
     console.log('📁 [WINDOW] App is packaged:', app.isPackaged);
     console.log('📁 [WINDOW] Resources path:', process.resourcesPath);
 
+    // Track file loading performance
+    const startTime = Date.now();
+    this.pageLoadStartTime = startTime; // Store for event handlers
+    
     this.mainWindow.loadFile(indexPath).then(() => {
-      console.log('✅ [WINDOW] Production content loaded successfully');
+      const loadTime = Date.now() - startTime;
+      console.log(`✅ [WINDOW] Production content loaded successfully in ${loadTime}ms`);
     }).catch((error) => {
-      console.error('❌ [WINDOW] Failed to load production content:', error);
+      const loadTime = Date.now() - startTime;
+      console.error(`❌ [WINDOW] Failed to load production content after ${loadTime}ms:`, error);
     });
   }
 
@@ -139,10 +151,22 @@ class WindowManager {
     // Handle page load events
     this.mainWindow.webContents.on('did-finish-load', () => {
       console.log('✅ [WINDOW] Page loaded successfully');
+      
+      // Track page load completion
+      if (this.pageLoadStartTime) {
+        const pageLoadTime = Date.now() - this.pageLoadStartTime;
+        console.log(`⏱️ [PERF] Page load completed in ${pageLoadTime}ms`);
+      }
     });
 
     this.mainWindow.webContents.on('did-fail-load', (event, errorCode, errorDescription) => {
       console.error('❌ [WINDOW] Page failed to load:', errorCode, errorDescription);
+      
+      // Track page load failure
+      if (this.pageLoadStartTime) {
+        const pageLoadTime = Date.now() - this.pageLoadStartTime;
+        console.error(`⏱️ [PERF] Page load failed after ${pageLoadTime}ms`);
+      }
     });
 
     // Handle navigation
