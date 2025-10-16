@@ -1,15 +1,21 @@
 import type { Options } from '@wdio/types';
 import { getTimeoutConfig } from './features/support/timeout-config';
 import path from 'path';
+import fs from 'fs';
 
 // Get timeout configuration based on environment
 const timeouts = getTimeoutConfig(process.env.CI === 'true');
 
-// Determine which Electron build to test
-const electronBuildDir = process.env.ELECTRON_BUILD_DIR || 'dist/electron/win-unpacked';
-const electronAppPath = path.join(process.cwd(), electronBuildDir, 'Flock Native.exe');
+// macOS Electron build configuration
+const electronBuildDir = process.env.ELECTRON_BUILD_DIR || 'dist/electron/mac';
 
-console.log('🦅 [WDIO ELECTRON] Testing Electron app at:', electronAppPath);
+// macOS apps are .app bundles, executable is inside
+const appBundlePath = path.join(process.cwd(), electronBuildDir, 'Flock Native.app');
+const electronAppPath = process.env.ELECTRON_BINARY_PATH || 
+  path.join(appBundlePath, 'Contents', 'MacOS', 'Flock Native');
+
+console.log('🦅 [WDIO ELECTRON MACOS] Testing macOS Electron app at:', electronAppPath);
+console.log('🦅 [WDIO ELECTRON MACOS] App bundle:', appBundlePath);
 
 export const config: Options.Testrunner & { capabilities: any[] } = {
   //
@@ -44,9 +50,7 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
       browserName: 'electron',
       'wdio:electronServiceOptions': {
         appBinaryPath: electronAppPath,
-        appArgs: [
-          '--disable-dev-shm-usage',
-        ],
+        appArgs: ['--disable-dev-shm-usage'],
       },
     },
   ],
@@ -74,7 +78,7 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
         appArgs: [],
         chromedriver: {
           port: 9515,
-          logFileName: 'chromedriver.log',
+          logFileName: 'chromedriver-macos.log',
         },
       },
     ],
@@ -110,11 +114,8 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
     snippets: true,
     source: true,
     strict: false,
-    // Run core tests + electron tests for current OS
-    // OS tags: @os:windows, @os:macos, @os:linux
-    // A test with no @os tag runs on all OSes
-    // A test with @os:windows only runs on Windows
-    tagExpression: process.env.TEST_TAGS || `(@core or @electron) and not @skip and (not @os or @os:${process.platform === 'win32' ? 'windows' : process.platform === 'darwin' ? 'macos' : 'linux'})`,
+    // Run core tests + electron tests + macos-specific tests
+    tagExpression: process.env.TEST_TAGS || '(@core or @electron) and not @skip and (not @os or @os:macos)',
     timeout: timeouts.step,
     ignoreUndefinedDefinitions: false,
   },
@@ -125,13 +126,14 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
   // =====
   //
   before: function (capabilities, specs) {
-    console.log('🦅 [WDIO ELECTRON] Starting Electron test');
-    console.log('🦅 [WDIO ELECTRON] App path:', electronAppPath);
-    console.log('🦅 [WDIO ELECTRON] Capabilities:', JSON.stringify(capabilities, null, 2));
+    console.log('🦅 [WDIO ELECTRON MACOS] Starting macOS Electron test');
+    console.log('🦅 [WDIO ELECTRON MACOS] App path:', electronAppPath);
+    console.log('🦅 [WDIO ELECTRON MACOS] Platform:', 'darwin');
+    console.log('🦅 [WDIO ELECTRON MACOS] Capabilities:', JSON.stringify(capabilities, null, 2));
   },
 
   beforeScenario: function (world) {
-    console.log('🦅 [WDIO ELECTRON] Scenario:', world.pickle.name);
+    console.log('🦅 [WDIO ELECTRON MACOS] Scenario:', world.pickle.name);
   },
 
   afterScenario: async function (world, result, context) {
@@ -146,7 +148,6 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
   },
 
   after: function (result, capabilities, specs) {
-    console.log('🦅 [WDIO ELECTRON] Test completed with status:', result);
+    console.log('🦅 [WDIO ELECTRON MACOS] Test completed with status:', result);
   },
 };
-

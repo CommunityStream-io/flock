@@ -1,0 +1,267 @@
+name: Cross-Platform E2E Tests
+
+on:
+  push:
+    branches: [ "main", "cursor/**" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  # Phase 1: Windows Tests
+  e2e-windows:
+    name: E2E Tests - Windows (.exe)
+    runs-on: windows-latest
+    timeout-minutes: 30
+    env:
+      PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
+      HEADLESS: true
+      CI: true
+      PLATFORM: electron
+      TEST_TAGS: '@electron or @core'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24.5.0'
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build shared library
+        run: npm run build:shared
+
+      - name: Build flock-native
+        run: npm run build:native
+
+      - name: Build Windows Electron executable
+        run: npm run pack:win:dir
+
+      - name: Verify Windows executable exists
+        run: |
+          if (Test-Path "dist/electron/win-unpacked/Flock Native.exe") {
+            Write-Host "✅ Windows executable found"
+            Get-Item "dist/electron/win-unpacked/Flock Native.exe" | Format-List
+          } else {
+            Write-Host "❌ Windows executable not found"
+            exit 1
+          }
+        shell: pwsh
+
+      - name: Run Windows Electron E2E tests
+        run: npm run e2e:electron:windows
+        env:
+          ELECTRON_BUILD_DIR: dist/electron/win-unpacked
+
+      - name: Upload Windows test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results-windows-${{ github.run_number }}
+          path: allure-results/
+          retention-days: 30
+
+  # Phase 2: macOS Tests
+  e2e-macos:
+    name: E2E Tests - macOS (.app)
+    runs-on: macos-latest
+    timeout-minutes: 30
+    env:
+      PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
+      HEADLESS: true
+      CI: true
+      PLATFORM: electron
+      TEST_TAGS: '@electron or @core'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24.5.0'
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build shared library
+        run: npm run build:shared
+
+      - name: Build flock-native
+        run: npm run build:native
+
+      - name: Build macOS Electron app
+        run: npm run pack:mac
+
+      - name: Verify macOS app bundle exists
+        run: |
+          if [ -d "dist/electron/mac/Flock Native.app" ]; then
+            echo "✅ macOS app bundle found"
+            ls -lah "dist/electron/mac/Flock Native.app/Contents/MacOS/"
+          else
+            echo "❌ macOS app bundle not found"
+            exit 1
+          fi
+
+      - name: Run macOS Electron E2E tests
+        run: npm run e2e:electron:macos
+        env:
+          ELECTRON_BUILD_DIR: dist/electron/mac
+
+      - name: Upload macOS test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results-macos-${{ github.run_number }}
+          path: allure-results/
+          retention-days: 30
+
+  # Phase 3: Linux Tests (AppImage, deb, rpm)
+  e2e-linux:
+    name: E2E Tests - Linux (AppImage)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
+      HEADLESS: true
+      CI: true
+      PLATFORM: electron
+      TEST_TAGS: '@electron or @core'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24.5.0'
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build shared library
+        run: npm run build:shared
+
+      - name: Build flock-native
+        run: npm run build:native
+
+      - name: Build Linux Electron packages
+        run: npm run pack:linux
+
+      - name: Verify Linux executable exists
+        run: |
+          if [ -f "dist/electron/linux-unpacked/flock-native" ]; then
+            echo "✅ Linux executable found"
+            ls -lah dist/electron/linux-unpacked/flock-native
+          else
+            echo "❌ Linux executable not found"
+            echo "Contents of dist/electron:"
+            ls -lah dist/electron/ || echo "dist/electron not found"
+            exit 1
+          fi
+
+      - name: Run Linux Electron E2E tests
+        run: npm run e2e:electron:linux
+        env:
+          ELECTRON_BUILD_DIR: dist/electron
+
+      - name: Upload Linux test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results-linux-${{ github.run_number }}
+          path: allure-results/
+          retention-days: 30
+
+  # Aggregate results from all platforms
+  aggregate-results:
+    name: Aggregate Cross-Platform Results
+    runs-on: ubuntu-latest
+    needs: [e2e-windows, e2e-macos, e2e-linux]
+    if: always()
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24.5.0'
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download Windows test results
+        uses: actions/download-artifact@v4
+        with:
+          name: allure-results-windows-${{ github.run_number }}
+          path: allure-results/
+        continue-on-error: true
+
+      - name: Download macOS test results
+        uses: actions/download-artifact@v4
+        with:
+          name: allure-results-macos-${{ github.run_number }}
+          path: allure-results/
+        continue-on-error: true
+
+      - name: Download Linux test results
+        uses: actions/download-artifact@v4
+        with:
+          name: allure-results-linux-${{ github.run_number }}
+          path: allure-results/
+        continue-on-error: true
+
+      - name: Generate Cross-Platform Allure Report
+        uses: simple-elf/allure-report-action@v1.9
+        with:
+          allure_results: allure-results
+          allure_report: allure-report-cross-platform
+
+      - name: Upload Cross-Platform Allure Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report-cross-platform-${{ github.run_number }}
+          path: allure-report-cross-platform/
+          retention-days: 30
+
+      - name: Generate test summary
+        if: always()
+        run: |
+          echo "## Cross-Platform E2E Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Platform | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|----------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Windows (.exe) | ${{ needs.e2e-windows.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| macOS (.app) | ${{ needs.e2e-macos.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Linux (AppImage) | ${{ needs.e2e-linux.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "📊 [View Full Report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY
