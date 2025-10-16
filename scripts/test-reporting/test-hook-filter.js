@@ -36,7 +36,7 @@ console.log(`   🗑️  Hook failures: ${hookFailuresBefore.length}`);
 
 // Run the filter
 try {
-    execSync('node scripts/filter-allure-hooks.js', { stdio: 'inherit' });
+    execSync('node scripts/test-reporting/filter-allure-hooks.js', { stdio: 'inherit' });
     
     // Count files after filtering
     const filesAfter = fs.readdirSync('allure-results').filter(f => f.endsWith('-result.json'));

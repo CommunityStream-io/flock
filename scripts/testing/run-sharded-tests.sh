@@ -666,13 +666,23 @@ else
     
     # Filter out phantom hook failures
     echo "🔧 Filtering out phantom hook failures..."
-    node scripts/filter-allure-hooks.js
+    if [ -f scripts/test-reporting/filter-allure-hooks.js ]; then
+        node scripts/test-reporting/filter-allure-hooks.js
+    else
+        node scripts/filter-allure-hooks.js
+    fi
     
     # Analyze timeout telemetry
     if [ "$ANALYZE_TIMEOUTS" = true ]; then
         echo "🔍 Analyzing timeout telemetry..."
         if command -v node >/dev/null 2>&1; then
-            node scripts/analyze-timeout-telemetry.js
+            if [ -f scripts/testing/analyze-timeout-telemetry.js ]; then
+                node scripts/testing/analyze-timeout-telemetry.js
+            elif [ -f scripts/analyze-timeout-telemetry.js ]; then
+                node scripts/analyze-timeout-telemetry.js
+            else
+                echo "⚠️  Timeout analysis script not found; skipping"
+            fi
         else
             echo "⚠️  Node.js not found - skipping timeout analysis"
         fi

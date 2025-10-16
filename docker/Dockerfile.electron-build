@@ -35,10 +35,8 @@ RUN npm ci
 COPY projects ./projects
 COPY scripts ./scripts
 
-# Build Angular app and inject Sentry DSNs
-RUN npm run build:native && \
-    node scripts/inject-sentry-dsn.js && \
-    node scripts/generate-sentry-config.js
+# Build Angular app
+RUN npm run build:native
 
 # The electron-builder command will be run via docker-compose
 # to allow for volume mounting of the output
