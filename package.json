@@ -1,6 +1,6 @@
 {
   "name": "flock",
-  "version": "0.5.17",
+  "version": "0.5.18",
   "description": "Migrate Instagram data to Bluesky with native desktop power",
   "repository": {
     "type": "git",
