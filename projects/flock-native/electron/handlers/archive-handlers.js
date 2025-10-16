@@ -187,6 +187,7 @@ function setupArchiveHandlers(mainWindow, Sentry, performanceTracker) {
       const postsJsonPath = await findFile(targetPath, 'posts_1.json');
 
       let archiveFolder = targetPath;
+      let foundInstagramFolder = null; // Initialize at broader scope
 
       if (postsJsonPath) {
         console.log('🦅 [EXTRACT] ✅ Found posts_1.json at:', postsJsonPath);
@@ -208,7 +209,6 @@ function setupArchiveHandlers(mainWindow, Sentry, performanceTracker) {
         console.log('🦅 [EXTRACT] Using fallback: checking for Instagram archive structure...');
 
         // Enhanced fallback: look for Instagram-specific folder structure
-        let foundInstagramFolder = null;
 
         // Check if we have a single wrapper folder
         if (extractedContents.length === 1) {
@@ -277,14 +277,40 @@ function setupArchiveHandlers(mainWindow, Sentry, performanceTracker) {
         }
       }
 
+      // Determine structure analysis based on what was found
+      let structureAnalysis = {
+        hasActivityFolder: false,
+        hasMediaFolder: false,
+        hasInstagramFolders: false
+      };
+
+      if (foundInstagramFolder) {
+        // Use the analysis from the fallback section
+        try {
+          const folderContents = await fs.readdir(archiveFolder);
+          structureAnalysis = {
+            hasActivityFolder: folderContents.includes('your_instagram_activity'),
+            hasMediaFolder: folderContents.some(item => item.includes('media')),
+            hasInstagramFolders: folderContents.some(item =>
+              item.includes('instagram') || item.includes('meta')
+            )
+          };
+        } catch (err) {
+          console.log('🦅 [EXTRACT] Could not analyze archive folder structure:', err.message);
+        }
+      } else if (postsJsonPath) {
+        // If we found posts_1.json, we know the structure is valid
+        structureAnalysis = {
+          hasActivityFolder: true,
+          hasMediaFolder: true,
+          hasInstagramFolders: true
+        };
+      }
+
       return {
         archiveFolder,
         hasPostsJson: !!postsJsonPath,
-        structure: {
-          hasActivityFolder: foundInstagramFolder ? true : false,
-          hasMediaFolder: foundInstagramFolder ? true : false,
-          hasInstagramFolders: foundInstagramFolder ? true : false
-        }
+        structure: structureAnalysis
       };
     });
 
