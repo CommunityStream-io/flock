@@ -12,12 +12,12 @@ Flock Native uses a **service-delegated architecture** that keeps Electron-speci
 - Components work in both browser and Electron environments
 
 ### 2. **Service Delegation Pattern**
-- Native-specific logic is implemented in **services** (e.g., `NativeFileProcessor`)
+- Native-specific logic is implemented in **services** (see [`src/app/service/`](../../../projects/flock-native/src/app/service/))
 - Services handle all Electron IPC communication
 - Components delegate to services rather than directly accessing Electron APIs
 
 ### 3. **Native Component Wrappers**
-- Create native-specific components when needed (e.g., `NativeFileUploadControl`)
+- Create native-specific components when needed (see [`src/app/components/`](../../../projects/flock-native/src/app/components/))
 - These components delegate to native services
 - Keep the same interface as shared components for consistency
 
@@ -77,47 +77,15 @@ Flock Native uses a **service-delegated architecture** that keeps Electron-speci
 ### Shared vs Native Components
 
 #### ❌ **Anti-Pattern: Modifying Shared Components**
-```typescript
-// DON'T: Add Electron-specific code to shared components
-@Component({
-  selector: 'shared-file-upload-control',
-  // ...
-})
-export class FileUploadControl {
-  openFileDialog() {
-    if (window.electronAPI) {  // ❌ Breaks environment isolation
-      // Electron-specific code
-    }
-  }
-}
-```
+- **Don't add Electron-specific code to shared components** in [`projects/shared/`](../../../projects/shared/)
+- This breaks environment isolation and makes components non-portable
+- Shared components should remain pure and work in all environments
 
 #### ✅ **Correct Pattern: Service Delegation**
-```typescript
-// Native Service handles Electron specifics
-@Injectable()
-export class NativeFileProcessor implements FileService {
-  async selectFile(): Promise<File | null> {
-    const api = this.electronService.getAPI();
-    const result = await api.selectFile();
-    // Handle native file selection
-  }
-}
-
-// Native Component delegates to service
-@Component({
-  selector: 'native-file-upload-control',
-  // ...
-})
-export class NativeFileUploadControl {
-  private fileProcessor = inject(NativeFileProcessor);
-  
-  async openFileDialog() {
-    // Delegate to service - no Electron code here
-    const file = await this.fileProcessor.selectFile();
-  }
-}
-```
+- **Native Service Implementation**: [`src/app/service/native-file-processor/native-file-processor.ts`](../../../projects/flock-native/src/app/service/native-file-processor/native-file-processor.ts)
+- **Native Component**: [`src/app/components/native-file-upload/native-file-upload.ts`](../../../projects/flock-native/src/app/components/native-file-upload/native-file-upload.ts)
+- **Electron Service**: [`src/app/service/electron/electron.service.ts`](../../../projects/flock-native/src/app/service/electron/electron.service.ts)
+- Components delegate to services rather than directly accessing Electron APIs
 
 ## Service Layer Architecture
 
@@ -125,41 +93,16 @@ export class NativeFileUploadControl {
 
 All native services implement shared interfaces but provide Electron-specific implementations:
 
-```typescript
-// Shared interface (projects/shared/src/lib/services/interfaces/file.ts)
-export interface FileService {
-  archivedFile: File | null;
-  validateArchive(file: File): Promise<ValidationResult>;
-  extractArchive(): Promise<boolean>;
-}
-
-// Native implementation (projects/flock-native/src/app/service/)
-@Injectable()
-export class NativeFileProcessor implements FileService {
-  // Uses Electron IPC for all operations
-  async validateArchive(file: File): Promise<ValidationResult> {
-    const api = this.electronService.getAPI();
-    return await api.validateArchive(this.getNativeFilePath(file));
-  }
-}
-```
+- **Shared Interface**: [`src/lib/services/interfaces/file.ts`](../../../projects/shared/src/lib/services/interfaces/file.ts)
+- **Native Implementation**: [`src/app/service/native-file-processor/native-file-processor.ts`](../../../projects/flock-native/src/app/service/native-file-processor/native-file-processor.ts)
+- **Bluesky Service**: [`src/app/service/bluesky/bluesky.ts`](../../../projects/flock-native/src/app/service/bluesky/bluesky.ts)
+- **CLI Service**: [`src/app/service/cli/cli.service.ts`](../../../projects/flock-native/src/app/service/cli/cli.service.ts)
 
 ### Service Injection
 
-Services are injected via Angular DI with appropriate tokens:
-
-```typescript
-// app.config.ts
-export const appConfig: ApplicationConfig = {
-  providers: [
-    // Native implementations
-    { provide: FILE_PROCESSOR, useClass: NativeFileProcessor },
-    { provide: LOGGER, useClass: ConsoleLogger },
-    { provide: BLUESKY, useClass: Bluesky },
-    // ...
-  ],
-};
-```
+Services are injected via Angular DI with appropriate tokens in:
+- **App Configuration**: [`src/app/app.config.ts`](../../../projects/flock-native/src/app/app.config.ts)
+- **Service Providers**: Configured with native implementations
 
 ## File Organization
 
@@ -202,65 +145,33 @@ projects/flock-native/
 ## Data Flow Example: File Selection
 
 ### 1. User Interaction
-```typescript
-// native-file-upload.html
-<button (click)="openFileDialog()">Choose Files</button>
-```
+- **Template**: [`src/app/components/native-file-upload/native-file-upload.html`](../../../projects/flock-native/src/app/components/native-file-upload/native-file-upload.html)
+- User clicks file selection button
 
 ### 2. Component Delegates to Service
-```typescript
-// native-file-upload.ts
-async openFileDialog() {
-  const file = await this.fileProcessor.selectFile();
-  this.value = file;
-}
-```
+- **Component**: [`src/app/components/native-file-upload/native-file-upload.ts`](../../../projects/flock-native/src/app/components/native-file-upload/native-file-upload.ts)
+- Component calls service method for file selection
 
 ### 3. Service Uses Electron API
-```typescript
-// native-file-processor.ts
-async selectFile(): Promise<File | null> {
-  const api = this.electronService.getAPI();
-  const result = await api.selectFile();
-  return this.createFileFromNative(result);
-}
-```
+- **File Processor**: [`src/app/service/native-file-processor/native-file-processor.ts`](../../../projects/flock-native/src/app/service/native-file-processor/native-file-processor.ts)
+- Service handles Electron API communication
 
 ### 4. Electron Service Calls IPC
-```typescript
-// electron.service.ts
-getAPI(): ElectronAPI {
-  return window.electronAPI; // Exposed via preload
-}
-```
+- **Electron Service**: [`src/app/service/electron/electron.service.ts`](../../../projects/flock-native/src/app/service/electron/electron.service.ts)
+- Service accesses window.electronAPI exposed via preload
 
 ### 5. IPC Handler Executes
-```javascript
-// electron/ipc-handlers.js
-ipcMain.handle('select-file', async () => {
-  const result = await dialog.showOpenDialog({...});
-  return { success: true, filePath: result.filePaths[0], ... };
-});
-```
+- **IPC Handlers**: [`electron/ipc-handlers.js`](../../../projects/flock-native/electron/ipc-handlers.js)
+- **File Handlers**: [`electron/handlers/file-handlers.js`](../../../projects/flock-native/electron/handlers/file-handlers.js)
+- Main process executes native file operations
 
 ## Type Safety
 
 TypeScript definitions ensure type safety across the IPC boundary:
 
-```typescript
-// types/electron.d.ts
-export interface ElectronAPI {
-  selectFile(): Promise<FileSelectionResult>;
-  validateArchive(path: string): Promise<ValidationResult>;
-  // ... other methods
-}
-
-declare global {
-  interface Window {
-    electronAPI?: ElectronAPI;
-  }
-}
-```
+- **Electron Types**: [`src/app/types/electron.d.ts`](../../../projects/flock-native/src/app/types/electron.d.ts)
+- Defines ElectronAPI interface and global window extensions
+- Ensures type safety for all IPC communication
 
 ## Benefits of This Architecture
 
@@ -274,61 +185,43 @@ declare global {
 ## Adding New Native Features
 
 ### Step 1: Define IPC Handler
-```javascript
-// electron/ipc-handlers.js
-ipcMain.handle('new-feature', async (event, params) => {
-  // Native implementation
-  return result;
-});
-```
+- **IPC Handlers**: [`electron/ipc-handlers.js`](../../../projects/flock-native/electron/ipc-handlers.js)
+- **Specific Handlers**: [`electron/handlers/`](../../../projects/flock-native/electron/handlers/) (archive, file, cli, system)
+- Add new handler for native functionality
 
 ### Step 2: Add TypeScript Types
-```typescript
-// types/electron.d.ts
-export interface ElectronAPI {
-  newFeature(params: Params): Promise<Result>;
-}
-```
+- **Type Definitions**: [`src/app/types/electron.d.ts`](../../../projects/flock-native/src/app/types/electron.d.ts)
+- Extend ElectronAPI interface with new methods
+- Define parameter and return types
 
 ### Step 3: Implement Service Method
-```typescript
-// service/feature.service.ts
-async executeFeature(params: Params): Promise<Result> {
-  const api = this.electronService.getAPI();
-  return await api.newFeature(params);
-}
-```
+- **Service Implementation**: [`src/app/service/[feature]/[feature].service.ts`](../../../projects/flock-native/src/app/service/)
+- Create new service or extend existing one
+- Handle Electron API communication
 
 ### Step 4: Use in Components
-```typescript
-// components/feature/feature.ts
-async handleFeature() {
-  const result = await this.featureService.executeFeature(params);
-}
-```
+- **Component**: [`src/app/components/[feature]/[feature].ts`](../../../projects/flock-native/src/app/components/)
+- **Template**: [`src/app/components/[feature]/[feature].html`](../../../projects/flock-native/src/app/components/)
+- Delegate to service for native functionality
 
 ## Testing Strategy
 
 ### Service Testing
-```typescript
-describe('NativeFileProcessor', () => {
-  it('should delegate to Electron API', async () => {
-    const mockElectronService = jasmine.createSpyObj('ElectronService', ['getAPI']);
-    const processor = new NativeFileProcessor(mockElectronService);
-    // Test service behavior
-  });
-});
-```
+- **Service Test Files**: [`src/app/service/*/**.spec.ts`](../../../projects/flock-native/src/app/service/)
+- Mock Electron service dependencies
+- Test service behavior and delegation patterns
+- Example: [`src/app/service/native-file-processor/native-file-processor.spec.ts`](../../../projects/flock-native/src/app/service/native-file-processor/native-file-processor.spec.ts)
 
 ### Component Testing
-```typescript
-describe('NativeFileUploadControl', () => {
-  it('should call file processor on open', async () => {
-    const mockProcessor = jasmine.createSpyObj('FileProcessor', ['selectFile']);
-    // Test component delegation
-  });
-});
-```
+- **Component Test Files**: [`src/app/components/*/**.spec.ts`](../../../projects/flock-native/src/app/components/)
+- Mock service dependencies
+- Test component delegation to services
+- Example: [`src/app/components/native-file-upload/native-file-upload.spec.ts`](../../../projects/flock-native/src/app/components/native-file-upload/native-file-upload.spec.ts)
+
+### Integration Testing
+- **E2E Tests**: [`features/electron/`](../../../features/electron/) directory
+- Test complete workflows with real Electron environment
+- Validate IPC communication and native functionality
 
 ---
 
