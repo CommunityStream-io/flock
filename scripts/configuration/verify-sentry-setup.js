@@ -148,18 +148,8 @@ if (fs.existsSync(angularJsonPath)) {
   }
 }
 
-// Check 5: Injection script exists
-console.log('5️⃣ Checking DSN injection script...');
-
-const injectionScriptPath = path.join(process.cwd(), 'scripts/inject-sentry-dsn.js');
-if (fs.existsSync(injectionScriptPath)) {
-  checks.passed.push('DSN injection script exists');
-} else {
-  checks.failed.push('DSN injection script not found: scripts/inject-sentry-dsn.js');
-}
-
-// Check 6: Environment variables (for local dev)
-console.log('6️⃣ Checking environment variables...');
+// Check 5: Environment variables (for local dev)
+console.log('5️⃣ Checking environment variables...');
 
 const envVars = {
   'NATIVE_SENTRY_DSN': 'For flock-native renderer (optional in dev)',

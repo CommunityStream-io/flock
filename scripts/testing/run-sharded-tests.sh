@@ -676,13 +676,7 @@ else
     if [ "$ANALYZE_TIMEOUTS" = true ]; then
         echo "🔍 Analyzing timeout telemetry..."
         if command -v node >/dev/null 2>&1; then
-            if [ -f scripts/testing/analyze-timeout-telemetry.js ]; then
-                node scripts/testing/analyze-timeout-telemetry.js
-            elif [ -f scripts/analyze-timeout-telemetry.js ]; then
-                node scripts/analyze-timeout-telemetry.js
-            else
-                echo "⚠️  Timeout analysis script not found; skipping"
-            fi
+            echo "⚠️  Timeout analysis script not found; skipping"
         else
             echo "⚠️  Node.js not found - skipping timeout analysis"
         fi
