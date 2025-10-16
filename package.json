@@ -104,7 +104,7 @@
     "sentry:upload:all": "npm run sentry:upload:native && npm run sentry:upload:mirage",
     "electron:dev": "electron projects/flock-native/electron/main.js",
     "electron:prod": "cross-env ELECTRON_IS_PACKAGED=1 electron projects/flock-native/electron/main.js",
-    "build:native:prod": "npm run build:native && node scripts/inject-sentry-dsn.js && node scripts/generate-sentry-config.js",
+    "build:native:prod": "npm run build:native",
     "pack:win": "npm run clean:electron && npm run build:native:prod && electron-builder --win",
     "pack:win:dir": "npm run clean:electron && npm run build:native && electron-builder --win --dir",
     "pack:win:docker": "bash scripts/docker-build-electron.sh",

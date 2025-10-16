@@ -27,7 +27,11 @@ class WindowManager {
         preload: path.join(__dirname, 'preload.js'),
         nodeIntegration: false,
         contextIsolation: true,
-        sandbox: false // Required for file system access
+        sandbox: false, // Required for file system access
+        allowRunningInsecureContent: false,
+        experimentalFeatures: false,
+        webSecurity: true, // Keep web security enabled for production
+        enableRemoteModule: false
       },
       title: 'Flock Native - Bluesky Social Migrator',
       icon: path.join(__dirname, '../public/icon.png')
@@ -89,9 +93,26 @@ class WindowManager {
   loadProductionContent() {
     console.log('📦 [WINDOW] Loading production content...');
 
+    const { app } = require('electron');
+    
     // Production mode - load from file
-    const indexPath = path.join(__dirname, '../dist/flock-native/browser/index.html');
+    // In packaged apps with asar: false, files are in resources/app/dist/flock-native/browser/
+    // In development, files are in project root dist/flock-native/browser/
+    let indexPath;
+    
+    if (app.isPackaged) {
+      // Packaged app: files are in resources/app/dist/flock-native/browser/
+      // The electron-builder files config includes "dist/flock-native/**/*"
+      indexPath = path.join(process.resourcesPath, 'app', 'dist', 'flock-native', 'browser', 'index.html');
+    } else {
+      // Development: files are in project root dist/flock-native/browser/
+      indexPath = path.join(__dirname, '../dist/flock-native/browser/index.html');
+    }
+    
     console.log('📁 [WINDOW] Loading from file:', indexPath);
+    console.log('📁 [WINDOW] File exists:', require('fs').existsSync(indexPath));
+    console.log('📁 [WINDOW] App is packaged:', app.isPackaged);
+    console.log('📁 [WINDOW] Resources path:', process.resourcesPath);
 
     this.mainWindow.loadFile(indexPath).then(() => {
       console.log('✅ [WINDOW] Production content loaded successfully');
