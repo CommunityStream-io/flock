@@ -57,11 +57,20 @@ class SentryManager {
                      process.env.SENTRY_DSN || 
                      'https://c525bad84d7baf7a00631c940b44a980@o4506526838620160.ingest.us.sentry.io/4510187648712704';
 
+    // Get version from package.json
+    let packageVersion = '0.5.14'; // fallback
+    try {
+      const packageJson = require('../../package.json');
+      packageVersion = packageJson.version;
+    } catch (error) {
+      console.warn('🔍 [SENTRY] Could not read package.json version, using fallback');
+    }
+
     return {
       dsn: sentryDsn,
       debug: process.env.SENTRY_DEBUG === 'true' || (!app.isPackaged && process.env.NODE_ENV !== 'production'),
       environment: app.isPackaged ? 'production' : 'development',
-      release: 'flock-native@0.4.8',
+      release: `flock-native@${packageVersion}`,
       tracesSampleRate: app.isPackaged ? 0.1 : (process.env.SENTRY_DEBUG === 'true' ? 1.0 : 0.1),
       integrations: [],
       beforeSend: this.beforeSend.bind(this),
