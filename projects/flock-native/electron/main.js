@@ -176,8 +176,8 @@ class ElectronApp {
       this.windowManager.createMainWindow = () => {
         const window = originalCreateWindow();
 
-        // Setup IPC handlers with the window, Sentry instance, and performance tracker
-        setupIpcHandlers(window, this.sentryManager?.getSentry(), this.performanceTracker);
+        // Setup IPC handlers with the window, SentryManager instance, and performance tracker
+        setupIpcHandlers(window, this.sentryManager, this.performanceTracker);
 
         return window;
       };

@@ -14,10 +14,10 @@ const { wrapIpcHandler } = require('./performance-wrapper');
 /**
  * Setup system-related IPC handlers
  * @param {BrowserWindow} mainWindow - The main window instance
- * @param {Object} Sentry - Sentry instance for error tracking
+ * @param {Object} sentryManager - SentryManager instance for error tracking
  * @param {PerformanceTracker} performanceTracker - Performance tracker instance
  */
-function setupSystemHandlers(mainWindow, Sentry, performanceTracker) {
+function setupSystemHandlers(mainWindow, sentryManager, performanceTracker) {
   // System information handler
   ipcMain.handle('get-system-info', wrapIpcHandler('get-system-info', async (event) => {
     return {

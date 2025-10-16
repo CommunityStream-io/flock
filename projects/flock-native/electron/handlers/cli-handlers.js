@@ -19,10 +19,10 @@ const activeProcesses = new Map();
 /**
  * Setup CLI-related IPC handlers
  * @param {BrowserWindow} mainWindow - The main window instance
- * @param {Object} Sentry - Sentry instance for error tracking
+ * @param {Object} sentryManager - SentryManager instance for error tracking
  * @param {PerformanceTracker} performanceTracker - Performance tracker instance
  */
-function setupCliHandlers(mainWindow, Sentry, performanceTracker) {
+function setupCliHandlers(mainWindow, sentryManager, performanceTracker) {
   // CLI execution handler
   // Uses utilityProcess.fork() - the proper Electron API for Node.js child processes
   // Reference: https://www.electronjs.org/docs/latest/api/utility-process
@@ -47,7 +47,7 @@ function setupCliHandlers(mainWindow, Sentry, performanceTracker) {
       console.log('🚀 [ELECTRON MAIN] Custom Env Vars:', Object.keys(options.env || {}).join(', '));
 
       // Sentry breadcrumb
-      Sentry.addBreadcrumb({
+      sentryManager.addBreadcrumb({
         category: 'ipc',
         message: 'CLI execution started',
         level: 'info',
@@ -78,7 +78,7 @@ function setupCliHandlers(mainWindow, Sentry, performanceTracker) {
       console.log('🚀 [ELECTRON MAIN] utilityProcess.fork available?', typeof utilityProcess.fork);
 
       // Sentry breadcrumb
-      Sentry.addBreadcrumb({
+      sentryManager.addBreadcrumb({
         category: 'utilityProcess',
         message: 'Attempting to fork utility process',
         level: 'info',
@@ -162,7 +162,7 @@ function setupCliHandlers(mainWindow, Sentry, performanceTracker) {
         console.log(`🚀 [ELECTRON MAIN] CLI process ${processId} spawned successfully (PID: ${child.pid})`);
 
         // Sentry breadcrumb - success!
-        Sentry.addBreadcrumb({
+        sentryManager.addBreadcrumb({
           category: 'utilityProcess',
           message: 'Process spawned successfully',
           level: 'info',
@@ -185,7 +185,7 @@ function setupCliHandlers(mainWindow, Sentry, performanceTracker) {
           console.error(`🚀 [ELECTRON MAIN] ❌ Process ${processId} did not spawn within 15 seconds!`);
 
           // Capture in Sentry with full diagnostic context
-          Sentry.captureException(new Error('utilityProcess failed to spawn'), {
+          sentryManager.captureException(new Error('utilityProcess failed to spawn'), {
             level: 'error',
             tags: {
               component: 'utilityProcess',
@@ -303,7 +303,7 @@ function setupCliHandlers(mainWindow, Sentry, performanceTracker) {
 
         // Sentry: Track migration completion
         if (migrationCompleted && code === 0) {
-          Sentry.captureMessage('Migration completed successfully', {
+          sentryManager.captureMessage('Migration completed successfully', {
             level: 'info',
             tags: {
               component: 'utilityProcess',
@@ -316,7 +316,7 @@ function setupCliHandlers(mainWindow, Sentry, performanceTracker) {
             }
           });
         } else if (code !== 0) {
-          Sentry.captureMessage('Migration process exited with error', {
+          sentryManager.captureMessage('Migration process exited with error', {
             level: 'warning',
             tags: {
               component: 'utilityProcess',
@@ -350,7 +350,7 @@ function setupCliHandlers(mainWindow, Sentry, performanceTracker) {
         });
 
         // Capture in Sentry
-        Sentry.captureException(error, {
+        sentryManager.captureException(error, {
           level: 'error',
           tags: {
             component: 'utilityProcess',

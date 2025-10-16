@@ -15,10 +15,10 @@ const { wrapIpcHandler, createPerformanceContext } = require('./performance-wrap
 /**
  * Setup file-related IPC handlers
  * @param {BrowserWindow} mainWindow - The main window instance
- * @param {Object} Sentry - Sentry instance for error tracking
+ * @param {Object} sentryManager - SentryManager instance for error tracking
  * @param {PerformanceTracker} performanceTracker - Performance tracker instance
  */
-function setupFileHandlers(mainWindow, Sentry, performanceTracker) {
+function setupFileHandlers(mainWindow, sentryManager, performanceTracker) {
   // File selection handler
   ipcMain.handle('select-file', wrapIpcHandler('select-file', async (event) => {
     try {
@@ -39,7 +39,7 @@ function setupFileHandlers(mainWindow, Sentry, performanceTracker) {
       const stats = await fs.stat(filePath);
 
       // Sentry: Track file selection
-      Sentry.addBreadcrumb({
+      sentryManager.addBreadcrumb({
         category: 'file-selection',
         message: 'User selected archive file',
         level: 'info',
