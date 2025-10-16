@@ -105,16 +105,19 @@
     "electron:dev": "electron projects/flock-native/electron/main.js",
     "electron:prod": "cross-env ELECTRON_IS_PACKAGED=1 electron projects/flock-native/electron/main.js",
     "build:native:prod": "npm run build:native",
-    "pack:win": "npm run clean:electron && npm run build:native:prod && npm run sharp:win && electron-builder --win",
-    "pack:win:dir": "npm run clean:electron && npm run build:native && npm run sharp:win && electron-builder --win --dir",
+    "pack:win": "npm run clean:electron && npm run build:native:prod && npm run sharp:win && electron-builder --config electron-builder-win.json",
+    "pack:win:dir": "npm run clean:electron && npm run build:native && npm run sharp:win && electron-builder --config electron-builder-win.json --dir",
     "pack:win:docker": "bash scripts/docker-build-electron.sh",
     "electron:docker:build": "electron-builder --win --dir --config.directories.output=/app/dist/electron",
-    "pack:mac": "npm run clean:electron && npm run build:native:prod && npm run sharp:mac && electron-builder --mac",
-    "pack:linux": "npm run clean:electron && npm run build:native:prod && npm run sharp:linux && electron-builder --linux",
-    "sharp:mac": "rimraf ./node_modules/sharp && npm install --platform=darwin --arch=arm64 sharp",
+    "pack:mac:intel": "npm run clean:electron && npm run build:native:prod && npm run sharp:mac:intel && electron-builder --config electron-builder-mac-intel.json",
+    "pack:mac:arm": "npm run clean:electron && npm run build:native:prod && npm run sharp:mac:arm && electron-builder --config electron-builder-mac-arm.json",
+    "pack:mac:all": "npm run pack:mac:intel && npm run pack:mac:arm",
+    "pack:linux": "npm run clean:electron && npm run build:native:prod && npm run sharp:linux && electron-builder --config electron-builder-linux.json",
+    "sharp:mac:intel": "rimraf ./node_modules/sharp && npm install --platform=darwin --arch=x64 sharp",
+    "sharp:mac:arm": "rimraf ./node_modules/sharp && npm install --platform=darwin --arch=arm64 sharp",
     "sharp:win": "rimraf ./node_modules/sharp && npm install --platform=win32 --arch=x64 sharp",
     "sharp:linux": "rimraf ./node_modules/sharp && npm install --platform=linux --arch=x64 sharp",
-    "pack:all": "npm run clean:electron && npm run build:native:prod && electron-builder -mwl",
+    "build:all": "npm run pack:win && npm run pack:mac:all && npm run pack:linux",
     "clean": "node scripts/clean.js",
     "clean:dist": "rimraf dist",
     "clean:electron": "node scripts/clean-electron.js",
@@ -134,98 +137,6 @@
         }
       }
     ]
-  },
-  "build": {
-    "appId": "io.communitystream.flock.native",
-    "productName": "Flock Native",
-    "copyright": "Copyright © 2025 CommunityStream.io",
-    "directories": {
-      "buildResources": "projects/flock-native/build",
-      "output": "dist/electron"
-    },
-    "files": [
-      "dist/flock-native/**/*",
-      "projects/flock-native/electron/**/*",
-      "node_modules/**/*",
-      "package.json",
-      "!projects/flock-native/transfer/**/*"
-    ],
-    "asar": false,
-    "extraResources": [],
-    "buildDependenciesFromSource": true,
-    "npmRebuild": true,
-    "extraMetadata": {
-      "main": "projects/flock-native/electron/main.js"
-    },
-    "win": {
-      "target": [
-        {
-          "target": "portable",
-          "arch": [
-            "x64"
-          ]
-        }
-      ],
-      "icon": "projects/flock-native/build/icon.ico",
-      "artifactName": "Flock-Native-${version}.${ext}",
-      "signtoolOptions": {
-        "publisherName": "CommunityStream.io"
-      },
-      "sign": null,
-      "signDlls": false
-    },
-    "mac": {
-      "category": "public.app-category.utilities",
-      "target": [
-        {
-          "target": "dmg",
-          "arch": [
-            "x64",
-            "arm64"
-          ]
-        },
-        {
-          "target": "zip",
-          "arch": [
-            "x64",
-            "arm64"
-          ]
-        }
-      ],
-      "icon": "projects/flock-native/build/icon.png"
-    },
-    "linux": {
-      "target": [
-        {
-          "target": "AppImage",
-          "arch": [
-            "x64"
-          ]
-        },
-        {
-          "target": "deb",
-          "arch": [
-            "x64"
-          ]
-        },
-        {
-          "target": "rpm",
-          "arch": [
-            "x64"
-          ]
-        }
-      ],
-      "icon": "projects/flock-native/build/icons",
-      "category": "Utility",
-      "maintainer": "CommunityStream.io",
-      "vendor": "CommunityStream.io",
-      "description": "Migrate Instagram data to Bluesky with native desktop power"
-    },
-    "publish": {
-      "provider": "github",
-      "owner": "CommunityStream-io",
-      "repo": "flock"
-    }
   },
   "private": true,
   "dependencies": {

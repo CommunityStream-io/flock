@@ -37,10 +37,10 @@ jobs:
             # Strip any leading 'v' and dots, normalize the version
             RAW_VERSION="${{ github.event.inputs.version }}"
             echo "Raw input version: $RAW_VERSION"
-            
+
             VERSION="${RAW_VERSION#v}"  # Remove leading 'v' if present
             echo "After removing 'v': $VERSION"
-            
+
             VERSION="${VERSION#.}"       # Remove leading '.' if present
             echo "After removing '.': $VERSION"
           else
@@ -62,20 +62,20 @@ jobs:
         run: |
           VERSION="${{ steps.get_version.outputs.version }}"
           CURRENT_VERSION=$(node -p "require('./package.json').version")
-          
+
           echo "📦 Current package.json version: $CURRENT_VERSION"
           echo "🎯 Target release version: $VERSION"
-          
+
           if [ "$CURRENT_VERSION" != "$VERSION" ]; then
             echo "⚠️  Version mismatch detected! Updating package.json..."
-            
+
             # Update package.json version
             npm version "$VERSION" --no-git-tag-version --allow-same-version
-            
+
             # Configure git
             git config user.name "github-actions[bot]"
             git config user.email "github-actions[bot]@users.noreply.github.com"
-            
+
             # Determine the branch to push to
             if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
               # For manual triggers, use the current branch
@@ -87,14 +87,14 @@ jobs:
                 BRANCH="main"
               fi
             fi
-            
+
             echo "📤 Pushing version bump to branch: $BRANCH"
-            
+
             # Commit and push the version bump
             git add package.json package-lock.json
             git commit -m "chore: bump version to $VERSION for release"
             git push origin HEAD:refs/heads/$BRANCH
-            
+
             echo "✅ Package.json updated and committed to $VERSION on branch $BRANCH"
           else
             echo "✅ Package.json version already matches release version"
@@ -107,7 +107,7 @@ jobs:
           # Use the normalized version from the previous step
           VERSION="${{ steps.get_version.outputs.version }}"
           TAG_NAME="v${VERSION}"
-          
+
           echo "Checking for tag $TAG_NAME..."
           if git rev-parse "$TAG_NAME" >/dev/null 2>&1; then
             echo "✅ Tag $TAG_NAME exists"
@@ -121,7 +121,7 @@ jobs:
         with:
           script: |
             let body = '';
-            
+
             // Try to generate release notes, but handle case where tag doesn't exist yet
             try {
               const { data } = await github.rest.repos.generateReleaseNotes({
@@ -135,49 +135,49 @@ jobs:
               console.log('Could not auto-generate release notes (tag may not exist yet):', error.message);
               body = '## What\'s Changed\n\nSee commit history for changes.';
             }
-            
+
             // Parse and enhance the generated notes
-            
+
             // Add custom sections
             const customNotes = `
             ## 📦 Downloads
-            
+
             ### Windows
             - **Portable**: \`Flock-Native-${{ steps.get_version.outputs.version }}.exe\` (No installation required)
-            
+
             ### macOS
             - **DMG (Intel x64)**: \`Flock-Native-${{ steps.get_version.outputs.version }}-x64.dmg\`
             - **DMG (Apple Silicon)**: \`Flock-Native-${{ steps.get_version.outputs.version }}-arm64.dmg\`
             - **ZIP (Intel x64)**: \`Flock-Native-${{ steps.get_version.outputs.version }}-mac-x64.zip\`
             - **ZIP (Apple Silicon)**: \`Flock-Native-${{ steps.get_version.outputs.version }}-mac-arm64.zip\`
-            
+
             ### Linux
             - **AppImage**: \`Flock-Native-${{ steps.get_version.outputs.version }}.AppImage\` (Universal, no installation)
             - **DEB Package**: \`flock-native_${{ steps.get_version.outputs.version }}_amd64.deb\` (Debian/Ubuntu)
             - **RPM Package**: \`flock-native-${{ steps.get_version.outputs.version }}.x86_64.rpm\` (Fedora/RHEL)
-            
+
             ## 📝 Installation Instructions
-            
+
             See the [installation guide](https://github.com/CommunityStream-io/flock/blob/main/INSTALLATION.md) for detailed platform-specific instructions.
-            
+
             ${body}
-            
+
             ## 📋 System Requirements
-            
+
             - **Windows**: Windows 10 or later (64-bit)
             - **macOS**: macOS 10.15 (Catalina) or later (Universal: Intel & Apple Silicon)
             - **Linux**: Ubuntu 20.04+ or equivalent
-            
+
             ## ⚠️ Known Issues
-            
+
             - Windows SmartScreen and macOS Gatekeeper may show warnings (app is not yet code-signed)
             - This is expected for unsigned applications
-            
+
             ## 💬 Feedback
-            
+
             Please report issues or provide feedback at: https://github.com/CommunityStream-io/flock/issues
             `;
-            
+
             core.setOutput('notes', customNotes);
             return customNotes;
 
@@ -191,9 +191,9 @@ jobs:
             const version = '${{ steps.get_version.outputs.version }}';
             const tagName = `v${version}`;
             const releaseNotes = process.env.RELEASE_NOTES;
-            
+
             console.log(`Creating release for ${tagName}...`);
-            
+
             // First, create the tag if it doesn't exist
             try {
               await github.rest.git.createRef({
@@ -210,7 +210,7 @@ jobs:
                 throw error;
               }
             }
-            
+
             // Then create the release
             const { data: release } = await github.rest.repos.createRelease({
               owner: context.repo.owner,
@@ -221,18 +221,18 @@ jobs:
               draft: true,
               prerelease: false
             });
-            
+
             // Note: Draft releases show "untagged-*" URLs until published
             // This is expected GitHub behavior and will resolve to the proper tag URL on publish
             console.log(`✅ Release created: ${release.html_url}`);
             console.log(`📎 Upload URL: ${release.upload_url}`);
             console.log(`ℹ️  Draft releases show as "untagged" until published - this is normal`);
-            
+
             // Set outputs
             core.setOutput('upload_url', release.upload_url);
             core.setOutput('id', release.id);
             core.setOutput('html_url', release.html_url);
-            
+
             return {
               upload_url: release.upload_url,
               id: release.id,
@@ -291,7 +291,7 @@ jobs:
           } else {
             Write-Host "dist/electron/ not found"
           }
-          
+
           Write-Host ""
           Write-Host "📦 All .exe files:"
           if (Test-Path "dist/electron") {
@@ -299,7 +299,7 @@ jobs:
           } else {
             Write-Host "No .exe files found"
           }
-          
+
           Write-Host ""
           $VERSION = "${{ needs.create-release.outputs.version }}"
           Write-Host "🔍 Looking for version: $VERSION"
@@ -345,8 +345,12 @@ jobs:
       - name: Build Angular app
         run: npm run build:native:prod
 
-      - name: Build and publish macOS packages
-        run: npx electron-builder --mac --publish always
+      - name: Build macOS packages (Intel + ARM)
+        run: |
+          echo "🍎 Building macOS packages for both architectures..."
+          echo "📦 Running npm run pack:mac:all"
+          npm run pack:mac:all
+          echo "✅ macOS builds completed (Intel + ARM)"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -379,7 +383,11 @@ jobs:
         run: npm run build:native:prod
 
       - name: Build and publish Linux packages
-        run: npx electron-builder --linux --publish always
+        run: |
+          echo "🐧 Building Linux packages..."
+          echo "📦 Running npm run pack:linux"
+          npm run pack:linux
+          echo "✅ Linux build completed"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -424,48 +432,48 @@ jobs:
           script: |
             const version = '${{ needs.create-release.outputs.version }}';
             const releaseId = '${{ needs.create-release.outputs.release_id }}';
-            
+
             // Get the release by ID (works with draft releases showing "untagged" URLs)
             const { data: release } = await github.rest.repos.getRelease({
               owner: context.repo.owner,
               repo: context.repo.repo,
               release_id: releaseId
             });
-            
+
             // Update release body with build completion note
             const updatedBody = release.body + `
-            
+
             ---
-            
+
             ## ✅ Build Status
-            
+
             All platform builds completed successfully! This release is ready for review.
-            
+
             **Build Summary:**
-            - ✅ Windows (NSIS, Portable, ZIP)
-            - ✅ macOS (DMG, ZIP) - Universal binary
+            - ✅ Windows (Portable executable)
+            - ✅ macOS (Intel x64 + Apple Silicon ARM64)
             - ✅ Linux (AppImage, DEB, RPM)
-            
+
             **Next Steps:**
             1. Review the release notes above
             2. Test the installers if needed
             3. Publish the release when ready
-            
+
             **To publish this release:**
             \`\`\`bash
             gh release edit v${version} --draft=false
             \`\`\`
-            
+
             Or use the [Publish Release workflow](https://github.com/CommunityStream-io/flock/actions/workflows/publish-release.yml).
             `;
-            
+
             await github.rest.repos.updateRelease({
               owner: context.repo.owner,
               repo: context.repo.repo,
               release_id: release.id,
               body: updatedBody
             });
-            
+
             console.log('✅ Release notes updated with build status');
 
       - name: Post summary
