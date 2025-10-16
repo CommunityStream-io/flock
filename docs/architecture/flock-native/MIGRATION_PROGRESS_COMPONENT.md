@@ -12,20 +12,23 @@ The Migration Progress Component provides a fun, engaging visual experience duri
 - Displays indeterminate progress bar initially
 
 ### 2. **Fun, Engaging Messages**
-```typescript
-'✨ Sprinkling some Bluesky magic...'
-'📸 Packing up your memories...'
-'🦋 Your posts are taking flight...'
-'🎨 Painting your timeline...'
-'🌟 Making the social media universe a bit better...'
-'🚀 Launching posts into the Bluesky...'
-'💫 Transforming Instagram gold into Bluesky treasure...'
-'🎭 Your story is being retold...'
-'🌈 Adding color to the decentralized web...'
-'🔮 The algorithm-free future awaits...'
-```
 
-Messages rotate every 3 posts for variety!
+The component uses rotating messages that change every 3 posts for variety:
+- **Message Array**: Defined in [`src/app/components/migration-progress/migration-progress.component.ts`](../../../projects/flock-native/src/app/components/migration-progress/migration-progress.component.ts)
+- **Message Rotation**: Updates every 3 posts to keep the experience engaging
+- **Phase-Specific Messages**: Different messages for starting, migrating, and completion phases
+
+Messages include:
+- ✨ Sprinkling some Bluesky magic...
+- 📸 Packing up your memories...
+- 🦋 Your posts are taking flight...
+- 🎨 Painting your timeline...
+- 🌟 Making the social media universe a bit better...
+- 🚀 Launching posts into the Bluesky...
+- 💫 Transforming Instagram gold into Bluesky treasure...
+- 🎭 Your story is being retold...
+- 🌈 Adding color to the decentralized web...
+- 🔮 The algorithm-free future awaits...
 
 ### 3. **Visual Feedback**
 - **Flight takeoff icon** - Animates up/down during migration
@@ -67,53 +70,39 @@ Successfully migrated 10 posts with 20 media files!
 
 ### Component Structure
 
-```typescript
-export class MigrationProgressComponent implements OnInit, OnDestroy {
-  // State signals
-  phase = signal<'starting' | 'migrating' | 'complete' | 'error'>('starting');
-  postsCreated = signal<number>(0);
-  totalPosts = signal<number | null>(null);
-  currentMessage = signal<string>('...');
-  lastPostUrl = signal<string | null>(null);
-  mediaCount = signal<number>(0);
-  
-  // Subscribe to CLI output
-  ngOnInit() {
-    this.cliService.output$.subscribe((data) => {
-      this.handleOutput(data);
-    });
-  }
-}
-```
+The Migration Progress Component is implemented as an Angular component:
+- **Component File**: [`src/app/components/migration-progress/migration-progress.component.ts`](../../../projects/flock-native/src/app/components/migration-progress/migration-progress.component.ts)
+- **Template**: [`src/app/components/migration-progress/migration-progress.component.html`](../../../projects/flock-native/src/app/components/migration-progress/migration-progress.component.html)
+- **Styles**: [`src/app/components/migration-progress/migration-progress.component.css`](../../../projects/flock-native/src/app/components/migration-progress/migration-progress.component.css)
+
+**Key Features:**
+- Uses Angular signals for reactive state management
+- Implements `OnInit` and `OnDestroy` lifecycle hooks
+- Subscribes to CLI service output stream
+- Manages component state with signals for phase, progress, and messages
 
 ### CLI Output Parsing
 
-The component listens for these patterns in CLI output:
+The component listens for specific patterns in CLI output to update the UI:
+- **Parsing Logic**: Implemented in [`src/app/components/migration-progress/migration-progress.component.ts`](../../../projects/flock-native/src/app/components/migration-progress/migration-progress.component.ts)
+- **CLI Service**: Subscribes to [`src/app/service/cli/cli.service.ts`](../../../projects/flock-native/src/app/service/cli/cli.service.ts) output stream
+- **Pattern Matching**: Uses regex patterns to extract progress information
 
-| Pattern | Action |
-|---------|--------|
-| `Import started` | Set phase to 'migrating', show random message |
-| `Bluesky post created with url:` | Increment counter, extract URL, update message |
-| `imported X posts with Y media` | Store totals, enable determinate progress |
-| `Import finished` | Set phase to 'complete', show success message |
-| `ERROR` or `Error` | Set phase to 'error', show error message |
-| `Skipping post` | Show skip message |
+**Output Patterns Handled:**
+- `Import started` → Set phase to 'migrating', show random message
+- `Bluesky post created with url:` → Increment counter, extract URL, update message
+- `imported X posts with Y media` → Store totals, enable determinate progress
+- `Import finished` → Set phase to 'complete', show success message
+- `ERROR` or `Error` → Set phase to 'error', show error message
+- `Skipping post` → Show skip message
 
 ### Progress Calculation
 
-```typescript
-progressPercentage = (): number => {
-  const total = this.totalPosts();
-  if (!total || total === 0) {
-    return 0; // Indeterminate
-  }
-  return Math.min((this.postsCreated() / total) * 100, 100);
-}
-
-progressMode = (): 'determinate' | 'indeterminate' => {
-  return this.totalPosts() !== null ? 'determinate' : 'indeterminate';
-}
-```
+The component calculates progress based on posts created vs total posts:
+- **Progress Logic**: Implemented in [`src/app/components/migration-progress/migration-progress.component.ts`](../../../projects/flock-native/src/app/components/migration-progress/migration-progress.component.ts)
+- **Percentage Calculation**: Uses posts created divided by total posts
+- **Indeterminate Mode**: Shows when total posts is unknown initially
+- **Determinate Mode**: Switches when total posts count is available
 
 **Why indeterminate initially?**
 - CLI doesn't log total posts count until the end
@@ -122,50 +111,21 @@ progressMode = (): 'determinate' | 'indeterminate' => {
 
 ### Animations
 
-**Takeoff Animation:**
-```css
-@keyframes takeoff {
-  0%, 100% { 
-    transform: translateY(0) rotate(0deg);
-    opacity: 1;
-  }
-  50% { 
-    transform: translateY(-20px) rotate(5deg);
-    opacity: 0.8;
-  }
-}
-```
-
-**Celebration Animation:**
-```css
-@keyframes celebrate {
-  0%, 100% { transform: scale(1) rotate(0deg); }
-  25% { transform: scale(1.2) rotate(-10deg); }
-  50% { transform: scale(1.1) rotate(10deg); }
-  75% { transform: scale(1.2) rotate(-5deg); }
-}
-```
+The component includes CSS animations for visual feedback:
+- **Animation Styles**: Defined in [`src/app/components/migration-progress/migration-progress.component.css`](../../../projects/flock-native/src/app/components/migration-progress/migration-progress.component.css)
+- **Takeoff Animation**: Flight icon animates up/down during migration
+- **Celebration Animation**: Success icon animates when migration completes
+- **Smooth Transitions**: CSS transitions for state changes
 
 ## Integration
 
 ### In Resolver
 
-```typescript
-export const nativeMigrateRunResolver: ResolveFn<Observable<boolean>> = () => {
-  const splashScreenLoading = inject(SplashScreenLoading);
-  
-  // Set component
-  splashScreenLoading.setComponent(MigrationProgressComponent);
-  splashScreenLoading.show('Starting Migration...');
-  
-  // ... execute migration ...
-  
-  finalize(() => {
-    splashScreenLoading.setComponent(null);
-    splashScreenLoading.hide();
-  })
-};
-```
+The component is integrated through the migration resolver:
+- **Resolver**: [`src/app/resolvers/migrate-run.resolver.ts`](../../../projects/flock-native/src/app/resolvers/migrate-run.resolver.ts)
+- **Splash Screen Service**: Uses [`projects/shared/src/lib/services/splash-screen-loading.service.ts`](../../../projects/shared/src/lib/services/splash-screen-loading.service.ts)
+- **Component Registration**: Sets the migration progress component as the splash screen content
+- **Lifecycle Management**: Shows component during migration, hides when complete
 
 ### Splash Screen Service
 
@@ -196,29 +156,18 @@ The component is displayed via the `SplashScreenLoading` service:
 
 ### Visual Feedback Loop
 
-```
-User Action → Resolver starts CLI
-              ↓
-          Splash screen shows
-              ↓
-          Component subscribes
-              ↓
-          CLI outputs logs
-              ↓
-          Component parses logs
-              ↓
-          UI updates (messages, progress, count)
-              ↓
-          User sees real-time feedback ✨
-              ↓
-          CLI finishes
-              ↓
-          Complete phase shows
-              ↓
-          Splash screen hides
-              ↓
-          Complete screen displays stats
-```
+The component creates a complete feedback loop from user action to visual updates:
+
+**Flow:**
+1. User Action → Resolver starts CLI
+2. Splash screen shows with migration progress component
+3. Component subscribes to CLI service output stream
+4. CLI outputs structured logs during migration
+5. Component parses logs and extracts progress information
+6. UI updates in real-time (messages, progress bar, counters)
+7. User sees engaging visual feedback throughout the process
+8. CLI finishes and component shows completion phase
+9. Splash screen hides and complete screen displays final stats
 
 ## Benefits
 
@@ -255,22 +204,31 @@ User Action → Resolver starts CLI
 
 ### CLI Logging Enhancements
 
-To enable these, we could add to the CLI:
+To enable enhanced progress tracking, the CLI could be enhanced with additional logging:
 
-```typescript
-// In instagram-to-bluesky source
-logger.info(`📸 Splitting album with ${mediaCount} items into ${postCount} posts`);
-logger.info(`🎬 Processing video: ${filename}`);
-logger.info(`🖼️ Creating carousel post with ${imageCount} images`);
-logger.info(`⚠️ Retrying post upload (attempt ${attempt}/${maxAttempts})`);
-```
+**Potential CLI Enhancements:**
+- Album splitting indicators: "📸 Splitting album with X items into Y posts"
+- Media type indicators: "🎬 Processing video: filename.mp4"
+- Carousel creation: "🖼️ Creating carousel post with X images"
+- Retry attempts: "⚠️ Retrying post upload (attempt X/Y)"
+- Simulation mode indicators: "🧪 Simulating migration (no posts will be created)"
+
+**Implementation Location:**
+- These enhancements would be added to the `@straiforos/instagramtobluesky` CLI package
+- The migration progress component would then parse these additional log patterns
+- Enhanced parsing logic would be added to [`src/app/components/migration-progress/migration-progress.component.ts`](../../../projects/flock-native/src/app/components/migration-progress/migration-progress.component.ts)
 
 ## Files
 
-- `migration-progress.component.ts` - Component logic
-- `migration-progress.component.html` - Template
-- `migration-progress.component.css` - Styles
-- `migrate-run.resolver.ts` - Integration point
+### Component Files
+- [`src/app/components/migration-progress/migration-progress.component.ts`](../../../projects/flock-native/src/app/components/migration-progress/migration-progress.component.ts) - Component logic and state management
+- [`src/app/components/migration-progress/migration-progress.component.html`](../../../projects/flock-native/src/app/components/migration-progress/migration-progress.component.html) - Template with progress UI
+- [`src/app/components/migration-progress/migration-progress.component.css`](../../../projects/flock-native/src/app/components/migration-progress/migration-progress.component.css) - Styles and animations
+
+### Integration Files
+- [`src/app/resolvers/migrate-run.resolver.ts`](../../../projects/flock-native/src/app/resolvers/migrate-run.resolver.ts) - Integration point with splash screen
+- [`src/app/service/cli/cli.service.ts`](../../../projects/flock-native/src/app/service/cli/cli.service.ts) - CLI output stream source
+- [`projects/shared/src/lib/services/splash-screen-loading.service.ts`](../../../projects/shared/src/lib/services/splash-screen-loading.service.ts) - Splash screen service
 
 ---
 

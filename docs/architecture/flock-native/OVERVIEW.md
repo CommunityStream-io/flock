@@ -108,12 +108,6 @@ graph LR
 - **Progress Monitoring** - Live updates from CLI operations
 - **Error Handling** - Direct access to CLI error output
 
-### **Offline Capabilities**
-- **Local Processing** - Complete migration without internet
-- **Cached Resources** - Store frequently used data locally
-- **Background Processing** - Continue work when app is minimized
-- **Resume Capability** - Pick up where you left off
-
 ### **Performance Features**
 - **Native Speed** - No browser overhead or sandboxing
 - **Multi-threading** - Utilize all CPU cores for processing
@@ -202,9 +196,9 @@ classDiagram
 ## 🔄 **Integration with Other Birds**
 
 ### **Shared Components**
-Native uses the same components as other birds:
-- **File Upload** - Same interface, native implementation
-- **Step Navigation** - Same navigation patterns
+Native uses specialized components for native functionality:
+- **Native File Upload** - [`src/app/components/native-file-upload/native-file-upload.ts`](../../../projects/flock-native/src/app/components/native-file-upload/native-file-upload.ts)
+- **Step Navigation** - Same navigation patterns as shared components
 - **Progress Tracking** - Same progress indicators
 - **Theme Toggle** - Same theming system
 
@@ -228,20 +222,6 @@ Native implements the same service interfaces:
 - **Memory Management** - Monitor and optimize memory usage
 - **Background Processing** - Use web workers for heavy operations
 - **Caching** - Cache frequently accessed data
-
-## 🚀 **Future Enhancements**
-
-### **Advanced Native Features**
-- **System Integration** - Native notifications and system tray
-- **Auto-updates** - Automatic application updates
-- **Plugin System** - Extensible architecture for third-party tools
-- **Cloud Sync** - Synchronize settings across devices
-
-### **Performance Improvements**
-- **WebAssembly** - Use WASM for compute-intensive operations
-- **GPU Acceleration** - Leverage GPU for media processing
-- **Streaming** - Process large files in streams
-- **Parallel Processing** - Utilize multiple CPU cores effectively
 
 ---
 
