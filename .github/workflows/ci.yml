@@ -418,7 +418,7 @@ jobs:
         continue-on-error: true
 
       - name: Filter out phantom hook failures
-        run: node scripts/filter-allure-hooks.js
+        run: npm run allure:filter-hooks
 
       - name: Analyze timeout telemetry across all shards
         run: |
@@ -429,7 +429,7 @@ jobs:
           npm run analyze:metrics || echo "⚠️ Metrics analysis failed, continuing..."
 
       - name: Generate Allure Badge
-        run: node scripts/generate-allure-badge.js
+        run: npm run allure:badge
 
       - name: Generate Allure Report
         uses: simple-elf/allure-report-action@v1.9
