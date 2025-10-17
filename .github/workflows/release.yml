@@ -148,6 +148,8 @@ jobs:
             ### macOS
             - **DMG (Intel x64)**: \`Flock-Native-${{ steps.get_version.outputs.version }}-x64.dmg\`
             - **ZIP (Intel x64)**: \`Flock-Native-${{ steps.get_version.outputs.version }}-mac-x64.zip\`
+            - **DMG (Apple Silicon)**: \`Flock-Native-${{ steps.get_version.outputs.version }}-arm64.dmg\` *(Manual upload)*
+            - **ZIP (Apple Silicon)**: \`Flock-Native-${{ steps.get_version.outputs.version }}-arm64-mac.zip\` *(Manual upload)*
 
             ### Linux
             - **AppImage**: \`Flock-Native-${{ steps.get_version.outputs.version }}.AppImage\` (Universal, no installation)
@@ -333,72 +335,6 @@ jobs:
           path: dist/electron/
           retention-days: 30
 
-  build-macos-arm:
-    name: Build macOS ARM
-    needs: create-release
-    runs-on: [self-hosted, arm64, local]
-    env:
-      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-      SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
-      PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
-      ENABLE_SENTRY: true
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js with nvm
-        run: |
-          # Use nvm to switch to Node 20 for compatibility
-          export NVM_DIR="$HOME/.nvm"
-          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-          nvm use 20.19.5
-          node --version
-          npm --version
-          
-          # Make sure the PATH is updated for subsequent steps
-          echo "NODE_PATH=$(which node)" >> $GITHUB_ENV
-          echo "NPM_PATH=$(which npm)" >> $GITHUB_ENV
-          echo "$(dirname $(which node))" >> $GITHUB_PATH
-          
-      - name: Verify Node.js setup
-        run: |
-          echo "Node version: $(node --version)"
-          echo "NPM version: $(npm --version)"
-          echo "Node path: $(which node)"
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Set version in environment files
-        run: |
-          echo "🔧 Setting version in environment files..."
-          VERSION="${{ needs.create-release.outputs.version }}"
-          echo "📦 Using version: $VERSION"
-          
-          # Update development environment
-          sed -i.bak "s/version: '0\.6\.0-dev'/version: '$VERSION-dev'/g" projects/flock-native/src/environments/environment.ts
-          rm -f projects/flock-native/src/environments/environment.ts.bak
-          echo "✅ Updated development environment with version: $VERSION-dev"
-          
-          # Update production environment  
-          sed -i.bak "s/version: '0\.6\.0'/version: '$VERSION'/g" projects/flock-native/src/environments/environment.prod.ts
-          rm -f projects/flock-native/src/environments/environment.prod.ts.bak
-          echo "✅ Updated production environment with version: $VERSION"
-
-      - name: Build Angular app
-        run: npm run build:native:prod
-
-      - name: Build macOS packages (ARM)
-        run: |
-          echo "🍎 Building macOS packages for ARM architecture..."
-          echo "📦 Running npm run pack:mac:arm"
-          npm run pack:mac:arm
-          echo "✅ macOS builds completed (ARM)"
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
- 
-
   build-macos:
     name: Build macOS Intel
     needs: create-release
@@ -574,13 +510,24 @@ jobs:
 
             **Build Summary:**
             - ✅ Windows (Portable executable)
-            - ✅ macOS (Intel x64 + Apple Silicon ARM64)
+            - ✅ macOS Intel x64
             - ✅ Linux (AppImage, DEB, RPM)
+            - 🔄 macOS Apple Silicon ARM64 (Manual upload required)
 
             **Next Steps:**
             1. Review the release notes above
-            2. Test the installers if needed
-            3. Publish the release when ready
+            2. Upload ARM64 build manually (see instructions below)
+            3. Test the installers if needed
+            4. Publish the release when ready
+
+            **To upload ARM64 build:**
+            \`\`\`bash
+            # Build locally on Apple Silicon Mac
+            npm run pack:mac:arm
+            
+            # Upload to this release
+            ./scripts/upload-arm64-build.sh v${version}
+            \`\`\`
 
             **To publish this release:**
             \`\`\`bash
