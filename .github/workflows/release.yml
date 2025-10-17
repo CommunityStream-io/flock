@@ -333,10 +333,62 @@ jobs:
           path: dist/electron/
           retention-days: 30
 
-  build-macos:
-    name: Build macOS
+  build-macos-arm:
+    name: Build macOS ARM
     needs: create-release
-    runs-on: macos-latest
+    runs-on: macos-15
+    env:
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+      PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
+      ENABLE_SENTRY: true
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24.5.0'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Set version in environment files
+        run: |
+          echo "🔧 Setting version in environment files..."
+          VERSION="${{ needs.create-release.outputs.version }}"
+          echo "📦 Using version: $VERSION"
+          
+          # Update development environment
+          sed -i.bak "s/version: '0\.6\.0-dev'/version: '$VERSION-dev'/g" projects/flock-native/src/environments/environment.ts
+          rm -f projects/flock-native/src/environments/environment.ts.bak
+          echo "✅ Updated development environment with version: $VERSION-dev"
+          
+          # Update production environment  
+          sed -i.bak "s/version: '0\.6\.0'/version: '$VERSION'/g" projects/flock-native/src/environments/environment.prod.ts
+          rm -f projects/flock-native/src/environments/environment.prod.ts.bak
+          echo "✅ Updated production environment with version: $VERSION"
+
+      - name: Build Angular app
+        run: npm run build:native:prod
+
+      - name: Build macOS packages (ARM)
+        run: |
+          echo "🍎 Building macOS packages for ARM architecture..."
+          echo "📦 Running npm run pack:mac:arm"
+          npm run pack:mac:arm
+          echo "✅ macOS builds completed (ARM)"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+ 
+
+  build-macos:
+    name: Build macOS Intel
+    needs: create-release
+    runs-on: macos-15-intel
     env:
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
