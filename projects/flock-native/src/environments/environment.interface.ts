@@ -8,5 +8,9 @@ export interface Environment {
    * Must be false in production builds to avoid exposing dev tools
    */
   enableTestModes?: boolean;
+  /**
+   * Application version - can be set via environment variable in CI/CD
+   */
+  version?: string;
 }
 

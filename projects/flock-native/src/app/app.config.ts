@@ -24,6 +24,7 @@ import {
   RouterLoggingService,
   TEST_MODES_ENABLED
 } from 'shared';
+import { Environment } from '../environments/environment.interface';
 import { NativeFileProcessor } from './service/native-file-processor/native-file-processor';
 import { ConsoleLogger } from './service/console-logger/console-logger';
 import { Bluesky } from './service/bluesky/bluesky';
@@ -58,5 +59,7 @@ export const appConfig: ApplicationConfig = {
     ExtractionProgressService,
     // Provide TEST_MODES_ENABLED for shared library consumers
     { provide: TEST_MODES_ENABLED, useValue: !environment.production && !!environment.enableTestModes },
+    // Provide APP_ENVIRONMENT for SentryLogger
+    { provide: 'APP_ENVIRONMENT', useValue: environment as Environment },
   ],
 };

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject, Optional } from '@angular/core';
 import * as Sentry from '@sentry/angular';
 import { Logger } from './interfaces/logger';
 
@@ -6,6 +6,12 @@ export interface SentryConfig {
   dsn: string | null;
   environment?: string;
   tracesSampleRate?: number;
+}
+
+export interface AppEnvironment {
+  production: boolean;
+  version?: string;
+  sentryDsn?: string;
 }
 
 /**
@@ -19,6 +25,8 @@ export class SentryLogger implements Logger {
   private initialized = false;
   private appName = 'Unknown';
   private config: SentryConfig | null = null;
+
+  constructor(@Optional() @Inject('APP_ENVIRONMENT') private environment?: AppEnvironment) {}
 
   /**
    * Initialize Sentry with DSN and configuration
@@ -225,16 +233,19 @@ export class SentryLogger implements Logger {
   }
 
   /**
-   * Get release version from package.json
+   * Get release version from environment variable or fallback methods
    */
-  private async getRelease(): Promise<string> {
+  private getRelease(): string {
     try {
-      console.log('🔍 [SentryLogger] Getting release version from package.json');
-      const { version } = await import('../../../../../package.json');
-      console.log('🔍 [SentryLogger] Release version:', version);
-      return `${this.appName}@${version}`;
+      
+      if(this.environment?.version) {
+        return `${this.appName}@${this.environment?.version}`;
+      }
+      // If all else fails, return unknown version
+      console.log('🔍 [SentryLogger] Could not determine version, using unknown');
+      return `${this.appName}@unknown`;
     } catch (error) {
-      console.log('🔍 [SentryLogger] Failed to get release version from package.json', error);
+      console.log('🔍 [SentryLogger] Failed to get release version:', error);
       return `${this.appName}@unknown`;
     }
   }

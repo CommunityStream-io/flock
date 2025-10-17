@@ -269,6 +269,21 @@ jobs:
           Write-Host "✅ Package version updated to $VERSION"
         shell: pwsh
 
+      - name: Set version in environment files
+        run: |
+          $VERSION = "${{ needs.create-release.outputs.version }}"
+          Write-Host "🔧 Setting version in environment files..."
+          Write-Host "📦 Using version: $VERSION"
+          
+          # Update development environment
+          (Get-Content "projects/flock-native/src/environments/environment.ts") -replace "version: '0\.6\.0-dev'", "version: '$VERSION-dev'" | Set-Content "projects/flock-native/src/environments/environment.ts"
+          Write-Host "✅ Updated development environment with version: $VERSION-dev"
+          
+          # Update production environment  
+          (Get-Content "projects/flock-native/src/environments/environment.prod.ts") -replace "version: '0\.6\.0'", "version: '$VERSION'" | Set-Content "projects/flock-native/src/environments/environment.prod.ts"
+          Write-Host "✅ Updated production environment with version: $VERSION"
+        shell: pwsh
+
       - name: Build Angular app
         run: npm run build:native:prod
 
@@ -342,6 +357,20 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Set version in environment files
+        run: |
+          echo "🔧 Setting version in environment files..."
+          VERSION="${{ needs.create-release.outputs.version }}"
+          echo "📦 Using version: $VERSION"
+          
+          # Update development environment
+          sed -i "s/version: '0\.6\.0-dev'/version: '$VERSION-dev'/g" projects/flock-native/src/environments/environment.ts
+          echo "✅ Updated development environment with version: $VERSION-dev"
+          
+          # Update production environment  
+          sed -i "s/version: '0\.6\.0'/version: '$VERSION'/g" projects/flock-native/src/environments/environment.prod.ts
+          echo "✅ Updated production environment with version: $VERSION"
+
       - name: Build Angular app
         run: npm run build:native:prod
 
@@ -379,6 +408,20 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y rpm
 
+      - name: Set version in environment files
+        run: |
+          echo "🔧 Setting version in environment files..."
+          VERSION="${{ needs.create-release.outputs.version }}"
+          echo "📦 Using version: $VERSION"
+          
+          # Update development environment
+          sed -i "s/version: '0\.6\.0-dev'/version: '$VERSION-dev'/g" projects/flock-native/src/environments/environment.ts
+          echo "✅ Updated development environment with version: $VERSION-dev"
+          
+          # Update production environment  
+          sed -i "s/version: '0\.6\.0'/version: '$VERSION'/g" projects/flock-native/src/environments/environment.prod.ts
+          echo "✅ Updated production environment with version: $VERSION"
+
       - name: Build Angular app
         run: npm run build:native:prod
 
@@ -412,6 +455,20 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Set version in environment files
+        run: |
+          echo "🔧 Setting version in environment files..."
+          VERSION="${{ needs.create-release.outputs.version }}"
+          echo "📦 Using version: $VERSION"
+          
+          # Update development environment
+          sed -i "s/version: '0\.6\.0-dev'/version: '$VERSION-dev'/g" projects/flock-native/src/environments/environment.ts
+          echo "✅ Updated development environment with version: $VERSION-dev"
+          
+          # Update production environment  
+          sed -i "s/version: '0\.6\.0'/version: '$VERSION'/g" projects/flock-native/src/environments/environment.prod.ts
+          echo "✅ Updated production environment with version: $VERSION"
 
       - name: Build Angular app for source maps
         run: npm run build:native:prod

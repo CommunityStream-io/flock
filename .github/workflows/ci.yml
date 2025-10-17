@@ -57,6 +57,20 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Set version in environment files
+        run: |
+          echo "🔧 Setting version in environment files..."
+          VERSION=$(node -p "require('./package.json').version")
+          echo "📦 Using version: $VERSION"
+          
+          # Update development environment
+          sed -i "s/version: '0.6.0-dev'/version: '$VERSION-dev'/g" projects/flock-native/src/environments/environment.ts
+          echo "✅ Updated development environment with version: $VERSION-dev"
+          
+          # Update production environment  
+          sed -i "s/version: '0.6.0'/version: '$VERSION'/g" projects/flock-native/src/environments/environment.prod.ts
+          echo "✅ Updated production environment with version: $VERSION"
+
       - name: Build shared library
         run: npx ng build --project=shared
 
@@ -476,6 +490,20 @@ jobs:
 
       - name: Install flock dependencies
         run: npm ci
+
+      - name: Set version in environment files
+        run: |
+          echo "🔧 Setting version in environment files..."
+          VERSION=$(node -p "require('./package.json').version")
+          echo "📦 Using version: $VERSION"
+          
+          # Update development environment
+          sed -i "s/version: '0.6.0-dev'/version: '$VERSION-dev'/g" projects/flock-native/src/environments/environment.ts
+          echo "✅ Updated development environment with version: $VERSION-dev"
+          
+          # Update production environment  
+          sed -i "s/version: '0.6.0'/version: '$VERSION'/g" projects/flock-native/src/environments/environment.prod.ts
+          echo "✅ Updated production environment with version: $VERSION"
 
       - name: Build shared library
         run: npx ng build --project=shared
