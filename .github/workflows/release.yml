@@ -362,11 +362,13 @@ jobs:
           echo "📦 Using version: $VERSION"
           
           # Update development environment
-          sed -i "s/version: '0\.6\.0-dev'/version: '$VERSION-dev'/g" projects/flock-native/src/environments/environment.ts
+          sed -i.bak "s/version: '0\.6\.0-dev'/version: '$VERSION-dev'/g" projects/flock-native/src/environments/environment.ts
+          rm -f projects/flock-native/src/environments/environment.ts.bak
           echo "✅ Updated development environment with version: $VERSION-dev"
           
           # Update production environment  
-          sed -i "s/version: '0\.6\.0'/version: '$VERSION'/g" projects/flock-native/src/environments/environment.prod.ts
+          sed -i.bak "s/version: '0\.6\.0'/version: '$VERSION'/g" projects/flock-native/src/environments/environment.prod.ts
+          rm -f projects/flock-native/src/environments/environment.prod.ts.bak
           echo "✅ Updated production environment with version: $VERSION"
 
       - name: Build Angular app
