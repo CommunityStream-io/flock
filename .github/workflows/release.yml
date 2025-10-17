@@ -147,9 +147,7 @@ jobs:
 
             ### macOS
             - **DMG (Intel x64)**: \`Flock-Native-${{ steps.get_version.outputs.version }}-x64.dmg\`
-            - **DMG (Apple Silicon)**: \`Flock-Native-${{ steps.get_version.outputs.version }}-arm64.dmg\`
             - **ZIP (Intel x64)**: \`Flock-Native-${{ steps.get_version.outputs.version }}-mac-x64.zip\`
-            - **ZIP (Apple Silicon)**: \`Flock-Native-${{ steps.get_version.outputs.version }}-mac-arm64.zip\`
 
             ### Linux
             - **AppImage**: \`Flock-Native-${{ steps.get_version.outputs.version }}.AppImage\` (Universal, no installation)
@@ -374,12 +372,12 @@ jobs:
       - name: Build Angular app
         run: npm run build:native:prod
 
-      - name: Build macOS packages (Intel + ARM)
+      - name: Build macOS packages (Intel)
         run: |
-          echo "🍎 Building macOS packages for both architectures..."
-          echo "📦 Running npm run pack:mac:all"
-          npm run pack:mac:all
-          echo "✅ macOS builds completed (Intel + ARM)"
+          echo "🍎 Building macOS packages for Intel architecture..."
+          echo "📦 Running npm run pack:mac:intel"
+          npm run pack:mac:intel
+          echo "✅ macOS builds completed (Intel)"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

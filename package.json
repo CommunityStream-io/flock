@@ -67,7 +67,7 @@
     "pack:mac:arm": "npm run clean:electron && npm run build:native:prod && npm run sharp:mac:arm && electron-builder --config electron-builder-mac-arm.json",
     "pack:mac:all": "npm run pack:mac:intel && npm run pack:mac:arm",
     "pack:linux": "npm run clean:electron && npm run build:native:prod && npm run sharp:linux && electron-builder --config electron-builder-linux.json",
-    "build:all": "npm run pack:win && npm run pack:mac:all && npm run pack:linux",
+    "build:all": "npm run pack:win && npm run pack:mac:intel && npm run pack:linux",
     "sharp:mac:intel": "rimraf ./node_modules/sharp && rimraf ./node_modules/@straiforos/instagramtobluesky/node_modules/sharp && npm install --include=optional sharp && cd node_modules/@straiforos/instagramtobluesky && npm install --include=optional sharp",
     "sharp:mac:arm": "rimraf ./node_modules/sharp && rimraf ./node_modules/@straiforos/instagramtobluesky/node_modules/sharp && npm install --include=optional sharp && cd node_modules/@straiforos/instagramtobluesky && npm install --include=optional sharp",
     "sharp:win": "rimraf ./node_modules/sharp && rimraf ./node_modules/@straiforos/instagramtobluesky/node_modules/sharp && npm install --include=optional sharp && cd node_modules/@straiforos/instagramtobluesky && npm install --include=optional sharp",
