@@ -57,15 +57,7 @@ class SentryManager {
                      process.env.SENTRY_DSN || 
                      'https://c525bad84d7baf7a00631c940b44a980@o4506526838620160.ingest.us.sentry.io/4510187648712704';
 
-    // Get version from package.json
-    let packageVersion = '0.5.14'; // fallback
-    try {
-      const packageJson = require('../../package.json');
-      packageVersion = packageJson.version;
-    } catch (error) {
-      console.warn('🔍 [SENTRY] Could not read package.json version, using fallback');
-    }
-
+    const packageVersion = app.getVersion();
     return {
       dsn: sentryDsn,
       debug: process.env.SENTRY_DEBUG === 'true' || (!app.isPackaged && process.env.NODE_ENV !== 'production'),

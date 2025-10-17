@@ -49,7 +49,7 @@ export class SentryLogger implements Logger {
         environment: this.config?.environment || this.getEnvironment(),
         
         // Release version from package.json
-        release: this.getRelease(),
+        release: await this.getRelease(),
         
         // Sample rate for performance monitoring (0.0 to 1.0)
         tracesSampleRate: this.config?.tracesSampleRate ?? (this.getEnvironment() === 'production' ? 0.1 : 1.0),
@@ -227,9 +227,16 @@ export class SentryLogger implements Logger {
   /**
    * Get release version from package.json
    */
-  private getRelease(): string {
-    // This should be injected at build time
-    return `${this.appName}@0.4.8`; // TODO: Read from package.json at build time
+  private async getRelease(): Promise<string> {
+    try {
+      console.log('🔍 [SentryLogger] Getting release version from package.json');
+      const { version } = await import('../../../../../package.json');
+      console.log('🔍 [SentryLogger] Release version:', version);
+      return `${this.appName}@${version}`;
+    } catch (error) {
+      console.log('🔍 [SentryLogger] Failed to get release version from package.json', error);
+      return `${this.appName}@unknown`;
+    }
   }
 
   /**
