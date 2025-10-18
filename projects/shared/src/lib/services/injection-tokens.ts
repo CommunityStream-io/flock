@@ -4,6 +4,7 @@ import { InjectionToken } from '@angular/core';
  * Injection tokens for shared services
  * These are separated to avoid circular dependencies
  */
+export const ANALYTICS = new InjectionToken('Analytics');
 export const BLUESKY = new InjectionToken('Bluesky');
 export const CONFIG = new InjectionToken('Config');
 export const FILE_PROCESSOR = new InjectionToken('FileProcessor');

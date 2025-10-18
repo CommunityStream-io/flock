@@ -25,7 +25,6 @@ Flock Murmur is our **web deployment bird** - it dances gracefully through brows
 - **Browser Compatibility** - Works in all modern browsers
 - **Responsive Design** - Adapts to any screen size
 - **Progressive Web App** - App-like experience in the browser
-- **Offline Capabilities** - Basic functionality without internet
 
 ## 🏗️ **Architecture Overview**
 

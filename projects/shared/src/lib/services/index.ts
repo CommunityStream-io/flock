@@ -12,6 +12,7 @@ export * from './migration';
 export * from './router-logging';
 export * from './sentry-logger';
 export * from './splash-screen-loading';
+export * from './web-analytics.service';
 
 // ==== Validators ====
 export * from './validators/username.validator';

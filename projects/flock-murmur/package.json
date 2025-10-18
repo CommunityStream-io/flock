@@ -1,0 +1,8 @@
+{
+  "name": "flock-murmur",
+  "version": "0.5.1",
+  "description": "Flock Murmur - Web deployment for Instagram to Bluesky migration",
+  "scripts": {
+    "build": "cd ../.. && npm run build:murmur"
+  }
+}
