@@ -55,7 +55,6 @@ export const appConfig: ApplicationConfig = {
       useClass: MurmurMigration,
     },
     RouterLoggingService,
-    // Enable test modes in development
     { provide: TEST_MODES_ENABLED, useValue: !environment.production && !!environment.enableTestModes },
   ]
 };
