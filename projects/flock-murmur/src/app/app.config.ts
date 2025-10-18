@@ -9,14 +9,18 @@ import {
   LOGGER,
   BLUESKY,
   MIGRATION,
+  CONFIG,
+  ConfigServiceImpl,
   StepReuseStrategy,
   RouterLoggingService,
   TEST_MODES_ENABLED
 } from 'shared';
-import { MurmurFileProcessor } from './service/murmur-file-processor/murmur-file-processor';
-import { ConsoleLogger } from './service/console-logger/console-logger';
-import { MurmurBluesky } from './service/bluesky/bluesky';
-import { MurmurMigration } from './service/murmur-migration/murmur-migration';
+import {
+  MurmurFileProcessor,
+  ConsoleLogger,
+  MurmurBluesky,
+  MurmurMigration
+} from './service';
 import { environment } from '../environments/environment';
 
 export const appConfig: ApplicationConfig = {
@@ -30,6 +34,10 @@ export const appConfig: ApplicationConfig = {
     },
     provideAnimations(),
     provideHttpClient(),
+    {
+      provide: CONFIG,
+      useClass: ConfigServiceImpl,
+    },
     {
       provide: FILE_PROCESSOR,
       useClass: MurmurFileProcessor,

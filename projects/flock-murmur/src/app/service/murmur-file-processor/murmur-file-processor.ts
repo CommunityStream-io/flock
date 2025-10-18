@@ -1,37 +1,62 @@
 import { Injectable } from '@angular/core';
-import { FileProcessorService, ValidationResult } from 'shared';
-import { ApiService } from '../api.service';
+import { ValidationResult } from 'shared';
+import { ApiService } from '../../services';
+import { WebFileService } from '../interfaces';
 
 /**
  * Murmur File Processor
  * Handles file uploads via Vercel API for serverless processing
+ * Implements WebFileService with session tracking
  */
 @Injectable({
   providedIn: 'root'
 })
-export class MurmurFileProcessor implements FileProcessorService {
+export class MurmurFileProcessor implements WebFileService {
+  private _archivedFile: File | null = null;
   private sessionId: string | null = null;
 
   constructor(private apiService: ApiService) {}
 
   /**
+   * Get the archived file
+   */
+  get archivedFile(): File | null {
+    return this._archivedFile;
+  }
+
+  /**
    * Validate and upload archive to Vercel
    */
-  async validateArchive(path: string): Promise<ValidationResult> {
-    // For web, path is actually a File object passed through
-    // Basic client-side validation only
+  async validateArchive(file: File): Promise<ValidationResult> {
+    // For web, basic client-side validation only
+    // Store the file for later use
+    this._archivedFile = file;
+    
     return {
       isValid: true,
       errors: [],
-      warnings: []
+      warnings: [],
+      timestamp: new Date()
     };
   }
 
   /**
-   * Upload file to Vercel API
+   * Upload file to Vercel API (called by extractArchive)
+   */
+  async extractArchive(): Promise<boolean> {
+    if (!this._archivedFile) {
+      throw new Error('No file to upload');
+    }
+    
+    const result = await this.uploadFile(this._archivedFile);
+    return !!result.sessionId;
+  }
+
+  /**
+   * Internal method: Upload file to Vercel API
    * Returns the session ID for tracking
    */
-  async processArchive(file: File): Promise<{ sessionId: string }> {
+  private async uploadFile(file: File): Promise<{ sessionId: string }> {
     try {
       const result = await this.apiService.uploadArchive(file).toPromise();
       if (result && result.sessionId) {
@@ -46,9 +71,17 @@ export class MurmurFileProcessor implements FileProcessorService {
   }
 
   /**
-   * Get the current session ID
+   * Get the current session ID (for migration service)
    */
   getSessionId(): string | null {
     return this.sessionId;
+  }
+
+  /**
+   * Clear the archived file and session
+   */
+  clearArchive(): void {
+    this._archivedFile = null;
+    this.sessionId = null;
   }
 }

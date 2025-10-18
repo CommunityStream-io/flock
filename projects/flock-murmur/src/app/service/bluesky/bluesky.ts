@@ -1,60 +1,21 @@
 import { Injectable } from '@angular/core';
-import { BlueSkyService, Credentials, AuthResult, ConnectionResult } from 'shared';
+import { Credentials, AuthResult, ConnectionResult } from 'shared';
 import { PostRecordImpl } from '@straiforos/instagramtobluesky';
-import { ApiService } from '../../services/api.service';
+import { ApiService } from '../../services';
+import { WebBlueSkyService } from '../interfaces';
 
 /**
  * Murmur Bluesky Service
- * Handles Bluesky operations via Vercel API
+ * Handles Bluesky authentication and credential management via Vercel API
+ * Implements WebBlueSkyService with credential storage for migration
  */
 @Injectable({
   providedIn: 'root'
 })
-export class MurmurBluesky implements BlueSkyService {
-  private sessionId: string | null = null;
+export class MurmurBluesky implements WebBlueSkyService {
   private credentials: Credentials | null = null;
 
   constructor(private apiService: ApiService) {}
-
-  /**
-   * Set session ID for API calls
-   */
-  setSessionId(sessionId: string): void {
-    this.sessionId = sessionId;
-  }
-
-  /**
-   * Start migration via Vercel API
-   */
-  async startMigration(config: any): Promise<void> {
-    if (!this.sessionId) {
-      throw new Error('No session ID available. Please upload an archive first.');
-    }
-
-    try {
-      await this.apiService.startMigration(this.sessionId, config).toPromise();
-    } catch (error: any) {
-      console.error('Migration error:', error);
-      throw new Error(`Migration failed: ${error.message || 'Unknown error'}`);
-    }
-  }
-
-  /**
-   * Get migration progress
-   */
-  async getProgress(): Promise<any> {
-    if (!this.sessionId) {
-      throw new Error('No session ID available');
-    }
-
-    try {
-      const result = await this.apiService.getProgress(this.sessionId).toPromise();
-      return result?.progress || null;
-    } catch (error: any) {
-      console.error('Progress check error:', error);
-      return null;
-    }
-  }
 
   /**
    * Authenticate with Bluesky via Vercel API

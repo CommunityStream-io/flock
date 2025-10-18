@@ -1,21 +1,28 @@
 import { Injectable, signal, inject } from '@angular/core';
-import { MigrationService, Config, BLUESKY } from 'shared';
-import { ApiService } from '../../services/api.service';
-import { MurmurFileProcessor } from '../murmur-file-processor/murmur-file-processor';
-import { MurmurBluesky } from '../bluesky/bluesky';
+import { 
+  MigrationService, 
+  ConfigService,
+  CONFIG,
+  BLUESKY,
+  FILE_PROCESSOR
+} from 'shared';
+import { ApiService } from '../../services';
+import { WebFileService, WebBlueSkyService } from '../interfaces';
 
 /**
  * Murmur Migration Service
  * Handles migration via Vercel API with real-time progress tracking
+ * 
+ * Uses injection tokens with web-specific type casting for platform features
  */
 @Injectable({
   providedIn: 'root'
 })
 export class MurmurMigration implements MigrationService {
   private apiService = inject(ApiService);
-  private fileProcessor = inject(MurmurFileProcessor);
-  private blueskyService = inject(MurmurBluesky);
-  private config = inject(Config);
+  private fileProcessor = inject<WebFileService>(FILE_PROCESSOR);
+  private blueskyService = inject<WebBlueSkyService>(BLUESKY);
+  private config = inject<ConfigService>(CONFIG);
 
   public percentComplete = signal(0);
   public currentOperation = signal('');
@@ -24,6 +31,7 @@ export class MurmurMigration implements MigrationService {
 
   private progressInterval: any = null;
   private startTime = 0;
+  private sessionId: string | null = null;
 
   reset(): void {
     this.percentComplete.set(0);
@@ -45,12 +53,17 @@ export class MurmurMigration implements MigrationService {
     this.reset();
     this.startTime = Date.now();
 
-    const sessionId = this.fileProcessor.getSessionId();
-    if (!sessionId) {
-      throw new Error('No archive uploaded. Please upload an Instagram archive first.');
+    // Get session ID from web file processor
+    if (!this.sessionId) {
+      this.sessionId = this.fileProcessor.getSessionId();
+      
+      if (!this.sessionId) {
+        throw new Error('No archive uploaded. Please upload an Instagram archive first.');
+      }
     }
 
-    const credentials = this.blueskyService.getCredentials?.();
+    // Get credentials from ConfigService (interface-compliant)
+    const credentials = this.config.blueskyCredentials;
     if (!credentials) {
       throw new Error('No credentials available. Please authenticate with Bluesky first.');
     }
@@ -63,16 +76,13 @@ export class MurmurMigration implements MigrationService {
       const migrationConfig = {
         blueskyCredentials: credentials,
         simulate,
-        startDate: this.config.minDate(),
-        endDate: this.config.maxDate(),
+        startDate: this.config.startDate || undefined,
+        endDate: this.config.endDate || undefined,
         stopOnError: false
       };
 
-      // Set session ID in BlueskyService for progress tracking
-      this.blueskyService.setSessionId(sessionId);
-
       // Start the migration (fire and forget - it runs in background)
-      this.apiService.startMigration(sessionId, migrationConfig).subscribe({
+      this.apiService.startMigration(this.sessionId!, migrationConfig).subscribe({
         error: (error) => {
           console.error('Failed to start migration:', error);
           this.currentOperation.set('Failed to start migration');
@@ -107,7 +117,9 @@ export class MurmurMigration implements MigrationService {
 
       this.progressInterval = setInterval(async () => {
         try {
-          const progress = await this.blueskyService.getProgress();
+          // Get progress directly from API
+          const result = await this.apiService.getProgress(this.sessionId!).toPromise();
+          const progress = result?.progress || null;
           
           if (!progress) {
             // No progress data yet, keep waiting

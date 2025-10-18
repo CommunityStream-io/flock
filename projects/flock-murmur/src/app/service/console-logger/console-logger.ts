@@ -9,22 +9,40 @@ import { Logger } from 'shared';
   providedIn: 'root'
 })
 export class ConsoleLogger implements Logger {
-  log(message: string, ...args: any[]): void {
-    console.log(`[Murmur] ${message}`, ...args);
-  }
-
-  error(message: string, ...args: any[]): void {
-    console.error(`[Murmur Error] ${message}`, ...args);
-  }
-
-  warn(message: string, ...args: any[]): void {
-    console.warn(`[Murmur Warning] ${message}`, ...args);
-  }
-
-  debug(message: string, ...args: any[]): void {
-    if (!window.location.hostname.includes('localhost')) {
-      return; // Only log debug in development
+  log(message: string, object?: any): void {
+    if (object) {
+      console.log(`[Murmur] ${message}`, object);
+    } else {
+      console.log(`[Murmur] ${message}`);
     }
-    console.debug(`[Murmur Debug] ${message}`, ...args);
+  }
+
+  error(message: string, object?: any): void {
+    if (object) {
+      console.error(`[Murmur Error] ${message}`, object);
+    } else {
+      console.error(`[Murmur Error] ${message}`);
+    }
+  }
+
+  warn(message: string, object?: any): void {
+    if (object) {
+      console.warn(`[Murmur Warning] ${message}`, object);
+    } else {
+      console.warn(`[Murmur Warning] ${message}`);
+    }
+  }
+
+  workflow(message: string, object?: any): void {
+    if (object) {
+      console.log(`[Murmur Workflow] ${message}`, object);
+    } else {
+      console.log(`[Murmur Workflow] ${message}`);
+    }
+  }
+
+  async instrument(appName: string): Promise<void> {
+    // No-op for web console logger
+    console.log(`[Murmur] Instrumentation initialized for ${appName}`);
   }
 }
