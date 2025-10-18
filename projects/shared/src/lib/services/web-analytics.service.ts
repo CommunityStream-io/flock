@@ -14,7 +14,7 @@ declare global {
   interface Window {
     gtag?: (...args: any[]) => void;
     dataLayer?: any[];
-    va?: (...args: any[]) => void; // Vercel Analytics
+    va?: (event: 'beforeSend' | 'event' | 'pageview', properties?: unknown) => void;
   }
 }
 
@@ -202,7 +202,8 @@ export class WebAnalyticsService implements AnalyticsService {
 
     // Vercel Analytics
     if (window.va) {
-      window.va('event', event.name, {
+      window.va('event', {
+        name: event.name,
         category: event.category,
         ...event.properties
       });
