@@ -66,7 +66,20 @@ export class MurmurFileProcessor implements WebFileService {
       throw new Error('Failed to upload archive');
     } catch (error: any) {
       console.error('Archive upload error:', error);
-      throw new Error(`Upload failed: ${error.message || 'Unknown error'}`);
+      
+      // Handle specific HTTP error codes
+      if (error.status === 413) {
+        const fileSizeMB = (file.size / (1024 * 1024)).toFixed(1);
+        throw new Error(`File too large (${fileSizeMB}MB). Maximum size is 50MB. Please compress your Instagram archive or select a smaller date range.`);
+      } else if (error.status === 400) {
+        throw new Error('Invalid file format. Please select a valid Instagram archive (.zip file).');
+      } else if (error.status === 500) {
+        throw new Error('Server error during upload. Please try again.');
+      } else if (error.status === 0) {
+        throw new Error('Network error. Please check your internet connection and try again.');
+      } else {
+        throw new Error(`Upload failed: ${error.message || 'Unknown error'}`);
+      }
     }
   }
 

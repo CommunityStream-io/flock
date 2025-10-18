@@ -23,3 +23,10 @@ app-root {
 * {
   transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
+
+/* Error snackbar styling */
+.error-snackbar {
+  background-color: var(--mat-sys-error-container) !important;
+  color: var(--mat-sys-on-error-container) !important;
+  border-left: 4px solid var(--mat-sys-error) !important;
+}
