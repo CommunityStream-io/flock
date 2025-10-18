@@ -33,7 +33,7 @@ export default async function handler(
       timestamp: new Date().toISOString()
     });
 
-    const { sessionId, filename, size, mimetype, blobUrl, uploadedAt, status } = req.body;
+    const { sessionId, filename, size, mimetype, blobUrl, uploadedAt, status, isPublicBlob, securityNote } = req.body;
 
     // Validate required fields
     if (!sessionId || !filename || !blobUrl) {
@@ -47,7 +47,9 @@ export default async function handler(
       sessionId,
       filename,
       size,
-      blobUrl
+      blobUrl,
+      isPublicBlob,
+      securityNote
     });
 
     // Store metadata in KV (not the file data)
@@ -58,7 +60,12 @@ export default async function handler(
       mimetype,
       blobUrl,
       uploadedAt,
-      status
+      status,
+      // Security information
+      isPublicBlob: isPublicBlob || false,
+      securityNote: securityNote || 'Standard upload',
+      // Additional security: store access timestamp for monitoring
+      lastAccessed: new Date().toISOString()
     }, {
       ex: 3600 // Expire in 1 hour
     });

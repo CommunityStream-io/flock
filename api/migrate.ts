@@ -84,8 +84,19 @@ export default async function handler(
       });
     }
 
-    // Fetch file from Blob storage
+    // Fetch file from Blob storage (secure context)
     console.log('[Migrate] Fetching archive from Blob:', blobUrl);
+    console.log('[Migrate] Blob type:', uploadMeta.isPublicBlob ? 'public' : 'private');
+    
+    // Log access for security monitoring
+    await kv.set(`upload:${sessionId}`, {
+      ...uploadMeta,
+      lastAccessed: new Date().toISOString(),
+      accessedBy: 'migration-api'
+    }, {
+      ex: 3600 // Refresh expiration
+    });
+
     const blobResponse = await fetch(blobUrl);
     if (!blobResponse.ok) {
       console.error('[Migrate] Failed to fetch from Blob storage');
