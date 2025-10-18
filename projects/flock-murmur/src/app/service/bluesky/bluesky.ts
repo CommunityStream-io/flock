@@ -12,6 +12,7 @@ import { ApiService } from '../../services/api.service';
 })
 export class MurmurBluesky implements BlueSkyService {
   private sessionId: string | null = null;
+  private credentials: Credentials | null = null;
 
   constructor(private apiService: ApiService) {}
 
@@ -73,6 +74,8 @@ export class MurmurBluesky implements BlueSkyService {
       
       if (result?.success) {
         console.log('Bluesky authentication successful:', result.username);
+        // Store credentials for later use in migration
+        this.credentials = credentials;
         return {
           success: true,
           message: result.message || 'Authentication successful'
@@ -94,6 +97,20 @@ export class MurmurBluesky implements BlueSkyService {
         message: errorMessage
       };
     }
+  }
+
+  /**
+   * Get stored credentials (for migration service)
+   */
+  getCredentials(): Credentials | null {
+    return this.credentials;
+  }
+
+  /**
+   * Clear stored credentials
+   */
+  clearCredentials(): void {
+    this.credentials = null;
   }
 
   /**

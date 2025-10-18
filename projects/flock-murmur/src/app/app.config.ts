@@ -10,13 +10,13 @@ import {
   BLUESKY,
   MIGRATION,
   StepReuseStrategy,
-  Migration,
   RouterLoggingService,
   TEST_MODES_ENABLED
 } from 'shared';
 import { MurmurFileProcessor } from './service/murmur-file-processor/murmur-file-processor';
 import { ConsoleLogger } from './service/console-logger/console-logger';
 import { MurmurBluesky } from './service/bluesky/bluesky';
+import { MurmurMigration } from './service/murmur-migration/murmur-migration';
 import { environment } from '../environments/environment';
 
 export const appConfig: ApplicationConfig = {
@@ -42,7 +42,10 @@ export const appConfig: ApplicationConfig = {
       provide: BLUESKY,
       useClass: MurmurBluesky,
     },
-    { provide: MIGRATION, useExisting: Migration },
+    {
+      provide: MIGRATION,
+      useClass: MurmurMigration,
+    },
     RouterLoggingService,
     // Enable test modes in development
     { provide: TEST_MODES_ENABLED, useValue: !environment.production && !!environment.enableTestModes },
