@@ -196,11 +196,6 @@ Tip: On startup, look for the line:
 - **🎨 Unified Plumage**: Consistent M3 Material design across all variants
 - **📱 Adaptive Nesting**: Responsive layouts that work everywhere
 
-## 🔗 **Related Migration Flocks**
-
-- **[Instagram to Bluesky CLI](../instagram-to-bluesky/)** - The migration engine that powers our flock
-- **[WebUI](../webui/)** - Alternative web interface for different migration patterns
-
 ## 📖 **Migration Resources**
 
 - **[Angular CLI Documentation](https://angular.dev/tools/cli)** - Flight instructor's manual
