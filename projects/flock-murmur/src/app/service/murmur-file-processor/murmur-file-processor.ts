@@ -70,7 +70,7 @@ export class MurmurFileProcessor implements WebFileService {
       // Handle specific HTTP error codes
       if (error.status === 413) {
         const fileSizeMB = (file.size / (1024 * 1024)).toFixed(1);
-        throw new Error(`File too large (${fileSizeMB}MB). Maximum size is 50MB. Please compress your Instagram archive or select a smaller date range.`);
+        throw new Error(`File too large (${fileSizeMB}MB). Maximum size is 5TB. Please check your internet connection and try again.`);
       } else if (error.status === 400) {
         throw new Error('Invalid file format. Please select a valid Instagram archive (.zip file).');
       } else if (error.status === 500) {

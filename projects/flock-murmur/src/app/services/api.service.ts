@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, from, switchMap } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { put } from '@vercel/blob';
 
 /**
  * API Service for communicating with Vercel edge functions
@@ -16,7 +17,8 @@ export class ApiService {
   constructor(private http: HttpClient) {}
 
   /**
-   * Upload Instagram archive to server
+   * Upload Instagram archive using client-side multipart upload to Vercel Blob
+   * This bypasses the serverless function's 4.5MB request body limit
    * @param file ZIP file containing Instagram export
    * @returns Observable with upload result including sessionId
    */
@@ -27,16 +29,58 @@ export class ApiService {
     size: number;
     message: string;
   }> {
-    const formData = new FormData();
-    formData.append('archive', file);
+    // Generate session ID
+    const sessionId = `upload_${Date.now()}_${Math.random().toString(36).substring(7)}`;
+    
+    // Upload directly to Vercel Blob using client-side multipart upload
+    // Note: Client-side uploads are always public due to Vercel Blob API limitations
+    return from(put(`archives/${sessionId}/${file.name}`, file, {
+      access: 'public',
+      addRandomSuffix: false,
+    })).pipe(
+      switchMap(blob => 
+        // Store metadata in our API (not the file data)
+        this.storeUploadMetadata(sessionId, file, blob.url).pipe(
+          switchMap(() => 
+            // Return the final result
+            from([{
+              success: true,
+              sessionId,
+              filename: file.name,
+              size: file.size,
+              message: 'File uploaded successfully to Blob storage'
+            }])
+          )
+        )
+      )
+    );
+  }
+
+  /**
+   * Store upload metadata in our API (not the file data)
+   * @param sessionId Session ID for tracking
+   * @param file Original file object
+   * @param blobUrl URL of the uploaded blob
+   * @returns Observable with metadata storage result
+   */
+  private storeUploadMetadata(sessionId: string, file: File, blobUrl: string): Observable<{
+    success: boolean;
+    message: string;
+  }> {
+    const metadata = {
+      sessionId,
+      filename: file.name,
+      size: file.size,
+      mimetype: file.type,
+      blobUrl,
+      uploadedAt: new Date().toISOString(),
+      status: 'uploaded'
+    };
 
     return this.http.post<{
       success: boolean;
-      sessionId: string;
-      filename: string;
-      size: number;
       message: string;
-    }>(`${this.apiUrl}/upload`, formData);
+    }>(`${this.apiUrl}/upload-metadata`, metadata);
   }
 
   /**
