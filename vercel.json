@@ -7,7 +7,7 @@
       "headers": [
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com https://vitals.vercel-insights.com https://vercel.live https://apps.rokt.com https://apps-demo.rokt.com; connect-src 'self' https://va.vercel-scripts.com https://vitals.vercel-insights.com https://vercel.live https://bsky.social https://sourcemaps-wsdk.roktinternal.com https://apps.rokt.com https://apps-demo.rokt.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; frame-src 'self' https://vercel.live"
+          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com https://vitals.vercel-insights.com https://vercel.live https://apps.rokt.com https://apps-demo.rokt.com; connect-src 'self' https://va.vercel-scripts.com https://vitals.vercel-insights.com https://vercel.live https://bsky.social https://sourcemaps-wsdk.roktinternal.com https://apps.rokt.com https://apps-demo.rokt.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com https://apps.rokt.com; img-src 'self' data: https:; frame-src 'self' https://vercel.live"
         }
       ]
     }
@@ -25,7 +25,8 @@
   "functions": {
     "api/upload.ts": {
       "maxDuration": 300,
-      "memory": 1024
+      "memory": 1024,
+      "maxRequestBodySize": "50mb"
     },
     "api/migrate.ts": {
       "maxDuration": 300,

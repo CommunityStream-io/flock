@@ -50,7 +50,7 @@ export default async function handler(
 
     // Parse form data
     const form = formidable({
-      maxFileSize: 500 * 1024 * 1024, // 500MB max
+      maxFileSize: 50 * 1024 * 1024, // 50MB max (matching Vercel limit)
       keepExtensions: true,
     });
 
