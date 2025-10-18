@@ -182,14 +182,19 @@ ng build --configuration=development
 
 The Electron main process uses electron-log to persist logs to disk and prints the absolute log file path on startup.
 
-- Windows: `%APPDATA%/Flock Native/logs/main.log`
-- macOS: `~/Library/Logs/Flock Native/main.log`
-- Linux: `~/.config/Flock Native/logs/main.log`
+- Windows: `%APPDATA%/flock/logs/main.log`
+- macOS: `~/Library/Application Support/flock/logs/main.log`
+- Linux: `~/.config/flock/logs/main.log`
+
+### **Live Log Monitoring**
+To follow logs in real-time during testing:
+```bash
+tail -f ~/Library/Application\ Support/flock/logs/main.log
+```
 
 Tip: On startup, look for the line:
-
 ```
-electron-log initialized. File: <absolute path>
+📁 [LOG] Log file location: <absolute path>
 ```
 
 ## 🦜 **What Each Bird Does Best**
@@ -197,16 +202,15 @@ electron-log initialized. File: <absolute path>
 - **🎭 Mirage Bird (flock-mirage)**: Creates beautiful illusions for development and testing
 - **🌊 Murmuration Bird (flock-murmur)**: Dances gracefully through web browsers with JSZip
 - **🦅 Native Bird (flock-native)**: ⬇️ **[Download available!](https://github.com/CommunityStream-io/flock/releases/latest)** Soars with full desktop power using Electron and Node.js
+  - ✅ **Enhanced Archive Extraction** - Smart Instagram archive detection with robust fallback logic
+  - ✅ **Large File Support** - Successfully processes archives with 5000+ files
+  - ✅ **Real-time Progress** - Live extraction and migration progress tracking
+  - ✅ **Comprehensive Logging** - Detailed logs for troubleshooting and monitoring
 - **🔧 Shared Wisdom**: Environment-aware services that adapt to each bird's needs
 - **🧩 Common Nest**: Reusable components that work perfectly in any environment
 - **📊 Flight Tracking**: Real-time migration progress monitoring
 - **🎨 Unified Plumage**: Consistent M3 Material design across all variants
 - **📱 Adaptive Nesting**: Responsive layouts that work everywhere
-
-## 🔗 **Related Migration Flocks**
-
-- **[Instagram to Bluesky CLI](../instagram-to-bluesky/)** - The migration engine that powers our flock
-- **[WebUI](../webui/)** - Alternative web interface for different migration patterns
 
 ## 📖 **Migration Resources**
 
@@ -222,6 +226,34 @@ electron-log initialized. File: <absolute path>
 3. Implement BDD-style testing for new features
 4. Keep the flock flying in formation (consistency)
 5. Update our migration maps (documentation)
+
+## 🌟 **Open Source & Gratitude**
+
+Flock is built with love and powered by amazing open source contributors. We're grateful for the incredible work of the community that makes projects like this possible.
+
+### **🎨 Special Thanks**
+
+- **[dazulu](https://codepen.io/dazulu/pen/aOzqvz)** - The beautiful 3D butterfly animation used in our splash screen. Created with pure CSS and amazing attention to detail.
+- **[Marco Maroni](https://tangled.org/@marcomaroni.it/instagram-to-bluesky)** - The core instagram-to-bluesky migration library that powers this application. Thank you for making social media migration accessible!
+- **Angular Team** - For the incredible framework that makes this multi-platform architecture possible
+- **Material Design Team** - For the beautiful M3 design system that unifies our flock's appearance
+- **Electron Team** - For enabling native desktop experiences with web technologies
+- **Bluesky Team** - For building the decentralized social platform that makes migration worthwhile
+
+### **📦 Key Dependencies**
+
+This project relies on numerous open source packages. See our [Licenses & Attributions](projects/shared/src/lib/licenses/licenses.html) page for a complete list of acknowledgments.
+
+### **🤝 Contributing**
+
+We welcome contributions! Whether it's:
+- 🐛 Bug fixes
+- ✨ New features  
+- 📚 Documentation improvements
+- 🧪 Test coverage
+- 🎨 UI/UX enhancements
+
+Please see our [Development Guide](docs/DEVELOPMENT.md) for how to get started.
 
 ## ❤️ **Support Flock**
 

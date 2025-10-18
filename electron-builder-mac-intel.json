@@ -1,0 +1,42 @@
+{
+  "appId": "io.communitystream.flock.native",
+  "productName": "Flock Native",
+  "copyright": "Copyright © 2025 CommunityStream.io",
+  "directories": {
+    "buildResources": "projects/flock-native/build",
+    "output": "dist/electron"
+  },
+  "files": [
+    "dist/flock-native/**/*",
+    "projects/flock-native/electron/**/*",
+    "node_modules/**/*",
+    "package.json",
+    "!projects/flock-native/transfer/**/*"
+  ],
+  "asar": false,
+  "extraResources": [],
+  "buildDependenciesFromSource": true,
+  "npmRebuild": true,
+  "extraMetadata": {
+    "main": "projects/flock-native/electron/main.js"
+  },
+  "mac": {
+    "category": "public.app-category.utilities",
+    "target": [
+      {
+        "target": "dmg",
+        "arch": ["x64"]
+      },
+      {
+        "target": "zip",
+        "arch": ["x64"]
+      }
+    ],
+    "icon": "projects/flock-native/build/icon.png"
+  },
+  "publish": {
+    "provider": "github",
+    "owner": "CommunityStream-io",
+    "repo": "flock"
+  }
+}

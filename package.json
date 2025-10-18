@@ -1,6 +1,6 @@
 {
   "name": "flock",
-  "version": "0.5.1",
+  "version": "0.6.7",
   "description": "Migrate Instagram data to Bluesky with native desktop power",
   "repository": {
     "type": "git",
@@ -16,7 +16,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve flock-mirage",
-    "build": "ng build",
+    "build": "npx ng build",
     "build:shared": "ng build --project=shared",
     "build:murmur": "ng build flock-murmur --configuration=production",
     "watch": "ng build --watch --configuration development",
@@ -24,69 +24,31 @@
     "test:watch": "ng test shared --watch",
     "test:ci": "cross-env CI=true ng test shared --watch=false",
     "test:coverage": "cross-env CI=true ng test shared --watch=false --code-coverage",
-    "test:e2e": "concurrently --kill-others --success first \"ng serve flock-mirage --configuration=test-coverage --port=4200\" \"wait-on http://localhost:4200 && cross-env HEADLESS=true wdio run wdio.conf.ts\"",
-    "test:e2e:ci": "concurrently --kill-others --success first \"ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0\" \"wait-on http://localhost:4200 && cross-env CI=true HEADLESS=true wdio run wdio.conf.ts\"",
-    "coverage:all": "npm run test:coverage && npm run test:native:coverage",
-    "test:shared": "ng test shared",
-    "test:shared:watch": "ng test shared --watch",
-    "test:shared:ci": "cross-env CI=true ng test shared",
     "test:native": "ng test flock-native",
     "test:native:watch": "ng test flock-native --watch",
     "test:native:ci": "cross-env CI=true ng test flock-native --watch=false",
     "test:native:coverage": "cross-env CI=true ng test flock-native --watch=false --code-coverage",
-    "test:e2e:headless": "concurrently --kill-others --success first \"ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0\" \"wait-on http://localhost:4200 && cross-env HEADLESS=true wdio run wdio.conf.ts\"",
-    "test:e2e:watch": "wdio run wdio.conf.ts --watch",
-    "test:e2e:watch:headless": "cross-env HEADLESS=true wdio run wdio.conf.ts --watch",
-    "e2e": "wdio run wdio.conf.ts",
-    "e2e:headless": "cross-env HEADLESS=true wdio run wdio.conf.ts",
-    "e2e:debug": "cross-env HEADLESS=true DEBUG_TESTS=true wdio run wdio.conf.ts",
-    "e2e:smoke": "concurrently --kill-others --success first \"ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0\" \"wait-on http://localhost:4200 && cross-env HEADLESS=true TEST_TAGS='@smoke' wdio run wdio.conf.ts\"",
-    "e2e:core": "concurrently --kill-others --success first \"ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0\" \"wait-on http://localhost:4200 && cross-env HEADLESS=true TEST_TAGS='@core' wdio run wdio.conf.ts\"",
-    "e2e:core:auth": "concurrently --kill-others --success first \"ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0\" \"wait-on http://localhost:4200 && cross-env HEADLESS=true TEST_TAGS='@core and @auth' wdio run wdio.conf.ts\"",
-    "e2e:core:upload": "concurrently --kill-others --success first \"ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0\" \"wait-on http://localhost:4200 && cross-env HEADLESS=true TEST_TAGS='@core and @upload' wdio run wdio.conf.ts\"",
-    "e2e:core:config": "concurrently --kill-others --success first \"ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0\" \"wait-on http://localhost:4200 && cross-env HEADLESS=true TEST_TAGS='@core and @config' wdio run wdio.conf.ts\"",
-    "e2e:config": "concurrently --kill-others --success first \"ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0\" \"wait-on http://localhost:4200 && cross-env HEADLESS=true TEST_TAGS='@config' wdio run wdio.conf.ts\"",
-    "e2e:config:smoke": "concurrently --kill-others --success first \"ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0\" \"wait-on http://localhost:4200 && cross-env HEADLESS=true TEST_TAGS='@config and @smoke' wdio run wdio.conf.ts\"",
-    "e2e:config:validation": "concurrently --kill-others --success first \"ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0\" \"wait-on http://localhost:4200 && cross-env HEADLESS=true TEST_TAGS='@config and @validation' wdio run wdio.conf.ts\"",
-    "e2e:config:date-range": "concurrently --kill-others --success first \"ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0\" \"wait-on http://localhost:4200 && cross-env HEADLESS=true TEST_TAGS='@config and @date-range' wdio run wdio.conf.ts\"",
-    "e2e:config:ui": "concurrently --kill-others --success first \"ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0\" \"wait-on http://localhost:4200 && cross-env HEADLESS=true TEST_TAGS='@config and @ui' wdio run wdio.conf.ts\"",
-    "e2e:config:testing": "concurrently --kill-others --success first \"ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0\" \"wait-on http://localhost:4200 && cross-env HEADLESS=true TEST_TAGS='@config and @testing' wdio run wdio.conf.ts\"",
-    "e2e:auth": "concurrently --kill-others --success first \"ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0\" \"wait-on http://localhost:4200 && cross-env HEADLESS=true TEST_TAGS='@auth' wdio run wdio.conf.ts\"",
-    "e2e:auth:smoke": "concurrently --kill-others --success first \"ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0\" \"wait-on http://localhost:4200 && cross-env HEADLESS=true TEST_TAGS='@auth and @smoke' wdio run wdio.conf.ts\"",
-    "e2e:auth:validation": "concurrently --kill-others --success first \"ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0\" \"wait-on http://localhost:4200 && cross-env HEADLESS=true TEST_TAGS='@auth and @validation' wdio run wdio.conf.ts\"",
-    "e2e:auth:guards": "concurrently --kill-others --success first \"ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0\" \"wait-on http://localhost:4200 && cross-env HEADLESS=true TEST_TAGS='@auth and @guards' wdio run wdio.conf.ts\"",
-    "e2e:upload": "concurrently --kill-others --success first \"ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0\" \"wait-on http://localhost:4200 && cross-env HEADLESS=true TEST_TAGS='@upload' wdio run wdio.conf.ts\"",
-    "e2e:upload:smoke": "concurrently --kill-others --success first \"ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0\" \"wait-on http://localhost:4200 && cross-env HEADLESS=true TEST_TAGS='@upload and @smoke' wdio run wdio.conf.ts\"",
-    "e2e:upload:validation": "concurrently --kill-others --success first \"ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0\" \"wait-on http://localhost:4200 && cross-env HEADLESS=true TEST_TAGS='@upload and @validation' wdio run wdio.conf.ts\"",
-    "e2e:web": "concurrently --kill-others --success first \"ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0\" \"wait-on http://localhost:4200 && cross-env PLATFORM=web HEADLESS=true TEST_TAGS='@web or @core' wdio run wdio.web.conf.ts\"",
-    "e2e:electron": "cross-env PLATFORM=electron wdio run wdio.electron.conf.ts",
-    "e2e:electron:build": "npm run pack:win:dir && cross-env PLATFORM=electron TEST_TAGS='@electron or @core' wdio run wdio.electron.conf.ts",
-    "e2e:integration": "concurrently --kill-others --success first \"ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0\" \"wait-on http://localhost:4200 && cross-env HEADLESS=true TEST_TAGS='@integration' wdio run wdio.conf.ts\"",
-    "e2e:integration:full": "concurrently --kill-others --success first \"ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0\" \"wait-on http://localhost:4200 && cross-env HEADLESS=true TEST_TAGS='@integration and @serial' wdio run wdio.conf.ts\"",
-    "e2e:parallel": "concurrently --kill-others --success first \"ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0\" \"wait-on http://localhost:4200 && cross-env HEADLESS=true TEST_TAGS='@parallel' wdio run wdio.conf.ts --maxInstances 4\"",
-    "e2e:regression": "concurrently --kill-others --success first \"ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0\" \"wait-on http://localhost:4200 && cross-env HEADLESS=true TEST_TAGS='@regression or not @skip' wdio run wdio.conf.ts\"",
-    "e2e:ci:web": "concurrently --kill-others --success first \"ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0\" \"wait-on http://localhost:4200 && cross-env CI=true PLATFORM=web HEADLESS=true wdio run wdio.web.conf.ts\"",
+    "coverage:all": "npm run test:coverage && npm run test:native:coverage",
+    "e2e": "npx wdio run wdio.conf.ts",
+    "e2e:headless": "cross-env HEADLESS=true npm run e2e",
+    "e2e:debug": "cross-env HEADLESS=true DEBUG_TESTS=true npm run e2e",
+    "e2e:watch": "npm run e2e -- --watch",
+    "e2e:watch:headless": "cross-env HEADLESS=true npm run e2e -- --watch",
+    "e2e:smoke": "concurrently --kill-others --success first \"ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0\" \"wait-on http://localhost:4200 && cross-env HEADLESS=true TEST_TAGS='@smoke' npm run e2e\"",
+    "e2e:core": "concurrently --kill-others --success first \"ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0\" \"wait-on http://localhost:4200 && cross-env HEADLESS=true TEST_TAGS='@core' npm run e2e\"",
+    "e2e:web": "concurrently --kill-others --success first \"ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0\" \"wait-on http://localhost:4200 && cross-env PLATFORM=web HEADLESS=true TEST_TAGS='@web or @core' npm run e2e\"",
+    "e2e:electron": "cross-env PLATFORM=electron npx wdio run wdio.electron.conf.ts",
+    "e2e:electron:build": "npm run pack:win:dir && cross-env PLATFORM=electron TEST_TAGS='@electron or @core' npm run e2e:electron",
+    "e2e:regression": "concurrently --kill-others --success first \"ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0\" \"wait-on http://localhost:4200 && cross-env HEADLESS=true TEST_TAGS='@regression or not @skip' npm run e2e\"",
+    "e2e:ci:web": "concurrently --kill-others --success first \"ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0\" \"wait-on http://localhost:4200 && cross-env CI=true PLATFORM=web HEADLESS=true npm run e2e\"",
     "e2e:ci:electron": "cross-env CI=true PLATFORM=electron npm run e2e:electron:build",
+    "test:e2e:shard": "mkdir -p logs/metrics logs/drivers allure-results && timeout 300 concurrently --kill-others --success first \"./node_modules/.bin/ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0\" \"wait-on http://localhost:4200 && cross-env CI=true HEADLESS=true SHARDED_TESTS=true npm run e2e -- --shard=${SHARD}/${TOTAL_SHARDS}\"",
     "allure:generate": "npx allure generate allure-results",
     "allure:open": "npx allure open allure-report",
     "allure:serve": "npx allure serve allure-results",
-    "allure:filter-hooks": "node scripts/filter-allure-hooks.js",
-    "allure:test-filter": "node scripts/test-hook-filter.js",
-    "allure:badge": "node scripts/generate-allure-badge.js",
-    "test:e2e:allure": "npm run test:e2e && npm run allure:generate",
-    "test:e2e:headless:allure": "npm run test:e2e:headless && npm run allure:generate",
-    "test:e2e:ci:full": "concurrently --kill-others --success first \"ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0\" \"wait-on http://localhost:4200 && npm run test:e2e:ci\"",
-    "test:e2e:skip-failing": "wdio run wdio.conf.ts --cucumberOpts.tags='not @skip'",
-    "test:e2e:only-passing": "wdio run wdio.conf.ts --cucumberOpts.tags='not @skip'",
-    "test:e2e:run-all": "wdio run wdio.conf.ts --cucumberOpts.tags=''",
-    "test:e2e:shard": "mkdir -p logs/metrics logs/drivers allure-results && timeout 300 concurrently --kill-others --success first \"./node_modules/.bin/ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0\" \"wait-on http://localhost:4200 && cross-env CI=true HEADLESS=true SHARDED_TESTS=true wdio run wdio.conf.ts --shard=${SHARD}/${TOTAL_SHARDS}\"",
-    "test:all": "npm run test:ci && npm run test:e2e:ci",
-    "analyze:metrics": "node scripts/analyze-test-metrics.js",
-    "analyze:metrics:latest": "node scripts/analyze-test-metrics.js $(ls -t logs/metrics/test-metrics-*.json | head -1)",
-    "analyze:timeouts": "node scripts/analyze-timeout-telemetry.js",
-    "analyze:timeouts:latest": "node scripts/analyze-timeout-telemetry.js",
-    "analyze:e2e": "node scripts/analyze-e2e-complexity.js",
-    "analyze:timeouts:ci": "node scripts/analyze-ci-timeouts.js",
+    "allure:filter-hooks": "node scripts/test-reporting/filter-allure-hooks.js",
+    "allure:test-filter": "node scripts/test-reporting/test-hook-filter.js",
+    "allure:badge": "node scripts/test-reporting/generate-allure-badge.js",
     "lint": "ng lint",
     "lint:fix": "ng lint --fix",
     "lint:shared": "ng lint shared",
@@ -95,33 +57,33 @@
     "lint:flock-mirage": "ng lint flock-mirage",
     "lint:flock-murmur": "ng lint flock-murmur",
     "lint:all": "npm run lint:shared && npm run lint:flock-native && npm run lint:flock-mirage && npm run lint:flock-murmur",
-    "agent:build": "docker build -f docker/Dockerfile.background-agent -t cursor-background-agent:latest .",
-    "agent:run": "docker run --rm -it -v $PWD:/workspace cursor-background-agent:latest",
-    "agent:run:auth": "docker run --rm -it -e GH_TOKEN=$GH_TOKEN -v $PWD:/workspace cursor-background-agent:latest bash -lc 'gh auth status && gh repo view --json nameWithOwner,visibility'",
-    "start:native": "concurrently --kill-others --success first \"ng serve flock-native --port=4201\" \"wait-on http://localhost:4201 && electron projects/flock-native/electron/main.js\"",
-    "build:native": "node projects/flock-native/scripts/create-icon.js && ng build flock-native --configuration=production",
-    "sentry:upload:native": "sentry-cli sourcemaps upload --org $SENTRY_ORG --project flock-native-renderer dist/flock-native/browser/",
-    "sentry:upload:mirage": "sentry-cli sourcemaps upload --org $SENTRY_ORG --project flock-mirage dist/flock-mirage/browser/",
-    "sentry:upload:all": "npm run sentry:upload:native && npm run sentry:upload:mirage",
+    "start:native": "concurrently --kill-others --success first \"npx ng serve flock-native --port=4201\" \"wait-on http://localhost:4201 && electron projects/flock-native/electron/main.js\"",
+    "build:native": "node projects/flock-native/scripts/create-icon.js && npx ng build flock-native --configuration=production",
+    "build:native:prod": "npm run build:native",
     "electron:dev": "electron projects/flock-native/electron/main.js",
     "electron:prod": "cross-env ELECTRON_IS_PACKAGED=1 electron projects/flock-native/electron/main.js",
-    "build:native:prod": "npm run build:native && node scripts/inject-sentry-dsn.js && node scripts/generate-sentry-config.js",
-    "pack:win": "npm run clean:electron && npm run build:native:prod && electron-builder --win",
-    "pack:win:dir": "npm run clean:electron && npm run build:native && electron-builder --win --dir",
-    "pack:win:docker": "bash scripts/docker-build-electron.sh",
-    "electron:docker:build": "electron-builder --win --dir --config.directories.output=/app/dist/electron",
-    "pack:mac": "npm run clean:electron && npm run build:native:prod && electron-builder --mac",
-    "pack:linux": "npm run clean:electron && npm run build:native:prod && electron-builder --linux",
-    "pack:all": "npm run clean:electron && npm run build:native:prod && electron-builder -mwl",
-    "clean": "node scripts/clean.js",
+    "pack:win": "npm run clean:electron && npm run build:native:prod && npm run sharp:win && electron-builder --config electron-builder-win.json",
+    "pack:win:dir": "npm run clean:electron && npm run build:native && npm run sharp:win && electron-builder --config electron-builder-win.json --dir",
+    "pack:mac:intel": "npm run clean:electron && npm run build:native:prod && npm run sharp:mac:intel && electron-builder --config electron-builder-mac-intel.json",
+    "pack:mac:arm": "npm run clean:electron && npm run build:native:prod && npm run sharp:mac:arm && electron-builder --config electron-builder-mac-arm.json",
+    "pack:mac:all": "npm run pack:mac:intel && npm run pack:mac:arm",
+    "pack:linux": "npm run clean:electron && npm run build:native:prod && npm run sharp:linux && electron-builder --config electron-builder-linux.json",
+    "build:all": "npm run pack:win && npm run pack:mac:intel && npm run pack:linux",
+    "sharp:mac:intel": "rimraf ./node_modules/sharp && rimraf ./node_modules/@straiforos/instagramtobluesky/node_modules/sharp && npm install --include=optional sharp && cd node_modules/@straiforos/instagramtobluesky && npm install --include=optional sharp",
+    "sharp:mac:arm": "rimraf ./node_modules/sharp && rimraf ./node_modules/@straiforos/instagramtobluesky/node_modules/sharp && npm install --include=optional sharp && cd node_modules/@straiforos/instagramtobluesky && npm install --include=optional sharp",
+    "sharp:win": "rimraf ./node_modules/sharp && rimraf ./node_modules/@straiforos/instagramtobluesky/node_modules/sharp && npm install --include=optional sharp && cd node_modules/@straiforos/instagramtobluesky && npm install --include=optional sharp",
+    "sharp:linux": "rimraf ./node_modules/sharp && rimraf ./node_modules/@straiforos/instagramtobluesky/node_modules/sharp && npm install --include=optional sharp && cd node_modules/@straiforos/instagramtobluesky && npm install --include=optional sharp",
+    "sentry:upload:native": "sentry-cli sourcemaps upload --org $SENTRY_ORG --project flock-native --release $SENTRY_RELEASE dist/flock-native/browser/",
+    "sentry:upload:mirage": "sentry-cli sourcemaps upload --org $SENTRY_ORG --project flock-mirage --release $SENTRY_RELEASE dist/flock-mirage/browser/",
+    "sentry:upload:all": "npm run sentry:upload:native && npm run sentry:upload:mirage",
+    "clean": "node scripts/clean/clean.js",
     "clean:dist": "rimraf dist",
-    "clean:electron": "node scripts/clean-electron.js",
+    "clean:electron": "node scripts/clean/clean-electron.js",
     "clean:coverage": "rimraf coverage allure-results allure-report",
     "clean:logs": "rimraf logs",
     "clean:node_modules": "rimraf node_modules",
-    "clean:all": "node scripts/clean.js && npm run clean:node_modules",
-    "rebuild": "npm run clean:all && npm install",
-    "logs:tail": "bash scripts/find-electron-log.sh 200"
+    "clean:all": "node scripts/clean/clean.js && npm run clean:node_modules",
+    "rebuild": "npm run clean:all && npm install"
   },
   "prettier": {
     "overrides": [
@@ -132,94 +94,6 @@
         }
       }
     ]
-  },
-  "build": {
-    "appId": "io.communitystream.flock.native",
-    "productName": "Flock Native",
-    "copyright": "Copyright © 2025 CommunityStream.io",
-    "directories": {
-      "buildResources": "projects/flock-native/build",
-      "output": "dist/electron"
-    },
-    "files": [
-      "dist/flock-native/**/*",
-      "projects/flock-native/electron/**/*",
-      "node_modules/**/*",
-      "package.json",
-      "!projects/flock-native/transfer/**/*"
-    ],
-    "asar": false,
-    "extraResources": [],
-    "buildDependenciesFromSource": false,
-    "extraMetadata": {
-      "main": "projects/flock-native/electron/main.js"
-    },
-    "win": {
-      "target": [
-        {
-          "target": "portable",
-          "arch": [
-            "x64"
-          ]
-        }
-      ],
-      "icon": "projects/flock-native/build/icon.ico",
-      "publisherName": "CommunityStream.io",
-      "sign": null,
-      "signDlls": false
-    },
-    "mac": {
-      "category": "public.app-category.utilities",
-      "target": [
-        {
-          "target": "dmg",
-          "arch": [
-            "x64",
-            "arm64"
-          ]
-        },
-        {
-          "target": "zip",
-          "arch": [
-            "x64",
-            "arm64"
-          ]
-        }
-      ],
-      "icon": "projects/flock-native/build/icon.png"
-    },
-    "linux": {
-      "target": [
-        {
-          "target": "AppImage",
-          "arch": [
-            "x64"
-          ]
-        },
-        {
-          "target": "deb",
-          "arch": [
-            "x64"
-          ]
-        },
-        {
-          "target": "rpm",
-          "arch": [
-            "x64"
-          ]
-        }
-      ],
-      "icon": "projects/flock-native/build/icons",
-      "category": "Utility",
-      "maintainer": "CommunityStream.io",
-      "vendor": "CommunityStream.io",
-      "description": "Migrate Instagram data to Bluesky with native desktop power"
-    },
-    "publish": {
-      "provider": "github",
-      "owner": "CommunityStream-io",
-      "repo": "flock"
-    }
   },
   "private": true,
   "dependencies": {
@@ -237,6 +111,7 @@
     "@angular/router": "^20.1.0",
     "@fortawesome/angular-fontawesome": "^3.0.0",
     "@fortawesome/fontawesome-svg-core": "^7.1.0",
+    "@fortawesome/free-brands-svg-icons": "^7.1.0",
     "@fortawesome/free-solid-svg-icons": "^7.1.0",
     "@sentry/angular": "^10.19.0",
     "@sentry/browser": "^10.19.0",
@@ -272,7 +147,7 @@
     "@typescript-eslint/eslint-plugin": "7.11.0",
     "@typescript-eslint/parser": "7.11.0",
     "@wdio/allure-reporter": "^9.19.1",
-    "@wdio/cli": "^9.19.1",
+    "@wdio/cli": "^9.20.0",
     "@wdio/cucumber-framework": "^9.19.1",
     "@wdio/devtools-service": "^8.42.0",
     "@wdio/local-runner": "^9.19.1",
