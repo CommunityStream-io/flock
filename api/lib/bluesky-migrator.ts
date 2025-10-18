@@ -4,9 +4,9 @@ import {
   uploadMediaAndEmbed,
   ProcessedPost,
   MediaProcessResult,
-  Logger,
-  consoleLogger
+  Logger
 } from '@straiforos/instagramtobluesky';
+import { createVercelLogger } from './vercel-logger';
 
 /**
  * Bluesky Migrator for Serverless Environment
@@ -27,9 +27,11 @@ export class BlueskyMigrator {
     this.credentials = credentials;
     this.sessionId = sessionId;
     this.config = config;
-    this.logger = consoleLogger;
     
-    // Initialize library's BlueskyClient with console logger
+    // Initialize Vercel logger with session context
+    this.logger = createVercelLogger('BlueskyMigrator', sessionId);
+    
+    // Initialize library's BlueskyClient with Vercel logger
     this.blueskyClient = new BlueskyClient(
       credentials.username,
       credentials.password,

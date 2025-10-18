@@ -6,12 +6,12 @@ import {
   decodeUTF8,
   sortPostsByCreationTime,
   readJsonFile,
-  Logger,
-  consoleLogger
+  Logger
 } from '@straiforos/instagramtobluesky';
 import path from 'path';
 import os from 'os';
 import fs from 'fs/promises';
+import { createVercelLogger } from './vercel-logger';
 
 /**
  * Instagram Archive Processor for Serverless Environment
@@ -25,7 +25,7 @@ export class InstagramArchiveProcessor {
   constructor(sessionId: string, archiveBuffer: Buffer) {
     this.sessionId = sessionId;
     this.archiveBuffer = archiveBuffer;
-    this.logger = consoleLogger; // Vercel Functions use console
+    this.logger = createVercelLogger('InstagramProcessor', sessionId);
   }
 
   /**

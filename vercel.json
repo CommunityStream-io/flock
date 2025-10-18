@@ -1,6 +1,17 @@
 {
   "version": 2,
   "name": "flock-murmur",
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com https://vitals.vercel-insights.com https://vercel.live; connect-src 'self' https://va.vercel-scripts.com https://vitals.vercel-insights.com https://vercel.live https://bsky.social; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; frame-src 'self' https://vercel.live"
+        }
+      ]
+    }
+  ],
   "routes": [
     {
       "src": "/api/(.*)",
