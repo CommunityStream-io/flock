@@ -5,7 +5,13 @@ import { BlueskyMigrator } from './lib/bluesky-migrator';
 
 /**
  * Migration Handler - Processes Instagram archive and migrates to Bluesky
- * This is a long-running function that handles the entire migration process
+ * 
+ * Now powered by @straiforos/instagramtobluesky library
+ * 
+ * Architecture:
+ * - InstagramArchiveProcessor: Uses library's InstagramMediaProcessor
+ * - BlueskyMigrator: Uses library's BlueskyClient and uploadMediaAndEmbed
+ * - Progress tracking: Custom Vercel KV integration (not in library)
  * 
  * TODO: Current limits are constrained by Vercel free tier (Hobby plan)
  * - maxDuration: 300s (5 min) - Upgrade to Pro for 900s (15 min)

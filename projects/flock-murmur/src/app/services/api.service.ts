@@ -125,4 +125,25 @@ export class ApiService {
       params: { sessionId }
     });
   }
+
+  /**
+   * Authenticate with Bluesky
+   * Validates credentials before starting migration
+   * @param credentials Bluesky username and password
+   * @returns Observable with authentication result
+   */
+  authenticateBluesky(credentials: {
+    username: string;
+    password: string;
+  }): Observable<{
+    success: boolean;
+    message: string;
+    username: string;
+  }> {
+    return this.http.post<{
+      success: boolean;
+      message: string;
+      username: string;
+    }>(`${this.apiUrl}/auth-bluesky`, credentials);
+  }
 }

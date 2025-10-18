@@ -1,196 +1,155 @@
 import AdmZip from 'adm-zip';
-import { kv } from '@vercel/kv';
-// TODO: Import and use the actual library processors when available
-// import { 
-//   InstagramMediaProcessor, 
-//   MediaProcessResult,
-//   InstagramExportedPost
-// } from '@straiforos/instagramtobluesky';
+import { 
+  InstagramMediaProcessor,
+  InstagramExportedPost,
+  ProcessedPost,
+  decodeUTF8,
+  sortPostsByCreationTime,
+  readJsonFile,
+  Logger,
+  consoleLogger
+} from '@straiforos/instagramtobluesky';
+import path from 'path';
+import os from 'os';
+import fs from 'fs/promises';
 
 /**
- * Instagram Archive Processor
- * Processes Instagram archive data in a serverless environment
- * 
- * NOTE: This is a temporary implementation that should be replaced with
- * the actual @straiforos/instagramtobluesky library processors.
- * The library's InstagramMediaProcessor and related utilities should be
- * used instead of this custom implementation.
+ * Instagram Archive Processor for Serverless Environment
+ * Uses @straiforos/instagramtobluesky library with serverless adaptations
  */
 export class InstagramArchiveProcessor {
   private sessionId: string;
   private archiveBuffer: Buffer;
+  private logger: Logger;
 
   constructor(sessionId: string, archiveBuffer: Buffer) {
     this.sessionId = sessionId;
     this.archiveBuffer = archiveBuffer;
+    this.logger = consoleLogger; // Vercel Functions use console
   }
 
   /**
-   * Extract and process Instagram archive
-   * Returns array of processed posts ready for migration
-   * 
-   * TODO: Replace with library's InstagramMediaProcessor.processArchive()
+   * Extract and process Instagram archive using library
+   * Adapts file-based library API to buffer-based serverless API
    */
-  async extractAndProcessArchive(): Promise<any[]> {
+  async extractAndProcessArchive(): Promise<ProcessedPost[]> {
+    // Create temporary directory for extraction
+    const tmpDir = path.join(os.tmpdir(), `instagram-${this.sessionId}`);
+    await fs.mkdir(tmpDir, { recursive: true });
+
     try {
+      this.logger.debug?.('[Instagram] Extracting archive to temp directory:', tmpDir);
+      
       // Extract ZIP archive
       const zip = new AdmZip(this.archiveBuffer);
-      const zipEntries = zip.getEntries();
+      zip.extractAllTo(tmpDir, true);
 
-      // Find posts JSON file
-      const postsEntry = zipEntries.find(
-        entry => entry.entryName.includes('posts_1.json') || 
-                 entry.entryName.includes('content/posts_1.json')
+      // Find posts JSON file (different Instagram export formats)
+      const postsJsonPath = await this.findPostsJson(tmpDir);
+      const reelsJsonPath = await this.findReelsJson(tmpDir);
+
+      this.logger.debug?.('[Instagram] Reading posts from:', postsJsonPath);
+
+      // Read and parse posts using library utilities
+      const postsData = readJsonFile(
+        postsJsonPath, 
+        'No posts found in archive. Check export format.'
+      );
+      
+      // Read reels if available
+      let reelsData: any[] = [];
+      if (reelsJsonPath) {
+        try {
+          const reelsJson: any = readJsonFile(reelsJsonPath, 'No reels found');
+          reelsData = reelsJson['ig_reels_media'] || [];
+        } catch (error) {
+          this.logger.warn?.('[Instagram] No reels found or error reading reels');
+        }
+      }
+
+      // Decode and combine posts
+      const allPosts: InstagramExportedPost[] = decodeUTF8([
+        ...postsData,
+        ...reelsData
+      ]);
+
+      this.logger.info?.(`[Instagram] Found ${allPosts.length} total posts`);
+
+      // Sort by creation time
+      const sortedPosts = allPosts.sort(sortPostsByCreationTime);
+
+      // Use library's InstagramMediaProcessor with console logger
+      const processor = new InstagramMediaProcessor(
+        sortedPosts,
+        tmpDir,
+        undefined, // Use default MediaProcessorFactory
+        this.logger
       );
 
-      if (!postsEntry) {
-        throw new Error('Posts data not found in archive');
-      }
+      // Process posts using library logic
+      const processedPosts = await processor.process();
 
-      // Parse posts data
-      const postsData = JSON.parse(postsEntry.getData().toString('utf8'));
-      
-      // Process media files
-      const posts = await this.processPosts(postsData, zip);
+      this.logger.info?.(`[Instagram] Processed ${processedPosts.length} posts successfully`);
 
-      return posts;
+      return processedPosts;
     } catch (error: any) {
-      console.error('Archive processing error:', error);
+      this.logger.error('[Instagram] Archive processing error:', error);
       throw new Error(`Failed to process archive: ${error.message}`);
-    }
-  }
-
-  /**
-   * Process posts and extract media
-   * 
-   * TODO: Replace with library's sortPostsByCreationTime and related utilities
-   */
-  private async processPosts(postsData: any, zip: AdmZip): Promise<any[]> {
-    const posts: any[] = [];
-
-    // Handle different Instagram export formats
-    const postsArray = Array.isArray(postsData) ? postsData : postsData.posts || [];
-
-    for (const post of postsArray) {
+    } finally {
+      // Cleanup temp directory
       try {
-        const processedPost = await this.processPost(post, zip);
-        if (processedPost) {
-          posts.push(processedPost);
-        }
-      } catch (error) {
-        console.error('Error processing post:', error);
-        // Continue with other posts
+        await fs.rm(tmpDir, { recursive: true, force: true });
+        this.logger.debug?.('[Instagram] Cleaned up temp directory');
+      } catch (cleanupError) {
+        this.logger.warn?.('[Instagram] Failed to cleanup temp directory:', cleanupError);
       }
     }
-
-    return posts;
   }
 
   /**
-   * Process individual post
-   * 
-   * TODO: Use library's InstagramExportedPost type and processing logic
+   * Find posts JSON in various Instagram export formats
    */
-  private async processPost(post: any, zip: AdmZip): Promise<any | null> {
-    try {
-      // Extract post data
-      const caption = this.extractCaption(post);
-      const createdAt = this.extractTimestamp(post);
-      const media = await this.extractMedia(post, zip);
+  private async findPostsJson(baseDir: string): Promise<string> {
+    const possiblePaths = [
+      path.join(baseDir, 'your_instagram_activity/content/posts_1.json'),
+      path.join(baseDir, 'your_instagram_activity/media/posts_1.json'),
+      path.join(baseDir, 'content/posts_1.json'),
+      path.join(baseDir, 'posts_1.json'),
+      path.join(baseDir, 'posts.json'),
+    ];
 
-      if (!media || media.length === 0) {
-        return null; // Skip posts without media
-      }
-
-      return {
-        caption,
-        createdAt,
-        media,
-        originalPost: post
-      };
-    } catch (error) {
-      console.error('Error processing individual post:', error);
-      return null;
-    }
-  }
-
-  /**
-   * Extract caption from post
-   * 
-   * TODO: Use library's decodeUTF8 utility for proper text handling
-   */
-  private extractCaption(post: any): string {
-    if (post.title) {
-      return post.title;
-    }
-    if (post.caption) {
-      return post.caption;
-    }
-    if (post.media?.[0]?.title) {
-      return post.media[0].title;
-    }
-    return '';
-  }
-
-  /**
-   * Extract timestamp from post
-   */
-  private extractTimestamp(post: any): Date {
-    if (post.creation_timestamp) {
-      return new Date(post.creation_timestamp * 1000);
-    }
-    if (post.taken_at) {
-      return new Date(post.taken_at * 1000);
-    }
-    if (post.media?.[0]?.creation_timestamp) {
-      return new Date(post.media[0].creation_timestamp * 1000);
-    }
-    return new Date();
-  }
-
-  /**
-   * Extract media files from post
-   */
-  private async extractMedia(post: any, zip: AdmZip): Promise<any[]> {
-    const mediaFiles: any[] = [];
-    const mediaArray = post.media || [];
-
-    for (const mediaItem of mediaArray) {
+    for (const filePath of possiblePaths) {
       try {
-        const mediaPath = mediaItem.uri;
-        if (!mediaPath) continue;
-
-        // Find media file in ZIP
-        const mediaEntry = zip.getEntries().find(
-          entry => entry.entryName.includes(mediaPath) || 
-                   entry.entryName.endsWith(mediaPath)
-        );
-
-        if (mediaEntry) {
-          const mediaBuffer = mediaEntry.getData();
-          const mediaType = this.getMediaType(mediaPath);
-
-          mediaFiles.push({
-            buffer: mediaBuffer,
-            type: mediaType,
-            path: mediaPath,
-            size: mediaBuffer.length
-          });
-        }
-      } catch (error) {
-        console.error('Error extracting media:', error);
+        await fs.access(filePath);
+        return filePath;
+      } catch {
+        continue;
       }
     }
 
-    return mediaFiles;
+    throw new Error('Posts data not found in archive. Unsupported export format.');
   }
 
   /**
-   * Determine media type from file path
+   * Find reels JSON in archive (optional)
    */
-  private getMediaType(path: string): 'image' | 'video' {
-    const ext = path.toLowerCase().split('.').pop();
-    const videoExtensions = ['mp4', 'mov', 'avi', 'webm'];
-    return videoExtensions.includes(ext || '') ? 'video' : 'image';
+  private async findReelsJson(baseDir: string): Promise<string | null> {
+    const possiblePaths = [
+      path.join(baseDir, 'your_instagram_activity/content/reels.json'),
+      path.join(baseDir, 'your_instagram_activity/media/reels.json'),
+      path.join(baseDir, 'content/reels.json'),
+      path.join(baseDir, 'reels.json'),
+    ];
+
+    for (const filePath of possiblePaths) {
+      try {
+        await fs.access(filePath);
+        return filePath;
+      } catch {
+        continue;
+      }
+    }
+
+    return null;
   }
 }

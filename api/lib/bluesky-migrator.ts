@@ -1,26 +1,23 @@
 import { kv } from '@vercel/kv';
-// TODO: Import and use the actual library utilities when available
-// import { 
-//   BlueskyClient,
-//   uploadMediaAndEmbed,
-//   PostRecordImpl
-// } from '@straiforos/instagramtobluesky';
+import { 
+  BlueskyClient,
+  uploadMediaAndEmbed,
+  ProcessedPost,
+  MediaProcessResult,
+  Logger,
+  consoleLogger
+} from '@straiforos/instagramtobluesky';
 
 /**
- * Bluesky Migrator
- * Handles authentication and migration to Bluesky
- * 
- * NOTE: This is a temporary implementation that should be replaced with
- * the actual @straiforos/instagramtobluesky library's BlueskyClient and
- * related utilities. The library provides proper rate limiting, media handling,
- * and error recovery that should be used instead of this custom implementation.
+ * Bluesky Migrator for Serverless Environment
+ * Uses @straiforos/instagramtobluesky library with Vercel KV progress tracking
  */
 export class BlueskyMigrator {
   private credentials: { username: string; password: string };
   private sessionId: string;
   private config: any;
-  private agent: any;
-  private apiUrl: string;
+  private blueskyClient: BlueskyClient;
+  private logger: Logger;
 
   constructor(
     credentials: { username: string; password: string },
@@ -30,52 +27,34 @@ export class BlueskyMigrator {
     this.credentials = credentials;
     this.sessionId = sessionId;
     this.config = config;
-    this.apiUrl = process.env.BLUESKY_API_URL || 'https://bsky.social/xrpc';
+    this.logger = consoleLogger;
+    
+    // Initialize library's BlueskyClient with console logger
+    this.blueskyClient = new BlueskyClient(
+      credentials.username,
+      credentials.password,
+      this.logger
+    );
   }
 
   /**
-   * Authenticate with Bluesky
-   * 
-   * TODO: Replace with library's BlueskyClient authentication
+   * Authenticate with Bluesky using library client
    */
   async authenticate(): Promise<void> {
     try {
-      const response = await fetch(`${this.apiUrl}/com.atproto.server.createSession`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          identifier: this.credentials.username,
-          password: this.credentials.password,
-        }),
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(`Authentication failed: ${error.message || response.statusText}`);
-      }
-
-      const session = await response.json();
-      this.agent = {
-        did: session.did,
-        accessJwt: session.accessJwt,
-        refreshJwt: session.refreshJwt,
-      };
-
-      console.log('Authenticated with Bluesky:', session.handle);
+      this.logger.info?.('[Bluesky] Authenticating with Bluesky...');
+      await this.blueskyClient.login();
+      this.logger.info?.('[Bluesky] Authentication successful');
     } catch (error: any) {
-      console.error('Bluesky authentication error:', error);
+      this.logger.error('[Bluesky] Authentication error:', error);
       throw new Error(`Failed to authenticate with Bluesky: ${error.message}`);
     }
   }
 
   /**
-   * Migrate posts to Bluesky
-   * 
-   * TODO: Use library's migration logic with proper error handling and rate limiting
+   * Migrate processed posts to Bluesky with progress tracking
    */
-  async migratePosts(posts: any[]): Promise<{
+  async migratePosts(posts: ProcessedPost[]): Promise<{
     success: number;
     failed: number;
     mediaCount: number;
@@ -90,13 +69,13 @@ export class BlueskyMigrator {
     const filteredPosts = this.filterPostsByDate(posts);
     const totalPosts = filteredPosts.length;
 
-    console.log(`Starting migration of ${totalPosts} posts...`);
+    this.logger.info?.(`[Bluesky] Starting migration of ${totalPosts} posts...`);
 
     for (let i = 0; i < filteredPosts.length; i++) {
       const post = filteredPosts[i];
       
       try {
-        // Update progress
+        // Update progress in KV
         const percentage = 40 + Math.floor((i / totalPosts) * 50);
         await this.updateProgress({
           status: 'processing',
@@ -109,24 +88,26 @@ export class BlueskyMigrator {
 
         // Check simulation mode
         if (this.config.simulate) {
-          console.log(`[SIMULATION] Would migrate post ${i + 1}:`, post.caption?.substring(0, 50));
+          this.logger.info?.(`[Bluesky] [SIMULATION] Would migrate post ${i + 1}:`, 
+            post.postText?.substring(0, 50));
           successCount++;
-          totalMedia += post.media?.length || 0;
+          totalMedia += post.embeddedMedia?.length || 0;
         } else {
-          await this.createBlueskyPost(post);
+          // Use library's upload and post creation
+          await this.migratePost(post);
           successCount++;
-          totalMedia += post.media?.length || 0;
+          totalMedia += post.embeddedMedia?.length || 0;
         }
 
-        // Rate limiting: wait 3 seconds between posts
+        // Rate limiting: 3 seconds between posts (Bluesky API requirement)
         if (i < filteredPosts.length - 1) {
           await this.delay(3000);
         }
       } catch (error: any) {
-        console.error(`Failed to migrate post ${i + 1}:`, error);
+        this.logger.error(`[Bluesky] Failed to migrate post ${i + 1}:`, error);
         failedCount++;
         
-        // Continue with next post even if one fails
+        // Continue with next post unless stopOnError configured
         if (this.config.stopOnError) {
           throw error;
         }
@@ -134,6 +115,8 @@ export class BlueskyMigrator {
     }
 
     const duration = ((Date.now() - startTime) / 1000).toFixed(1);
+    
+    this.logger.info?.(`[Bluesky] Migration complete: ${successCount} success, ${failedCount} failed`);
     
     return {
       success: successCount,
@@ -144,9 +127,55 @@ export class BlueskyMigrator {
   }
 
   /**
+   * Migrate a single post using library utilities
+   */
+  private async migratePost(post: ProcessedPost): Promise<void> {
+    try {
+      const { postDate, postText, embeddedMedia } = post;
+
+      if (!postDate) {
+        throw new Error('Post missing creation date');
+      }
+
+      if (!embeddedMedia || embeddedMedia.length === 0) {
+        this.logger.warn?.('[Bluesky] Post has no media, skipping');
+        return;
+      }
+
+      // Use library's uploadMediaAndEmbed function
+      const { uploadedMedia, importedMediaCount } = await uploadMediaAndEmbed(
+        postText,
+        embeddedMedia,
+        this.blueskyClient,
+        this.logger
+      );
+
+      if (!uploadedMedia) {
+        throw new Error('Failed to upload media');
+      }
+
+      // Use library's createPost method
+      const postUrl = await this.blueskyClient.createPost(
+        postDate,
+        postText,
+        uploadedMedia
+      );
+
+      if (postUrl) {
+        this.logger.info?.(`[Bluesky] Post created: ${postUrl}`);
+      } else {
+        throw new Error('Failed to create post - no URL returned');
+      }
+    } catch (error: any) {
+      this.logger.error('[Bluesky] Error migrating post:', error);
+      throw error;
+    }
+  }
+
+  /**
    * Filter posts by configured date range
    */
-  private filterPostsByDate(posts: any[]): any[] {
+  private filterPostsByDate(posts: ProcessedPost[]): ProcessedPost[] {
     if (!this.config.startDate && !this.config.endDate) {
       return posts;
     }
@@ -155,7 +184,9 @@ export class BlueskyMigrator {
     const endDate = this.config.endDate ? new Date(this.config.endDate) : null;
 
     return posts.filter(post => {
-      const postDate = post.createdAt;
+      const postDate = post.postDate;
+      
+      if (!postDate) return false;
       
       if (startDate && postDate < startDate) {
         return false;
@@ -170,143 +201,7 @@ export class BlueskyMigrator {
   }
 
   /**
-   * Create a post on Bluesky
-   * 
-   * TODO: Replace with library's uploadMediaAndEmbed and post creation utilities
-   */
-  private async createBlueskyPost(post: any): Promise<void> {
-    try {
-      // Upload media first
-      const mediaBlobs = await this.uploadMedia(post.media || []);
-
-      // Group images in chunks of 4, videos individually
-      const mediaPosts = this.groupMedia(post.media || [], mediaBlobs);
-
-      // Create post(s) with media
-      for (const mediaGroup of mediaPosts) {
-        await this.createPostWithMedia(post.caption, mediaGroup, post.createdAt);
-      }
-    } catch (error: any) {
-      console.error('Error creating Bluesky post:', error);
-      throw error;
-    }
-  }
-
-  /**
-   * Upload media to Bluesky
-   * 
-   * TODO: Use library's uploadMediaAndEmbed function
-   */
-  private async uploadMedia(media: any[]): Promise<any[]> {
-    const blobs: any[] = [];
-
-    for (const mediaItem of media) {
-      try {
-        const response = await fetch(`${this.apiUrl}/com.atproto.repo.uploadBlob`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': mediaItem.type === 'video' ? 'video/mp4' : 'image/jpeg',
-            'Authorization': `Bearer ${this.agent.accessJwt}`,
-          },
-          body: mediaItem.buffer,
-        });
-
-        if (!response.ok) {
-          throw new Error(`Media upload failed: ${response.statusText}`);
-        }
-
-        const result = await response.json();
-        blobs.push(result.blob);
-      } catch (error) {
-        console.error('Error uploading media:', error);
-        // Continue with other media
-      }
-    }
-
-    return blobs;
-  }
-
-  /**
-   * Group media for posting (images in chunks of 4, videos individually)
-   */
-  private groupMedia(media: any[], blobs: any[]): any[][] {
-    const groups: any[][] = [];
-    const images: any[] = [];
-    
-    for (let i = 0; i < media.length; i++) {
-      const mediaItem = media[i];
-      const blob = blobs[i];
-      
-      if (!blob) continue;
-
-      if (mediaItem.type === 'video') {
-        // Videos go in their own post
-        groups.push([{ ...mediaItem, blob }]);
-      } else {
-        // Collect images
-        images.push({ ...mediaItem, blob });
-      }
-    }
-
-    // Group images in chunks of 4
-    for (let i = 0; i < images.length; i += 4) {
-      groups.push(images.slice(i, i + 4));
-    }
-
-    return groups;
-  }
-
-  /**
-   * Create a post with media on Bluesky
-   */
-  private async createPostWithMedia(
-    caption: string,
-    mediaGroup: any[],
-    createdAt: Date
-  ): Promise<void> {
-    try {
-      const embed = {
-        $type: 'app.bsky.embed.images',
-        images: mediaGroup.map(media => ({
-          image: media.blob,
-          alt: caption || 'Migrated from Instagram'
-        }))
-      };
-
-      const record = {
-        $type: 'app.bsky.feed.post',
-        text: caption || '',
-        createdAt: createdAt.toISOString(),
-        embed: mediaGroup.length > 0 ? embed : undefined
-      };
-
-      const response = await fetch(`${this.apiUrl}/com.atproto.repo.createRecord`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${this.agent.accessJwt}`,
-        },
-        body: JSON.stringify({
-          repo: this.agent.did,
-          collection: 'app.bsky.feed.post',
-          record
-        }),
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(`Post creation failed: ${error.message || response.statusText}`);
-      }
-
-      console.log('Post created successfully');
-    } catch (error: any) {
-      console.error('Error creating post with media:', error);
-      throw error;
-    }
-  }
-
-  /**
-   * Update migration progress
+   * Update migration progress in Vercel KV
    */
   private async updateProgress(update: any): Promise<void> {
     try {
@@ -316,10 +211,10 @@ export class BlueskyMigrator {
         ...update,
         updatedAt: new Date().toISOString()
       }, {
-        ex: 7200
+        ex: 7200 // Expire in 2 hours
       });
     } catch (error) {
-      console.error('Error updating progress:', error);
+      this.logger.error('[Progress] Error updating progress:', error);
       // Don't throw - progress updates shouldn't stop migration
     }
   }
