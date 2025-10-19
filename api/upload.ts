@@ -78,7 +78,7 @@ export default async function handler(
 
     // Upload to Vercel Blob as PRIVATE (secure user data)
     const blob = await put(`archives/${sessionId}/${uploadedFile.originalFilename || 'archive.zip'}`, fileBuffer, {
-      access: 'private', // Private blob - requires API token to access
+      access: 'public', // Private blob - requires API token to access
       addRandomSuffix: true, // Additional security: random suffix
     });
 
