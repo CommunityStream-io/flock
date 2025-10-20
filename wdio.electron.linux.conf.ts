@@ -36,7 +36,7 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
     },
   ],
   
-  logLevel: process.env.DEBUG_TESTS === 'true' ? 'info' : 'error',
+  logLevel: 'info',
   bail: 0,
   baseUrl: 'app:///',
   waitforTimeout: timeouts.waitforTimeout,
