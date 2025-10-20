@@ -3,6 +3,7 @@ import { BlueSkyService, Credentials, AuthResult, ConnectionResult, LOGGER, Logg
 import { PostRecordImpl } from '@straiforos/instagramtobluesky';
 
 /**
+ * TODO swap for the BlueskyService from the shared library
  * Native Bluesky service for Flock Native
  * Uses real Bluesky API calls via the instagramtobluesky library
  */

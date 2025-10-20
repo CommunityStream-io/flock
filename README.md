@@ -26,6 +26,22 @@ A **flock** of Angular applications soaring through the social media migration s
 - **[🧪 Testing](docs/TESTING.md)** - How our flock stays healthy and strong
 - **[🌐 Cross-Platform E2E Testing](docs/CROSS_PLATFORM_E2E_TESTING.md)** - Testing across Windows, macOS, and Linux
 - **[🎨 Styling](docs/STYLING.md)** - The flock's beautiful plumage
+- **[☁️ Vercel Deployment](docs/VERCEL_DEPLOYMENT.md)** - Deploy Flock Murmur to the cloud
+
+### 🌊 **Flock Murmur - Web Deployment**
+
+Flock Murmur can now be deployed to Vercel with serverless edge functions for powerful cloud-based migration!
+
+- **[⚡ Quick Start](QUICKSTART.md)** - Get started with Vercel deployment in 5 minutes
+- **[📋 Implementation Details](VERCEL_IMPLEMENTATION.md)** - Complete technical implementation guide
+- **[🔌 API Integration](projects/flock-murmur/API_INTEGRATION.md)** - How to use the API service
+
+**Key Features:**
+- ✅ Serverless edge functions for processing
+- ✅ Real-time progress tracking
+- ✅ 500MB file upload support
+- ✅ Rate-limited Bluesky posting
+- ✅ Automatic session management
 
 ## 🦜 **Meet the Flock**
 
@@ -213,11 +229,6 @@ Tip: On startup, look for the line:
 - **🎨 Unified Plumage**: Consistent M3 Material design across all variants
 - **📱 Adaptive Nesting**: Responsive layouts that work everywhere
 
-## 🔗 **Related Migration Flocks**
-
-- **[Instagram to Bluesky CLI](../instagram-to-bluesky/)** - The migration engine that powers our flock
-- **[WebUI](../webui/)** - Alternative web interface for different migration patterns
-
 ## 📖 **Migration Resources**
 
 - **[Angular CLI Documentation](https://angular.dev/tools/cli)** - Flight instructor's manual
@@ -232,6 +243,34 @@ Tip: On startup, look for the line:
 3. Implement BDD-style testing for new features
 4. Keep the flock flying in formation (consistency)
 5. Update our migration maps (documentation)
+
+## 🌟 **Open Source & Gratitude**
+
+Flock is built with love and powered by amazing open source contributors. We're grateful for the incredible work of the community that makes projects like this possible.
+
+### **🎨 Special Thanks**
+
+- **[dazulu](https://codepen.io/dazulu/pen/aOzqvz)** - The beautiful 3D butterfly animation used in our splash screen. Created with pure CSS and amazing attention to detail.
+- **[Marco Maroni](https://tangled.org/@marcomaroni.it/instagram-to-bluesky)** - The core instagram-to-bluesky migration library that powers this application. Thank you for making social media migration accessible!
+- **Angular Team** - For the incredible framework that makes this multi-platform architecture possible
+- **Material Design Team** - For the beautiful M3 design system that unifies our flock's appearance
+- **Electron Team** - For enabling native desktop experiences with web technologies
+- **Bluesky Team** - For building the decentralized social platform that makes migration worthwhile
+
+### **📦 Key Dependencies**
+
+This project relies on numerous open source packages. See our [Licenses & Attributions](projects/shared/src/lib/licenses/licenses.html) page for a complete list of acknowledgments.
+
+### **🤝 Contributing**
+
+We welcome contributions! Whether it's:
+- 🐛 Bug fixes
+- ✨ New features  
+- 📚 Documentation improvements
+- 🧪 Test coverage
+- 🎨 UI/UX enhancements
+
+Please see our [Development Guide](docs/DEVELOPMENT.md) for how to get started.
 
 ## ❤️ **Support Flock**
 

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject, Optional } from '@angular/core';
 import * as Sentry from '@sentry/angular';
 import { Logger } from './interfaces/logger';
 
@@ -6,6 +6,12 @@ export interface SentryConfig {
   dsn: string | null;
   environment?: string;
   tracesSampleRate?: number;
+}
+
+export interface AppEnvironment {
+  production: boolean;
+  version?: string;
+  sentryDsn?: string;
 }
 
 /**
@@ -19,6 +25,8 @@ export class SentryLogger implements Logger {
   private initialized = false;
   private appName = 'Unknown';
   private config: SentryConfig | null = null;
+
+  constructor(@Optional() @Inject('APP_ENVIRONMENT') private environment?: AppEnvironment) {}
 
   /**
    * Initialize Sentry with DSN and configuration
@@ -49,7 +57,7 @@ export class SentryLogger implements Logger {
         environment: this.config?.environment || this.getEnvironment(),
         
         // Release version from package.json
-        release: this.getRelease(),
+        release: await this.getRelease(),
         
         // Sample rate for performance monitoring (0.0 to 1.0)
         tracesSampleRate: this.config?.tracesSampleRate ?? (this.getEnvironment() === 'production' ? 0.1 : 1.0),
@@ -225,11 +233,21 @@ export class SentryLogger implements Logger {
   }
 
   /**
-   * Get release version from package.json
+   * Get release version from environment variable or fallback methods
    */
   private getRelease(): string {
-    // This should be injected at build time
-    return `${this.appName}@0.4.8`; // TODO: Read from package.json at build time
+    try {
+      
+      if(this.environment?.version) {
+        return `${this.appName}@${this.environment?.version}`;
+      }
+      // If all else fails, return unknown version
+      console.log('🔍 [SentryLogger] Could not determine version, using unknown');
+      return `${this.appName}@unknown`;
+    } catch (error) {
+      console.log('🔍 [SentryLogger] Failed to get release version:', error);
+      return `${this.appName}@unknown`;
+    }
   }
 
   /**

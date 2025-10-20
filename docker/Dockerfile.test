@@ -48,6 +48,7 @@ ENV NODE_ENV=test
 ENV HEADLESS=true
 ENV CI=true
 ENV TIMEOUT_TELEMETRY=true
+ENV PATH="/app/node_modules/.bin:$PATH"
 
 # Expose port for Angular dev server
 EXPOSE 4200

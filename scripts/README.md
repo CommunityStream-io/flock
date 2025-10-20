@@ -1,70 +1,45 @@
 # Scripts Directory
 
-This directory contains utility scripts for the Flock project.
+This directory contains utility scripts for building and releasing Flock Native.
 
 ## Available Scripts
 
-### `generate-allure-index.js`
+### `upload-arm64-build.sh`
 
-Generates a multi-branch, multi-run Allure report index for GitHub Pages deployment.
+Uploads locally built ARM64 macOS packages to a GitHub release.
 
 **Usage:**
 ```bash
-# Basic usage (auto-detects branch, run ID, and SHA)
-node scripts/generate-allure-index.js
+# Upload to latest release (uses version from package.json)
+./scripts/upload-arm64-build.sh
 
-# With explicit parameters
-node scripts/generate-allure-index.js \
-  --branch main \
-  --run-id 1234567 \
-  --sha abc1234 \
-  --report-dir ./allure-report \
-  --output-dir ./reports
-
-# Local development
-npm run allure:index:local
+# Upload to specific release
+./scripts/upload-arm64-build.sh v0.6.7
 ```
 
-**Features:**
-- 🌿 Multi-branch support
-- 🏃 Run-specific directories
-- 📊 Historical tracking
-- 🌐 GitHub Pages integration
-- 📱 Mobile-friendly interface
+**Prerequisites:**
+- GitHub CLI (`gh`) installed and authenticated
+- ARM64 build artifacts in `dist/electron/`
+- Target release must exist
 
-**Parameters:**
-- `--branch`: Branch name (auto-detected from git)
-- `--run-id`: CI run ID (auto-detected from GitHub Actions)
-- `--sha`: Commit SHA (auto-detected from git)
-- `--report-dir`: Source Allure report directory (default: `./allure-report`)
-- `--output-dir`: Output directory for reports (default: `./reports`)
+**What it does:**
+1. Checks for ARM64 build artifacts (DMG and ZIP)
+2. Verifies the target release exists
+3. Optionally replaces existing ARM64 assets
+4. Uploads the new ARM64 build to the release
 
-**Output:**
-- `index.html`: Main navigation dashboard
-- `branches.json`: Metadata for all branches and runs
-- `{branch-name}/{run-id}-{sha}/`: Individual report directories
-
-## Integration
-
-The script is automatically used in the CI/CD pipeline (`.github/workflows/ci.yml`) to generate and deploy Allure reports to GitHub Pages.
-
-## Local Development
-
-For local development and testing:
-
+**Example workflow:**
 ```bash
-# Generate a local report
-npm run test:e2e:report
+# 1. Build ARM64 version locally
+npm run pack:mac:arm
 
-# Or manually
-npm run test:e2e:headless
-npm run allure:generate
-npm run allure:index:local
+# 2. Upload to release
+./scripts/upload-arm64-build.sh v0.6.7
 
-# View the report
-npx serve ./reports
+# 3. Verify upload
+gh release view v0.6.7
 ```
 
-## Documentation
+## Build Strategy
 
-For detailed information about the Allure reporting system, see [docs/testing/ALLURE_REPORTING.md](../docs/testing/ALLURE_REPORTING.md).
+See [BUILD_STRATEGY.md](../docs/BUILD_STRATEGY.md) for detailed information about our build approach, including why ARM64 builds must be done locally rather than in Docker containers.

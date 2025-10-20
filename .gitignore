@@ -56,3 +56,10 @@ logs/
 *log
 .env
 projects/flock-native/build
+
+# Vercel
+.vercel
+.vercel/output
+
+# GitHub Actions self-hosted runner
+.github/runner/
