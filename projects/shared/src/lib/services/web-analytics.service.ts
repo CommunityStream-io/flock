@@ -20,8 +20,9 @@ declare global {
 
 /**
  * Web Analytics Service
- * Integrates with Google Analytics 4 and Vercel Analytics
+ * Integrates with Google Analytics 4 and **DISABLED** Vercel Analytics
  * Privacy-conscious with opt-out and Do Not Track support
+ * @deprecated Vercel Analytics is disabled due to privacy concerns
  */
 @Injectable({
   providedIn: 'root'
@@ -124,11 +125,8 @@ export class WebAnalyticsService implements AnalyticsService {
    */
   private async initializeVercelAnalytics(): Promise<void> {
     try {
-      // Dynamically import Vercel Analytics
-      const { inject } = await import('@vercel/analytics');
-      inject({ mode: this.config.debug ? 'development' : 'production' });
-      
-      this.vercelAnalyticsEnabled = true;
+      // Dynamically import Vercel Analytics      
+      this.vercelAnalyticsEnabled = false;
       this.log('Vercel Analytics initialized');
     } catch (error) {
       this.logger?.error('Failed to initialize Vercel Analytics', error);
