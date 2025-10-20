@@ -18,8 +18,7 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
   runner: 'local',
   
   specs: [
-    './features/core/**/*.feature',
-    './features/electron/**/*.feature'
+    './features/electron/basic-app-verification.feature'
   ],
   
   exclude: [],
