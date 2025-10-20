@@ -3,6 +3,9 @@ import { getTimeoutConfig } from './features/support/timeout-config';
 import path from 'path';
 import os from 'os';
 
+// Set platform environment variable for Electron
+process.env.PLATFORM = 'electron';
+
 // Get timeout configuration based on environment
 const timeouts = getTimeoutConfig(process.env.CI === 'true');
 
@@ -43,8 +46,8 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
   logLevel: process.env.DEBUG_TESTS === 'true' ? 'info' : 'error',
   bail: 0,
   baseUrl: 'app:///',
-  waitforTimeout: timeouts.implicit,
-  connectionRetryTimeout: timeouts.connectionRetry,
+  waitforTimeout: timeouts.waitforTimeout,
+  connectionRetryTimeout: timeouts.connectionRetryTimeout,
   connectionRetryCount: 3,
   
   services: [
@@ -87,7 +90,7 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
     strict: false,
     // Run core tests + electron tests + macOS-specific tests
     tagExpression: process.env.TEST_TAGS || '(@core or @electron) and not @skip and (not @os or @os:macos)',
-    timeout: timeouts.step,
+    timeout: timeouts.global,
     ignoreUndefinedDefinitions: false,
   },
   

@@ -1,5 +1,6 @@
-import { Given, When, Then } from '@wdio/cucumber-framework';
-import { expect } from 'chai';
+/// <reference path="../../../test/types.d.ts" />
+import { Given, When, Then, After } from '@wdio/cucumber-framework';
+import { expect, browser, $ } from '@wdio/globals';
 import { PlatformFactory } from '../../support/adapters';
 import path from 'path';
 
@@ -276,7 +277,7 @@ Then('each should have a unique process ID', async function () {
 });
 
 // Cleanup hook
-after(async function () {
+After(async function () {
   // Cancel any remaining active processes
   for (const processId of activeProcessIds) {
     try {
