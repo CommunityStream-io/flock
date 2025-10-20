@@ -312,11 +312,11 @@ jobs:
           if [ -d "dist/electron/linux-unpacked" ]; then
             echo "✅ Linux build found"
             ls -la "dist/electron/linux-unpacked/"
-            if [ -f "dist/electron/linux-unpacked/flock-native" ]; then
-              echo "✅ flock-native binary found"
-              chmod +x "dist/electron/linux-unpacked/flock-native"
+            if [ -f "dist/electron/linux-unpacked/flock" ]; then
+              echo "✅ flock binary found"
+              chmod +x "dist/electron/linux-unpacked/flock"
             else
-              echo "❌ flock-native binary not found"
+              echo "❌ flock binary not found"
               exit 1
             fi
           else
