@@ -1,21 +1,17 @@
 import { Injectable } from '@angular/core';
 import { ValidationResult } from 'shared';
-import { ApiService } from '../../services';
 import { WebFileService } from '../interfaces';
 
 /**
  * Murmur File Processor
- * Handles file uploads via Vercel API for serverless processing
- * Implements WebFileService with session tracking
+ * Handles file validation and preparation for future backend integration
+ * Implements WebFileService interface
  */
 @Injectable({
   providedIn: 'root'
 })
 export class MurmurFileProcessor implements WebFileService {
   private _archivedFile: File | null = null;
-  private sessionId: string | null = null;
-
-  constructor(private apiService: ApiService) {}
 
   /**
    * Get the archived file
@@ -25,11 +21,10 @@ export class MurmurFileProcessor implements WebFileService {
   }
 
   /**
-   * Validate and upload archive to Vercel
+   * Validate archive file (client-side validation only)
    */
   async validateArchive(file: File): Promise<ValidationResult> {
-    // For web, basic client-side validation only
-    // Store the file for later use
+    // Basic client-side validation
     this._archivedFile = file;
     
     return {
@@ -41,60 +36,30 @@ export class MurmurFileProcessor implements WebFileService {
   }
 
   /**
-   * Upload file to Vercel API (called by extractArchive)
+   * Extract archive (placeholder for future backend integration)
    */
   async extractArchive(): Promise<boolean> {
     if (!this._archivedFile) {
-      throw new Error('No file to upload');
+      throw new Error('No file to process');
     }
     
-    const result = await this.uploadFile(this._archivedFile);
-    return !!result.sessionId;
+    // TODO: Implement backend integration for file processing
+    // For now, just return true to indicate file is ready
+    return true;
   }
 
   /**
-   * Internal method: Upload file to Vercel API
-   * Returns the session ID for tracking
-   */
-  private async uploadFile(file: File): Promise<{ sessionId: string }> {
-    try {
-      const result = await this.apiService.uploadArchive(file).toPromise();
-      if (result && result.sessionId) {
-        this.sessionId = result.sessionId;
-        return { sessionId: result.sessionId };
-      }
-      throw new Error('Failed to upload archive');
-    } catch (error: any) {
-      console.error('Archive upload error:', error);
-      
-      // Handle specific HTTP error codes
-      if (error.status === 413) {
-        const fileSizeMB = (file.size / (1024 * 1024)).toFixed(1);
-        throw new Error(`File too large (${fileSizeMB}MB). Maximum size is 5TB. Please check your internet connection and try again.`);
-      } else if (error.status === 400) {
-        throw new Error('Invalid file format. Please select a valid Instagram archive (.zip file).');
-      } else if (error.status === 500) {
-        throw new Error('Server error during upload. Please try again.');
-      } else if (error.status === 0) {
-        throw new Error('Network error. Please check your internet connection and try again.');
-      } else {
-        throw new Error(`Upload failed: ${error.message || 'Unknown error'}`);
-      }
-    }
-  }
-
-  /**
-   * Get the current session ID (for migration service)
+   * Get session ID (placeholder for future backend integration)
    */
   getSessionId(): string | null {
-    return this.sessionId;
+    // TODO: Implement session management with backend
+    return null;
   }
 
   /**
-   * Clear the archived file and session
+   * Clear the archived file
    */
   clearArchive(): void {
     this._archivedFile = null;
-    this.sessionId = null;
   }
 }

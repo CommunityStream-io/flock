@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Credentials, AuthResult, ConnectionResult } from 'shared';
 import { PostRecordImpl } from '@straiforos/instagramtobluesky';
-import { ApiService } from '../../services';
 import { WebBlueSkyService } from '../interfaces';
 
 /**
  * Murmur Bluesky Service
- * Handles Bluesky authentication and credential management via Vercel API
+ * Handles Bluesky authentication and credential management
  * Implements WebBlueSkyService with credential storage for migration
  */
 @Injectable({
@@ -15,11 +14,9 @@ import { WebBlueSkyService } from '../interfaces';
 export class MurmurBluesky implements WebBlueSkyService {
   private credentials: Credentials | null = null;
 
-  constructor(private apiService: ApiService) {}
-
   /**
-   * Authenticate with Bluesky via Vercel API
-   * Validates credentials before starting migration
+   * Authenticate with Bluesky (placeholder for future backend integration)
+   * Currently performs basic validation only
    */
   async authenticate(credentials: Credentials): Promise<AuthResult> {
     // Validate required fields
@@ -31,31 +28,23 @@ export class MurmurBluesky implements WebBlueSkyService {
     }
 
     try {
-      const result = await this.apiService.authenticateBluesky(credentials).toPromise();
+      // TODO: Implement backend authentication
+      // For now, just store credentials and return success
+      console.log('Bluesky authentication (placeholder):', credentials.username);
       
-      if (result?.success) {
-        console.log('Bluesky authentication successful:', result.username);
-        // Store credentials for later use in migration
-        this.credentials = credentials;
-        return {
-          success: true,
-          message: result.message || 'Authentication successful'
-        };
-      }
+      // Store credentials for later use in migration
+      this.credentials = credentials;
       
       return {
-        success: false,
-        message: 'Authentication failed'
+        success: true,
+        message: 'Authentication successful (placeholder)'
       };
     } catch (error: any) {
       console.error('Bluesky authentication failed:', error);
       
-      // Extract error message from API response
-      const errorMessage = error.error?.details || error.error?.error || error.message || 'Authentication failed';
-      
       return {
         success: false,
-        message: errorMessage
+        message: error.message || 'Authentication failed'
       };
     }
   }

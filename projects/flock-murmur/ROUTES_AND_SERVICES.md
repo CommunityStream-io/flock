@@ -1,287 +1,102 @@
-# Flock Murmur - Routes and Services Guide
+# Flock Murmur - Routes and Services
 
-## 🗺️ Application Routes
+## ⚠️ Status: UPDATED
 
-Flock Murmur implements a complete migration workflow with the following routes:
+This document has been updated to reflect the removal of Vercel dependencies. Some services are now placeholders for future backend integration.
 
-### Main Routes
+## Application Routes
 
-| Route | Component | Description |
-|-------|-----------|-------------|
-| `/home` | LandingPage | Welcome page with app introduction |
-| `/licenses` | Licenses | Open source licenses and attributions |
-| `/support` | Support | Support and donation information |
-
-### Migration Workflow Routes
-
-All migration steps are under `/step` path:
-
-| Route | Component | Guards/Resolvers | Description |
-|-------|-----------|------------------|-------------|
-| `/step/upload` | Upload | `uploadValidGuard` (canDeactivate) | Upload Instagram archive to Vercel |
-| `/step/auth` | Auth | `authDeactivateGuard`, `migrationResetResolver` | Authenticate with Bluesky |
-| `/step/config` | Config | `authValidGuard`, `migrationResetResolver` | Configure migration settings |
-| `/step/migrate` | Migrate | `authValidGuard`, `migrateRunResolver` | Run migration process |
-| `/step/complete` | Complete | `authValidGuard` | View migration results |
+### Core Routes
+- `/` - Landing page
+- `/config` - Configuration step
+- `/upload` - File upload step  
+- `/migrate` - Migration step
+- `/results` - Results display
 
 ### Route Guards
+- `StepGuard` - Ensures proper step progression
+- `AuthGuard` - Validates authentication state
 
-- **uploadValidGuard**: Ensures valid file is uploaded before leaving upload step
-- **authValidGuard**: Ensures user is authenticated before accessing protected routes
-- **authDeactivateGuard**: Handles cleanup when leaving auth step
+## Services Architecture
 
-### Route Resolvers
+### Core Services
 
-- **migrationResetResolver**: Resets migration state when re-entering workflow
-- **migrateRunResolver**: Initializes migration process via Vercel API
+#### ApiService
+- **Status**: Placeholder for future backend integration
+- **Purpose**: Will handle HTTP communication with DigitalOcean backend
+- **Current State**: Minimal implementation, ready for backend integration
 
-## 🔧 Services
+#### MurmurFileProcessor
+- **Status**: Updated to remove Vercel dependencies
+- **Purpose**: File validation and preparation
+- **Current State**: Client-side validation only, ready for backend integration
 
-### File Processor Service (`MurmurFileProcessor`)
+#### MurmurMigration  
+- **Status**: Updated to remove Vercel API polling
+- **Purpose**: Migration orchestration
+- **Current State**: Placeholder implementation, ready for backend integration
 
-Handles file uploads to Vercel serverless API:
+#### MurmurBluesky
+- **Status**: Active
+- **Purpose**: Bluesky authentication and API interaction
+- **Current State**: Functional for client-side operations
 
-```typescript
-class MurmurFileProcessor {
-  validateArchive(path: string): Promise<ValidationResult>
-  processArchive(file: File): Promise<{ sessionId: string }>
-  getSessionId(): string | null
-}
-```
+#### ConsoleLogger
+- **Status**: Active
+- **Purpose**: Logging service
+- **Current State**: Functional
 
-**Key Features:**
-- Client-side validation
-- Uploads to `/api/upload` endpoint
-- Returns session ID for tracking
-- Integrates with Vercel KV storage
+## Service Dependencies
 
-### Bluesky Service (`MurmurBluesky`)
+### Injection Tokens
+- `CONFIG` - Configuration service
+- `BLUESKY` - Bluesky service implementation
+- `FILE_PROCESSOR` - File processing service implementation
+- `MIGRATION` - Migration service implementation
 
-Handles Bluesky operations via Vercel API:
+### Interface Compliance
+All services implement shared interfaces from the `shared` library:
+- `WebFileService` - File processing interface
+- `WebBlueSkyService` - Bluesky operations interface
+- `MigrationService` - Migration orchestration interface
 
-```typescript
-class MurmurBluesky {
-  setSessionId(sessionId: string): void
-  startMigration(config: any): Promise<void>
-  getProgress(): Promise<any>
-  authenticate(credentials: object): Promise<boolean>
-}
-```
+## Future Backend Integration
 
-**Key Features:**
-- Server-side authentication via API
-- Calls `/api/migrate` for migration
-- Polls `/api/progress` for status updates
-- No direct Bluesky API calls from client
+### Planned Changes
+1. **ApiService Enhancement**
+   - Implement HTTP methods for DigitalOcean backend
+   - Add file upload endpoints
+   - Add migration progress tracking
 
-### Logger Service (`ConsoleLogger`)
+2. **File Processing**
+   - Integrate with DigitalOcean Spaces for file storage
+   - Add server-side archive processing
 
-Browser console logging with prefixes:
+3. **Migration Service**
+   - Connect to backend migration endpoints
+   - Implement real-time progress updates
+   - Add error handling and retry logic
 
-```typescript
-class ConsoleLogger {
-  log(message: string, ...args: any[]): void
-  error(message: string, ...args: any[]): void
-  warn(message: string, ...args: any[]): void
-  debug(message: string, ...args: any[]): void  // Dev only
-}
-```
+### Backend Requirements
+- RESTful API endpoints
+- File storage solution (DigitalOcean Spaces)
+- Session management
+- Progress tracking
+- Error handling
 
-### API Service (`ApiService`)
+## Development Notes
 
-HTTP client for Vercel API endpoints:
+### Current Limitations
+- No backend integration (services are placeholders)
+- File processing is client-side only
+- Migration cannot be executed without backend
 
-```typescript
-class ApiService {
-  uploadArchive(file: File): Observable<UploadResponse>
-  startMigration(sessionId: string, config: object): Observable<MigrationResponse>
-  getProgress(sessionId: string): Observable<ProgressResponse>
-}
-```
-
-## 📊 Vercel Analytics & Monitoring
-
-### Vercel Analytics
-
-Automatically tracks page views and user interactions:
-
-- **Installation**: Added via `@vercel/analytics` package
-- **Initialization**: Injected in `main.ts`
-- **Configuration**: Enabled automatically when package is installed (not in `vercel.json`)
-- **Dashboard**: View metrics in Vercel dashboard after deployment
-
-**Tracked Events:**
-- Page views
-- Route transitions
-- User interactions
-- Custom events (can be added)
-
-### Vercel Speed Insights
-
-Monitors application performance:
-
-- **Installation**: Added via `@vercel/speed-insights` package
-- **Initialization**: Injected in `main.ts`
-- **Metrics Tracked**:
-  - First Contentful Paint (FCP)
-  - Largest Contentful Paint (LCP)
-  - First Input Delay (FID)
-  - Cumulative Layout Shift (CLS)
-  - Time to First Byte (TTFB)
-
-### Logging
-
-Comprehensive logging throughout API functions:
-
-**Upload Endpoint (`/api/upload`):**
-- Upload start/completion
-- File size and metadata
-- Session ID generation
-- Error tracking
-
-**Migrate Endpoint (`/api/migrate`):**
-- Migration initialization
-- Archive processing steps
-- Post migration progress
-- Authentication events
-- Errors and failures
-
-**Progress Endpoint (`/api/progress`):**
-- Progress checks
-- Status updates
-- Session validation
-
-**Log Format:**
-```typescript
-console.log('[ServiceName] Message', {
-  key: 'value',
-  timestamp: new Date().toISOString()
-});
-```
-
-### Vercel KV Storage
-
-Used for large archive handling:
-
-**Storage Keys:**
-- `upload:{sessionId}` - Upload metadata (1 hour TTL)
-- `upload:data:{sessionId}` - Base64 encoded archive (1 hour TTL)
-- `progress:{sessionId}` - Migration progress (2 hours TTL)
-
-**Benefits for Large Archives:**
-- Handles files up to 500MB
-- Automatic expiration
-- Fast access times
-- Serverless-optimized
-
-## 🚀 Usage Examples
-
-### Route Navigation
-
-```typescript
-// From component or service
-import { Router } from '@angular/router';
-
-constructor(private router: Router) {}
-
-// Navigate to upload step
-this.router.navigate(['/step/upload']);
-
-// Navigate with query params
-this.router.navigate(['/step/config'], {
-  queryParams: { mode: 'advanced' }
-});
-```
-
-### Using Services
-
-```typescript
-// File upload
-constructor(private fileProcessor: MurmurFileProcessor) {}
-
-async uploadFile(file: File) {
-  const result = await this.fileProcessor.processArchive(file);
-  console.log('Session ID:', result.sessionId);
-}
-
-// Start migration
-constructor(private bluesky: MurmurBluesky) {}
-
-async migrate(config: MigrationConfig) {
-  this.bluesky.setSessionId(this.sessionId);
-  await this.bluesky.startMigration(config);
-  
-  // Poll for progress
-  const progress = await this.bluesky.getProgress();
-  console.log('Progress:', progress);
-}
-```
-
-### Custom Analytics Events
-
-```typescript
-import { track } from '@vercel/analytics';
-
-// Track custom event
-track('migration_started', {
-  archiveSize: file.size,
-  postCount: totalPosts
-});
-
-track('migration_completed', {
-  duration: elapsedTime,
-  postsImported: successCount
-});
-```
-
-## 🔒 Security Considerations
-
-### Client-Side
-- No Bluesky credentials stored in browser
-- Session-based tracking
-- HTTPS-only in production
-- CORS properly configured
-
-### Server-Side
-- Credentials only used in Vercel functions
-- Automatic session expiration
-- Rate limiting on Bluesky API
-- Input validation on all endpoints
-
-## 📝 Configuration
-
-### Development
-
-```typescript
-// environment.ts
-{
-  apiBaseUrl: 'http://localhost:3000/api',
-  vercelAnalytics: false,
-  enableTestModes: true
-}
-```
-
-### Production
-
-```typescript
-// environment.prod.ts
-{
-  apiBaseUrl: '/api',
-  vercelAnalytics: true,
-  enableTestModes: false
-}
-```
-
-## 🎯 Best Practices
-
-1. **Always check session ID** before API calls
-2. **Poll progress** every 2-3 seconds during migration
-3. **Handle timeouts** gracefully (free tier: 300s limit)
-4. **Show memory warnings** for large archives (free tier: 2048MB limit)
-5. **Log important events** for debugging
-6. **Use analytics** to track user behavior
-7. **Monitor performance** with Speed Insights
+### Next Steps
+1. Design DigitalOcean App Platform architecture
+2. Implement backend API endpoints
+3. Update services to integrate with new backend
+4. Test end-to-end functionality
 
 ---
 
-*Comprehensive routing and services for cloud-based migration! 🌊✨*
+*This document reflects the current state after Vercel dependency removal.*

@@ -1,8 +1,27 @@
-# Flock Murmur - API Integration
+# Flock Murmur - API Integration (DEPRECATED)
 
-## API Service Usage
+## ⚠️ Status: DEPRECATED
 
-The `ApiService` provides methods to interact with Vercel edge functions for Instagram to Bluesky migration.
+This documentation is deprecated as Vercel dependencies have been removed from flock-murmur. The API integration described here is no longer functional.
+
+## Overview
+
+The API integration described in this document was designed for Vercel serverless functions, which have been removed. The Angular application is now prepared for future backend integration with DigitalOcean App Platform or similar services.
+
+## Next Steps
+
+- Design new backend architecture for DigitalOcean App Platform
+- Implement replacement API endpoints
+- Update Angular services to work with new backend
+- Create new API integration documentation
+
+## Legacy Information (For Reference Only)
+
+The following sections describe the previous Vercel-based implementation:
+
+### API Service Usage
+
+The `ApiService` previously provided methods to interact with Vercel edge functions for Instagram to Bluesky migration.
 
 ### Import the Service
 
@@ -80,11 +99,9 @@ trackProgress() {
 }
 ```
 
-## Complete Example
+---
 
-```typescript
-import { Component } from '@angular/core';
-import { ApiService } from './services/api.service';
+*This documentation is maintained for historical reference only.*
 
 @Component({
   selector: 'app-migration',

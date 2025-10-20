@@ -5,5 +5,5 @@ export const environment: Environment = {
   apiBaseUrl: '/api',
   blueskyApiUrl: 'https://bsky.social/xrpc',
   enableTestModes: false,
-  vercelAnalytics: true
+  vercelAnalytics: false
 };
