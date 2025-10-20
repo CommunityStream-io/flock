@@ -10,7 +10,7 @@ const timeouts = getTimeoutConfig(process.env.CI === 'true');
 
 // Linux-specific Electron build path
 const electronBuildDir = process.env.ELECTRON_BUILD_DIR || 'dist/electron/linux-unpacked';
-const electronAppPath = path.join(process.cwd(), electronBuildDir, 'flock-native');
+const electronAppPath = path.join(process.cwd(), electronBuildDir, 'flock');
 
 console.log('🦅 [WDIO ELECTRON LINUX] Testing Electron app at:', electronAppPath);
 

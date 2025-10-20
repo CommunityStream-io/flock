@@ -84,7 +84,6 @@ jobs:
 
       - name: Run Windows E2E tests
         run: npm run e2e:ci:electron:windows
-        continue-on-error: true
 
       - name: Upload Windows test results
         if: always()
@@ -162,7 +161,6 @@ jobs:
 
       - name: Run macOS E2E tests
         run: npm run e2e:ci:electron:macos
-        continue-on-error: true
 
       - name: Upload macOS test results
         if: always()
@@ -239,7 +237,6 @@ jobs:
 
       - name: Run macOS ARM E2E tests
         run: npm run e2e:ci:electron:macos
-        continue-on-error: true
 
       - name: Upload macOS ARM test results
         if: always()
@@ -326,7 +323,6 @@ jobs:
 
       - name: Run Linux E2E tests
         run: npm run e2e:ci:electron:linux
-        continue-on-error: true
 
       - name: Upload Linux test results
         if: always()
