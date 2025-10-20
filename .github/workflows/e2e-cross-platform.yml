@@ -62,7 +62,7 @@ jobs:
         run: npm run sharp:win
 
       - name: Build Windows Electron app
-        run: npm run pack:win:dir
+        run: npm run pack:win:dir:ci
 
       - name: Verify Windows build
         shell: pwsh
@@ -141,7 +141,7 @@ jobs:
         run: npm run sharp:mac:intel
 
       - name: Build macOS Intel Electron app
-        run: npm run pack:mac:intel
+        run: npm run pack:mac:intel:ci
 
       - name: Verify macOS build
         run: |
@@ -218,7 +218,7 @@ jobs:
         run: npm run sharp:mac:arm
 
       - name: Build macOS ARM Electron app
-        run: npm run pack:mac:arm
+        run: npm run pack:mac:arm:ci
 
       - name: Verify macOS ARM build
         run: |
@@ -304,7 +304,7 @@ jobs:
         run: npm run sharp:linux
 
       - name: Build Linux Electron app
-        run: npm run pack:linux
+        run: npm run pack:linux:ci
 
       - name: Verify Linux build
         run: |
