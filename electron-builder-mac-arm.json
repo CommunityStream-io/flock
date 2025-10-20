@@ -15,7 +15,7 @@
   ],
   "asar": false,
   "extraResources": [],
-  "buildDependenciesFromSource": true,
+  "buildDependenciesFromSource": false,
   "npmRebuild": false,
   "publish": null,
   "extraMetadata": {
