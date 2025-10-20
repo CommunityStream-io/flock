@@ -16,7 +16,7 @@
   "asar": false,
   "extraResources": [],
   "buildDependenciesFromSource": true,
-  "npmRebuild": true,
+  "npmRebuild": false,
   "extraMetadata": {
     "main": "projects/flock-native/electron/main.js"
   },
