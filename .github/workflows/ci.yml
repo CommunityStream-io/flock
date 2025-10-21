@@ -62,25 +62,72 @@ jobs:
           echo "🔧 Setting version in environment files..."
           VERSION=$(node -p "require('./package.json').version")
           echo "📦 Using version: $VERSION"
-          
+
           # Update development environment
           sed -i "s/version: '0.6.0-dev'/version: '$VERSION-dev'/g" projects/flock-native/src/environments/environment.ts
           echo "✅ Updated development environment with version: $VERSION-dev"
-          
-          # Update production environment  
+
+          # Update production environment
           sed -i "s/version: '0.6.0'/version: '$VERSION'/g" projects/flock-native/src/environments/environment.prod.ts
           echo "✅ Updated production environment with version: $VERSION"
 
       - name: Build shared library
         run: npx ng build --project=shared
 
-      - name: Run tests with coverage
-        run: npm run test:coverage
+      - name: Run all unit tests concurrently
+        run: |
+          echo "🧪 Running all unit tests concurrently..."
+          npm run test:coverage &
+          npm run test:native:coverage &
+          npx ng test flock-mirage --code-coverage --watch=false --browsers=ChromeHeadless &
+          npx ng test flock-murmur --code-coverage --watch=false --browsers=ChromeHeadless &
+          wait
+          echo "✅ All unit tests completed!"
+
+      - name: Generate combined coverage report
+        run: |
+          echo "📊 Generating combined coverage report..."
+          echo "📁 Coverage directories:"
+          ls -la coverage/
+          echo ""
+          echo "📊 Coverage summary for all projects:"
+          echo "======================================"
+          echo "📦 Shared Library:"
+          if [ -f coverage/lcov.info ]; then
+            echo "  ✅ Coverage report generated"
+            echo "  📁 File: coverage/lcov.info"
+          else
+            echo "  ❌ No coverage report found"
+          fi
+          echo ""
+          echo "🦅 Flock-Native:"
+          if [ -f coverage/flock-native/lcov.info ]; then
+            echo "  ✅ Coverage report generated"
+            echo "  📁 File: coverage/flock-native/lcov.info"
+          else
+            echo "  ❌ No coverage report found"
+          fi
+          echo ""
+          echo "🐦 Flock-Mirage:"
+          if [ -f coverage/flock-mirage/lcov.info ]; then
+            echo "  ✅ Coverage report generated"
+            echo "  📁 File: coverage/flock-mirage/lcov.info"
+          else
+            echo "  ❌ No coverage report found"
+          fi
+          echo ""
+          echo "🌊 Flock-Murmur:"
+          if [ -f coverage/flock-murmur/lcov.info ]; then
+            echo "  ✅ Coverage report generated"
+            echo "  📁 File: coverage/flock-murmur/lcov.info"
+          else
+            echo "  ❌ No coverage report found"
+          fi
 
       - name: Upload unit test coverage to Codecov
         uses: codecov/codecov-action@v5
         with:
-          files: ./coverage/lcov.info
+          files: ./coverage/lcov.info,./coverage/flock-native/lcov.info,./coverage/flock-mirage/lcov.info,./coverage/flock-murmur/lcov.info
           flags: unittests
           name: codecov-umbrella
           fail_ci_if_error: false
@@ -102,15 +149,15 @@ jobs:
           # Count feature files
           FEATURE_COUNT=$(find features -name "*.feature" | wc -l)
           echo "Found $FEATURE_COUNT feature files"
-          
+
           # Generate shard array (1 to FEATURE_COUNT)
           SHARDS=$(seq 1 $FEATURE_COUNT | tr '\n' ',' | sed 's/,$//')
           echo "Generated shards: $SHARDS"
-          
+
           # Create matrix JSON
           MATRIX="{\"shard\":[$SHARDS],\"total-shards\":[$FEATURE_COUNT]}"
           echo "Matrix: $MATRIX"
-          
+
           # Set output
           echo "matrix=$MATRIX" >> $GITHUB_OUTPUT
 
@@ -182,19 +229,19 @@ jobs:
           # Count feature files with @smoke tag
           SMOKE_COUNT=$(grep -r "@smoke" features --include="*.feature" | cut -d: -f1 | sort -u | wc -l)
           echo "Found $SMOKE_COUNT feature files with @smoke tag"
-          
+
           # Use one shard per smoke test feature for maximum parallelization
           TOTAL_SHARDS=$SMOKE_COUNT
           echo "Using $TOTAL_SHARDS shards for smoke tests (1 shard per feature)"
-          
+
           # Generate shard array (1 to SMOKE_COUNT)
           SHARDS=$(seq 1 $TOTAL_SHARDS | tr '\n' ',' | sed 's/,$//')
           echo "Generated shards: $SHARDS"
-          
+
           # Create matrix JSON
           MATRIX="{\"shard\":[$SHARDS],\"total-shards\":[$TOTAL_SHARDS]}"
           echo "Matrix: $MATRIX"
-          
+
           # Set output
           echo "matrix=$MATRIX" >> $GITHUB_OUTPUT
 
@@ -438,7 +485,7 @@ jobs:
         run: |
           echo "🔍 Analyzing timeout telemetry from all shards..."
           npm run analyze:timeouts || echo "⚠️ Timeout analysis failed, continuing..."
-          
+
           echo "📊 Analyzing test metrics across all shards..."
           npm run analyze:metrics || echo "⚠️ Metrics analysis failed, continuing..."
 
@@ -496,12 +543,12 @@ jobs:
           echo "🔧 Setting version in environment files..."
           VERSION=$(node -p "require('./package.json').version")
           echo "📦 Using version: $VERSION"
-          
+
           # Update development environment
           sed -i "s/version: '0.6.0-dev'/version: '$VERSION-dev'/g" projects/flock-native/src/environments/environment.ts
           echo "✅ Updated development environment with version: $VERSION-dev"
-          
-          # Update production environment  
+
+          # Update production environment
           sed -i "s/version: '0.6.0'/version: '$VERSION'/g" projects/flock-native/src/environments/environment.prod.ts
           echo "✅ Updated production environment with version: $VERSION"
 
