@@ -1,0 +1,430 @@
+name: Cross-Platform E2E Tests
+
+on:
+  # Manually triggered workflow
+  workflow_dispatch:
+    inputs:
+      platforms:
+        description: 'Platforms to test (comma-separated: windows,macos,linux)'
+        required: false
+        default: 'windows,macos,linux'
+  # Can also be triggered on push to specific branches
+  push:
+    branches:
+      - main
+      - develop
+    paths:
+      - 'projects/flock-native/**'
+      - 'features/electron/**'
+      - 'wdio.electron*.conf.ts'
+      - 'electron-builder-*.json'
+      - '.github/workflows/e2e-cross-platform.yml'
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  # Phase 1: Windows E2E Tests
+  test-windows:
+    name: 🪟 Windows E2E Tests
+    runs-on: windows-latest
+    if: |
+      github.event_name == 'workflow_dispatch' && contains(github.event.inputs.platforms, 'windows') ||
+      github.event_name == 'push'
+    env:
+      PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
+      PLATFORM: electron
+      CI: true
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24.5.0'
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build shared library
+        run: npx ng build --project=shared
+
+      - name: Build flock-native app
+        run: npm run build:native
+
+      - name: Setup sharp for Windows
+        run: npm run sharp:win
+
+      - name: Build Windows Electron app
+        run: npm run pack:win:dir:ci
+
+      - name: Verify Windows build
+        shell: pwsh
+        run: |
+          Write-Host "📂 Checking Windows build output..."
+          if (Test-Path "dist/electron/win-unpacked") {
+            Write-Host "✅ Windows build found"
+            Get-ChildItem -Path "dist/electron/win-unpacked" | Select-Object Name, Length
+            if (Test-Path "dist/electron/win-unpacked/Flock Native.exe") {
+              Write-Host "✅ Flock Native.exe found"
+            } else {
+              Write-Host "❌ Flock Native.exe not found"
+              exit 1
+            }
+          } else {
+            Write-Host "❌ Windows build directory not found"
+            exit 1
+          }
+
+      - name: Run Windows E2E tests
+        run: npm run e2e:ci:electron:windows
+
+      - name: Upload Windows test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results-windows-${{ github.run_number }}
+          path: allure-results/
+          retention-days: 30
+
+      - name: Upload Windows screenshots on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots-windows-${{ github.run_number }}
+          path: |
+            allure-results/**/*.png
+            logs/**/*.png
+          retention-days: 7
+
+  # Phase 2: macOS E2E Tests
+  test-macos-intel:
+    name: 🍎 macOS Intel E2E Tests
+    runs-on: macos-13
+    if: |
+      github.event_name == 'workflow_dispatch' && contains(github.event.inputs.platforms, 'macos') ||
+      github.event_name == 'push'
+    env:
+      PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
+      PLATFORM: electron
+      CI: true
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24.5.0'
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build shared library
+        run: npx ng build --project=shared
+
+      - name: Build flock-native app
+        run: npm run build:native
+
+      - name: Setup sharp for macOS Intel
+        run: npm run sharp:mac:intel
+
+      - name: Build macOS Intel Electron app
+        run: npm run pack:mac:intel:ci
+
+      - name: Verify macOS build
+        run: |
+          echo "📂 Checking macOS build output..."
+          if [ -d "dist/electron/mac" ]; then
+            echo "✅ macOS build found"
+            ls -la "dist/electron/mac/"
+            if [ -f "dist/electron/mac/Flock Native.app/Contents/MacOS/Flock Native" ]; then
+              echo "✅ Flock Native app binary found"
+            else
+              echo "❌ Flock Native app binary not found"
+              exit 1
+            fi
+          else
+            echo "❌ macOS build directory not found"
+            exit 1
+          fi
+
+      - name: Run macOS E2E tests
+        run: npm run e2e:ci:electron:macos
+
+      - name: Upload macOS test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results-macos-intel-${{ github.run_number }}
+          path: allure-results/
+          retention-days: 30
+
+      - name: Upload macOS screenshots on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots-macos-intel-${{ github.run_number }}
+          path: |
+            allure-results/**/*.png
+            logs/**/*.png
+          retention-days: 7
+
+  test-macos-arm:
+    name: 🍏 macOS ARM (M1/M2) E2E Tests
+    runs-on: macos-latest
+    if: |
+      github.event_name == 'workflow_dispatch' && contains(github.event.inputs.platforms, 'macos') ||
+      github.event_name == 'push'
+    env:
+      PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
+      PLATFORM: electron
+      CI: true
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24.5.0'
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build shared library
+        run: npx ng build --project=shared
+
+      - name: Build flock-native app
+        run: npm run build:native
+
+      - name: Setup sharp for macOS ARM
+        run: npm run sharp:mac:arm
+
+      - name: Build macOS ARM Electron app
+        run: npm run pack:mac:arm:ci
+
+      - name: Verify macOS ARM build
+        run: |
+          echo "📂 Checking macOS ARM build output..."
+          if [ -d "dist/electron/mac-arm64" ]; then
+            echo "✅ macOS ARM build found"
+            ls -la "dist/electron/mac-arm64/"
+            if [ -f "dist/electron/mac-arm64/Flock Native.app/Contents/MacOS/Flock Native" ]; then
+              echo "✅ Flock Native app binary found"
+            else
+              echo "❌ Flock Native app binary not found"
+              exit 1
+            fi
+          else
+            echo "❌ macOS ARM build directory not found"
+            exit 1
+          fi
+
+      - name: Run macOS ARM E2E tests
+        run: npm run e2e:ci:electron:macos
+
+      - name: Upload macOS ARM test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results-macos-arm-${{ github.run_number }}
+          path: allure-results/
+          retention-days: 30
+
+      - name: Upload macOS ARM screenshots on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots-macos-arm-${{ github.run_number }}
+          path: |
+            allure-results/**/*.png
+            logs/**/*.png
+          retention-days: 7
+
+  # Phase 3: Linux E2E Tests
+  test-linux:
+    name: 🐧 Linux E2E Tests
+    runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'workflow_dispatch' && contains(github.event.inputs.platforms, 'linux') ||
+      github.event_name == 'push'
+    env:
+      PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
+      PLATFORM: electron
+      CI: true
+      DISPLAY: ':99.0'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24.5.0'
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+
+      - name: Setup Xvfb (Virtual Display)
+        uses: GabrielBB/xvfb-action@v1
+        with:
+          run: echo "Xvfb setup complete"
+          working-directory: .
+          options: -screen 0 1920x1080x24
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build shared library
+        run: npx ng build --project=shared
+
+      - name: Build flock-native app
+        run: npm run build:native
+
+      - name: Setup sharp for Linux
+        run: npm run sharp:linux
+
+      - name: Build Linux Electron app
+        run: npm run pack:linux:ci
+
+      - name: Verify Linux build
+        run: |
+          echo "📂 Checking Linux build output..."
+          if [ -d "dist/electron/linux-unpacked" ]; then
+            echo "✅ Linux build found"
+            ls -la "dist/electron/linux-unpacked/"
+            if [ -f "dist/electron/linux-unpacked/flock" ]; then
+              echo "✅ flock binary found"
+              chmod +x "dist/electron/linux-unpacked/flock"
+            else
+              echo "❌ flock binary not found"
+              exit 1
+            fi
+          else
+            echo "❌ Linux build directory not found"
+            exit 1
+          fi
+
+      - name: Run Linux E2E tests
+        run: npm run e2e:ci:electron:linux
+
+      - name: Upload Linux test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results-linux-${{ github.run_number }}
+          path: allure-results/
+          retention-days: 30
+
+      - name: Upload Linux screenshots on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots-linux-${{ github.run_number }}
+          path: |
+            allure-results/**/*.png
+            logs/**/*.png
+          retention-days: 7
+
+  # Aggregate results from all platforms
+  aggregate-results:
+    name: 📊 Aggregate Cross-Platform Results
+    runs-on: ubuntu-latest
+    needs: [test-windows, test-macos-intel, test-macos-arm, test-linux]
+    if: always()
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24.5.0'
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download Windows test results
+        uses: actions/download-artifact@v4
+        with:
+          pattern: allure-results-windows-*
+          path: allure-results/
+          merge-multiple: true
+        continue-on-error: true
+
+      - name: Download macOS Intel test results
+        uses: actions/download-artifact@v4
+        with:
+          pattern: allure-results-macos-intel-*
+          path: allure-results/
+          merge-multiple: true
+        continue-on-error: true
+
+      - name: Download macOS ARM test results
+        uses: actions/download-artifact@v4
+        with:
+          pattern: allure-results-macos-arm-*
+          path: allure-results/
+          merge-multiple: true
+        continue-on-error: true
+
+      - name: Download Linux test results
+        uses: actions/download-artifact@v4
+        with:
+          pattern: allure-results-linux-*
+          path: allure-results/
+          merge-multiple: true
+        continue-on-error: true
+
+      - name: Generate Allure Report
+        run: |
+          echo "📊 Generating cross-platform Allure report..."
+          npm run allure:generate || echo "⚠️ Allure generation failed, continuing..."
+
+      - name: Upload Allure Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report-cross-platform-${{ github.run_number }}
+          path: allure-report/
+          retention-days: 30
+
+      - name: Cross-Platform Test Summary
+        if: always()
+        run: |
+          echo "# Cross-Platform E2E Test Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Platform | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|----------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| 🪟 Windows | ${{ needs.test-windows.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🍎 macOS Intel | ${{ needs.test-macos-intel.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🍏 macOS ARM | ${{ needs.test-macos-arm.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🐧 Linux | ${{ needs.test-linux.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Run:** ${{ github.run_number }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Branch:** ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY

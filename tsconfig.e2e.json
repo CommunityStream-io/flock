@@ -6,12 +6,11 @@
         "moduleResolution": "node",
         "types": [
             "node",
-            "webdriverio/async",
+            "@wdio/globals",
             "expect-webdriverio",
             "@wdio/local-runner",
             "@wdio/cucumber-framework",
-            "@wdio/spec-reporter",
-            "@wdio/globals"
+            "@wdio/spec-reporter"
         ],
         "strict": false,
         "noImplicitAny": false,
@@ -31,7 +30,8 @@
     "include": [
         "features/**/*.ts",
         "features/**/*.js",
-        "test/types.d.ts"
+        "test/types.d.ts",
+        "wdio*.conf.ts"
     ],
     "exclude": [
         "node_modules",

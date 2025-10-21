@@ -311,6 +311,7 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
+            "outputPath": "dist/flock-murmur",
             "browser": "projects/flock-murmur/src/main.ts",
             "polyfills": [
               "zone.js"
@@ -341,7 +342,13 @@
                   "maximumError": "16kB"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "fileReplacements": [
+                {
+                  "replace": "projects/flock-murmur/src/environments/environment.ts",
+                  "with": "projects/flock-murmur/src/environments/environment.prod.ts"
+                }
+              ]
             },
             "development": {
               "optimization": false,

@@ -24,7 +24,24 @@ A **flock** of Angular applications soaring through the social media migration s
 - **[🦅 Architecture](docs/ARCHITECTURE.md)** - The bird's eye view of our flock's nest
 - **[🚀 Development](docs/DEVELOPMENT.md)** - Getting your wings and taking flight
 - **[🧪 Testing](docs/TESTING.md)** - How our flock stays healthy and strong
+- **[🌐 Cross-Platform E2E Testing](docs/CROSS_PLATFORM_E2E_TESTING.md)** - Testing across Windows, macOS, and Linux
 - **[🎨 Styling](docs/STYLING.md)** - The flock's beautiful plumage
+- **[☁️ Vercel Deployment](docs/VERCEL_DEPLOYMENT.md)** - Deploy Flock Murmur to the cloud
+
+### 🌊 **Flock Murmur - Web Deployment**
+
+Flock Murmur can now be deployed to Vercel with serverless edge functions for powerful cloud-based migration!
+
+- **[⚡ Quick Start](QUICKSTART.md)** - Get started with Vercel deployment in 5 minutes
+- **[📋 Implementation Details](VERCEL_IMPLEMENTATION.md)** - Complete technical implementation guide
+- **[🔌 API Integration](projects/flock-murmur/API_INTEGRATION.md)** - How to use the API service
+
+**Key Features:**
+- ✅ Serverless edge functions for processing
+- ✅ Real-time progress tracking
+- ✅ 500MB file upload support
+- ✅ Rate-limited Bluesky posting
+- ✅ Automatic session management
 
 ## 🦜 **Meet the Flock**
 
@@ -135,6 +152,22 @@ ng e2e flock-mirage
 ng e2e flock-murmur
 ng e2e flock-native
 ```
+
+### **Cross-Platform E2E Tests**
+Test the Electron app across Windows, macOS, and Linux:
+```bash
+# Test on your current platform
+npm run e2e:electron:windows    # Windows
+npm run e2e:electron:macos      # macOS (auto-detects Intel/ARM)
+npm run e2e:electron:linux      # Linux
+
+# CI/CD cross-platform testing
+npm run e2e:ci:electron:windows
+npm run e2e:ci:electron:macos
+npm run e2e:ci:electron:linux
+```
+
+📖 **[Cross-Platform E2E Testing Guide](docs/CROSS_PLATFORM_E2E_TESTING.md)** - Complete documentation for cross-platform testing
 
 ## 🔧 **Flock Development Tools**
 

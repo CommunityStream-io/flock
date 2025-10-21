@@ -1,7 +1,7 @@
 
 import { Given, When, Then } from '@wdio/cucumber-framework';
 import { pages } from '../pageobjects';
-import { browser } from '@wdio/globals';
+import { browser, expect } from '@wdio/globals';
 import { timeouts, timeoutMessages, timeoutOptions } from '../support/timeout-config';
 
 Given('I am on the landing page', async () => {

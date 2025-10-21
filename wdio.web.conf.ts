@@ -1,6 +1,9 @@
 import type { Options } from '@wdio/types';
 import { getTimeoutConfig } from './features/support/timeout-config';
 
+// Set platform environment variable for Web
+process.env.PLATFORM = 'web';
+
 // Get timeout configuration based on environment
 const timeouts = getTimeoutConfig(process.env.CI === 'true');
 
@@ -52,8 +55,8 @@ export const config: Options.Testrunner = {
   logLevel: 'info',
   bail: 0,
   baseUrl: process.env.BASE_URL || 'http://localhost:4200',
-  waitforTimeout: timeouts.implicit,
-  connectionRetryTimeout: timeouts.connectionRetry,
+  waitforTimeout: timeouts.waitforTimeout,
+  connectionRetryTimeout: timeouts.connectionRetryTimeout,
   connectionRetryCount: 3,
 
   //
@@ -95,7 +98,7 @@ export const config: Options.Testrunner = {
     // Run core tests and web-specific tests
     // Allow override with TEST_TAGS environment variable
     tagExpression: process.env.TEST_TAGS || '(@core or @web) and not @skip',
-    timeout: timeouts.step,
+    timeout: timeouts.global,
     ignoreUndefinedDefinitions: false,
   },
 

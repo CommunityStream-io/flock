@@ -145,7 +145,7 @@ class LandingPage extends Page {
 
     // Navigation
     public async open() {
-        await super.open('');
+        await super.open('home');
         // WebdriverIO auto-waits for elements to be interactable when we use them
     }
 }

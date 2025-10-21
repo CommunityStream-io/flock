@@ -1,15 +1,77 @@
 import type { Options } from '@wdio/types';
 import { getTimeoutConfig } from './features/support/timeout-config';
 import path from 'path';
+import os from 'os';
 
 // Get timeout configuration based on environment
 const timeouts = getTimeoutConfig(process.env.CI === 'true');
 
-// Determine which Electron build to test
-const electronBuildDir = process.env.ELECTRON_BUILD_DIR || 'dist/electron/win-unpacked';
-const electronAppPath = path.join(process.cwd(), electronBuildDir, 'Flock Native.exe');
+/**
+ * Determine platform-specific Electron build path and app name
+ * Supports Windows, macOS (Intel & ARM), and Linux
+ */
+function getPlatformElectronPath(): { buildDir: string; appName: string } {
+  const platform = process.platform;
 
+  // Allow override via environment variable
+  if (process.env.ELECTRON_BUILD_DIR && process.env.ELECTRON_APP_NAME) {
+    return {
+      buildDir: process.env.ELECTRON_BUILD_DIR,
+      appName: process.env.ELECTRON_APP_NAME
+    };
+  }
+
+  switch (platform) {
+    case 'win32':
+      // Windows build
+      return {
+        buildDir: 'dist/electron/win-unpacked',
+        appName: 'Flock Native.exe'
+      };
+
+    case 'darwin':
+      // macOS build - detect architecture
+      const arch = os.arch();
+      const macBuildDir = arch === 'arm64'
+        ? 'dist/electron/mac-arm64'
+        : 'dist/electron/mac';
+      return {
+        buildDir: macBuildDir,
+        appName: 'Flock Native.app/Contents/MacOS/Flock Native'
+      };
+
+    case 'linux':
+      // Linux build
+      return {
+        buildDir: 'dist/electron/linux-unpacked',
+        appName: 'flock-native'
+      };
+
+    default:
+      throw new Error(`Unsupported platform: ${platform}`);
+  }
+}
+
+const { buildDir, appName } = getPlatformElectronPath();
+const electronBuildDir = buildDir;
+const electronAppPath = path.join(process.cwd(), electronBuildDir, appName);
+
+console.log('🦅 [WDIO ELECTRON] Platform:', process.platform);
+console.log('🦅 [WDIO ELECTRON] Architecture:', os.arch());
 console.log('🦅 [WDIO ELECTRON] Testing Electron app at:', electronAppPath);
+
+/**
+ * Generate tag expression for platform-specific test filtering
+ */
+function getTagExpression(): string {
+  const osTag = process.platform === 'win32'
+    ? 'windows'
+    : process.platform === 'darwin'
+      ? 'macos'
+      : 'linux';
+
+  return `(@core or @electron) and not @skip and (not @os or @os:${osTag})`;
+}
 
 export const config: Options.Testrunner & { capabilities: any[] } = {
   //
@@ -42,7 +104,7 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
     {
       maxInstances: 1,
       browserName: 'electron',
-      'wdio:electron Options': {
+      'wdio:electronServiceOptions': {
         binary: electronAppPath,
         args: [
           '--disable-dev-shm-usage',
@@ -114,7 +176,11 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
     // OS tags: @os:windows, @os:macos, @os:linux
     // A test with no @os tag runs on all OSes
     // A test with @os:windows only runs on Windows
-    tagExpression: process.env.TEST_TAGS || `(@core or @electron) and not @skip and (not @os or @os:${process.platform === 'win32' ? 'windows' : process.platform === 'darwin' ? 'macos' : 'linux'})`,
+    // Platform detection logic:
+    // - Windows: win32 -> @os:windows
+    // - macOS: darwin -> @os:macos
+    // - Linux: linux -> @os:linux
+    tagExpression: process.env.TEST_TAGS || getTagExpression(),
     timeout: timeouts.step,
     ignoreUndefinedDefinitions: false,
   },
