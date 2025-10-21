@@ -16,38 +16,38 @@ console.log('🦅 [WDIO ELECTRON LINUX] Testing Electron app at:', electronAppPa
 
 export const config: Options.Testrunner & { capabilities: any[] } = {
   runner: 'local',
-  
+
   specs: [
     './features/electron/basic-app-verification.feature'
   ],
-  
+
   exclude: [],
-  
+
   maxInstances: 1,
-  
+
   capabilities: [
     {
       maxInstances: 1,
       browserName: 'electron',
       'wdio:electronServiceOptions': {
-        appBinaryPath: electronAppPath,
-        appArgs: ['--disable-dev-shm-usage', '--no-sandbox'],
+        binary: electronAppPath,
+        args: ['--disable-dev-shm-usage', '--no-sandbox'],
       },
     },
   ],
-  
-  logLevel: 'info',
+
+  logLevel: process.env.DEBUG_TESTS === 'true' ? 'info' : 'error',
   bail: 0,
   baseUrl: 'app:///',
   waitforTimeout: timeouts.waitforTimeout,
   connectionRetryTimeout: timeouts.connectionRetryTimeout,
   connectionRetryCount: 3,
-  
+
   services: [
     [
       'electron',
       {
-        appBinaryPath: electronAppPath,
+        appPath: electronAppPath,
         appArgs: [],
         chromedriver: {
           port: 9515,
@@ -56,7 +56,7 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
       },
     ],
   ],
-  
+
   framework: 'cucumber',
   reporters: [
     'spec',
@@ -70,9 +70,9 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
       },
     ],
   ],
-  
+
   cucumberOpts: {
-    require: ['./features/step-definitions/**/*.ts', './features/support/**/*.ts'],
+    require: ['./features/step-definitions/landing.ts', './features/support/**/*.ts'],
     backtrace: false,
     requireModule: [],
     dryRun: false,
@@ -86,17 +86,17 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
     timeout: timeouts.global,
     ignoreUndefinedDefinitions: false,
   },
-  
+
   before: function (capabilities, specs) {
     console.log('🦅 [WDIO ELECTRON LINUX] Starting Electron test on Linux');
     console.log('🦅 [WDIO ELECTRON LINUX] App path:', electronAppPath);
     console.log('🦅 [WDIO ELECTRON LINUX] Capabilities:', JSON.stringify(capabilities, null, 2));
   },
-  
+
   beforeScenario: function (world) {
     console.log('🦅 [WDIO ELECTRON LINUX] Scenario:', world.pickle.name);
   },
-  
+
   afterScenario: async function (world, result, context) {
     if (result.status === 'failed') {
       const screenshot = await browser.takeScreenshot();
@@ -105,7 +105,7 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
       }
     }
   },
-  
+
   after: function (result, capabilities, specs) {
     console.log('🦅 [WDIO ELECTRON LINUX] Test completed with status:', result);
   },

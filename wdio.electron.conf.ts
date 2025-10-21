@@ -12,7 +12,7 @@ const timeouts = getTimeoutConfig(process.env.CI === 'true');
  */
 function getPlatformElectronPath(): { buildDir: string; appName: string } {
   const platform = process.platform;
-  
+
   // Allow override via environment variable
   if (process.env.ELECTRON_BUILD_DIR && process.env.ELECTRON_APP_NAME) {
     return {
@@ -20,7 +20,7 @@ function getPlatformElectronPath(): { buildDir: string; appName: string } {
       appName: process.env.ELECTRON_APP_NAME
     };
   }
-  
+
   switch (platform) {
     case 'win32':
       // Windows build
@@ -28,25 +28,25 @@ function getPlatformElectronPath(): { buildDir: string; appName: string } {
         buildDir: 'dist/electron/win-unpacked',
         appName: 'Flock Native.exe'
       };
-    
+
     case 'darwin':
       // macOS build - detect architecture
       const arch = os.arch();
-      const macBuildDir = arch === 'arm64' 
+      const macBuildDir = arch === 'arm64'
         ? 'dist/electron/mac-arm64'
         : 'dist/electron/mac';
       return {
         buildDir: macBuildDir,
         appName: 'Flock Native.app/Contents/MacOS/Flock Native'
       };
-    
+
     case 'linux':
       // Linux build
       return {
         buildDir: 'dist/electron/linux-unpacked',
         appName: 'flock-native'
       };
-    
+
     default:
       throw new Error(`Unsupported platform: ${platform}`);
   }
@@ -64,12 +64,12 @@ console.log('🦅 [WDIO ELECTRON] Testing Electron app at:', electronAppPath);
  * Generate tag expression for platform-specific test filtering
  */
 function getTagExpression(): string {
-  const osTag = process.platform === 'win32' 
-    ? 'windows' 
-    : process.platform === 'darwin' 
-      ? 'macos' 
+  const osTag = process.platform === 'win32'
+    ? 'windows'
+    : process.platform === 'darwin'
+      ? 'macos'
       : 'linux';
-  
+
   return `(@core or @electron) and not @skip and (not @os or @os:${osTag})`;
 }
 
@@ -104,7 +104,7 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
     {
       maxInstances: 1,
       browserName: 'electron',
-      'wdio:electron Options': {
+      'wdio:electronServiceOptions': {
         binary: electronAppPath,
         args: [
           '--disable-dev-shm-usage',
@@ -178,7 +178,7 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
     // A test with @os:windows only runs on Windows
     // Platform detection logic:
     // - Windows: win32 -> @os:windows
-    // - macOS: darwin -> @os:macos  
+    // - macOS: darwin -> @os:macos
     // - Linux: linux -> @os:linux
     tagExpression: process.env.TEST_TAGS || getTagExpression(),
     timeout: timeouts.step,
