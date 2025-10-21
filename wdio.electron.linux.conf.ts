@@ -30,8 +30,8 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
       maxInstances: 1,
       browserName: 'electron',
       'wdio:electronServiceOptions': {
-        binary: electronAppPath,
-        args: ['--disable-dev-shm-usage', '--no-sandbox'],
+        appBinaryPath: electronAppPath,
+        appArgs: ['--disable-dev-shm-usage', '--no-sandbox'],
       },
     },
   ],
@@ -47,8 +47,8 @@ export const config: Options.Testrunner & { capabilities: any[] } = {
     [
       'electron',
       {
-        appPath: electronAppPath,
-        appArgs: [],
+        appBinaryPath: electronAppPath,
+        appArgs: ['--disable-dev-shm-usage', '--no-sandbox'],
         chromedriver: {
           port: 9515,
           logFileName: 'chromedriver.log',
