@@ -17,7 +17,7 @@ describe('CLIService', () => {
     mockLogger = jasmine.createSpyObj('Logger', ['log', 'error']);
     consoleLogSpy = spyOn(console, 'log');
     consoleErrorSpy = spyOn(console, 'error');
-    
+
     mockElectronService = jasmine.createSpyObj('ElectronService', ['isElectron', 'getAPI']);
     mockElectronService.isElectron.and.returnValue(true);
     mockElectronService.getAPI.and.returnValue({
@@ -59,15 +59,32 @@ describe('CLIService', () => {
         processId: 'process-123',
         pid: 1234
       };
-      
+
       (mockElectronService.getAPI().executeCLI as jasmine.Spy).and.returnValue(Promise.resolve(mockResult));
 
-      const processId = await service.execute('npm', ['test']);
+      const options = { cwd: '/test/path', env: { TEST: 'value' } };
+      const processId = await service.execute(options);
 
       expect(processId).toBe('process-123');
-      expect(mockElectronService.getAPI().executeCLI).toHaveBeenCalledWith('npm', ['test'], {});
-      expect(consoleLogSpy).toHaveBeenCalledWith('🦅 Executing CLI command:', 'npm', ['test']);
+      expect(mockElectronService.getAPI().executeCLI).toHaveBeenCalledWith(options);
+      expect(consoleLogSpy).toHaveBeenCalledWith('🦅 Executing Node.js script:', options);
       expect(consoleLogSpy).toHaveBeenCalledWith('🦅 CLI process started:', 'process-123', '(PID: 1234)');
+    });
+
+    it('should execute with default empty options', async () => {
+      const mockResult = {
+        success: true,
+        processId: 'process-456',
+        pid: 5678
+      };
+
+      (mockElectronService.getAPI().executeCLI as jasmine.Spy).and.returnValue(Promise.resolve(mockResult));
+
+      const processId = await service.execute();
+
+      expect(processId).toBe('process-456');
+      expect(mockElectronService.getAPI().executeCLI).toHaveBeenCalledWith({});
+      expect(consoleLogSpy).toHaveBeenCalledWith('🦅 Executing Node.js script:', {});
     });
 
     it('should throw error when CLI execution fails', async () => {
@@ -75,10 +92,11 @@ describe('CLIService', () => {
         success: false,
         error: 'Command not found'
       };
-      
+
       (mockElectronService.getAPI().executeCLI as jasmine.Spy).and.returnValue(Promise.resolve(mockResult));
 
-      await expectAsync(service.execute('invalid-command')).toBeRejectedWithError('Command not found');
+      const options = { env: { INVALID: 'command' } };
+      await expectAsync(service.execute(options)).toBeRejectedWithError('Command not found');
     });
 
     it('should handle missing processId in result', async () => {
@@ -86,10 +104,19 @@ describe('CLIService', () => {
         success: true,
         processId: null
       };
-      
+
       (mockElectronService.getAPI().executeCLI as jasmine.Spy).and.returnValue(Promise.resolve(mockResult));
 
-      await expectAsync(service.execute('test')).toBeRejectedWithError('Failed to execute CLI command');
+      const options = { cwd: '/test' };
+      await expectAsync(service.execute(options)).toBeRejectedWithError('Failed to execute CLI command');
+    });
+
+    it('should handle IPC execution exception', async () => {
+      (mockElectronService.getAPI().executeCLI as jasmine.Spy).and.returnValue(Promise.reject(new Error('IPC error')));
+
+      const options = { env: { TEST: 'value' } };
+      await expectAsync(service.execute(options)).toBeRejectedWithError('IPC error');
+      expect(consoleErrorSpy).toHaveBeenCalledWith('🦅 Error executing CLI:', jasmine.any(Error));
     });
   });
 
@@ -98,7 +125,7 @@ describe('CLIService', () => {
       const mockResult = {
         success: true
       };
-      
+
       (mockElectronService.getAPI().cancelCLI as jasmine.Spy).and.returnValue(Promise.resolve(mockResult));
 
       const result = await service.cancel('process-123');
@@ -114,7 +141,7 @@ describe('CLIService', () => {
         success: false,
         error: 'Process not found'
       };
-      
+
       (mockElectronService.getAPI().cancelCLI as jasmine.Spy).and.returnValue(Promise.resolve(mockResult));
 
       const result = await service.cancel('process-123');
@@ -140,7 +167,7 @@ describe('CLIService', () => {
         processId: 'migration-123',
         pid: 5678
       };
-      
+
       (mockElectronService.getAPI().executeCLI as jasmine.Spy).and.returnValue(Promise.resolve(mockResult));
 
       const processId = await service.executeMigration('/path/to/archive', {
@@ -150,11 +177,9 @@ describe('CLIService', () => {
       });
 
       expect(processId).toBe('migration-123');
-      
-      const callArgs = (mockElectronService.getAPI().executeCLI as jasmine.Spy).calls.mostRecent().args;
-      expect(callArgs[0]).toBe('node');
-      expect(callArgs[1]).toEqual(['node_modules/@straiforos/instagramtobluesky/dist/main.js']);
-      expect(callArgs[2].env).toEqual({
+
+      const callArgs = (mockElectronService.getAPI().executeCLI as jasmine.Spy).calls.mostRecent().args[0];
+      expect(callArgs.env).toEqual({
         BLUESKY_USERNAME: 'user.bsky.social',  // @ prefix stripped
         BLUESKY_PASSWORD: 'password123',
         ARCHIVE_FOLDER: '/path/to/archive',
@@ -168,7 +193,7 @@ describe('CLIService', () => {
         processId: 'migration-123',
         pid: 5678
       };
-      
+
       (mockElectronService.getAPI().executeCLI as jasmine.Spy).and.returnValue(Promise.resolve(mockResult));
 
       await service.executeMigration('/path/to/archive', {
@@ -176,7 +201,7 @@ describe('CLIService', () => {
         blueskyPassword: 'pass'
       });
 
-      const env = (mockElectronService.getAPI().executeCLI as jasmine.Spy).calls.mostRecent().args[2].env;
+      const env = (mockElectronService.getAPI().executeCLI as jasmine.Spy).calls.mostRecent().args[0].env;
       expect(env.BLUESKY_USERNAME).toBe('test.user.social');
     });
 
@@ -186,7 +211,7 @@ describe('CLIService', () => {
         processId: 'migration-123',
         pid: 5678
       };
-      
+
       (mockElectronService.getAPI().executeCLI as jasmine.Spy).and.returnValue(Promise.resolve(mockResult));
 
       await service.executeMigration('/path/to/archive', {
@@ -194,7 +219,7 @@ describe('CLIService', () => {
         blueskyPassword: 'pass'
       });
 
-      const env = (mockElectronService.getAPI().executeCLI as jasmine.Spy).calls.mostRecent().args[2].env;
+      const env = (mockElectronService.getAPI().executeCLI as jasmine.Spy).calls.mostRecent().args[0].env;
       expect(env.BLUESKY_USERNAME).toBe('test.user.social');
     });
 
@@ -204,7 +229,7 @@ describe('CLIService', () => {
         processId: 'migration-123',
         pid: 5678
       };
-      
+
       (mockElectronService.getAPI().executeCLI as jasmine.Spy).and.returnValue(Promise.resolve(mockResult));
 
       await service.executeMigration('/path/to/archive', {
@@ -213,7 +238,7 @@ describe('CLIService', () => {
         simulate: true
       });
 
-      const env = (mockElectronService.getAPI().executeCLI as jasmine.Spy).calls.mostRecent().args[2].env;
+      const env = (mockElectronService.getAPI().executeCLI as jasmine.Spy).calls.mostRecent().args[0].env;
       expect(env.SIMULATE).toBe('1');
     });
 
@@ -223,7 +248,7 @@ describe('CLIService', () => {
         processId: 'migration-123',
         pid: 5678
       };
-      
+
       (mockElectronService.getAPI().executeCLI as jasmine.Spy).and.returnValue(Promise.resolve(mockResult));
 
       await service.executeMigration('/path/to/archive', {
@@ -233,7 +258,7 @@ describe('CLIService', () => {
         dateTo: '2024-12-31'
       });
 
-      const env = (mockElectronService.getAPI().executeCLI as jasmine.Spy).calls.mostRecent().args[2].env;
+      const env = (mockElectronService.getAPI().executeCLI as jasmine.Spy).calls.mostRecent().args[0].env;
       expect(env.MIN_DATE).toBe('2024-01-01');
       expect(env.MAX_DATE).toBe('2024-12-31');
     });
@@ -244,7 +269,7 @@ describe('CLIService', () => {
         processId: 'migration-123',
         pid: 5678
       };
-      
+
       (mockElectronService.getAPI().executeCLI as jasmine.Spy).and.returnValue(Promise.resolve(mockResult));
 
       await service.executeMigration('/path/to/archive', {
@@ -253,7 +278,7 @@ describe('CLIService', () => {
         testMode: 'video'
       });
 
-      const env = (mockElectronService.getAPI().executeCLI as jasmine.Spy).calls.mostRecent().args[2].env;
+      const env = (mockElectronService.getAPI().executeCLI as jasmine.Spy).calls.mostRecent().args[0].env;
       expect(env.ARCHIVE_FOLDER).toBe('projects/flock-native/transfer/test_video');
     });
 
@@ -263,7 +288,7 @@ describe('CLIService', () => {
         processId: 'migration-123',
         pid: 5678
       };
-      
+
       (mockElectronService.getAPI().executeCLI as jasmine.Spy).and.returnValue(Promise.resolve(mockResult));
 
       await service.executeMigration('/path/to/archive', {
@@ -272,7 +297,7 @@ describe('CLIService', () => {
         testMode: 'mixed'
       });
 
-      const env = (mockElectronService.getAPI().executeCLI as jasmine.Spy).calls.mostRecent().args[2].env;
+      const env = (mockElectronService.getAPI().executeCLI as jasmine.Spy).calls.mostRecent().args[0].env;
       expect(env.ARCHIVE_FOLDER).toBe('projects/flock-native/transfer/test_mixed_media');
     });
   });
@@ -280,7 +305,7 @@ describe('CLIService', () => {
   describe('parseProgress', () => {
     it('should parse percentage from output', () => {
       const result = service.parseProgress('Uploading... 45%');
-      
+
       expect(result).toEqual({
         percentage: 45,
         message: 'Uploading... 45%'
@@ -289,13 +314,13 @@ describe('CLIService', () => {
 
     it('should return null for output without percentage', () => {
       const result = service.parseProgress('Processing files...');
-      
+
       expect(result).toBeNull();
     });
 
     it('should extract first percentage found', () => {
       const result = service.parseProgress('Progress: 75% (3 of 4 files)');
-      
+
       expect(result).toEqual({
         percentage: 75,
         message: 'Progress: 75% (3 of 4 files)'

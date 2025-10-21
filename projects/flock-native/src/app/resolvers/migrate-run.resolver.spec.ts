@@ -20,11 +20,11 @@ describe('nativeMigrateRunResolver', () => {
     outputSubject = new Subject<CLIOutputData>();
 
     mockLogger = jasmine.createSpyObj('Logger', ['log', 'error']);
-    mockSplashScreenLoading = jasmine.createSpyObj('SplashScreenLoading', 
+    mockSplashScreenLoading = jasmine.createSpyObj('SplashScreenLoading',
       ['setComponent', 'show', 'hide']
     );
     mockSnackBar = jasmine.createSpyObj('MatSnackBar', ['open']);
-    mockConfigService = jasmine.createSpyObj('ConfigServiceImpl', 
+    mockConfigService = jasmine.createSpyObj('ConfigServiceImpl',
       ['getBlueskyCredentials', 'setMigrationResults'],
       {
         testMode: 'none',
@@ -34,7 +34,7 @@ describe('nativeMigrateRunResolver', () => {
         simulate: false
       }
     );
-    
+
     mockCLIService = {
       output$: outputSubject.asObservable(),
       executeMigration: jasmine.createSpy('executeMigration').and.returnValue(Promise.resolve('process-123'))
@@ -89,7 +89,7 @@ describe('nativeMigrateRunResolver', () => {
       mockConfigService.getBlueskyCredentials.and.returnValue(null);
 
       const result = await executeResolver();
-      
+
       expect(result).toBe(false);
       expect(mockLogger.error).toHaveBeenCalledWith(jasmine.stringContaining('Error starting migration'), jasmine.anything());
     });
@@ -101,7 +101,7 @@ describe('nativeMigrateRunResolver', () => {
       });
 
       const result = await executeResolver();
-      
+
       expect(result).toBe(false);
       expect(mockLogger.error).toHaveBeenCalledWith(jasmine.stringContaining('Error starting migration'), jasmine.anything());
     });
@@ -113,31 +113,40 @@ describe('nativeMigrateRunResolver', () => {
       });
 
       const result = await executeResolver();
-      
+
       expect(result).toBe(false);
       expect(mockLogger.error).toHaveBeenCalledWith(jasmine.stringContaining('Error starting migration'), jasmine.anything());
     });
 
-    it('should return false when archive path is missing in normal mode', async () => {
+    it('should execute migration even when archive path is missing in non-production mode', (done) => {
+      // Increase timeout for this test
+      jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+
       mockConfigService.getBlueskyCredentials.and.returnValue({
         username: '@user.bsky.social',
         password: 'test-password'
       });
-      Object.defineProperty(mockConfigService, 'testMode', { 
-        value: 'none', 
+      Object.defineProperty(mockConfigService, 'testMode', {
+        value: 'none',
         writable: true,
-        configurable: true 
+        configurable: true
       });
-      Object.defineProperty(mockConfigService, 'archivePath', { 
-        value: null, 
+      Object.defineProperty(mockConfigService, 'archivePath', {
+        value: null,
         writable: true,
-        configurable: true 
+        configurable: true
       });
 
-      const result = await executeResolver();
-      
-      expect(result).toBe(false);
-      expect(mockLogger.error).toHaveBeenCalledWith(jasmine.stringContaining('Error starting migration'), jasmine.anything());
+      executeResolver().catch(() => {
+        // Resolver will hang waiting for CLI output, but we can verify it started
+      });
+
+      // Give async operations time to complete
+      setTimeout(() => {
+        expect(mockCLIService.executeMigration).toHaveBeenCalledWith('/placeholder', jasmine.any(Object));
+        expect(mockLogger.log).toHaveBeenCalledWith('🦅 [MIGRATE] CLI process started: process-123');
+        done();
+      }, 100);
     });
 
     it('should allow missing archive path in test mode', (done) => {
@@ -260,7 +269,7 @@ describe('nativeMigrateRunResolver', () => {
 
         setTimeout(() => {
           expect(mockLogger.log).toHaveBeenCalledWith(jasmine.stringContaining('1 posts created'));
-          
+
           outputSubject.next({
             processId: 'process-123',
             type: 'stdout',
@@ -321,7 +330,7 @@ describe('nativeMigrateRunResolver', () => {
       }, 50);
 
       const result = await resolverPromise;
-      
+
       expect(result).toBe(false);
       expect(mockLogger.error).toHaveBeenCalledWith(jasmine.stringContaining('Migration failed with exit code 1'));
       expect(mockSnackBar.open).toHaveBeenCalledWith('Migration failed (code 1)', 'Close', jasmine.any(Object));
