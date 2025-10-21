@@ -9,13 +9,53 @@ import { environment } from '../../environments/environment';
 export class Bluesky implements BlueSkyService {
 
   /**
+   * Helper method to get network delay - extracted for testability
+   * @returns delay in milliseconds
+   */
+  public getNetworkDelay(): number {
+    return environment.archiveExtractDelay || 1000;
+  }
+
+  /**
+   * Helper method to simulate network delay - extracted for testability
+   * @returns Promise that resolves after the delay
+   */
+  public async simulateNetworkDelay(): Promise<void> {
+    await new Promise(resolve => setTimeout(resolve, this.getNetworkDelay()));
+  }
+
+  /**
+   * Helper method to get URL search parameters - extracted for testability
+   * @returns URLSearchParams object
+   */
+  public getUrlSearchParams(): URLSearchParams {
+    return new URLSearchParams(window.location.search);
+  }
+
+  /**
+   * Helper method to check if authentication should fail - extracted for testability
+   * @returns true if authentication should fail
+   */
+  public shouldAuthenticationFail(): boolean {
+    return this.getUrlSearchParams().get('authFailed') === 'true';
+  }
+
+  /**
+   * Helper method to check if connection should fail - extracted for testability
+   * @returns true if connection should fail
+   */
+  public shouldConnectionFail(): boolean {
+    return this.getUrlSearchParams().get('connectionFailed') === 'true';
+  }
+
+  /**
    * Simulate Bluesky authentication for testing purposes
    * @param credentials - Username and password for authentication
    * @returns Promise with authentication result
    */
   async authenticate(credentials: Credentials): Promise<AuthResult> {
     // Simulate network delay
-    await new Promise(resolve => setTimeout(resolve, environment.archiveExtractDelay || 1000));
+    await this.simulateNetworkDelay();
 
     // Validate credentials format
     if (!credentials.username.startsWith('@')) {
@@ -40,8 +80,7 @@ export class Bluesky implements BlueSkyService {
     }
 
     // Use demo query parameter to determine if authentication succeeds
-    const isDemo = new URLSearchParams(window.location.search).get('authFailed') === 'true';
-    const isSuccess = !isDemo;
+    const isSuccess = !this.shouldAuthenticationFail();
 
     if (isSuccess) {
       return {
@@ -63,7 +102,7 @@ export class Bluesky implements BlueSkyService {
    */
   async createPost(post: PostRecordImpl): Promise<PostRecordImpl> {
     // Simulate network delay
-    await new Promise(resolve => setTimeout(resolve, environment.archiveExtractDelay || 1000));
+    await this.simulateNetworkDelay();
 
     // For testing, just return the post as-is
     return post;
@@ -75,11 +114,10 @@ export class Bluesky implements BlueSkyService {
    */
   async testConnection(): Promise<ConnectionResult> {
     // Simulate network delay
-    await new Promise(resolve => setTimeout(resolve, environment.archiveExtractDelay || 1000));
+    await this.simulateNetworkDelay();
 
     // Use demo query parameter to determine if connection succeeds
-    const isDemo = new URLSearchParams(window.location.search).get('connectionFailed') === 'true';
-    const isSuccess = !isDemo;
+    const isSuccess = !this.shouldConnectionFail();
 
     if (isSuccess) {
       return {
