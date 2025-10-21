@@ -4,7 +4,7 @@ import { filter } from 'rxjs';
 import {
   AnalyticsService,
   AnalyticsConfig,
-  AnalyticsEvent,
+  IAnalyticsEvent,
   AnalyticsPageView,
 } from './interfaces/analytics';
 import { Logger } from './interfaces/logger';
@@ -125,7 +125,7 @@ export class WebAnalyticsService implements AnalyticsService {
    */
   private async initializeVercelAnalytics(): Promise<void> {
     try {
-      // Dynamically import Vercel Analytics      
+      // Dynamically import Vercel Analytics
       this.vercelAnalyticsEnabled = false;
       this.log('Vercel Analytics initialized');
     } catch (error) {
@@ -182,7 +182,7 @@ export class WebAnalyticsService implements AnalyticsService {
   /**
    * Track a custom event
    */
-  trackEvent(event: AnalyticsEvent): void {
+  trackEvent(event: IAnalyticsEvent): void {
     if (!this.isEnabled()) {
       return;
     }
@@ -342,7 +342,7 @@ export class WebAnalyticsService implements AnalyticsService {
    */
   setEnabled(enabled: boolean): void {
     this.config.enabled = enabled;
-    
+
     // Store preference in localStorage
     try {
       localStorage.setItem('analytics_enabled', enabled.toString());
