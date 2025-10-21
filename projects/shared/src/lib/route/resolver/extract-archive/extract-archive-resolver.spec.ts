@@ -30,7 +30,7 @@ describe('Feature: Archive Extraction Resolution', () => {
     });
 
     // Create resolver executor function
-    executeResolver = (route?: any, state?: any) => 
+    executeResolver = (route?: any, state?: any) =>
       TestBed.runInInjectionContext(() => extractArchiveResolver(route, state)) as Observable<boolean>;
   });
 
@@ -71,9 +71,9 @@ describe('Feature: Archive Extraction Resolution', () => {
       expect(result).toBe(false);
       expect(mockFileService.extractArchive).toHaveBeenCalled();
       expect(mockSnackBar.open).toHaveBeenCalledWith(
-        'Error extracting archive',
+        'Extraction failed',
         'Close',
-        { duration: 3000 }
+        { duration: 5000, panelClass: ['error-snackbar'] }
       );
       expect(mockSplashScreenLoading.setComponent).toHaveBeenCalledWith(null);
       expect(mockSplashScreenLoading.hide).toHaveBeenCalled();
@@ -93,9 +93,9 @@ describe('Feature: Archive Extraction Resolution', () => {
       console.log('✅ BDD: Verifying network error handling');
       expect(result).toBe(false);
       expect(mockSnackBar.open).toHaveBeenCalledWith(
-        'Error extracting archive',
+        'Network timeout',
         'Close',
-        { duration: 3000 }
+        { duration: 5000, panelClass: ['error-snackbar'] }
       );
       expect(mockSplashScreenLoading.setComponent).toHaveBeenCalledWith(null);
       expect(mockSplashScreenLoading.hide).toHaveBeenCalled();
