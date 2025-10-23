@@ -11,7 +11,7 @@ export interface SentryConfig {
 export interface AppEnvironment {
   production: boolean;
   version?: string;
-  sentryDsn?: string;
+  sentry?: SentryConfig;
 }
 
 /**
@@ -37,8 +37,8 @@ export class SentryLogger implements Logger {
     this.appName = appName;
     this.config = config || null;
 
-    // Get Sentry DSN from config or fallback
-    const sentryDsn = this.config?.dsn || this.getSentryDsn();
+    // Get Sentry DSN from config or environment fallback
+    const sentryDsn = this.config?.dsn || this.environment?.sentry?.dsn || null;
 
     if (!sentryDsn) {
       console.warn('🔍 [SentryLogger] No Sentry DSN found, logging will be console-only');
@@ -54,13 +54,13 @@ export class SentryLogger implements Logger {
         debug: true,
 
         // Set environment (development, staging, production)
-        environment: this.config?.environment || this.getEnvironment(),
+        environment: this.config?.environment || this.environment?.sentry?.environment || (this.environment?.production ? 'production' : 'development'),
 
         // Release version from package.json
         release: await this.getRelease(),
 
         // Sample rate for performance monitoring (0.0 to 1.0)
-        tracesSampleRate: this.config?.tracesSampleRate ?? (this.getEnvironment() === 'production' ? 0.1 : 1.0),
+        tracesSampleRate: this.config?.tracesSampleRate ?? this.environment?.sentry?.tracesSampleRate ?? (this.environment?.production ? 0.1 : 1.0),
 
         // Breadcrumbs
         integrations: [
@@ -119,7 +119,7 @@ export class SentryLogger implements Logger {
       });
 
       this.initialized = true;
-      console.log(`✅ [SentryLogger] Initialized for ${appName} in ${this.getEnvironment()} environment`);
+      console.log(`✅ [SentryLogger] Initialized for ${appName} in ${this.config?.environment || (this.environment?.production ? 'production' : 'development')} environment`);
     } catch (error) {
       console.error('❌ [SentryLogger] Failed to initialize:', error);
       this.initialized = false;
@@ -195,49 +195,18 @@ export class SentryLogger implements Logger {
   }
 
   /**
-   * Get Sentry DSN from window configuration (fallback)
-   * Prefer passing config via instrument() method from environment
+   * Get Sentry DSN from environment (fallback)
    */
   private getSentryDsn(): string | null {
-    // Check window (for browser environment)
-    if (typeof window !== 'undefined' && (window as any).SENTRY_DSN) {
-      return (window as any).SENTRY_DSN;
-    }
-
-    // Return null if not configured (Sentry won't be enabled)
-    return null;
+    return this.environment?.sentry?.dsn || null;
   }
 
-  /**
-   * Determine the current environment
-   */
-  private getEnvironment(): string {
-    // Check if we're in Electron
-    if (typeof window !== 'undefined' && (window as any).electronAPI) {
-      return 'electron';
-    }
-
-    // Check hostname for staging/production
-    if (typeof window !== 'undefined') {
-      const hostname = window.location.hostname;
-      if (hostname.includes('localhost') || hostname.includes('127.0.0.1')) {
-        return 'development';
-      }
-      if (hostname.includes('staging')) {
-        return 'staging';
-      }
-      return 'production';
-    }
-
-    return 'development';
-  }
 
   /**
    * Get release version from environment variable or fallback methods
    */
   private getRelease(): string {
     try {
-
       if(this.environment?.version) {
         return `${this.appName}@${this.environment?.version}`;
       }
@@ -254,6 +223,7 @@ export class SentryLogger implements Logger {
    * Get platform information
    */
   private getPlatform(): string {
+    // Simple platform detection - apps can override this if needed
     if (typeof window !== 'undefined' && (window as any).electronAPI) {
       return 'electron';
     }
