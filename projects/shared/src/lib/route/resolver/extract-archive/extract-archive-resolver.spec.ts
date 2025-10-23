@@ -185,4 +185,142 @@ describe('Feature: Archive Extraction Resolution', () => {
       });
     });
   });
+
+  describe('Feature: Error Branch Coverage (BDD-Style)', () => {
+    it('Given error without message, When extraction fails, Then default error message is used', async () => {
+      // Given: Error without message
+      console.log('🔧 BDD: Setting up error without message');
+      const errorWithoutMessage = new Error();
+      errorWithoutMessage.message = '';
+      mockFileService.extractArchive.and.returnValue(Promise.reject(errorWithoutMessage));
+
+      // When: Execute resolver
+      console.log('⚙️ BDD: Executing resolver with error without message');
+      const result = await firstValueFrom(executeResolver());
+
+      // Then: Default error message is used
+      console.log('✅ BDD: Verifying default error message branch is executed');
+      expect(result).toBe(false);
+      expect(mockSnackBar.open).toHaveBeenCalledWith(
+        'Error extracting archive',
+        'Close',
+        { duration: 5000, panelClass: ['error-snackbar'] }
+      );
+    });
+
+    it('Given "File too large" error, When extraction fails, Then redirect to upload is triggered', async () => {
+      // Given: File too large error
+      console.log('🔧 BDD: Setting up "File too large" error');
+      const error = new Error('File too large - maximum size is 100MB');
+      mockFileService.extractArchive.and.returnValue(Promise.reject(error));
+
+      // When: Execute resolver
+      console.log('⚙️ BDD: Executing resolver with "File too large" error');
+      const result = await firstValueFrom(executeResolver());
+
+      // Then: Redirect branch is executed
+      console.log('✅ BDD: Verifying "File too large" redirect branch is executed');
+      expect(result).toBe(false);
+      expect(mockLogger.log).toHaveBeenCalledWith('[ExtractArchiveResolver] Redirecting to upload step due to upload error');
+    });
+
+    it('Given "Upload failed" error, When extraction fails, Then redirect to upload is triggered', async () => {
+      // Given: Upload failed error
+      console.log('🔧 BDD: Setting up "Upload failed" error');
+      const error = new Error('Upload failed - connection interrupted');
+      mockFileService.extractArchive.and.returnValue(Promise.reject(error));
+
+      // When: Execute resolver
+      console.log('⚙️ BDD: Executing resolver with "Upload failed" error');
+      const result = await firstValueFrom(executeResolver());
+
+      // Then: Redirect branch is executed
+      console.log('✅ BDD: Verifying "Upload failed" redirect branch is executed');
+      expect(result).toBe(false);
+      expect(mockLogger.log).toHaveBeenCalledWith('[ExtractArchiveResolver] Redirecting to upload step due to upload error');
+    });
+
+    it('Given "Invalid file format" error, When extraction fails, Then redirect to upload is triggered', async () => {
+      // Given: Invalid file format error
+      console.log('🔧 BDD: Setting up "Invalid file format" error');
+      const error = new Error('Invalid file format - expected ZIP');
+      mockFileService.extractArchive.and.returnValue(Promise.reject(error));
+
+      // When: Execute resolver
+      console.log('⚙️ BDD: Executing resolver with "Invalid file format" error');
+      const result = await firstValueFrom(executeResolver());
+
+      // Then: Redirect branch is executed
+      console.log('✅ BDD: Verifying "Invalid file format" redirect branch is executed');
+      expect(result).toBe(false);
+      expect(mockLogger.log).toHaveBeenCalledWith('[ExtractArchiveResolver] Redirecting to upload step due to upload error');
+    });
+
+    it('Given "Network error" error, When extraction fails, Then redirect to upload is triggered', async () => {
+      // Given: Network error
+      console.log('🔧 BDD: Setting up "Network error" error');
+      const error = new Error('Network error - please check your connection');
+      mockFileService.extractArchive.and.returnValue(Promise.reject(error));
+
+      // When: Execute resolver
+      console.log('⚙️ BDD: Executing resolver with "Network error" error');
+      const result = await firstValueFrom(executeResolver());
+
+      // Then: Redirect branch is executed
+      console.log('✅ BDD: Verifying "Network error" redirect branch is executed');
+      expect(result).toBe(false);
+      expect(mockLogger.log).toHaveBeenCalledWith('[ExtractArchiveResolver] Redirecting to upload step due to upload error');
+    });
+
+    it('Given "Server error" error, When extraction fails, Then redirect to upload is triggered', async () => {
+      // Given: Server error
+      console.log('🔧 BDD: Setting up "Server error" error');
+      const error = new Error('Server error - please try again later');
+      mockFileService.extractArchive.and.returnValue(Promise.reject(error));
+
+      // When: Execute resolver
+      console.log('⚙️ BDD: Executing resolver with "Server error" error');
+      const result = await firstValueFrom(executeResolver());
+
+      // Then: Redirect branch is executed
+      console.log('✅ BDD: Verifying "Server error" redirect branch is executed');
+      expect(result).toBe(false);
+      expect(mockLogger.log).toHaveBeenCalledWith('[ExtractArchiveResolver] Redirecting to upload step due to upload error');
+    });
+
+    it('Given non-upload error, When extraction fails, Then redirect is not triggered', async () => {
+      // Given: Generic error without upload keywords
+      console.log('🔧 BDD: Setting up generic error without upload keywords');
+      const error = new Error('Generic extraction error');
+      mockFileService.extractArchive.and.returnValue(Promise.reject(error));
+
+      // When: Execute resolver
+      console.log('⚙️ BDD: Executing resolver with generic error');
+      const result = await firstValueFrom(executeResolver());
+
+      // Then: Redirect branch is NOT executed
+      console.log('✅ BDD: Verifying redirect branch is not executed for generic error');
+      expect(result).toBe(false);
+      // Verify we didn't log the redirect message
+      const redirectLogCalls = mockLogger.log.calls.all().filter(call =>
+        call.args[0] === '[ExtractArchiveResolver] Redirecting to upload step due to upload error'
+      );
+      expect(redirectLogCalls.length).toBe(0);
+    });
+
+    it('Given extraction returns false, When checking result, Then false branch is executed', async () => {
+      // Given: Extraction returns false
+      console.log('🔧 BDD: Setting up extraction returning false');
+      mockFileService.extractArchive.and.returnValue(Promise.resolve(false));
+
+      // When: Execute resolver
+      console.log('⚙️ BDD: Executing resolver with false result');
+      const result = await firstValueFrom(executeResolver());
+
+      // Then: False branch is executed
+      console.log('✅ BDD: Verifying false branch is executed');
+      expect(result).toBe(false);
+      expect(mockLogger.log).toHaveBeenCalledWith('[ExtractArchiveResolver] Archive extraction returned false');
+    });
+  });
 });

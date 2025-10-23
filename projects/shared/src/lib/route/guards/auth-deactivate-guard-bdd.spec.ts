@@ -49,14 +49,14 @@ describe('Feature: Auth Guard Navigation (BDD-Style)', () => {
         url: '/step/auth',
         data: { next: 'config', previous: 'upload' }
       } as unknown as ActivatedRouteSnapshot;
-      
+
       const nextState = {
         url: '/step/upload'
       } as RouterStateSnapshot;
 
       // When: User attempts to navigate to previous step
       console.log(`⚙️ BDD: User attempts to navigate to previous step`);
-      const result = TestBed.runInInjectionContext(() => 
+      const result = TestBed.runInInjectionContext(() =>
         authDeactivateGuard(null, currentRoute, {} as RouterStateSnapshot, nextState)
       );
 
@@ -82,14 +82,14 @@ describe('Feature: Auth Guard Navigation (BDD-Style)', () => {
         url: '/step/auth',
         data: { next: 'config', previous: 'upload' }
       } as unknown as ActivatedRouteSnapshot;
-      
+
       const nextState = {
         url: '/step/config'
       } as RouterStateSnapshot;
 
       // When: User attempts to navigate to next step
       console.log(`⚙️ BDD: User attempts to navigate to next step with valid credentials`);
-      const result = TestBed.runInInjectionContext(() => 
+      const result = TestBed.runInInjectionContext(() =>
         authDeactivateGuard(null, currentRoute, {} as RouterStateSnapshot, nextState)
       );
 
@@ -117,23 +117,23 @@ describe('Feature: Auth Guard Navigation (BDD-Style)', () => {
         username: 'invalid.user',
         password: 'wrongPassword'
       });
-      mockBlueskyService.authenticate.and.returnValue(Promise.resolve({ 
-        success: false, 
-        message: 'Invalid credentials' 
+      mockBlueskyService.authenticate.and.returnValue(Promise.resolve({
+        success: false,
+        message: 'Invalid credentials'
       }));
 
       const currentRoute = {
         url: '/step/auth',
         data: { next: 'config', previous: 'upload' }
       } as unknown as ActivatedRouteSnapshot;
-      
+
       const nextState = {
         url: '/step/config'
       } as RouterStateSnapshot;
 
       // When: User attempts to navigate to next step
       console.log(`⚙️ BDD: User attempts to navigate to next step with invalid credentials`);
-      const result = TestBed.runInInjectionContext(() => 
+      const result = TestBed.runInInjectionContext(() =>
         authDeactivateGuard(null, currentRoute, {} as RouterStateSnapshot, nextState)
       );
 
@@ -165,14 +165,14 @@ describe('Feature: Auth Guard Navigation (BDD-Style)', () => {
         url: '/step/auth',
         data: { next: 'config', previous: 'upload' }
       } as unknown as ActivatedRouteSnapshot;
-      
+
       const nextState = {
         url: '/step/config'
       } as RouterStateSnapshot;
 
       // When: User attempts to navigate to next step
       console.log(`⚙️ BDD: User attempts to navigate to next step without credentials`);
-      const result = TestBed.runInInjectionContext(() => 
+      const result = TestBed.runInInjectionContext(() =>
         authDeactivateGuard(null, currentRoute, {} as RouterStateSnapshot, nextState)
       );
 
@@ -196,14 +196,14 @@ describe('Feature: Auth Guard Navigation (BDD-Style)', () => {
         url: '/step/auth',
         data: { next: 'config', previous: 'upload' }
       } as unknown as ActivatedRouteSnapshot;
-      
+
       const nextState = {
         url: '/step/config'
       } as RouterStateSnapshot;
 
       // When: User attempts to navigate to next step
       console.log(`⚙️ BDD: Already authenticated user attempts to navigate to next step`);
-      const result = TestBed.runInInjectionContext(() => 
+      const result = TestBed.runInInjectionContext(() =>
         authDeactivateGuard(null, currentRoute, {} as RouterStateSnapshot, nextState)
       );
 
@@ -223,14 +223,14 @@ describe('Feature: Auth Guard Navigation (BDD-Style)', () => {
         url: '/step/auth',
         data: { next: 'config', previous: 'upload' }
       } as unknown as ActivatedRouteSnapshot;
-      
+
       const nextState = {
         url: '/home'
       } as RouterStateSnapshot;
 
       // When: User attempts to navigate to different URL
       console.log(`⚙️ BDD: User attempts direct URL navigation`);
-      const result = TestBed.runInInjectionContext(() => 
+      const result = TestBed.runInInjectionContext(() =>
         authDeactivateGuard(null, currentRoute, {} as RouterStateSnapshot, nextState)
       );
 
@@ -257,14 +257,14 @@ describe('Feature: Auth Guard Navigation (BDD-Style)', () => {
         url: '/step/auth',
         data: { next: 'config', previous: 'upload' }
       } as unknown as ActivatedRouteSnapshot;
-      
+
       const nextState = {
         url: '/step/config'
       } as RouterStateSnapshot;
 
       // When: User attempts to navigate to next step
       console.log(`⚙️ BDD: User attempts to navigate with credentials that cause network error`);
-      const result = TestBed.runInInjectionContext(() => 
+      const result = TestBed.runInInjectionContext(() =>
         authDeactivateGuard(null, currentRoute, {} as RouterStateSnapshot, nextState)
       );
 
@@ -282,6 +282,154 @@ describe('Feature: Auth Guard Navigation (BDD-Style)', () => {
       } else {
         expect(result).toBe(false);
       }
+    });
+  });
+
+  describe('Feature: Conditional Branch Coverage (BDD-Style)', () => {
+    it('Given nextState is null, When checking target URL, Then empty string branch is used', () => {
+      // Given: nextState is null
+      console.log('🔧 BDD: Setting up scenario with null nextState');
+      const currentRoute = {
+        url: '/step/auth',
+        data: { next: 'config', previous: 'upload' }
+      } as unknown as ActivatedRouteSnapshot;
+
+      // When: Guard is invoked with null nextState
+      console.log('⚙️ BDD: Invoking guard with null nextState');
+      const result = TestBed.runInInjectionContext(() =>
+        authDeactivateGuard(null, currentRoute, {} as RouterStateSnapshot, null as any)
+      );
+
+      // Then: Empty string fallback is used and other navigation is allowed
+      console.log('✅ BDD: Verifying empty string fallback branch is executed');
+      expect(result).toBe(true);
+      expect(mockLogger.log).toHaveBeenCalledWith('Other navigation detected, allowing deactivation');
+    });
+
+    it('Given authentication fails without message, When authenticating, Then default message branch is used', async () => {
+      // Given: Authentication fails without message
+      console.log('🔧 BDD: Setting up authentication failure without message');
+      mockConfigService.isAuthenticated.and.returnValue(false);
+      mockConfigService.getBlueskyCredentials.and.returnValue({
+        username: 'test.user',
+        password: 'password'
+      });
+      mockBlueskyService.authenticate.and.returnValue(Promise.resolve({
+        success: false,
+        message: ''
+      }));
+
+      const currentRoute = {
+        url: '/step/auth',
+        data: { next: 'config', previous: 'upload' }
+      } as unknown as ActivatedRouteSnapshot;
+
+      const nextState = {
+        url: '/step/config'
+      } as RouterStateSnapshot;
+
+      // When: User attempts to navigate to next step
+      console.log('⚙️ BDD: Attempting navigation with authentication failure without message');
+      const result = TestBed.runInInjectionContext(() =>
+        authDeactivateGuard(null, currentRoute, {} as RouterStateSnapshot, nextState)
+      );
+
+      // Then: Default message branch is executed
+      console.log('✅ BDD: Verifying default message fallback branch is executed');
+      const authResult = await firstValueFrom(result as any);
+      expect(authResult).toBe(false);
+      expect(mockSnackBar.open).toHaveBeenCalledWith('Authentication failed', 'Close', {
+        duration: 3000,
+      });
+    });
+
+    it('Given authentication error without message property, When error occurs, Then error object branch is used', async () => {
+      // Given: Authentication error without message property
+      console.log('🔧 BDD: Setting up authentication error without message property');
+      mockConfigService.isAuthenticated.and.returnValue(false);
+      mockConfigService.getBlueskyCredentials.and.returnValue({
+        username: 'test.user',
+        password: 'password'
+      });
+      const errorWithoutMessage = 'String error without message property';
+      mockBlueskyService.authenticate.and.returnValue(Promise.reject(errorWithoutMessage));
+
+      const currentRoute = {
+        url: '/step/auth',
+        data: { next: 'config', previous: 'upload' }
+      } as unknown as ActivatedRouteSnapshot;
+
+      const nextState = {
+        url: '/step/config'
+      } as RouterStateSnapshot;
+
+      // When: User attempts to navigate to next step
+      console.log('⚙️ BDD: Attempting navigation with error without message property');
+      const result = TestBed.runInInjectionContext(() =>
+        authDeactivateGuard(null, currentRoute, {} as RouterStateSnapshot, nextState)
+      );
+
+      // Then: Error object fallback branch is executed
+      console.log('✅ BDD: Verifying error object fallback branch is executed');
+      const authResult = await firstValueFrom(result as any);
+      expect(authResult).toBe(false);
+      expect(mockLogger.error).toHaveBeenCalledWith(`Authentication error: ${errorWithoutMessage}`);
+    });
+
+    it('Given authentication error with null value, When error occurs, Then fallback branch is used', async () => {
+      // Given: Authentication error with null value
+      console.log('🔧 BDD: Setting up authentication error with null value');
+      mockConfigService.isAuthenticated.and.returnValue(false);
+      mockConfigService.getBlueskyCredentials.and.returnValue({
+        username: 'test.user',
+        password: 'password'
+      });
+      mockBlueskyService.authenticate.and.returnValue(Promise.reject(null));
+
+      const currentRoute = {
+        url: '/step/auth',
+        data: { next: 'config', previous: 'upload' }
+      } as unknown as ActivatedRouteSnapshot;
+
+      const nextState = {
+        url: '/step/config'
+      } as RouterStateSnapshot;
+
+      // When: User attempts to navigate to next step
+      console.log('⚙️ BDD: Attempting navigation with null error');
+      const result = TestBed.runInInjectionContext(() =>
+        authDeactivateGuard(null, currentRoute, {} as RouterStateSnapshot, nextState)
+      );
+
+      // Then: Null fallback branch is executed
+      console.log('✅ BDD: Verifying null error fallback branch is executed');
+      const authResult = await firstValueFrom(result as any);
+      expect(authResult).toBe(false);
+      expect(mockLogger.error).toHaveBeenCalledWith('Authentication error: null');
+    });
+
+    it('Given nextState with undefined url, When checking navigation, Then empty string branch is used', () => {
+      // Given: nextState with undefined url
+      console.log('🔧 BDD: Setting up nextState with undefined url');
+      const currentRoute = {
+        url: '/step/auth',
+        data: { next: 'config', previous: 'upload' }
+      } as unknown as ActivatedRouteSnapshot;
+
+      const nextState = {
+        url: undefined
+      } as any as RouterStateSnapshot;
+
+      // When: Guard checks navigation
+      console.log('⚙️ BDD: Checking navigation with undefined url');
+      const result = TestBed.runInInjectionContext(() =>
+        authDeactivateGuard(null, currentRoute, {} as RouterStateSnapshot, nextState)
+      );
+
+      // Then: Empty string fallback is used
+      console.log('✅ BDD: Verifying empty string fallback for undefined url');
+      expect(result).toBe(true);
+      expect(mockLogger.log).toHaveBeenCalledWith('Other navigation detected, allowing deactivation');
     });
   });
 });

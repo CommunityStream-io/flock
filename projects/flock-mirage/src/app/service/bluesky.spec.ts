@@ -289,4 +289,75 @@ describe('Feature: Bluesky Integration (BDD-Style)', () => {
       expect(typeof searchParams.get).toBe('function');
     });
   });
+
+  describe('Scenario: Connection Failure Query Parameter', () => {
+    it('Given connectionFailed=true query param, When checking connection failure, Then connection should fail', () => {
+      // Given: Service with connectionFailed query parameter
+      console.log('🔧 BDD: Setting up service with connectionFailed query parameter');
+      const getUrlSearchParamsSpy = spyOn(service, 'getUrlSearchParams').and.returnValue(new URLSearchParams('connectionFailed=true'));
+
+      // When: Connection failure check is performed
+      console.log('⚙️ BDD: Checking if connection should fail');
+      const shouldFail = service.shouldConnectionFail();
+
+      // Then: Connection should fail
+      console.log('✅ BDD: Verifying connection should fail');
+      expect(shouldFail).toBe(true);
+      expect(getUrlSearchParamsSpy).toHaveBeenCalled();
+    });
+
+    it('Given no connectionFailed query param, When checking connection failure, Then connection should not fail', () => {
+      // Given: Service without connectionFailed query parameter
+      console.log('🔧 BDD: Setting up service without connectionFailed query parameter');
+      const getUrlSearchParamsSpy = spyOn(service, 'getUrlSearchParams').and.returnValue(new URLSearchParams(''));
+
+      // When: Connection failure check is performed
+      console.log('⚙️ BDD: Checking if connection should fail');
+      const shouldFail = service.shouldConnectionFail();
+
+      // Then: Connection should not fail
+      console.log('✅ BDD: Verifying connection should not fail');
+      expect(shouldFail).toBe(false);
+      expect(getUrlSearchParamsSpy).toHaveBeenCalled();
+    });
+  });
+
+  describe('Scenario: Username Regex Match Edge Case', () => {
+    it('Given username with no dots, When authenticating, Then regex match returns empty array and validation fails', async () => {
+      // Given: Username with no dots (edge case for regex match)
+      console.log('🔧 BDD: Setting up username with no dots for regex edge case');
+      const credentials = {
+        username: '@test',
+        password: 'validpassword'
+      };
+
+      // When: Authentication is performed
+      console.log('⚙️ BDD: Authenticating with username containing no dots');
+      const result = await service.authenticate(credentials);
+
+      // Then: Authentication fails due to insufficient dots
+      console.log('✅ BDD: Verifying authentication failure due to insufficient dots');
+      expect(result.success).toBe(false);
+      expect(result.message).toBe('Username must contain at least two dots');
+    });
+  });
+
+  describe('Scenario: Connection Test with Query Parameters', () => {
+    it('Given connectionFailed=true in URL, When testing connection without mocks, Then connection failure is detected', async () => {
+      // Given: Service with connectionFailed query parameter (not mocked)
+      console.log('🔧 BDD: Setting up real URL search params with connectionFailed=true');
+      const originalGetUrlSearchParams = service.getUrlSearchParams.bind(service);
+      spyOn(service, 'getUrlSearchParams').and.returnValue(new URLSearchParams('connectionFailed=true'));
+      spyOn(service, 'simulateNetworkDelay').and.returnValue(Promise.resolve());
+
+      // When: Connection test is performed (calling shouldConnectionFail internally)
+      console.log('⚙️ BDD: Testing connection with real shouldConnectionFail method');
+      const result = await service.testConnection();
+
+      // Then: Connection fails because shouldConnectionFail returns true
+      console.log('✅ BDD: Verifying connection failure detected from query param');
+      expect(result.status).toBe('error');
+      expect(result.message).toBe('Failed to connect to Bluesky');
+    });
+  });
 });

@@ -10,10 +10,17 @@ export class Migration implements MigrationService {
   public elapsedSeconds = signal(0);
   public lastResult: { count: number; elapsedMs: number } | null = null;
 
+  /**
+   * Internal flag for testing error scenarios
+   * @internal
+   */
+  private _forceError = false;
+
   reset(): void {
     this.percentComplete.set(0);
     this.currentOperation.set('');
     this.elapsedSeconds.set(0);
+    this._forceError = false;
   }
 
   async run(simulate: boolean): Promise<{ count: number; elapsedMs: number }> {
@@ -35,11 +42,19 @@ export class Migration implements MigrationService {
 
     const elapsedMs = Date.now() - start;
     this.currentOperation.set('Completed');
-    if (!simulate && Math.random() < 0.0) {
-      // placeholder for future error cases
+    if (!simulate && this._forceError) {
+      // Error case for testing and future error scenarios
       throw new Error('Migration failed');
     }
     this.lastResult = { count: 42, elapsedMs };
     return this.lastResult;
+  }
+
+  /**
+   * Set error flag for testing purposes
+   * @internal
+   */
+  setForceError(value: boolean): void {
+    this._forceError = value;
   }
 }
