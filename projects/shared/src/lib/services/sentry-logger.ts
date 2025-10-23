@@ -26,7 +26,7 @@ export class SentryLogger implements Logger {
   private appName = 'Unknown';
   private config: SentryConfig | null = null;
 
-  constructor(@Optional() @Inject('APP_ENVIRONMENT') private environment?: AppEnvironment) {}
+  constructor(@Optional() @Inject('APP_ENVIRONMENT') private readonly environment?: AppEnvironment) {}
 
   /**
    * Initialize Sentry with DSN and configuration
@@ -39,7 +39,7 @@ export class SentryLogger implements Logger {
 
     // Get Sentry DSN from config or fallback
     const sentryDsn = this.config?.dsn || this.getSentryDsn();
-    
+
     if (!sentryDsn) {
       console.warn('🔍 [SentryLogger] No Sentry DSN found, logging will be console-only');
       this.initialized = false;
@@ -49,19 +49,19 @@ export class SentryLogger implements Logger {
     try {
       Sentry.init({
         dsn: sentryDsn,
-        
+
         // Debug mode - logs to console
         debug: true,
-        
+
         // Set environment (development, staging, production)
         environment: this.config?.environment || this.getEnvironment(),
-        
+
         // Release version from package.json
         release: await this.getRelease(),
-        
+
         // Sample rate for performance monitoring (0.0 to 1.0)
         tracesSampleRate: this.config?.tracesSampleRate ?? (this.getEnvironment() === 'production' ? 0.1 : 1.0),
-        
+
         // Breadcrumbs
         integrations: [
           // Automatically capture breadcrumbs from browser
@@ -73,29 +73,29 @@ export class SentryLogger implements Logger {
             sentry: true,
             xhr: true
           }),
-          
+
           // Capture HTTP requests
           Sentry.httpClientIntegration(),
         ],
-        
+
         // Filter out sensitive data
         beforeSend(event, hint) {
           // Remove sensitive environment variables
-          
+
           // Remove sensitive breadcrumbs
           if (event.breadcrumbs) {
             event.breadcrumbs = event.breadcrumbs.filter(breadcrumb => {
-              if (breadcrumb.message?.includes('password') || 
+              if (breadcrumb.message?.includes('password') ||
                   breadcrumb.message?.includes('token')) {
                 return false;
               }
               return true;
             });
           }
-          
+
           return event;
         },
-        
+
         // Ignore certain errors
         ignoreErrors: [
           // Browser extensions
@@ -131,7 +131,7 @@ export class SentryLogger implements Logger {
    */
   log(message: string, object?: any): void {
     console.log(`🦅 LOG: ${message}`, object);
-    
+
     if (this.initialized) {
       Sentry.addBreadcrumb({
         category: 'log',
@@ -147,7 +147,7 @@ export class SentryLogger implements Logger {
    */
   error(message: string, object?: any): void {
     console.error(`❌ ERROR: ${message}`, object);
-    
+
     if (this.initialized) {
       Sentry.captureException(object instanceof Error ? object : new Error(message), {
         level: 'error',
@@ -167,7 +167,7 @@ export class SentryLogger implements Logger {
    */
   warn(message: string, object?: any): void {
     console.warn(`⚠️ WARN: ${message}`, object);
-    
+
     if (this.initialized) {
       Sentry.addBreadcrumb({
         category: 'warning',
@@ -183,7 +183,7 @@ export class SentryLogger implements Logger {
    */
   workflow(message: string, object?: any): void {
     console.log(`🦅 WORKFLOW: ${message}`, object);
-    
+
     if (this.initialized) {
       Sentry.addBreadcrumb({
         category: 'workflow',
@@ -203,7 +203,7 @@ export class SentryLogger implements Logger {
     if (typeof window !== 'undefined' && (window as any).SENTRY_DSN) {
       return (window as any).SENTRY_DSN;
     }
-    
+
     // Return null if not configured (Sentry won't be enabled)
     return null;
   }
@@ -216,7 +216,7 @@ export class SentryLogger implements Logger {
     if (typeof window !== 'undefined' && (window as any).electronAPI) {
       return 'electron';
     }
-    
+
     // Check hostname for staging/production
     if (typeof window !== 'undefined') {
       const hostname = window.location.hostname;
@@ -228,7 +228,7 @@ export class SentryLogger implements Logger {
       }
       return 'production';
     }
-    
+
     return 'development';
   }
 
@@ -237,7 +237,7 @@ export class SentryLogger implements Logger {
    */
   private getRelease(): string {
     try {
-      
+
       if(this.environment?.version) {
         return `${this.appName}@${this.environment?.version}`;
       }

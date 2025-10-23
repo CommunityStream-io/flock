@@ -1,6 +1,6 @@
 /**
  * BDD-Style Unit Tests for Auth Valid Guard
- * 
+ *
  * This demonstrates BDD methodology using Angular's native testing framework
  * following the project's approach of validation through snackbars via guards and resolvers.
  */
@@ -187,6 +187,77 @@ describe('Feature: Authentication Validation Guard (BDD-Style)', () => {
       console.log('✅ BDD: Verifying service injection and calls');
       expect(result).toBe(true);
       expect(mockConfigService.getBlueskyCredentials).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('Feature: Conditional Branch Coverage (BDD-Style)', () => {
+    it('Given credentials with null username, When checking validation, Then null username branch is covered', () => {
+      // Given: Credentials with null username
+      console.log('🔧 BDD: Setting up credentials with null username');
+      const credentialsWithNullUsername = {
+        username: null,
+        password: 'validPassword123'
+      };
+      mockConfigService.getBlueskyCredentials.and.returnValue(credentialsWithNullUsername as any);
+
+      // When: Guard checks credentials
+      console.log('⚙️ BDD: Guard checks credentials with null username');
+      const result = TestBed.runInInjectionContext(() => authValidGuard({} as any, {} as any, {} as any, {} as any));
+
+      // Then: Null username branch is executed
+      console.log('✅ BDD: Verifying null username branch is executed');
+      expect(result).toBe(false);
+      expect(mockSnackBar.open).toHaveBeenCalledWith(
+        'Please provide valid Bluesky credentials',
+        'Close',
+        { duration: 3000 }
+      );
+    });
+
+    it('Given credentials with null password, When checking validation, Then null password branch is covered', () => {
+      // Given: Credentials with null password
+      console.log('🔧 BDD: Setting up credentials with null password');
+      const credentialsWithNullPassword = {
+        username: 'user.bksy.social',
+        password: null
+      };
+      mockConfigService.getBlueskyCredentials.and.returnValue(credentialsWithNullPassword as any);
+
+      // When: Guard checks credentials
+      console.log('⚙️ BDD: Guard checks credentials with null password');
+      const result = TestBed.runInInjectionContext(() => authValidGuard({} as any, {} as any, {} as any, {} as any));
+
+      // Then: Null password branch is executed
+      console.log('✅ BDD: Verifying null password branch is executed');
+      expect(result).toBe(false);
+      expect(mockSnackBar.open).toHaveBeenCalledWith(
+        'Please provide valid Bluesky credentials',
+        'Close',
+        { duration: 3000 }
+      );
+    });
+
+    it('Given credentials with both null username and password, When checking validation, Then both null branches are covered', () => {
+      // Given: Credentials with both null username and password
+      console.log('🔧 BDD: Setting up credentials with both null username and password');
+      const credentialsWithBothNull = {
+        username: null,
+        password: null
+      };
+      mockConfigService.getBlueskyCredentials.and.returnValue(credentialsWithBothNull as any);
+
+      // When: Guard checks credentials
+      console.log('⚙️ BDD: Guard checks credentials with both null values');
+      const result = TestBed.runInInjectionContext(() => authValidGuard({} as any, {} as any, {} as any, {} as any));
+
+      // Then: Both null branches are executed
+      console.log('✅ BDD: Verifying both null branches are executed');
+      expect(result).toBe(false);
+      expect(mockSnackBar.open).toHaveBeenCalledWith(
+        'Please provide valid Bluesky credentials',
+        'Close',
+        { duration: 3000 }
+      );
     });
   });
 });
