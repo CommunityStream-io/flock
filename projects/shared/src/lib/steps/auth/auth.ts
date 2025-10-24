@@ -8,10 +8,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
-import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { LOGGER, Logger } from '../../services';
-import { Bluesky } from '../../services/bluesky';
 import { ConfigServiceImpl } from '../../services/config';
 import { HelpDialog } from './help-dialog/help-dialog';
 import { SplashScreenLoading } from '../../services';
@@ -37,9 +35,7 @@ import { validateBlueskyUsername } from '../../services/validators/username.vali
 })
 export class Auth implements OnInit, OnDestroy {
   private logger = inject(LOGGER) as Logger;
-  private blueskyService = inject(Bluesky);
   private configService = inject(ConfigServiceImpl);
-  private router = inject(Router);
   private cdr = inject(ChangeDetectorRef);
   private dialog = inject(MatDialog);
   public splashScreenLoading = inject(SplashScreenLoading);

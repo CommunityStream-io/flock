@@ -1,12 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { DebugElement } from '@angular/core';
-import { By } from '@angular/platform-browser';
 
 import { Auth } from './auth';
-import { LOGGER, Bluesky, ConfigServiceImpl, Logger } from '../../services';
+import { LOGGER, BLUESKY, ConfigServiceImpl, Logger } from '../../services';
 
 describe('Auth', () => {
   let component: Auth;
@@ -25,9 +22,9 @@ describe('Auth', () => {
       imports: [Auth, NoopAnimationsModule],
       providers: [
         { provide: LOGGER, useValue: mockLogger },
-        { provide: Bluesky, useClass: Bluesky },
+        { provide: BLUESKY, useValue: jasmine.createSpyObj('Blueksky', ['authenticate', 'createPost',
+          'testConnection']) },
         { provide: ConfigServiceImpl, useClass: ConfigServiceImpl },
-        { provide: Router, useValue: { navigate: jasmine.createSpy('navigate') } },
         { provide: MatDialog, useValue: { open: jasmine.createSpy('open') } }
       ]
     })
@@ -60,9 +57,9 @@ describe('Feature: Username Validation Error Detection (BDD-Style)', () => {
       imports: [Auth, NoopAnimationsModule],
       providers: [
         { provide: LOGGER, useValue: mockLogger },
-        { provide: Bluesky, useClass: Bluesky },
+        { provide: BLUESKY, useValue: jasmine.createSpyObj('Blueksky', ['authenticate', 'createPost',
+          'testConnection']) },
         { provide: ConfigServiceImpl, useClass: ConfigServiceImpl },
-        { provide: Router, useValue: { navigate: jasmine.createSpy('navigate') } },
         { provide: MatDialog, useValue: { open: jasmine.createSpy('open') } }
       ]
     })

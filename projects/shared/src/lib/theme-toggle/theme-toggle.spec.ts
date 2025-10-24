@@ -25,7 +25,6 @@ describe('Feature: Theme Toggle System', () => {
     themeService = TestBed.inject(ThemeToggleService) as jasmine.SpyObj<ThemeToggleService>;
   });
 
-  // TODO: Fix theme toggle tests - temporarily disabled due to signal mocking issues
   describe('Scenario: Component initialization and theme state', () => {
     it('Given the component is created, When it initializes, Then it should be truthy', () => {
       // Given: Component is created
@@ -52,6 +51,38 @@ describe('Feature: Theme Toggle System', () => {
     });
   });
 
+  describe('Scenario: Theme state computation', () => {
+    it('Given theme service returns light theme, When isDark computed is accessed, Then it should return false', () => {
+      // Given: Theme service returns light theme
+      console.log('🔧 BDD: Setting up light theme scenario');
+      themeService.currentTheme.and.returnValue(signal('light'));
+      fixture.detectChanges();
+      
+      // When: isDark computed is accessed
+      console.log('⚙️ BDD: Accessing isDark computed signal');
+      const isDark = component.isDark();
+      
+      // Then: Should return false
+      console.log('✅ BDD: Verifying isDark returns false for light theme');
+      expect(isDark).toBe(false);
+    });
+
+    it('Given theme service returns dark theme, When isDark computed is accessed, Then it should return true', () => {
+      // Given: Theme service returns dark theme
+      console.log('🔧 BDD: Setting up dark theme scenario');
+      themeService.currentTheme.and.returnValue(signal('dark'));
+      fixture.detectChanges();
+      
+      // When: isDark computed is accessed
+      console.log('⚙️ BDD: Accessing isDark computed signal');
+      const isDark = component.isDark();
+      
+      // Then: Should return true
+      console.log('✅ BDD: Verifying isDark returns true for dark theme');
+      expect(isDark).toBe(true);
+    });
+  });
+
   describe('Scenario: User toggles theme', () => {
     it('Given the component is created, When toggleTheme is called, Then theme service toggle method is called', () => {
       // Given: Component is created
@@ -64,6 +95,38 @@ describe('Feature: Theme Toggle System', () => {
       // Then: Theme service toggle method is called
       console.log('✅ BDD: Theme service toggle method is called');
       expect(themeService.toggleTheme).toHaveBeenCalledTimes(1);
+    });
+
+    it('Given component is in light theme, When toggleTheme is called, Then console logs switching to dark', () => {
+      // Given: Component is in light theme
+      console.log('🔧 BDD: Setting up light theme toggle scenario');
+      themeService.currentTheme.and.returnValue(signal('light'));
+      spyOn(console, 'log');
+      fixture.detectChanges();
+      
+      // When: Toggle theme is called
+      console.log('⚙️ BDD: Calling toggleTheme method');
+      component.toggleTheme();
+      
+      // Then: Console logs switching to dark theme
+      console.log('✅ BDD: Verifying console log for dark theme switch');
+      expect(console.log).toHaveBeenCalledWith('🔧 BDD: Theme toggle clicked, switching to', 'dark', 'theme');
+    });
+
+    it('Given component is in dark theme, When toggleTheme is called, Then console logs switching to light', () => {
+      // Given: Component is in dark theme
+      console.log('🔧 BDD: Setting up dark theme toggle scenario');
+      themeService.currentTheme.and.returnValue(signal('dark'));
+      spyOn(console, 'log');
+      fixture.detectChanges();
+      
+      // When: Toggle theme is called
+      console.log('⚙️ BDD: Calling toggleTheme method');
+      component.toggleTheme();
+      
+      // Then: Console logs switching to light theme
+      console.log('✅ BDD: Verifying console log for light theme switch');
+      expect(console.log).toHaveBeenCalledWith('🔧 BDD: Theme toggle clicked, switching to', 'light', 'theme');
     });
   });
 

@@ -5,7 +5,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { By } from '@angular/platform-browser';
 
 import { Auth } from './auth';
-import { LOGGER, Bluesky, ConfigServiceImpl, Logger, SplashScreenLoading } from '../../services';
+import { LOGGER, BLUESKY, ConfigServiceImpl, Logger, SplashScreenLoading, BlueSkyService } from '../../services';
 
 /**
  * BDD-Style Integration Tests for Auth Component
@@ -17,7 +17,7 @@ import { LOGGER, Bluesky, ConfigServiceImpl, Logger, SplashScreenLoading } from 
 describe('Feature: User Authentication (BDD-Style)', () => {
   let component: Auth;
   let fixture: ComponentFixture<Auth>;
-  let mockBlueskyService: jasmine.SpyObj<Bluesky>;
+  let mockBlueskyService: jasmine.SpyObj<BlueSkyService>;
   let mockConfigService: jasmine.SpyObj<ConfigServiceImpl>;
   let mockRouter: jasmine.SpyObj<Router>;
   let mockLogger: jasmine.SpyObj<Logger>;
@@ -37,7 +37,7 @@ describe('Feature: User Authentication (BDD-Style)', () => {
       imports: [Auth, NoopAnimationsModule],
       providers: [
         { provide: LOGGER, useValue: mockLogger },
-        { provide: Bluesky, useValue: mockBlueskyService },
+        { provide: BLUESKY, useValue: mockBlueskyService },
         { provide: ConfigServiceImpl, useValue: mockConfigService },
         { provide: Router, useValue: mockRouter },
         { provide: MatDialog, useValue: { open: jasmine.createSpy('open') } },

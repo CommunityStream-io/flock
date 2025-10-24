@@ -6,11 +6,11 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { firstValueFrom } from 'rxjs';
 
 import { authDeactivateGuard } from './auth-deactivate-guard';
-import { ConfigServiceImpl, Bluesky, LOGGER, Logger, SplashScreenLoading } from '../../services';
+import { ConfigServiceImpl, BLUESKY, LOGGER, Logger, SplashScreenLoading, BlueSkyService } from '../../services';
 
 describe('Feature: Auth Guard Navigation (BDD-Style)', () => {
   let mockConfigService: jasmine.SpyObj<ConfigServiceImpl>;
-  let mockBlueskyService: jasmine.SpyObj<Bluesky>;
+  let mockBlueskyService: jasmine.SpyObj<BlueSkyService>;
   let mockLogger: jasmine.SpyObj<Logger>;
   let mockSnackBar: jasmine.SpyObj<MatSnackBar>;
   let mockSplashScreenLoading: jasmine.SpyObj<SplashScreenLoading>;
@@ -32,7 +32,7 @@ describe('Feature: Auth Guard Navigation (BDD-Style)', () => {
       imports: [RouterTestingModule, NoopAnimationsModule],
       providers: [
         { provide: ConfigServiceImpl, useValue: mockConfigService },
-        { provide: Bluesky, useValue: mockBlueskyService },
+        { provide: BLUESKY, useValue: mockBlueskyService },
         { provide: LOGGER, useValue: mockLogger },
         { provide: MatSnackBar, useValue: mockSnackBar },
         { provide: SplashScreenLoading, useValue: mockSplashScreenLoading },

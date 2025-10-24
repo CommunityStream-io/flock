@@ -1,21 +1,20 @@
 import { inject } from '@angular/core';
-import { CanDeactivateFn, Router, ActivatedRoute } from '@angular/router';
+import { CanDeactivateFn } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ConfigServiceImpl, Bluesky, LOGGER, Logger, SplashScreenLoading } from '../../services';
-import { catchError, finalize, from, map, Observable, of } from 'rxjs';
+import { ConfigServiceImpl, BLUESKY, LOGGER, Logger, SplashScreenLoading, BlueSkyService } from '../../services';
+import { catchError, finalize, from, map, of } from 'rxjs';
 
 /**
  * Guard to handle authentication when navigating from the auth step
  * - Allows deactivation when going to previous step
  * - Runs authentication logic when going to next step
  */
-export const authDeactivateGuard: CanDeactivateFn<unknown> = (component, currentRoute, currentState, nextState) => {
+export const authDeactivateGuard: CanDeactivateFn<unknown> = (_component, currentRoute, _currentState, nextState) => {
   const logger = inject<Logger>(LOGGER);
   const snackbar = inject(MatSnackBar);
   const splashScreenLoading = inject(SplashScreenLoading);
   const configService = inject(ConfigServiceImpl);
-  const blueskyService = inject(Bluesky);
-  const router = inject(Router);
+  const blueskyService = inject<BlueSkyService>(BLUESKY);
 
   // Get current route data to determine next/previous steps
   const currentRouteData = currentRoute?.data;
