@@ -8,10 +8,15 @@ describe('Feature: Theme Toggle System', () => {
   let component: ThemeToggleComponent;
   let fixture: ComponentFixture<ThemeToggleComponent>;
   let themeService: jasmine.SpyObj<ThemeToggleService>;
+  let mockCurrentThemeSignal: any;
 
   beforeEach(async () => {
-    const spy = jasmine.createSpyObj('ThemeToggleService', ['toggleTheme']);
-    spy.currentTheme = jasmine.createSpy('currentTheme').and.returnValue(signal('light'));
+    // Create a mock signal that we can control
+    mockCurrentThemeSignal = signal('light');
+    
+    const spy = jasmine.createSpyObj('ThemeToggleService', ['toggleTheme'], {
+      currentTheme: mockCurrentThemeSignal
+    });
 
     await TestBed.configureTestingModule({
       imports: [ThemeToggleComponent, CommonModule],
@@ -49,13 +54,55 @@ describe('Feature: Theme Toggle System', () => {
       console.log('✅ BDD: Component has theme service');
       expect(component['themeService']).toBeTruthy();
     });
+
+    it('Given the component is created, When it initializes, Then isDark computed signal should be accessible', () => {
+      // Given: Component is created
+      console.log('🔧 BDD: Component is created with computed signal');
+      
+      // When: Component initializes and isDark is accessed
+      fixture.detectChanges();
+      const isDark = component.isDark();
+      
+      // Then: Should return boolean value
+      console.log('✅ BDD: Computed signal is accessible and returns boolean');
+      expect(typeof isDark).toBe('boolean');
+    });
+
+    it('Given a fresh component instance, When it is created, Then inject should be called', () => {
+      // Given: Fresh component instance
+      console.log('🔧 BDD: Creating fresh component instance to test injection');
+      
+      // When: Component is created
+      const freshFixture = TestBed.createComponent(ThemeToggleComponent);
+      const freshComponent = freshFixture.componentInstance;
+      freshFixture.detectChanges();
+      
+      // Then: Should have injected service
+      console.log('✅ BDD: Component has injected theme service');
+      expect(freshComponent['themeService']).toBeTruthy();
+    });
+
+    it('Given a fresh component instance, When it is created, Then computed signal should be initialized', () => {
+      // Given: Fresh component instance
+      console.log('🔧 BDD: Creating fresh component instance to test computed signal');
+      
+      // When: Component is created and computed signal is accessed
+      const freshFixture = TestBed.createComponent(ThemeToggleComponent);
+      const freshComponent = freshFixture.componentInstance;
+      freshFixture.detectChanges();
+      const isDark = freshComponent.isDark();
+      
+      // Then: Should return boolean value
+      console.log('✅ BDD: Computed signal is initialized and returns boolean');
+      expect(typeof isDark).toBe('boolean');
+    });
   });
 
   describe('Scenario: Theme state computation', () => {
     it('Given theme service returns light theme, When isDark computed is accessed, Then it should return false', () => {
       // Given: Theme service returns light theme
       console.log('🔧 BDD: Setting up light theme scenario');
-      themeService.currentTheme.and.returnValue(signal('light'));
+      mockCurrentThemeSignal.set('light');
       fixture.detectChanges();
       
       // When: isDark computed is accessed
@@ -70,7 +117,7 @@ describe('Feature: Theme Toggle System', () => {
     it('Given theme service returns dark theme, When isDark computed is accessed, Then it should return true', () => {
       // Given: Theme service returns dark theme
       console.log('🔧 BDD: Setting up dark theme scenario');
-      themeService.currentTheme.and.returnValue(signal('dark'));
+      mockCurrentThemeSignal.set('dark');
       fixture.detectChanges();
       
       // When: isDark computed is accessed
@@ -100,7 +147,7 @@ describe('Feature: Theme Toggle System', () => {
     it('Given component is in light theme, When toggleTheme is called, Then console logs switching to dark', () => {
       // Given: Component is in light theme
       console.log('🔧 BDD: Setting up light theme toggle scenario');
-      themeService.currentTheme.and.returnValue(signal('light'));
+      mockCurrentThemeSignal.set('light');
       spyOn(console, 'log');
       fixture.detectChanges();
       
@@ -116,7 +163,7 @@ describe('Feature: Theme Toggle System', () => {
     it('Given component is in dark theme, When toggleTheme is called, Then console logs switching to light', () => {
       // Given: Component is in dark theme
       console.log('🔧 BDD: Setting up dark theme toggle scenario');
-      themeService.currentTheme.and.returnValue(signal('dark'));
+      mockCurrentThemeSignal.set('dark');
       spyOn(console, 'log');
       fixture.detectChanges();
       
