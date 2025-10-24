@@ -271,4 +271,3 @@ Your support helps keep this project free and open source for everyone.
 ---
 
 **🦅 Built with Angular 20.1.5** | **🏗️ Architecture-first design** | **🦜 Multi-bird support** | **🎨 Shared M3 Material nest**
-# Trigger rebuild
