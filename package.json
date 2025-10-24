@@ -31,7 +31,7 @@
     "test:e2e:headless": "concurrently --kill-others --success first \"ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0\" \"wait-on http://localhost:4200 && cross-env HEADLESS=true wdio run wdio.conf.ts\"",
     "test:e2e:watch": "wdio run wdio.conf.ts --watch",
     "test:e2e:watch:headless": "cross-env HEADLESS=true wdio run wdio.conf.ts --watch",
-    "test:e2e:shard": "cross-env SHARDED_TESTS=true CI=true HEADLESS=true ./scripts/testing/run-sharded-tests.sh --core",
+    "test:e2e:shard": "mkdir -p logs/metrics logs/drivers allure-results && timeout 300 concurrently --kill-others --success first \"./node_modules/.bin/ng serve flock-mirage --configuration=test --port=4200 --host=0.0.0.0\" \"wait-on http://localhost:4200 && cross-env CI=true HEADLESS=true SHARDED_TESTS=true npm run e2e -- --shard=${SHARD}/${TOTAL_SHARDS}\"",
     "e2e": "wdio run wdio.conf.ts",
     "e2e:headless": "cross-env HEADLESS=true wdio run wdio.conf.ts",
     "e2e:debug": "cross-env HEADLESS=true DEBUG_TESTS=true wdio run wdio.conf.ts",
