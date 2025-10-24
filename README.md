@@ -13,8 +13,6 @@
 - 🍎 **macOS** - macOS 10.15+ (Universal: Intel & Apple Silicon)
 - 🐧 **Linux** - Ubuntu 20.04+ (AppImage, DEB, RPM)
 
-📖 **[Installation Guide](INSTALLATION.md)** - Platform-specific installation instructions
-
 ---
 
 A **flock** of Angular applications soaring through the social media migration skies! Each variant has its own personality while sharing the same nest of components and services. Built with a unified M3 Material design that keeps our flock flying in perfect formation.
