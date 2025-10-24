@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { ResolveFn } from '@angular/router';
+import { ResolveFn, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable, firstValueFrom } from 'rxjs';
 
@@ -11,6 +11,7 @@ describe('Feature: Archive Extraction Resolution', () => {
   let mockSnackBar: jasmine.SpyObj<MatSnackBar>;
   let mockLogger: jasmine.SpyObj<Logger>;
   let mockSplashScreenLoading: jasmine.SpyObj<SplashScreenLoading>;
+  let mockRouter: jasmine.SpyObj<Router>;
   let executeResolver: (route?: any, state?: any) => Observable<boolean>;
 
   beforeEach(() => {
@@ -19,13 +20,15 @@ describe('Feature: Archive Extraction Resolution', () => {
     mockSnackBar = jasmine.createSpyObj<MatSnackBar>('MatSnackBar', ['open']);
     mockLogger = jasmine.createSpyObj<Logger>('Logger', ['log', 'error', 'warn', 'workflow', 'instrument']);
     mockSplashScreenLoading = jasmine.createSpyObj<SplashScreenLoading>('SplashScreenLoading', ['show', 'hide', 'setComponent']);
+    mockRouter = jasmine.createSpyObj<Router>('Router', ['navigate']);
 
     TestBed.configureTestingModule({
       providers: [
         { provide: FILE_PROCESSOR, useValue: mockFileService },
         { provide: MatSnackBar, useValue: mockSnackBar },
         { provide: LOGGER, useValue: mockLogger },
-        { provide: SplashScreenLoading, useValue: mockSplashScreenLoading }
+        { provide: SplashScreenLoading, useValue: mockSplashScreenLoading },
+        { provide: Router, useValue: mockRouter }
       ]
     });
 
@@ -222,6 +225,7 @@ describe('Feature: Archive Extraction Resolution', () => {
       console.log('✅ BDD: Verifying "File too large" redirect branch is executed');
       expect(result).toBe(false);
       expect(mockLogger.log).toHaveBeenCalledWith('[ExtractArchiveResolver] Redirecting to upload step due to upload error');
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['/step/upload']);
     });
 
     it('Given "Upload failed" error, When extraction fails, Then redirect to upload is triggered', async () => {
@@ -238,6 +242,7 @@ describe('Feature: Archive Extraction Resolution', () => {
       console.log('✅ BDD: Verifying "Upload failed" redirect branch is executed');
       expect(result).toBe(false);
       expect(mockLogger.log).toHaveBeenCalledWith('[ExtractArchiveResolver] Redirecting to upload step due to upload error');
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['/step/upload']);
     });
 
     it('Given "Invalid file format" error, When extraction fails, Then redirect to upload is triggered', async () => {
@@ -254,6 +259,7 @@ describe('Feature: Archive Extraction Resolution', () => {
       console.log('✅ BDD: Verifying "Invalid file format" redirect branch is executed');
       expect(result).toBe(false);
       expect(mockLogger.log).toHaveBeenCalledWith('[ExtractArchiveResolver] Redirecting to upload step due to upload error');
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['/step/upload']);
     });
 
     it('Given "Network error" error, When extraction fails, Then redirect to upload is triggered', async () => {
@@ -270,6 +276,7 @@ describe('Feature: Archive Extraction Resolution', () => {
       console.log('✅ BDD: Verifying "Network error" redirect branch is executed');
       expect(result).toBe(false);
       expect(mockLogger.log).toHaveBeenCalledWith('[ExtractArchiveResolver] Redirecting to upload step due to upload error');
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['/step/upload']);
     });
 
     it('Given "Server error" error, When extraction fails, Then redirect to upload is triggered', async () => {
@@ -286,6 +293,7 @@ describe('Feature: Archive Extraction Resolution', () => {
       console.log('✅ BDD: Verifying "Server error" redirect branch is executed');
       expect(result).toBe(false);
       expect(mockLogger.log).toHaveBeenCalledWith('[ExtractArchiveResolver] Redirecting to upload step due to upload error');
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['/step/upload']);
     });
 
     it('Given non-upload error, When extraction fails, Then redirect is not triggered', async () => {
@@ -319,6 +327,173 @@ describe('Feature: Archive Extraction Resolution', () => {
 
       // Then: False branch is executed
       console.log('✅ BDD: Verifying false branch is executed');
+      expect(result).toBe(false);
+      expect(mockLogger.log).toHaveBeenCalledWith('[ExtractArchiveResolver] Archive extraction returned false');
+    });
+  });
+
+  describe('Feature: Additional Branch Coverage (BDD-Style)', () => {
+    it('Given error with null message, When extraction fails, Then default error message is used', async () => {
+      // Given: Error with null message
+      console.log('🔧 BDD: Setting up error with null message');
+      const errorWithNullMessage = new Error();
+      errorWithNullMessage.message = null as any;
+      mockFileService.extractArchive.and.returnValue(Promise.reject(errorWithNullMessage));
+
+      // When: Execute resolver
+      console.log('⚙️ BDD: Executing resolver with error with null message');
+      const result = await firstValueFrom(executeResolver());
+
+      // Then: Default error message is used
+      console.log('✅ BDD: Verifying default error message branch is executed for null message');
+      expect(result).toBe(false);
+      expect(mockSnackBar.open).toHaveBeenCalledWith(
+        'Error extracting archive',
+        'Close',
+        { duration: 5000, panelClass: ['error-snackbar'] }
+      );
+    });
+
+    it('Given error with undefined message, When extraction fails, Then default error message is used', async () => {
+      // Given: Error with undefined message
+      console.log('🔧 BDD: Setting up error with undefined message');
+      const errorWithUndefinedMessage = new Error();
+      errorWithUndefinedMessage.message = undefined as any;
+      mockFileService.extractArchive.and.returnValue(Promise.reject(errorWithUndefinedMessage));
+
+      // When: Execute resolver
+      console.log('⚙️ BDD: Executing resolver with error with undefined message');
+      const result = await firstValueFrom(executeResolver());
+
+      // Then: Default error message is used
+      console.log('✅ BDD: Verifying default error message branch is executed for undefined message');
+      expect(result).toBe(false);
+      expect(mockSnackBar.open).toHaveBeenCalledWith(
+        'Error extracting archive',
+        'Close',
+        { duration: 5000, panelClass: ['error-snackbar'] }
+      );
+    });
+
+    it('Given non-Error object thrown, When extraction fails, Then error handling still works', async () => {
+      // Given: Non-Error object thrown
+      console.log('🔧 BDD: Setting up non-Error object thrown');
+      const nonErrorObject = { message: 'Custom error object' };
+      mockFileService.extractArchive.and.returnValue(Promise.reject(nonErrorObject));
+
+      // When: Execute resolver
+      console.log('⚙️ BDD: Executing resolver with non-Error object');
+      const result = await firstValueFrom(executeResolver());
+
+      // Then: Error handling still works
+      console.log('✅ BDD: Verifying error handling works with non-Error object');
+      expect(result).toBe(false);
+      expect(mockSnackBar.open).toHaveBeenCalledWith(
+        'Custom error object',
+        'Close',
+        { duration: 5000, panelClass: ['error-snackbar'] }
+      );
+    });
+
+    it('Given non-Error object without message, When extraction fails, Then default error message is used', async () => {
+      // Given: Non-Error object without message
+      console.log('🔧 BDD: Setting up non-Error object without message');
+      const nonErrorObjectWithoutMessage = { someProperty: 'value' };
+      mockFileService.extractArchive.and.returnValue(Promise.reject(nonErrorObjectWithoutMessage));
+
+      // When: Execute resolver
+      console.log('⚙️ BDD: Executing resolver with non-Error object without message');
+      const result = await firstValueFrom(executeResolver());
+
+      // Then: Default error message is used
+      console.log('✅ BDD: Verifying default error message branch is executed for non-Error object');
+      expect(result).toBe(false);
+      expect(mockSnackBar.open).toHaveBeenCalledWith(
+        'Error extracting archive',
+        'Close',
+        { duration: 5000, panelClass: ['error-snackbar'] }
+      );
+    });
+
+    it('Given error with multiple upload keywords, When extraction fails, Then redirect is triggered', async () => {
+      // Given: Error with multiple upload keywords
+      console.log('🔧 BDD: Setting up error with multiple upload keywords');
+      const errorWithMultipleKeywords = new Error('File too large and Upload failed simultaneously');
+      mockFileService.extractArchive.and.returnValue(Promise.reject(errorWithMultipleKeywords));
+
+      // When: Execute resolver
+      console.log('⚙️ BDD: Executing resolver with error containing multiple upload keywords');
+      const result = await firstValueFrom(executeResolver());
+
+      // Then: Redirect branch is executed
+      console.log('✅ BDD: Verifying redirect branch is executed for multiple upload keywords');
+      expect(result).toBe(false);
+      expect(mockLogger.log).toHaveBeenCalledWith('[ExtractArchiveResolver] Redirecting to upload step due to upload error');
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['/step/upload']);
+    });
+
+    it('Given error with case-insensitive upload keywords, When extraction fails, Then redirect is not triggered', async () => {
+      // Given: Error with case-insensitive upload keywords
+      console.log('🔧 BDD: Setting up error with case-insensitive upload keywords');
+      const errorWithCaseInsensitive = new Error('FILE TOO LARGE - uppercase keywords');
+      mockFileService.extractArchive.and.returnValue(Promise.reject(errorWithCaseInsensitive));
+
+      // When: Execute resolver
+      console.log('⚙️ BDD: Executing resolver with case-insensitive upload keywords');
+      const result = await firstValueFrom(executeResolver());
+
+      // Then: Redirect branch is NOT executed (case-sensitive matching)
+      console.log('✅ BDD: Verifying redirect branch is not executed for case-insensitive keywords');
+      expect(result).toBe(false);
+      // Verify we didn't log the redirect message
+      const redirectLogCalls = mockLogger.log.calls.all().filter(call =>
+        call.args[0] === '[ExtractArchiveResolver] Redirecting to upload step due to upload error'
+      );
+      expect(redirectLogCalls.length).toBe(0);
+      expect(mockRouter.navigate).not.toHaveBeenCalled();
+    });
+
+    it('Given successful extraction with true result, When resolver completes, Then success branch is executed', async () => {
+      // Given: Successful extraction with true result
+      console.log('🔧 BDD: Setting up successful extraction with true result');
+      mockFileService.extractArchive.and.returnValue(Promise.resolve(true));
+
+      // When: Execute resolver
+      console.log('⚙️ BDD: Executing resolver with true result');
+      const result = await firstValueFrom(executeResolver());
+
+      // Then: Success branch is executed
+      console.log('✅ BDD: Verifying success branch is executed');
+      expect(result).toBe(true);
+      expect(mockLogger.log).toHaveBeenCalledWith('[ExtractArchiveResolver] Archive extracted successfully');
+    });
+
+    it('Given successful extraction with truthy result, When resolver completes, Then success branch is executed', async () => {
+      // Given: Successful extraction with truthy result
+      console.log('🔧 BDD: Setting up successful extraction with truthy result');
+      mockFileService.extractArchive.and.returnValue(Promise.resolve(true));
+
+      // When: Execute resolver
+      console.log('⚙️ BDD: Executing resolver with truthy result');
+      const result = await firstValueFrom(executeResolver());
+
+      // Then: Success branch is executed
+      console.log('✅ BDD: Verifying success branch is executed for truthy result');
+      expect(result).toBe(true);
+      expect(mockLogger.log).toHaveBeenCalledWith('[ExtractArchiveResolver] Archive extracted successfully');
+    });
+
+    it('Given successful extraction with falsy result, When resolver completes, Then false branch is executed', async () => {
+      // Given: Successful extraction with falsy result
+      console.log('🔧 BDD: Setting up successful extraction with falsy result');
+      mockFileService.extractArchive.and.returnValue(Promise.resolve(false));
+
+      // When: Execute resolver
+      console.log('⚙️ BDD: Executing resolver with falsy result');
+      const result = await firstValueFrom(executeResolver());
+
+      // Then: False branch is executed
+      console.log('✅ BDD: Verifying false branch is executed for falsy result');
       expect(result).toBe(false);
       expect(mockLogger.log).toHaveBeenCalledWith('[ExtractArchiveResolver] Archive extraction returned false');
     });
