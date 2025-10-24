@@ -1,5 +1,5 @@
-import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
-import { Subject, Observable } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subject } from 'rxjs';
 
 /**
  * Test utilities for StepHeader component testing
@@ -34,7 +34,7 @@ export function createMockActivatedRoute(
 
   return jasmine.createSpyObj('ActivatedRoute', [], {
     snapshot: { ...defaultSnapshot, ...snapshot },
-    firstChild: childRoute || null
+    firstChild: childRoute ?? null
   });
 }
 
@@ -44,7 +44,7 @@ export function createMockActivatedRoute(
 export function createMockRouter(
   routerEventsSubject?: Subject<any>
 ): { router: jasmine.SpyObj<Router>; eventsSubject: Subject<any> } {
-  const eventsSubject = routerEventsSubject || new Subject();
+  const eventsSubject = routerEventsSubject ?? new Subject();
   
   const router = jasmine.createSpyObj('Router', ['navigate'], {
     events: eventsSubject.asObservable()
@@ -166,130 +166,9 @@ export function createNestedRouteStructure(
 
   // Build from deepest to shallowest
   for (let i = levels.length - 1; i >= 0; i--) {
-    const route = createMockActivatedRoute(levels[i], currentRoute || undefined);
+    const route = createMockActivatedRoute(levels[i], currentRoute ?? undefined);
     currentRoute = route;
   }
 
   return currentRoute!;
-}
-
-/**
- * Simulates navigation events for testing reactive behavior
- */
-export function simulateNavigation(
-  eventsSubject: Subject<any>,
-  routes: MockRouteSnapshot[],
-  mockActivatedRoute: jasmine.SpyObj<ActivatedRoute>
-): void {
-  routes.forEach((routeData, index) => {
-    // Update the mock route snapshot
-    mockActivatedRoute.snapshot = {
-      title: routeData.title || '',
-      data: routeData.data || {}
-    } as any;
-
-    // Emit NavigationEnd event
-    eventsSubject.next(new NavigationEnd(
-      index + 1, 
-      `/step/${Object.keys(STEP_ROUTE_TEST_DATA)[index]}`, 
-      `/step/${Object.keys(STEP_ROUTE_TEST_DATA)[index]}`
-    ));
-  });
-}
-
-/**
- * Helper function to create TestBed configuration for StepHeader tests
- */
-export function createStepHeaderTestBedConfig(
-  mockActivatedRoute: jasmine.SpyObj<ActivatedRoute>,
-  mockRouter: jasmine.SpyObj<Router>
-) {
-  return {
-    providers: [
-      { provide: ActivatedRoute, useValue: mockActivatedRoute },
-      { provide: Router, useValue: mockRouter }
-    ]
-  };
-}
-
-/**
- * Assertion helpers for common test scenarios
- */
-export class StepHeaderTestAssertions {
-  static expectTitleAndDescription(
-    titleObservable: Observable<string>,
-    descriptionObservable: Observable<string>,
-    expectedTitle: string,
-    expectedDescription: string
-  ): void {
-    titleObservable.subscribe(title => {
-      expect(title).toBe(expectedTitle);
-    });
-
-    descriptionObservable.subscribe(description => {
-      expect(description).toBe(expectedDescription);
-    });
-  }
-
-  static expectEmptyContent(
-    titleObservable: Observable<string>,
-    descriptionObservable: Observable<string>
-  ): void {
-    this.expectTitleAndDescription(titleObservable, descriptionObservable, '', '');
-  }
-
-  static expectDomElements(
-    fixture: any,
-    expectedTitle: string,
-    expectedDescription: string
-  ): void {
-    const titleElement = fixture.debugElement.query(fixture.By?.css('.step-title'));
-    const descriptionElement = fixture.debugElement.query(fixture.By?.css('.step-description'));
-
-    if (titleElement) {
-      expect(titleElement.nativeElement.textContent.trim()).toBe(expectedTitle);
-    }
-    
-    if (descriptionElement) {
-      expect(descriptionElement.nativeElement.textContent.trim()).toBe(expectedDescription);
-    }
-  }
-}
-
-/**
- * Performance testing utilities
- */
-export class StepHeaderPerformanceUtils {
-  static measureNavigationPerformance(
-    eventsSubject: Subject<any>,
-    navigationCount: number = 100
-  ): number {
-    const startTime = performance.now();
-    
-    for (let i = 0; i < navigationCount; i++) {
-      eventsSubject.next(new NavigationEnd(i, `/step/test-${i}`, `/step/test-${i}`));
-    }
-    
-    const endTime = performance.now();
-    return endTime - startTime;
-  }
-
-  static createRapidNavigationScenario(
-    eventsSubject: Subject<any>,
-    mockActivatedRoute: jasmine.SpyObj<ActivatedRoute>
-  ): void {
-    const routes = Object.values(STEP_ROUTE_TEST_DATA);
-    
-    // Simulate rapid navigation between all steps
-    routes.forEach((routeData, index) => {
-      setTimeout(() => {
-        mockActivatedRoute.snapshot = routeData as any;
-        eventsSubject.next(new NavigationEnd(
-          index + 1,
-          `/step/test-${index}`,
-          `/step/test-${index}`
-        ));
-      }, index * 10); // 10ms intervals for rapid navigation
-    });
-  }
 }

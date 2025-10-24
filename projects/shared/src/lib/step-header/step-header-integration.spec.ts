@@ -5,6 +5,7 @@ import { Location } from '@angular/common';
 import { Component } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { Subject } from 'rxjs';
 
 import { StepHeader } from './step-header';
 import { StepLayout } from '../step-layout/step-layout';
@@ -14,7 +15,8 @@ import {
   STEP_ROUTE_TEST_DATA, 
   EDGE_CASE_TEST_DATA,
   createMockActivatedRoute,
-  StepHeaderTestAssertions
+  createMockRouter,
+  createNestedRouteStructure
 } from './step-header-test-utils';
 
 // Mock step components for integration testing
@@ -398,6 +400,103 @@ describe('Feature: StepHeader Accessibility and Semantics', () => {
       // Header should be within the main content flow
       const contentArea = fixture.debugElement.query(By.css('.app-content'));
       expect(contentArea.query(By.directive(StepHeader))).toBeTruthy();
+    });
+  });
+
+  describe('Test Utility Functions Coverage', () => {
+    describe('createMockRouter', () => {
+      it('Given no router events subject, When creating mock router, Then should create new subject', () => {
+        // Given: No router events subject provided
+        console.log('🔧 BDD: Setting up createMockRouter test with no subject');
+        
+        // When: Creating mock router without subject
+        console.log('⚙️ BDD: Creating mock router');
+        const { router, eventsSubject } = createMockRouter();
+        
+        // Then: Should create new subject and mock router
+        console.log('✅ BDD: Verifying mock router creation');
+        expect(router).toBeDefined();
+        expect(eventsSubject).toBeDefined();
+        expect(router.navigate).toBeDefined();
+        expect(router.events).toBeDefined();
+        expect(typeof router.navigate).toBe('function');
+      });
+
+      it('Given existing router events subject, When creating mock router, Then should use provided subject', () => {
+        // Given: Existing router events subject
+        console.log('🔧 BDD: Setting up createMockRouter test with existing subject');
+        const existingSubject = new Subject();
+        
+        // When: Creating mock router with existing subject
+        console.log('⚙️ BDD: Creating mock router with existing subject');
+        const { router, eventsSubject } = createMockRouter(existingSubject);
+        
+        // Then: Should use provided subject
+        console.log('✅ BDD: Verifying mock router uses provided subject');
+        expect(eventsSubject).toBe(existingSubject);
+        expect(router.events).toEqual(existingSubject.asObservable());
+      });
+    });
+
+    describe('createNestedRouteStructure', () => {
+      it('Given empty levels array, When creating nested route structure, Then should throw error', () => {
+        // Given: Empty levels array
+        console.log('🔧 BDD: Setting up createNestedRouteStructure test with empty array');
+        
+        // When: Creating nested route structure with empty array
+        console.log('⚙️ BDD: Attempting to create nested route structure');
+        
+        // Then: Should throw error
+        console.log('✅ BDD: Verifying error is thrown for empty array');
+        expect(() => createNestedRouteStructure([])).toThrowError('At least one level is required for nested route structure');
+      });
+
+      it('Given single level, When creating nested route structure, Then should return single route', () => {
+        // Given: Single level route data
+        console.log('🔧 BDD: Setting up createNestedRouteStructure test with single level');
+        const singleLevel = { title: 'Single Level', data: { description: 'Single level route' } };
+        
+        // When: Creating nested route structure
+        console.log('⚙️ BDD: Creating nested route structure');
+        const result = createNestedRouteStructure([singleLevel]);
+        
+        // Then: Should return single route
+        console.log('✅ BDD: Verifying single level route structure');
+        expect(result).toBeDefined();
+        expect(result.snapshot.title).toBe('Single Level');
+        expect(result.snapshot.data?.['description']).toBe('Single level route');
+        expect(result.firstChild).toBeNull();
+      });
+
+      it('Given multiple levels, When creating nested route structure, Then should return nested structure', () => {
+        // Given: Multiple levels route data
+        console.log('🔧 BDD: Setting up createNestedRouteStructure test with multiple levels');
+        const levels = [
+          { title: 'Level 1', data: { description: 'First level' } },
+          { title: 'Level 2', data: { description: 'Second level' } },
+          { title: 'Level 3', data: { description: 'Third level' } }
+        ];
+        
+        // When: Creating nested route structure
+        console.log('⚙️ BDD: Creating nested route structure with multiple levels');
+        const result = createNestedRouteStructure(levels);
+        
+        // Then: Should return nested structure with deepest level as root
+        console.log('✅ BDD: Verifying nested route structure');
+        expect(result).toBeDefined();
+        expect(result.snapshot.title).toBe('Level 1'); // First in array becomes root
+        expect(result.snapshot.data?.['description']).toBe('First level');
+        
+        // Should have child routes
+        expect(result.firstChild).toBeDefined();
+        expect(result.firstChild?.snapshot.title).toBe('Level 2');
+        expect(result.firstChild?.snapshot.data?.['description']).toBe('Second level');
+        
+        // Should have grandchild routes
+        expect(result.firstChild?.firstChild).toBeDefined();
+        expect(result.firstChild?.firstChild?.snapshot.title).toBe('Level 3');
+        expect(result.firstChild?.firstChild?.snapshot.data?.['description']).toBe('Third level');
+      });
     });
   });
 });
