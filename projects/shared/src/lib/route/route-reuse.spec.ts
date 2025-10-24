@@ -337,4 +337,165 @@ describe('Feature: Step Route Reuse Strategy (BDD-Style)', () => {
       expect(strategy.shouldAttach(route2)).toBe(true);
     });
   });
+
+  describe('Scenario: Additional Branch Coverage (BDD-Style)', () => {
+    it('Given route with undefined routeConfig, When getRouteKey is called, Then URL fallback branch is executed', () => {
+      // Given: Route with undefined routeConfig
+      console.log('🔧 BDD: Setting up route with undefined routeConfig for key generation');
+      const routeWithUndefinedConfig = { 
+        routeConfig: undefined, 
+        url: [
+          new UrlSegment('fallback', {}), 
+          new UrlSegment('path', {})
+        ] 
+      } as unknown as ActivatedRouteSnapshot;
+      
+      // When: Getting route key for route with undefined config
+      console.log('⚙️ BDD: Getting route key for route with undefined routeConfig');
+      strategy.store(routeWithUndefinedConfig, mockHandle);
+      
+      // Then: URL segments should be used as key (fallback branch executed)
+      console.log('✅ BDD: Verifying route key generation from URL fallback');
+      expect(mockLogger.log).toHaveBeenCalledWith('Route key: fallback/path');
+      expect(mockLogger.log).toHaveBeenCalledWith('Stored route: fallback/path', mockHandle);
+    });
+
+    it('Given route with empty URL array, When getRouteKey is called, Then empty string key is generated', () => {
+      // Given: Route with empty URL array
+      console.log('🔧 BDD: Setting up route with empty URL array for key generation');
+      const routeWithEmptyUrl = { 
+        routeConfig: null, 
+        url: [] 
+      } as unknown as ActivatedRouteSnapshot;
+      
+      // When: Getting route key for route with empty URL
+      console.log('⚙️ BDD: Getting route key for route with empty URL array');
+      strategy.store(routeWithEmptyUrl, mockHandle);
+      
+      // Then: Empty string should be used as key
+      console.log('✅ BDD: Verifying empty string key generation');
+      expect(mockLogger.log).toHaveBeenCalledWith('Route key: ');
+      expect(mockLogger.log).toHaveBeenCalledWith('Stored route: ', mockHandle);
+    });
+
+    it('Given route with empty path in routeConfig, When getRouteKey is called, Then URL fallback branch is executed', () => {
+      // Given: Route with empty path in routeConfig
+      console.log('🔧 BDD: Setting up route with empty path in routeConfig');
+      const routeWithEmptyPath = { 
+        routeConfig: { path: '' }, 
+        url: [
+          new UrlSegment('backup', {}), 
+          new UrlSegment('url', {})
+        ] 
+      } as unknown as ActivatedRouteSnapshot;
+      
+      // When: Getting route key for route with empty path
+      console.log('⚙️ BDD: Getting route key for route with empty path');
+      strategy.store(routeWithEmptyPath, mockHandle);
+      
+      // Then: URL fallback should be used since empty string is falsy
+      console.log('✅ BDD: Verifying empty path fallback to URL');
+      expect(mockLogger.log).toHaveBeenCalledWith('Route key: backup/url');
+      expect(mockLogger.log).toHaveBeenCalledWith('Stored route: backup/url', mockHandle);
+    });
+
+    it('Given route with null path in routeConfig, When getRouteKey is called, Then URL fallback branch is executed', () => {
+      // Given: Route with null path in routeConfig
+      console.log('🔧 BDD: Setting up route with null path in routeConfig');
+      const routeWithNullPath = { 
+        routeConfig: { path: null }, 
+        url: [
+          new UrlSegment('null', {}), 
+          new UrlSegment('fallback', {})
+        ] 
+      } as unknown as ActivatedRouteSnapshot;
+      
+      // When: Getting route key for route with null path
+      console.log('⚙️ BDD: Getting route key for route with null path');
+      strategy.store(routeWithNullPath, mockHandle);
+      
+      // Then: URL segments should be used as key (fallback branch executed)
+      console.log('✅ BDD: Verifying null path fallback to URL');
+      expect(mockLogger.log).toHaveBeenCalledWith('Route key: null/fallback');
+      expect(mockLogger.log).toHaveBeenCalledWith('Stored route: null/fallback', mockHandle);
+    });
+
+    it('Given stored route handle is undefined, When retrieve is called, Then null coalescing branch is executed', () => {
+      // Given: Route stored with undefined handle
+      console.log('🔧 BDD: Setting up route with undefined handle for retrieval test');
+      const undefinedHandle = undefined as any;
+      strategy.store(mockRoute, undefinedHandle);
+      mockLogger.log.calls.reset(); // Reset to focus on retrieve logging
+      
+      // When: Retrieving route with undefined handle
+      console.log('⚙️ BDD: Retrieving route with undefined handle');
+      const retrievedHandle = strategy.retrieve(mockRoute);
+      
+      // Then: Null should be returned due to null coalescing
+      console.log('✅ BDD: Verifying null coalescing branch execution');
+      expect(retrievedHandle).toBeNull();
+      expect(mockLogger.log).toHaveBeenCalledWith('Retrieved route: test-route');
+    });
+
+    it('Given route with single URL segment, When getRouteKey is called, Then single segment key is generated', () => {
+      // Given: Route with single URL segment
+      console.log('🔧 BDD: Setting up route with single URL segment');
+      const routeWithSingleSegment = { 
+        routeConfig: null, 
+        url: [new UrlSegment('single', {})] 
+      } as unknown as ActivatedRouteSnapshot;
+      
+      // When: Getting route key for route with single segment
+      console.log('⚙️ BDD: Getting route key for route with single URL segment');
+      strategy.store(routeWithSingleSegment, mockHandle);
+      
+      // Then: Single segment should be used as key
+      console.log('✅ BDD: Verifying single segment key generation');
+      expect(mockLogger.log).toHaveBeenCalledWith('Route key: single');
+      expect(mockLogger.log).toHaveBeenCalledWith('Stored route: single', mockHandle);
+    });
+
+    it('Given route with complex URL segments, When getRouteKey is called, Then complex path is generated', () => {
+      // Given: Route with complex URL segments
+      console.log('🔧 BDD: Setting up route with complex URL segments');
+      const routeWithComplexSegments = { 
+        routeConfig: null, 
+        url: [
+          new UrlSegment('complex', {}), 
+          new UrlSegment('nested', {}), 
+          new UrlSegment('path', {}),
+          new UrlSegment('with', {}),
+          new UrlSegment('many', {}),
+          new UrlSegment('segments', {})
+        ] 
+      } as unknown as ActivatedRouteSnapshot;
+      
+      // When: Getting route key for route with complex segments
+      console.log('⚙️ BDD: Getting route key for route with complex URL segments');
+      strategy.store(routeWithComplexSegments, mockHandle);
+      
+      // Then: Complex path should be generated correctly
+      console.log('✅ BDD: Verifying complex path key generation');
+      expect(mockLogger.log).toHaveBeenCalledWith('Route key: complex/nested/path/with/many/segments');
+      expect(mockLogger.log).toHaveBeenCalledWith('Stored route: complex/nested/path/with/many/segments', mockHandle);
+    });
+
+    it('Given route with special characters in path, When getRouteKey is called, Then special characters are preserved', () => {
+      // Given: Route with special characters in path
+      console.log('🔧 BDD: Setting up route with special characters in path');
+      const routeWithSpecialChars = { 
+        routeConfig: { path: 'special-chars_123.test' }, 
+        url: [] 
+      } as unknown as ActivatedRouteSnapshot;
+      
+      // When: Getting route key for route with special characters
+      console.log('⚙️ BDD: Getting route key for route with special characters');
+      strategy.store(routeWithSpecialChars, mockHandle);
+      
+      // Then: Special characters should be preserved in key
+      console.log('✅ BDD: Verifying special characters preservation in key');
+      expect(mockLogger.log).toHaveBeenCalledWith('Route key: special-chars_123.test');
+      expect(mockLogger.log).toHaveBeenCalledWith('Stored route: special-chars_123.test', mockHandle);
+    });
+  });
 });
